@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/layout/homePage/homepage.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 class AppRoot extends StatelessWidget {
@@ -9,7 +10,7 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      // home: ,
+      home: const HomePage(),
     );
   }
 }
