@@ -82,9 +82,13 @@ Widget defaultTextFormField({
                 onPressed: suffixPressed,
               )
             : null,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30.0)),
-          borderSide: BorderSide(color: Colors.grey),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        border:  OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+          borderSide: BorderSide(color: Colors.white,),
         ),
       ),
     );
