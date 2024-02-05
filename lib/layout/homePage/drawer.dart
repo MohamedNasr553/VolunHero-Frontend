@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_list_view/smooth_list_view.dart';
 
 class SidePage extends StatelessWidget {
   const SidePage({super.key});
@@ -8,7 +9,8 @@ class SidePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
+      child: SmoothListView(
+        duration: const Duration(milliseconds: 400),
         children: [
           UserAccountsDrawerHeader(
             accountName: const Text('@UserName'),

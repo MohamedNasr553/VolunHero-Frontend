@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_code/shared/styles/colors.dart';
 
 ThemeData lightTheme = ThemeData(
-    primaryColor: const Color.fromARGB(255, 3, 159, 162),
+    primaryColor: defaultColor,
     scaffoldBackgroundColor: Colors.white,
     fontFamily: 'Poppins',
 
@@ -12,8 +13,9 @@ ThemeData lightTheme = ThemeData(
       backgroundColor: Colors.white,
       elevation: 0.0,
       systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: defaultColor,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: Colors.white,
       ),
       titleTextStyle: TextStyle(
         color: Colors.black,

@@ -10,7 +10,7 @@ Widget defaultButton({
   double radius = 50.0,
   bool isUpperCase = true,
   FontWeight fontWeight = FontWeight.normal,
-  double fontSize = 22.0,
+  double fontSize = 18.0,
   required VoidCallback function,
   required String text,
 }) =>
