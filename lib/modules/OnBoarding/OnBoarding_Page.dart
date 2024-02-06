@@ -67,7 +67,7 @@ class OnBoarding extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              navigateToPage(context, const LoginPage());
+              navigateAndFinish(context, LoginPage());
             },
             text: 'Login',
             isUpperCase: false,
@@ -77,7 +77,7 @@ class OnBoarding extends StatelessWidget {
           const SizedBox(height: 15.0),
           defaultButton(
             function: () {
-              navigateToPage(context, const SignupPage());
+              navigateAndFinish(context, SignupPage());
             },
             fontWeight: FontWeight.w300,
             text: 'Sign up',

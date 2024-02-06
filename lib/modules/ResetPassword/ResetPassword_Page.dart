@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/modules/Login/Login_Page.dart';
+import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-import '../../shared/components/components.dart';
-
 class ResetPassword extends StatelessWidget {
   ResetPassword({super.key});
+
   var formKey = GlobalKey<FormState>();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
@@ -38,42 +39,25 @@ class ResetPassword extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: screenHeight / 19),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(height: screenHeight / 11.5),
-                StrokeText(
-                  text: "Reset password",
-                  textStyle: TextStyle(
+                SizedBox(height: screenHeight / 5),
+                const Text(
+                  "Reset password",
+                  style: TextStyle(
                     fontSize: 32.0,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                  strokeWidth: 3.0,
-                  strokeColor: Colors.white,
                 ),
-                SizedBox(height: 0.02),
-                StrokeText(
-                  text: "Enter your new password",
-                  textStyle: TextStyle(
+                const SizedBox(height: 0.02),
+                const Text(
+                  "Enter your new password",
+                  style: TextStyle(
                     fontSize: 13.0,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                  strokeWidth: 1.0,
-                  strokeColor: Colors.white,
                 ),
-                SizedBox(height: screenHeight / 12.5),
+                SizedBox(height: screenHeight / 16.5),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Form(
@@ -84,7 +68,7 @@ class ResetPassword extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          StrokeText(
+                          const StrokeText(
                             text: "Password",
                             textStyle: TextStyle(
                               fontSize: 12.0,
@@ -94,55 +78,25 @@ class ResetPassword extends StatelessWidget {
                             strokeWidth: 1.0,
                             strokeColor: Colors.black,
                           ),
-                          SizedBox(height: 3,),
-                          TextFormField(
-                            obscureText: true,
-                            controller: passwordController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Please enter password';
-                              }
-                            },
-                            decoration: InputDecoration(
-                              suffixIcon: true? Icon(Icons.remove_red_eye_outlined,color: Colors.grey,):Icon(Icons.visibility_off_outlined,color:Colors.grey),
-                              suffixIconColor: Colors.grey,
-                              labelText: 'Enter new password',
-                              labelStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              hintText: 'Enter new password',
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              fillColor: Colors.white, // Set your desired background color here
-                              filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 16.0, horizontal: 20.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              // Consider adding errorText or counterText for validation/info
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(height: 6,),
-                          StrokeText(
+                          defaultTextFormField(
+                            isPassword: true,
+                            validate: (value){
+                              if (value!.isEmpty) {
+                                return 'please enter your Password';
+                              }
+                              return null;
+                            },
+                            controller: passwordController,
+                            type: TextInputType.visiblePassword,
+                            labelText: 'Password',
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const StrokeText(
                             text: "Confirm Password",
                             textStyle: TextStyle(
                               fontSize: 12.0,
@@ -152,60 +106,34 @@ class ResetPassword extends StatelessWidget {
                             strokeWidth: 1.0,
                             strokeColor: Colors.black,
                           ),
-                          SizedBox(height: 3,),
-                          TextFormField(
-                            obscureText: true,
-                            controller: confirmPasswordController,
-                            validator: (value) {
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          defaultTextFormField(
+                            isPassword: true,
+                            validate: (value){
                               if (value!.isEmpty) {
-                                return 'Please confirm password';
+                                return 'please confirm password';
                               }
-                              if(value!=passwordController.text){
+                              if (value != passwordController.text) {
                                 return 'Passwords are not same';
                               }
+                              return null;
                             },
-                            decoration: InputDecoration(
-                              suffixIcon: true? Icon(Icons.remove_red_eye_outlined,color: Colors.grey,):Icon(Icons.visibility_off_outlined,color:Colors.grey),
-                              suffixIconColor: Colors.grey,
-                              labelText: 'Confirm new password',
-                              labelStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              hintText: 'Confirm new password',
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              fillColor: Colors.white, // Set your desired background color here
-                              filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 16.0, horizontal: 20.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              // Consider adding errorText or counterText for validation/info
-                            ),
+                            controller: confirmPasswordController,
+                            type: TextInputType.visiblePassword,
+                            labelText: 'Confirm Password',
                           ),
                           SizedBox(height: screenHeight / 15),
                           defaultButton(
                             function: () {
-
+                              if (formKey.currentState!.validate()) {
+                                showToast(
+                                  text: "Password Changed Successfully",
+                                  state: ToastStates.SUCCESS,
+                                );
+                                navigateAndFinish(context, LoginPage());
+                              }
                             },
                             text: 'Reset Password',
                             isUpperCase: false,

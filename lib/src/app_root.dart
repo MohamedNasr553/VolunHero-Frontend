@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/layout/homePage/homepage.dart';
+import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
+import 'package:flutter_code/modules/Login/Login_Page.dart';
 import 'package:flutter_code/modules/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
+import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
-
-import '../modules/ForgetPassword/ForgetPassword_Page.dart';
 
 class AppRoot extends StatelessWidget {
   const AppRoot({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      home:  ResetPassword(),
+      home: const OnBoarding(),
     );
   }
 }

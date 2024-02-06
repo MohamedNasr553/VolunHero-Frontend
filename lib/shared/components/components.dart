@@ -45,53 +45,66 @@ Widget defaultTextFormField({
   required TextEditingController controller,
   required TextInputType type,
   required String labelText,
-  required IconData prefix,
   IconData? suffix,
   VoidCallback? suffixPressed,
-  int? maxLines = 1,
-  int? minLines = 1,
   Color textFieldColor = Colors.black,
-}) =>
-    TextFormField(
-      cursorColor: defaultColor,
-      maxLines: maxLines,
-      minLines: minLines,
-      style: TextStyle(
-        fontSize: 18.0,
-        color: textFieldColor.withOpacity(.6),
-        fontWeight: FontWeight.w500,
+}) {
+  return TextFormField(
+    controller: controller,
+    validator: validate,
+    style: const TextStyle(
+      fontSize: 15.0,
+      fontWeight: FontWeight.w500,
+    ),
+    obscureText: isPassword,
+    decoration: InputDecoration(
+      labelText: labelText.trim(),
+      labelStyle: const TextStyle(
+        color: Colors.grey,
+        fontSize: 15.0,
+        fontWeight: FontWeight.w100,
       ),
-      // Set text field color
-      controller: controller,
-      obscureText: isPassword,
-      keyboardType: type,
-      onFieldSubmitted: onFieldSubmitted,
-      onTap: onTap,
-      validator: validate,
-      onChanged: onChange,
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(
-          prefix,
-        ),
-        suffix: (suffix != null)
-            ? IconButton(
-                icon: Icon(
-                  suffix,
-                ),
-                onPressed: suffixPressed,
-              )
-            : null,
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        border:  OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          borderSide: BorderSide(color: Colors.white,),
+      fillColor: Colors.white,
+      filled: true,
+      contentPadding:
+      const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(3.0),
+        borderSide: const BorderSide(
+          color: Colors.grey,
+          width: 0.5,
         ),
       ),
-    );
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(3.0),
+        borderSide: const BorderSide(
+          color: Colors.grey,
+          width: 0.5,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(3.0),
+        borderSide: const BorderSide(
+          color: Colors.grey,
+          width: 0.5,
+        ),
+      ),
+      // Add suffix icon conditionally based on isPassword
+      suffixIcon: isPassword
+          ? IconButton(
+        icon: Icon(
+          isPassword
+              ? Icons.visibility
+              : Icons.visibility_off,
+          color: Colors.grey,
+        ),
+        onPressed: suffixPressed,
+      )
+          : null,
+    ),
+  );
+}
+
 
 Widget separator() => Container(
       width: double.infinity,

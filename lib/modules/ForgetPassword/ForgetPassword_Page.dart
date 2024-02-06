@@ -1,12 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_code/modules/Login/Login_Page.dart';
+import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class ForgetPassword extends StatelessWidget {
   ForgetPassword({super.key});
+
   var formKey = GlobalKey<FormState>();
   var emailAddressController = TextEditingController();
 
@@ -38,40 +39,38 @@ class ForgetPassword extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: screenHeight / 19),
+                SizedBox(height: screenHeight / 14),
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(
+                      onPressed: () {
+                        navigateAndFinish(context, LoginPage());
+                      },
+                      icon: const Icon(
                         Icons.arrow_back,
                         color: Colors.white,
-                        size: 22,
+                        size: 23,
                       ),
                     )
                   ],
                 ),
-                SizedBox(height: screenHeight / 11.5),
-                StrokeText(
-                  text: "Forgot password",
-                  textStyle: TextStyle(
+                SizedBox(height: screenHeight / 17),
+                const Text(
+                  "Forgot password",
+                  style: TextStyle(
                     fontSize: 32.0,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                  strokeWidth: 3.0,
-                  strokeColor: Colors.white,
                 ),
-                SizedBox(height: 0.02),
-                StrokeText(
-                  text: "Let us help you recover your password",
-                  textStyle: TextStyle(
+                const SizedBox(height: 0.02),
+                const Text(
+                  "Let us help you recover your password",
+                  style: TextStyle(
                     fontSize: 13.0,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                  strokeWidth: 1.0,
-                  strokeColor: Colors.white,
                 ),
                 SizedBox(height: screenHeight / 10),
                 Padding(
@@ -79,12 +78,12 @@ class ForgetPassword extends StatelessWidget {
                   child: Form(
                     key: formKey,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 30),
+                      padding: const EdgeInsets.only(left: 10, right: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          StrokeText(
+                          const StrokeText(
                             text: "Email Address",
                             textStyle: TextStyle(
                               fontSize: 12.0,
@@ -94,60 +93,24 @@ class ForgetPassword extends StatelessWidget {
                             strokeWidth: 1.0,
                             strokeColor: Colors.black,
                           ),
-                          SizedBox(height: 3,),
-                          TextFormField(
-                            controller: emailAddressController,
-                            validator: (value) {
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                          defaultTextFormField(
+                            validate: (value){
                               if (value!.isEmpty) {
                                 return 'please enter your email address';
                               }
+                              return null;
                             },
-                            decoration: InputDecoration(
-                              labelText: 'youremail@gmail.com',
-                              labelStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              hintText: 'Enter your email here',
-                              hintStyle: TextStyle(
-                                  color: Colors.grey, fontWeight: FontWeight.w400),
-                              fillColor: Colors.white, // Set your desired background color here
-                              filled: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 16.0, horizontal: 20.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
-                                ),
-                              ),
-                              // Consider adding errorText or counterText for validation/info
-                            ),
+                            controller: emailAddressController,
+                            type: TextInputType.emailAddress,
+                            labelText: 'Youremail@gmail.com',
                           ),
                           SizedBox(height: screenHeight / 15),
                           defaultButton(
                             function: () {
-                              if (formKey.currentState!.validate()) {
-                                showToast(
-                                    text: "text", state: ToastStates.WARNING);
-                              } else {
-                                showToast(
-                                    text: "Please Enter ",
-                                    state: ToastStates.ERROR);
-                              }
+                              // navigateAndFinish(context, ResetPassword());
                             },
                             text: 'Send OTP',
                             isUpperCase: false,
