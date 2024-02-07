@@ -96,7 +96,7 @@ class SignupPage extends StatelessWidget {
                         },
                         controller: firstNameController,
                         type: TextInputType.text,
-                        labelText: 'First Name',
+                        hintText: 'First Name',
                       ),
                       SizedBox(height: screenHeight / 80),
                       const StrokeText(
@@ -121,7 +121,7 @@ class SignupPage extends StatelessWidget {
                         },
                         controller: lastNameController,
                         type: TextInputType.text,
-                        labelText: 'Last Name',
+                        hintText: 'Last Name',
                       ),
                       SizedBox(height: screenHeight / 80),
                       const StrokeText(
@@ -146,7 +146,7 @@ class SignupPage extends StatelessWidget {
                         },
                         controller: emailAddressController,
                         type: TextInputType.emailAddress,
-                        labelText: 'Youremail@gmail.com',
+                        hintText: 'Youremail@gmail.com',
                       ),
                       SizedBox(height: screenHeight / 80),
                       const StrokeText(
@@ -172,7 +172,7 @@ class SignupPage extends StatelessWidget {
                         },
                         controller: passwordController,
                         type: TextInputType.visiblePassword,
-                        labelText: 'Password',
+                        hintText: 'Password',
                       ),
                       SizedBox(height: screenHeight / 80),
                       const StrokeText(
@@ -201,7 +201,7 @@ class SignupPage extends StatelessWidget {
                         },
                         controller: confirmPasswordController,
                         type: TextInputType.visiblePassword,
-                        labelText: 'Confirm Password',
+                        hintText: 'Confirm Password',
                       ),
                       SizedBox(height: screenHeight / 30),
                       defaultButton(

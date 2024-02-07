@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Widget defaultButton({
-  double width = double.infinity, // default width = 351.0
+  double width = double.infinity,
   Color color = defaultColor,
   double height = 64.0,
   double radius = 50.0,
@@ -44,7 +44,8 @@ Widget defaultTextFormField({
   required String? Function(String?) validate,
   required TextEditingController controller,
   required TextInputType type,
-  required String labelText,
+  String? labelText,
+  required String hintText,
   IconData? suffix,
   VoidCallback? suffixPressed,
   Color textFieldColor = Colors.black,
@@ -58,11 +59,16 @@ Widget defaultTextFormField({
     ),
     obscureText: isPassword,
     decoration: InputDecoration(
-      labelText: labelText.trim(),
+      labelText: labelText,
       labelStyle: const TextStyle(
         color: Colors.grey,
         fontSize: 15.0,
-        fontWeight: FontWeight.w100,
+        fontWeight: FontWeight.w300,
+      ),
+      hintText: hintText,
+      hintStyle: TextStyle(
+        fontSize: 14.0,
+        color: Colors.grey.shade500,
       ),
       fillColor: Colors.white,
       filled: true,
@@ -105,6 +111,55 @@ Widget defaultTextFormField({
   );
 }
 
+Widget updateProfileTextFormField({
+  ValueChanged<String>? onChange,
+  VoidCallback? onTap,
+  ValueChanged<String>? onFieldSubmitted,
+  required String? Function(String?) validate,
+  required TextEditingController controller,
+  required TextInputType type,
+  String? labelText,
+  required String hintText,
+  Color textFieldColor = Colors.black,
+}) =>
+    TextFormField(
+      cursorColor: defaultColor,
+      style: TextStyle(
+        fontSize: 15.0,
+        color: textFieldColor.withOpacity(.6),
+        fontWeight: FontWeight.w500,
+      ),
+      controller: controller,
+      keyboardType: type,
+      onFieldSubmitted: onFieldSubmitted,
+      onTap: onTap,
+      validator: validate,
+      onChanged: onChange,
+      decoration: InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(
+          fontSize: 12.0,
+          color: textFieldColor.withOpacity(0.5),
+          fontWeight: FontWeight.w500,
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 14.0,
+          color: Colors.grey.shade500,
+        ),
+        focusColor: textFieldColor,
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey, // Set your desired border color
+          ),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey, // Set your desired focused border color
+          ),
+        ),
+      ),
+    );
 
 Widget separator() => Container(
       width: double.infinity,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/layout/homePage/homepage.dart';
+import 'package:flutter_code/modules/EditProfile/editProfile_Page.dart';
 import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/Login/Login_Page.dart';
 import 'package:flutter_code/modules/OnBoarding/OnBoarding_Page.dart';
@@ -15,7 +16,7 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      home: const OnBoarding(),
+      home: EditProfile(),
     );
   }
 }

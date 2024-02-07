@@ -105,7 +105,7 @@ class ForgetPassword extends StatelessWidget {
                             },
                             controller: emailAddressController,
                             type: TextInputType.emailAddress,
-                            labelText: 'Youremail@gmail.com',
+                            hintText: 'Youremail@gmail.com',
                           ),
                           SizedBox(height: screenHeight / 15),
                           defaultButton(

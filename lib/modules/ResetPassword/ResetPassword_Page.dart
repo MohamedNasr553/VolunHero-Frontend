@@ -91,7 +91,7 @@ class ResetPassword extends StatelessWidget {
                             },
                             controller: passwordController,
                             type: TextInputType.visiblePassword,
-                            labelText: 'Password',
+                            hintText: 'Password',
                           ),
                           const SizedBox(
                             height: 10,
@@ -122,7 +122,7 @@ class ResetPassword extends StatelessWidget {
                             },
                             controller: confirmPasswordController,
                             type: TextInputType.visiblePassword,
-                            labelText: 'Confirm Password',
+                            hintText: 'Confirm Password',
                           ),
                           SizedBox(height: screenHeight / 15),
                           defaultButton(

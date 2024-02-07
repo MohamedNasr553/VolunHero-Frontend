@@ -95,7 +95,7 @@ class LoginPage extends StatelessWidget {
                         },
                         controller: emailAddressController,
                         type: TextInputType.emailAddress,
-                        labelText: 'Youremail@gmail.com',
+                        hintText: 'Youremail@gmail.com',
                       ),
                       SizedBox(height: screenHeight / 50),
                       const StrokeText(
@@ -121,7 +121,7 @@ class LoginPage extends StatelessWidget {
                         },
                         controller: passwordController,
                         type: TextInputType.visiblePassword,
-                        labelText: 'Password',
+                        hintText: 'Password',
                       ),
                       Padding(
                         padding: const EdgeInsetsDirectional.only(top: 8.0),
