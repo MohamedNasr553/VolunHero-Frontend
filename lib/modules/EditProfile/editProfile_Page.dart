@@ -53,6 +53,7 @@ class EditProfile extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
+                  fontFamily: 'Roboto',
                   fontSize: 27.0,
                 ),
               ),

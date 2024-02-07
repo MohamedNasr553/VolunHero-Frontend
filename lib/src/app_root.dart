@@ -18,7 +18,7 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      home:  GetSupport(),
+      home: NotificationPage(),
     );
   }
 }
