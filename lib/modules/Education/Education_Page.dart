@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:flutter_code/shared/components/components.dart';
 
 class Education extends StatelessWidget {
   Education({super.key});
+
   List<Map<String, dynamic>> contacts = [];
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
     for (int i = 1; i <= 5; i++) {
       contacts.add({
         'image': 'assets/images/logo.png', // Dummy image filename
@@ -15,8 +19,17 @@ class Education extends StatelessWidget {
       });
     }
 
-    return    Scaffold(
-      appBar: AppBar(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Education",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Roboto",
+          ),
+        ),
+      ),
       body: Column(
         children: [
           Column(
@@ -24,41 +37,38 @@ class Education extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left:16.0),
+                padding: EdgeInsets.only(
+                  left: screenWidth / 25,
+                  top: screenHeight / 40,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Education",
+                      "Request an online teacher",
                       style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Roboto"
-                      ),
-                    ),
-                    Text(
-                      "Ask your questions for any online teacher",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Roboto"
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.5),
+                        fontFamily: "Roboto",
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 1.0,),
+              const SizedBox(
+                height: 10,
+              ),
               Container(
                 height: 1.0,
-                color: HexColor("039FA2"),
+                color: Colors.white,
               ),
             ],
           ),
           Expanded(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) =>
-                  buildContactItem(index, context),
+              itemBuilder: (context, index) => buildContactItem(index, context),
               separatorBuilder: (context, index) => Padding(
                 padding: const EdgeInsetsDirectional.only(start: 10.0),
                 child: Container(
@@ -76,6 +86,9 @@ class Education extends StatelessWidget {
   }
 
   Widget buildContactItem(index, context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
     return InkWell(
       onTap: () {},
       child: Column(
@@ -85,9 +98,9 @@ class Education extends StatelessWidget {
               Column(
                 children: [
                   Container(
-                    color:   Colors.white,
+                    color: Colors.white,
                     child: Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: EdgeInsets.all(screenHeight / 70),
                       child: Row(
                         children: [
                           Stack(
@@ -95,22 +108,23 @@ class Education extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 radius: 40.0,
-                                backgroundImage: AssetImage(contacts[index]['image']),
+                                backgroundImage:
+                                    AssetImage(contacts[index]['image']),
                               ),
                               Padding(
-                                padding: const EdgeInsetsDirectional.only(
-                                  bottom: 3.0,
-                                  end: 3.0,
+                                padding: EdgeInsetsDirectional.only(
+                                  bottom: screenHeight / 100,
+                                  end: screenWidth / 80,
                                 ),
-                                child: CircleAvatar(
+                                child: const CircleAvatar(
                                   radius: 5.0,
                                   backgroundColor: Colors.green,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 15.0,
+                          SizedBox(
+                            width: screenWidth / 25,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,37 +134,32 @@ class Education extends StatelessWidget {
                                 maxLines: 2,
                               ),
                               const SizedBox(
-                                height: 1.0,
+                                height: 3.0,
                               ),
                               Text(
                                 contacts[index]['role'],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-
                             ],
                           ),
                         ],
                       ),
                     ),
                   ),
-
                 ],
               ),
-              Spacer(),
+              const Spacer(),
               IconButton(
-                  onPressed: (){},
-                  icon: Icon(Icons.call_outlined)
-              )
+                onPressed: () {},
+                icon: const Icon(Icons.call_outlined),
+              ),
             ],
           ),
-          Container(
-            height: 1.0,
-            color: HexColor("039FA2"),
-          )
+          separator(),
         ],
       ),
     );

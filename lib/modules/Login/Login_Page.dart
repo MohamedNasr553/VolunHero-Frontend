@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/layout/homePage/homepage.dart';
 import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
+import 'package:flutter_code/modules/HomePage/homePage.dart';
 import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -152,7 +152,7 @@ class LoginPage extends StatelessWidget {
                               text: "Login Successfully",
                               state: ToastStates.SUCCESS,
                             );
-                            navigateAndFinish(context, const HomePage());
+                            navigateAndFinish(context, HomePage());
                           }
                         },
                         text: 'Login',

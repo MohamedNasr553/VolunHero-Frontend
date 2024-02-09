@@ -8,6 +8,9 @@ class SidePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
     return Drawer(
       child: SmoothListView(
         duration: const Duration(milliseconds: 400),
@@ -31,8 +34,9 @@ class SidePage extends StatelessWidget {
             ),
           ),
           ListTile(
-            contentPadding: const EdgeInsetsDirectional.only(
-              start: 5.0,
+            contentPadding: EdgeInsetsDirectional.only(
+              start: screenWidth / 65,
+              top: screenHeight / 60,
             ),
             leading: IconButton(
               onPressed: () {},
@@ -43,14 +47,20 @@ class SidePage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            title: const Text('Profile'),
+            title: const Text(
+              'Profile',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Roboto',
+              ),
+            ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },
           ),
           ListTile(
-            contentPadding: const EdgeInsetsDirectional.only(
-              start: 5.0,
+            contentPadding: EdgeInsetsDirectional.only(
+              start: screenWidth / 65,
             ),
             leading: IconButton(
               onPressed: () {},
@@ -61,47 +71,62 @@ class SidePage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            title: const Text('Road Blocks'),
+            title: const Text(
+              'RoadBlocks',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Roboto',
+              ),
+            ),
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },
           ),
           ListTile(
-            leading: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(
-                Icons.local_phone_outlined,
-                size: 35.0,
+            leading: const Icon(
+              Icons.local_phone_outlined,
+              size: 35.0,
+            ),
+            title: const Text(
+              'Video Call',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Roboto',
               ),
             ),
-            title: const Text('Video Call'),
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },
           ),
           const Divider(),
           ListTile(
-            leading: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(
-                Icons.info_outline,
-                size: 35.0,
+            leading: const Icon(
+              Icons.info_outline,
+              size: 35.0,
+            ),
+            title: const Text(
+              'Help and Support',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Roboto',
               ),
             ),
-            title: const Text('Help and Support'),
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },
           ),
           ListTile(
-            leading: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(
-                Icons.settings,
-                size: 35.0,
+            leading: const Icon(
+              Icons.settings,
+              size: 35.0,
+            ),
+            title: const Text(
+              'Settings',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Roboto',
               ),
             ),
-            title: const Text('Settings'),
             onTap: () {
               Navigator.pop(context); // Close the drawer
             },

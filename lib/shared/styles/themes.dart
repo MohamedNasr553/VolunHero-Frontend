@@ -4,35 +4,35 @@ import 'package:flutter_code/shared/styles/colors.dart';
 
 ThemeData lightTheme = ThemeData(
     primaryColor: defaultColor,
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: Colors.grey.shade100,
     fontFamily: 'Poppins',
 
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       titleSpacing: 20.0,
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       elevation: 0.0,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: defaultColor,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
+        systemNavigationBarColor: Colors.grey.shade100,
       ),
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
         color: Colors.black,
         fontSize: 20.0,
         fontWeight: FontWeight.bold,
       ),
-      iconTheme: IconThemeData(
+      iconTheme: const IconThemeData(
         color: Colors.black,
       ),
     ),
 
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: Color.fromARGB(255, 3, 159, 162),
+      selectedItemColor: const Color.fromARGB(255, 3, 159, 162),
       unselectedItemColor: Colors.grey,
       // elevation: 20.0,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -12,7 +11,6 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     for (int i = 1; i <= 10; i++) {
@@ -78,7 +76,7 @@ class NotificationPage extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Container(
-        color: (index % 2 != 0) ? defaultColor.withOpacity(0.08) : Colors.white,
+        color: (index % 2 != 0) ? defaultColor.withOpacity(0.08) : Colors.grey.shade100,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Widget defaultButton({
@@ -46,7 +47,13 @@ Widget defaultTextFormField({
   required TextInputType type,
   String? labelText,
   required String hintText,
+  IconData? prefix,
   IconData? suffix,
+  double hintSize = 14.0,
+  double labelSize = 14.0,
+  double radius = 3.0,
+  Color iconColor = Colors.black,
+  Color borderColor = Colors.grey,
   VoidCallback? suffixPressed,
   Color textFieldColor = Colors.black,
 }) {
@@ -59,53 +66,55 @@ Widget defaultTextFormField({
     ),
     obscureText: isPassword,
     decoration: InputDecoration(
+      prefixIcon: Icon(
+        prefix,
+        color: iconColor,
+      ),
       labelText: labelText,
-      labelStyle: const TextStyle(
+      labelStyle: TextStyle(
         color: Colors.grey,
-        fontSize: 15.0,
+        fontSize: labelSize,
         fontWeight: FontWeight.w300,
       ),
       hintText: hintText,
       hintStyle: TextStyle(
-        fontSize: 14.0,
+        fontSize: hintSize,
         color: Colors.grey.shade500,
       ),
       fillColor: Colors.white,
       filled: true,
       contentPadding:
-      const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+          const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(3.0),
-        borderSide: const BorderSide(
-          color: Colors.grey,
+        borderRadius: BorderRadius.circular(radius),
+        borderSide: BorderSide(
+          color: borderColor,
           width: 0.5,
         ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(3.0),
-        borderSide: const BorderSide(
-          color: Colors.grey,
+        borderRadius: BorderRadius.circular(radius),
+        borderSide: BorderSide(
+          color: borderColor,
           width: 0.5,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(3.0),
-        borderSide: const BorderSide(
-          color: Colors.grey,
+        borderRadius: BorderRadius.circular(radius),
+        borderSide: BorderSide(
+          color: borderColor,
           width: 0.5,
         ),
       ),
       // Add suffix icon conditionally based on isPassword
       suffixIcon: isPassword
           ? IconButton(
-        icon: Icon(
-          isPassword
-              ? Icons.visibility
-              : Icons.visibility_off,
-          color: Colors.grey,
-        ),
-        onPressed: suffixPressed,
-      )
+              icon: Icon(
+                isPassword ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey,
+              ),
+              onPressed: suffixPressed,
+            )
           : null,
     ),
   );
@@ -162,9 +171,8 @@ Widget updateProfileTextFormField({
     );
 
 Widget separator() => Container(
-      width: double.infinity,
       height: 1.0,
-      color: Colors.grey,
+      color: HexColor("039FA2"),
     );
 
 void navigateToPage(context, widget) => Navigator.push(

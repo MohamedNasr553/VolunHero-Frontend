@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/shared/styles/colors.dart';
+import 'package:flutter_code/modules/AllQuestions/AllQuestions_Page.dart';
+import 'package:flutter_code/modules/Education/Education_Page.dart';
+import 'package:flutter_code/modules/MedicalHelp/MedicalHelp_Page.dart';
+import 'package:flutter_code/shared/components/components.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class GetSupport extends StatelessWidget {
@@ -43,11 +46,11 @@ class GetSupport extends StatelessWidget {
               StrokeText(
                 text: "For easy communication",
                 textStyle: TextStyle(
-                    letterSpacing: 0.5,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                    fontFamily: "Roboto",
+                  letterSpacing: 0.5,
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  fontFamily: "Roboto",
                 ),
                 strokeWidth: 0.3,
                 strokeColor: Colors.black,
@@ -67,11 +70,11 @@ class GetSupport extends StatelessWidget {
                 StrokeText(
                   text: "Choose Category",
                   textStyle: TextStyle(
-                      letterSpacing: 0.5,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                      fontFamily: "Roboto",
+                    letterSpacing: 0.5,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontFamily: "Roboto",
                   ),
                   strokeWidth: 0.5,
                   strokeColor: Colors.black,
@@ -84,73 +87,82 @@ class GetSupport extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
+                  onTap: () {
+                    navigateToPage(context, Questions());
+                  },
                   child: Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/Rectangle 4178.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const Center(
-                    child: Text(
-                      "All",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/Rectangle 4178.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              )),
+                      const Center(
+                        child: Text(
+                          "All",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Roboto",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
               SizedBox(height: screenHeight / 30),
               InkWell(
+                  onTap: () {
+                    navigateToPage(context, MedicalHelp());
+                  },
                   child: Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/Rectangle 4178.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const Center(
-                    child: Text(
-                      "Medical help",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/Rectangle 4178.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              )),
+                      const Center(
+                        child: Text(
+                          "Medical help",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Roboto",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
               SizedBox(height: screenHeight / 30),
               InkWell(
+                  onTap: () {
+                    navigateToPage(context, Education());
+                  },
                   child: Stack(
-                children: [
-                  Center(
-                    child: Image.asset(
-                      "assets/images/Rectangle 4178.png",
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const Center(
-                    child: Text(
-                      "Education",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 35,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/Rectangle 4178.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              )),
+                      const Center(
+                        child: Text(
+                          "Education",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Roboto",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 35,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
             ],
           )
         ],
