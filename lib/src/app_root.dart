@@ -32,7 +32,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: const VolunHeroLayout(),
+        home: ResetPassword(),
       ),
     );
   }

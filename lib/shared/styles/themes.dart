@@ -12,10 +12,9 @@ ThemeData lightTheme = ThemeData(
       centerTitle: true,
       backgroundColor: Colors.grey.shade100,
       elevation: 0.0,
-      systemOverlayStyle: SystemUiOverlayStyle(
+      systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: defaultColor,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.grey.shade100,
       ),
       titleTextStyle: const TextStyle(
         color: Colors.black,

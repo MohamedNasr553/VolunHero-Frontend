@@ -13,7 +13,7 @@ class SidePage extends StatelessWidget {
 
     return Drawer(
       child: SmoothListView(
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 200),
         children: [
           UserAccountsDrawerHeader(
             accountName: const Text('@UserName'),
@@ -117,7 +117,7 @@ class SidePage extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(
-              Icons.settings,
+              Icons.settings_outlined,
               size: 35.0,
             ),
             title: const Text(

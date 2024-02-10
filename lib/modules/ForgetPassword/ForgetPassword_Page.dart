@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/Login/Login_Page.dart';
-import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -78,7 +77,7 @@ class ForgetPassword extends StatelessWidget {
                   child: Form(
                     key: formKey,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 20),
+                      padding: const EdgeInsets.only(left: 10, right: 10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +123,7 @@ class ForgetPassword extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

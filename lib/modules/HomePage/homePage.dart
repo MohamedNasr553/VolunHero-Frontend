@@ -40,18 +40,52 @@ class HomePage extends StatelessWidget {
             child: Container(
               width: screenWidth / 1.46,
               height: screenHeight / 25,
-              child: defaultTextFormField(
-                radius: 7.0,
-                borderColor: Colors.white,
-                validate: (value) {
+              child: TextFormField(
+                controller: searchController,
+                validator: (value){
                   return null;
                 },
-                controller: searchController,
-                type: TextInputType.text,
-                hintText: 'Search...',
-                hintSize: 12.0,
-                prefix: Icons.search,
-                iconColor: Colors.grey,
+                style: const TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Search...',
+                  hintStyle: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey.shade500,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(7.0),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                      width: 0.5,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(7.0),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                      width: 0.5,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(7.0),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                      width: 0.5,
+                    ),
+                  ),
+                  // Add suffix icon conditionally based on isPassword
+                ),
               ),
             ),
           ),
@@ -65,8 +99,9 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 // navigateToPage(context, chatsScreen());
               },
-              icon: const Icon(
-                Icons.chat_outlined,
+              icon: Icon(
+                Icons.chat,
+                color: Colors.black.withOpacity(0.4),
               ),
             ),
           ),

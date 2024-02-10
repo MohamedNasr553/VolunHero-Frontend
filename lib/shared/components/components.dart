@@ -47,12 +47,9 @@ Widget defaultTextFormField({
   required TextInputType type,
   String? labelText,
   required String hintText,
-  IconData? prefix,
   IconData? suffix,
   double hintSize = 14.0,
-  double labelSize = 14.0,
   double radius = 3.0,
-  Color iconColor = Colors.black,
   Color borderColor = Colors.grey,
   VoidCallback? suffixPressed,
   Color textFieldColor = Colors.black,
@@ -66,14 +63,10 @@ Widget defaultTextFormField({
     ),
     obscureText: isPassword,
     decoration: InputDecoration(
-      prefixIcon: Icon(
-        prefix,
-        color: iconColor,
-      ),
       labelText: labelText,
-      labelStyle: TextStyle(
+      labelStyle: const TextStyle(
         color: Colors.grey,
-        fontSize: labelSize,
+        fontSize: 14.0,
         fontWeight: FontWeight.w300,
       ),
       hintText: hintText,

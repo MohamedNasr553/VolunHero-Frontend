@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/HomeLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/layout_bloc/states.dart';
 import 'package:flutter_code/modules/CreatePosts/Posts.dart';
 import 'package:flutter_code/modules/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/HomePage/homePage.dart';
