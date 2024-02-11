@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/layout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/AllQuestions/AllQuestions_Page.dart';
+import 'package:flutter_code/modules/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/EditProfile/editProfile_Page.dart';
 import 'package:flutter_code/modules/Education/Education_Page.dart';
 import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
@@ -32,7 +33,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: ResetPassword(),
+        home: CreatePost(),
       ),
     );
   }
