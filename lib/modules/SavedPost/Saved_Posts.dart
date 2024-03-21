@@ -3,11 +3,31 @@ import 'package:flutter_code/modules/GetSupport/Support_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class SavedPosts extends StatelessWidget {
+class SavedPosts extends StatefulWidget {
   SavedPosts({super.key});
+
+  @override
+  State<SavedPosts> createState() => _SavedPostsState();
+}
+
+class _SavedPostsState extends State<SavedPosts> {
   List<Map<String, dynamic>> posts = [];
+  bool _showWidget = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // After 3 seconds, set the _showWidget to true
+    Future.delayed(Duration(seconds: 6), () {
+      setState(() {
+        _showWidget = true;
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +66,8 @@ class SavedPosts extends StatelessWidget {
         });
       }
     }
-
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -69,7 +90,71 @@ class SavedPosts extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
+      body:_showWidget==false?ListView.builder(
+
+        itemCount: 10, // Number of posts
+        itemBuilder: (BuildContext context, int index) {
+          return Shimmer.fromColors(
+            period: Duration(milliseconds: 1500),
+            baseColor: Colors.grey,
+            highlightColor: Colors.white30,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                      ),
+                      SizedBox(width: screenWidth/40,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: screenHeight/75,
+                            width: screenWidth/4,
+                            child: Container(
+                              decoration: BoxDecoration(color:Colors.grey ,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5,),
+                          SizedBox(
+                            height: screenHeight/75,
+                            width: screenWidth/2,
+                            child: Container(
+                              decoration: BoxDecoration(color:Colors.grey ,
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+
+
+                    ],
+                  ),
+                  SizedBox(height: screenHeight/100,),
+                  Center(
+                    child: SizedBox(
+                      height: screenHeight/4,
+                      width: screenWidth,
+                      child: Container(
+                        decoration: BoxDecoration(color:Colors.grey ,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ): Column(
         children: [
 
           Expanded(
@@ -90,6 +175,7 @@ class SavedPosts extends StatelessWidget {
         ],
       ),
     );
+
   }
 
   Widget buildPostItem(index,context){
@@ -241,6 +327,7 @@ class SavedPosts extends StatelessWidget {
       ),
     );
   }
+
   Widget postSubComponent(String assetIcon, String action){
     return InkWell(
       onTap: (){
