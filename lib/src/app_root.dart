@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/layout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/AllQuestions/AllQuestions_Page.dart';
+import 'package:flutter_code/modules/Chats/chatsPages.dart';
 import 'package:flutter_code/modules/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/EditProfile/editProfile_Page.dart';
 import 'package:flutter_code/modules/Education/Education_Page.dart';
@@ -17,6 +18,7 @@ import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/modules/SavedPost/Saved_Posts.dart';
 import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
+import 'package:flutter_code/src/mainScreen.dart';
 
 class AppRoot extends StatelessWidget {
   const AppRoot({super.key});
@@ -28,13 +30,14 @@ class AppRoot extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => HomeLayoutCubit()
             ..initializeBottomItems()
-            ..homeLayoutScreens(),
+
         ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: SavedPosts(),
+        home: MainScreen(),
+
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class NotificationPage extends StatelessWidget {
@@ -73,10 +74,24 @@ class NotificationPage extends StatelessWidget {
   }
 
   Widget buildNotificationItem(index, context) {
-    return InkWell(
-      onTap: () {},
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
       child: Container(
-        color: (index % 2 != 0) ? defaultColor.withOpacity(0.08) : Colors.grey.shade100,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: (index%2==0)?Colors.white:HexColor("0BA3A6").withOpacity(0.2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10.0,
+              spreadRadius: -5.0,
+              offset: Offset(15.0, 5.0), // Right and bottom shadow
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(

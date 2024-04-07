@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/layout_bloc/states.dart';
+import 'package:flutter_code/modules/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/CreatePosts/Posts.dart';
 import 'package:flutter_code/modules/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/HomePage/homePage.dart';
@@ -17,7 +18,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates>{
   bool isActive = false;
 
   List<BottomNavigationBarItem> bottomItems = [];
-  List<Widget> layoutScreens = [];
+
 
   Widget activatedSvg = SvgPicture.asset(
     'assets/images/View_alt_fill_activated.svg',
@@ -33,30 +34,32 @@ class HomeLayoutCubit extends Cubit<LayoutStates>{
     fit: BoxFit.cover,
   );
 
+
+  Widget changeBottomIcon(int index,Widget a,Widget b){
+    emit(ChangeBottomIconColor());
+    if(currentIndex==index){
+      return a;
+    }
+    return b;
+
+  }
+
   void initializeBottomItems() {
     bottomItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.home_filled,
-        ),
+       BottomNavigationBarItem(
+         icon: changeBottomIcon(0, SvgPicture.asset("assets/images/Home_fill_colored.svg"), SvgPicture.asset("assets/images/Home_fill.svg")),
         label: 'Home',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.local_phone_outlined,
-        ),
+       BottomNavigationBarItem(
+        icon: changeBottomIcon(1, SvgPicture.asset("assets/images/Phone_fill.svg"), SvgPicture.asset("assets/images/supportIcon.svg")),
         label: 'Support',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.add_box_rounded,
-        ),
+       BottomNavigationBarItem(
+         icon: changeBottomIcon(2, SvgPicture.asset("assets/images/Add_square_fill.svg"), SvgPicture.asset("assets/images/Add_square_fill.svg")),
         label: 'Post',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.notifications,
-        ),
+       BottomNavigationBarItem(
+         icon: changeBottomIcon(3, SvgPicture.asset("assets/images/Bell_fill_colored.svg"), SvgPicture.asset("assets/images/Bell_fill.svg")),
         label: 'Notifications',
       ),
       BottomNavigationBarItem(
@@ -72,18 +75,20 @@ class HomeLayoutCubit extends Cubit<LayoutStates>{
   //   emit(ToggleRoadBlocksState());
   // }
 
-  void homeLayoutScreens() {
-    layoutScreens = [
+
+   var layoutScreens = [
       HomePage(),
-      const GetSupport(),
-      const CreatePosts(),
+       GetSupport(),
+       CreatePost(),
       NotificationPage(),
-      const RoadBlocksPage()
+      RoadBlocksPage()
     ];
-  }
+
+
 
   void changeBottomNavBar(int index) {
     currentIndex = index;
+    initializeBottomItems();
     emit(ChangeBottomNavBarState());
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GetSupport/Support_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -31,7 +32,7 @@ class Education extends StatelessWidget {
           ),
           color: HexColor("858888"),
           onPressed:(){
-            navigateToPage(context,GetSupport());
+            navigateToPage(context,MainScreen());
           },
         ),
         title:  StrokeText(

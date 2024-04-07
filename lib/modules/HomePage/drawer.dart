@@ -20,13 +20,9 @@ class SidePage extends StatelessWidget {
             accountEmail: const Text('user@gmail.com'),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
-                child: Image.network(
-                  // Sample
-                  'https://oflutter.com/wp-content/uploads/2021/02/girl-profile.png',
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
-                ),
+                child: Image.asset(
+                   "assets/images/logo.png"
+                )
               ),
             ),
             decoration: const BoxDecoration(

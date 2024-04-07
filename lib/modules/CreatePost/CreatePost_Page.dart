@@ -48,7 +48,7 @@ class _CreatePostState extends State<CreatePost> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () {
-
+                 print(keyboardSize);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.white,
@@ -110,7 +110,7 @@ class _CreatePostState extends State<CreatePost> {
                     ],
                   ),
                 ),
-                SizedBox(height: (keyboardSize==0.0)?(screenHeight / 2.286):(screenHeight-keyboardSize-60-215)),
+                SizedBox(height: (keyboardSize==0.0)?(screenHeight / 2.286):(screenHeight-keyboardSize-60-600)),
                 (keyboardSize==0.0)?
                 Container(
                   decoration: BoxDecoration(
