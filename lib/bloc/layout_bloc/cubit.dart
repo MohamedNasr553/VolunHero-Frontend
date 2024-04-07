@@ -55,7 +55,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates>{
         label: 'Support',
       ),
        BottomNavigationBarItem(
-         icon: changeBottomIcon(2, SvgPicture.asset("assets/images/Add_square_fill.svg"), SvgPicture.asset("assets/images/Add_square_fill.svg")),
+         icon: Icon(Icons.add_box),
         label: 'Post',
       ),
        BottomNavigationBarItem(
@@ -63,7 +63,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates>{
         label: 'Notifications',
       ),
       BottomNavigationBarItem(
-        icon: isActive ? activatedSvg : deactivatedSvg,
+        icon: changeBottomIcon(4, SvgPicture.asset("assets/images/View_alt_fill_activated.svg"), SvgPicture.asset("assets/images/View_alt_fill.svg")),
         label: 'RoadBlocks',
       ),
     ];

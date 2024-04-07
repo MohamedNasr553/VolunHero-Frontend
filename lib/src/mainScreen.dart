@@ -34,6 +34,7 @@ class MainScreen extends StatelessWidget {
                 onTap: (index) {
                   cubit.changeBottomNavBar(index);
                 },
+                unselectedItemColor: HexColor("575757"),
                 items:cubit.bottomItems
             ),
           );

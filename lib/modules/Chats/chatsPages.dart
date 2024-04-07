@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/HomePage/homePage.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
@@ -71,7 +72,7 @@ class _ChatsPageState extends State<ChatsPage> {
                   children: [
                     IconButton(
                         onPressed: (){
-                          navigateToPage(context, HomePage());
+                          navigateToPage(context, MainScreen());
                         },
                         icon: Icon(Icons.close,size: 32,),
                         color:Colors.white,
