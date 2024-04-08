@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/layout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/layout_bloc/states.dart';
+import 'package:flutter_code/modules/Settings/yourAccountScreen.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,9 +70,9 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: screenHeight/50,),
-                    buttonComponent(screenWidth, screenHeight, "assets/images/profile.svg", "Account information"),
+                    buttonComponent( screenWidth, screenHeight, "assets/images/profile.svg", "Account information",YourAccountPage(),context),
                     SizedBox(height: screenHeight/50,),
-                    buttonComponent(screenWidth, screenHeight, "assets/images/Bell_fill_colored.svg", "Notifications"),
+                    buttonComponent( screenWidth, screenHeight, "assets/images/Bell_fill_colored.svg", "Notifications",MainScreen(),context),
                     SizedBox(height: screenHeight/20,),
                     Text(
                       "Privacy",
@@ -225,16 +226,22 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget buttonComponent(var screenWidth,var screenHeight, String iconAsset,String text){
+  Widget buttonComponent(var screenWidth,var screenHeight, String iconAsset,String text,Widget page,context){
+    var cubit = HomeLayoutCubit.get(context);
     return InkWell(
-      onTap: (){},
+      onTap: (){
+        if(text=="Notifications"){
+          cubit.changeBottomNavBar(3);
+        }
+        navigateToPage(context, page);
+      },
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             color: Colors.white
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
               SvgPicture.asset("$iconAsset"),

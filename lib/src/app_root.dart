@@ -17,6 +17,7 @@ import 'package:flutter_code/modules/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/modules/SavedPost/Saved_Posts.dart';
 import 'package:flutter_code/modules/Settings/settingsPage.dart';
+import 'package:flutter_code/modules/Settings/yourAccountScreen.dart';
 import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 import 'package:flutter_code/src/mainScreen.dart';
@@ -37,7 +38,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: MainScreen(),
+        home: YourAccountPage(),
 
       ),
     );
