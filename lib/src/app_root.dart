@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/layout_bloc/cubit.dart';
-import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
-import 'package:flutter_code/modules/AllQuestions/AllQuestions_Page.dart';
-import 'package:flutter_code/modules/Chats/chatsPages.dart';
-import 'package:flutter_code/modules/CreatePost/CreatePost_Page.dart';
-import 'package:flutter_code/modules/EditProfile/editProfile_Page.dart';
-import 'package:flutter_code/modules/Education/Education_Page.dart';
-import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
-import 'package:flutter_code/modules/GetSupport/Support_Page.dart';
-import 'package:flutter_code/modules/HomePage/homePage.dart';
-import 'package:flutter_code/modules/Login/Login_Page.dart';
-import 'package:flutter_code/modules/MedicalHelp/MedicalHelp_Page.dart';
-import 'package:flutter_code/modules/Notifications/Notifications_Page.dart';
-import 'package:flutter_code/modules/OnBoarding/OnBoarding_Page.dart';
-import 'package:flutter_code/modules/OnBoarding2/OnBoarding2_Page.dart';
-import 'package:flutter_code/modules/OrganizationSignUp/Organization_SignUp_Page.dart';
-import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
-import 'package:flutter_code/modules/SavedPost/Saved_Posts.dart';
-import 'package:flutter_code/modules/Settings/settingsPage.dart';
-import 'package:flutter_code/modules/Settings/yourAccountScreen.dart';
-import 'package:flutter_code/modules/UserSignUp/User_SignUp_Page.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/modules/GeneralView/AllQuestions/AllQuestions_Page.dart';
+import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Education/Education_Page.dart';
+import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
+import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/MedicalHelp/MedicalHelp_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
+import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
+import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
+import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 import 'package:flutter_code/src/mainScreen.dart';
 
@@ -40,7 +34,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: OrganizationSignUp(),
+        home: const UserHomePage(),
       ),
     );
   }
