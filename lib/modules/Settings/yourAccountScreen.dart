@@ -10,7 +10,8 @@ import 'package:stroke_text/stroke_text.dart';
 
 import '../../shared/components/components.dart';
 
-class YourAccountPage  extends StatelessWidget {
+class YourAccountPage extends StatelessWidget {
+  const YourAccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class YourAccountPage  extends StatelessWidget {
                 leading: IconButton(
                   icon: SvgPicture.asset("assets/images/arrowLeft.svg"),
                   onPressed: (){
-                    navigateAndFinish(context, SettingsPage());
+                    navigateAndFinish(context, const SettingsPage());
                   },
                 ),
                 title: Column(
@@ -56,7 +57,7 @@ class YourAccountPage  extends StatelessWidget {
                 centerTitle: true,
               ),
               body: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 42.0),
                   child: Column(
@@ -77,7 +78,7 @@ class YourAccountPage  extends StatelessWidget {
                               children: [
                                 Icon(Icons.email_outlined,color: HexColor("039FA2"),),
                                 SizedBox(width: screenWidth/50,),
-                                Text(
+                                const Text(
                                   "Change Email",
                                   style: TextStyle(
                                       fontFamily: "Roboto",
@@ -86,7 +87,7 @@ class YourAccountPage  extends StatelessWidget {
                                       fontWeight: FontWeight.bold
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 SvgPicture.asset("assets/images/Expand_right.svg"),
                               ],
                             ),
@@ -142,18 +143,18 @@ class YourAccountPage  extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              SvgPicture.asset("$iconAsset"),
+              SvgPicture.asset(iconAsset),
               SizedBox(width: screenWidth/50,),
               Text(
-                "$text",
-                style: TextStyle(
+                text,
+                style: const TextStyle(
                     fontFamily: "Roboto",
                     color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               SvgPicture.asset("assets/images/Expand_right.svg"),
             ],
           ),

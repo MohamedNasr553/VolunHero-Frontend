@@ -14,11 +14,13 @@ import 'package:flutter_code/modules/Login/Login_Page.dart';
 import 'package:flutter_code/modules/MedicalHelp/MedicalHelp_Page.dart';
 import 'package:flutter_code/modules/Notifications/Notifications_Page.dart';
 import 'package:flutter_code/modules/OnBoarding/OnBoarding_Page.dart';
+import 'package:flutter_code/modules/OnBoarding2/OnBoarding2_Page.dart';
+import 'package:flutter_code/modules/OrganizationSignUp/Organization_SignUp_Page.dart';
 import 'package:flutter_code/modules/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/modules/SavedPost/Saved_Posts.dart';
 import 'package:flutter_code/modules/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/Settings/yourAccountScreen.dart';
-import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
+import 'package:flutter_code/modules/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 import 'package:flutter_code/src/mainScreen.dart';
 
@@ -38,8 +40,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: YourAccountPage(),
-
+        home: OrganizationSignUp(),
       ),
     );
   }

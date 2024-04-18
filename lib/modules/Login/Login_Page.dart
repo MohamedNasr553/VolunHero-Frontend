@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/HomePage/homePage.dart';
-import 'package:flutter_code/modules/SignUp/SignUp_Page.dart';
+import 'package:flutter_code/modules/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -180,7 +180,7 @@ class LoginPage extends StatelessWidget {
                               SizedBox(width: screenWidth / 80),
                               InkWell(
                                 onTap: () {
-                                  navigateAndFinish(context, SignupPage());
+                                  navigateAndFinish(context, UserSignupPage());
                                 },
                                 child: const Text(
                                   "Sign Up",

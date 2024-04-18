@@ -51,6 +51,8 @@ dependencies:
   stroke_text: ^0.0.2
   flutter_keyboard_visibility: ^6.0.0
   shimmer: ^3.0.0
+  file_picker: ^4.0.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

@@ -51,7 +51,7 @@ class _CreatePostState extends State<CreatePost> {
                  print(keyboardSize);
               },
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
+                // primary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                 ),

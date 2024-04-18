@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/modules/Login/Login_Page.dart';
 import 'package:flutter_code/modules/UserSignUp/User_SignUp_Page.dart';
+import 'package:flutter_code/modules/OrganizationSignUp/Organization_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class OnBoarding extends StatelessWidget {
-  const OnBoarding({super.key});
+class OnBoarding2 extends StatelessWidget {
+  const OnBoarding2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +67,22 @@ class OnBoarding extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              navigateAndFinish(context, LoginPage());
+              navigateAndFinish(context, const UserSignupPage());
             },
-            text: 'Login',
+            text: 'Sign up as a user',
             isUpperCase: false,
-            fontWeight: FontWeight.w300,
+            fontSize: 17.0,
+            fontWeight: FontWeight.w100,
             width: screenWidth / 1.1,
           ),
           const SizedBox(height: 15.0),
           defaultButton(
             function: () {
-              navigateAndFinish(context, UserSignupPage());
+              navigateAndFinish(context, const OrganizationSignUp());
             },
-            fontWeight: FontWeight.w300,
-            text: 'Sign up',
+            fontWeight: FontWeight.w100,
+            fontSize: 17.0,
+            text: 'Sign up as an organization',
             isUpperCase: false,
             width: screenWidth / 1.1,
           ),

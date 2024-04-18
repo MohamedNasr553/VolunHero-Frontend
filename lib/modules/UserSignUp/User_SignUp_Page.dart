@@ -1,19 +1,29 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/Login/Login_Page.dart';
+import 'package:flutter_code/modules/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stroke_text/stroke_text.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class SignupPage extends StatelessWidget {
-  SignupPage({super.key});
+class UserSignupPage extends StatefulWidget {
+  const UserSignupPage({super.key});
 
+  @override
+  State<UserSignupPage> createState() => _UserSignupPageState();
+}
+
+class _UserSignupPageState extends State<UserSignupPage> {
   var formKey = GlobalKey<FormState>();
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
   var emailAddressController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
+  String selectedItem = '';
+  String? _filePath;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +41,17 @@ class SignupPage extends StatelessWidget {
                 "assets/images/Vector_401.svg",
                 width: double.infinity,
                 alignment: Alignment.topCenter,
+              ),
+            ),
+            Positioned(
+              top: 60,
+              left: 0,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  navigateAndFinish(context, const OnBoarding2());
+                },
               ),
             ),
             Padding(
@@ -67,7 +88,7 @@ class SignupPage extends StatelessWidget {
             SizedBox(
               height: screenHeight / 0.69,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 20, 20, 0),
+                padding: const EdgeInsets.fromLTRB(15, 40, 20, 0),
                 child: Form(
                   key: formKey,
                   child: Column(
@@ -84,8 +105,8 @@ class SignupPage extends StatelessWidget {
                         strokeWidth: 1.0,
                         strokeColor: Colors.black,
                       ),
-                      const SizedBox(
-                        height: 6.0,
+                      SizedBox(
+                        height: screenHeight / 100,
                       ),
                       defaultTextFormField(
                         validate: (value){
@@ -98,7 +119,7 @@ class SignupPage extends StatelessWidget {
                         type: TextInputType.text,
                         hintText: 'First Name',
                       ),
-                      SizedBox(height: screenHeight / 80),
+                      SizedBox(height: screenHeight / 50),
                       const StrokeText(
                         text: "Last name",
                         textStyle: TextStyle(
@@ -109,8 +130,8 @@ class SignupPage extends StatelessWidget {
                         strokeWidth: 1.0,
                         strokeColor: Colors.black,
                       ),
-                      const SizedBox(
-                        height: 6.0,
+                      SizedBox(
+                        height: screenHeight / 100,
                       ),
                       defaultTextFormField(
                         validate: (value){
@@ -123,7 +144,7 @@ class SignupPage extends StatelessWidget {
                         type: TextInputType.text,
                         hintText: 'Last Name',
                       ),
-                      SizedBox(height: screenHeight / 80),
+                      SizedBox(height: screenHeight / 50),
                       const StrokeText(
                         text: "Email Address",
                         textStyle: TextStyle(
@@ -134,8 +155,8 @@ class SignupPage extends StatelessWidget {
                         strokeWidth: 1.0,
                         strokeColor: Colors.black,
                       ),
-                      const SizedBox(
-                        height: 6.0,
+                      SizedBox(
+                        height: screenHeight / 100,
                       ),
                       defaultTextFormField(
                         validate: (value){
@@ -148,7 +169,7 @@ class SignupPage extends StatelessWidget {
                         type: TextInputType.emailAddress,
                         hintText: 'Youremail@gmail.com',
                       ),
-                      SizedBox(height: screenHeight / 80),
+                      SizedBox(height: screenHeight / 50),
                       const StrokeText(
                         text: "Password",
                         textStyle: TextStyle(
@@ -159,8 +180,8 @@ class SignupPage extends StatelessWidget {
                         strokeWidth: 1.0,
                         strokeColor: Colors.black,
                       ),
-                      const SizedBox(
-                        height: 6.0,
+                      SizedBox(
+                        height: screenHeight / 100,
                       ),
                       defaultTextFormField(
                         isPassword: true,
@@ -174,7 +195,7 @@ class SignupPage extends StatelessWidget {
                         type: TextInputType.visiblePassword,
                         hintText: 'Password',
                       ),
-                      SizedBox(height: screenHeight / 80),
+                      SizedBox(height: screenHeight / 50),
                       const StrokeText(
                         text: "Confirm Password",
                         textStyle: TextStyle(
@@ -185,8 +206,8 @@ class SignupPage extends StatelessWidget {
                         strokeWidth: 1.0,
                         strokeColor: Colors.black,
                       ),
-                      const SizedBox(
-                        height: 6.0,
+                      SizedBox(
+                        height: screenHeight / 100,
                       ),
                       defaultTextFormField(
                         isPassword: true,
@@ -202,6 +223,138 @@ class SignupPage extends StatelessWidget {
                         controller: confirmPasswordController,
                         type: TextInputType.visiblePassword,
                         hintText: 'Confirm Password',
+                      ),
+                      SizedBox(height: screenHeight / 50),
+                      const StrokeText(
+                        text: "Specification",
+                        textStyle: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                        strokeWidth: 1.0,
+                        strokeColor: Colors.black,
+                      ),
+                      SizedBox(
+                        height: screenHeight / 100,
+                      ),
+                      Column(
+                        children: [
+                          RadioListTile(
+                            title: const Text(
+                              'General',
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            activeColor: defaultColor,
+                            dense: true,
+                            visualDensity: const VisualDensity(vertical: -4),
+                            value: 'General',
+                            contentPadding: EdgeInsets.zero,
+                            groupValue: selectedItem,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedItem = value!;
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: const Text(
+                              'Medical',
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: defaultColor,
+                            visualDensity: const VisualDensity(vertical: -4),
+                            value: 'Medical',
+                            groupValue: selectedItem,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedItem = value!;
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: const Text(
+                              'Educational',
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: defaultColor,
+                            visualDensity: const VisualDensity(vertical: -4),
+                            value: 'Educational',
+                            groupValue: selectedItem,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedItem = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: screenHeight / 50),
+                      const StrokeText(
+                        text: "Attachments",
+                        textStyle: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                        strokeWidth: 1.0,
+                        strokeColor: Colors.black,
+                      ),
+                      SizedBox(
+                        height: screenHeight / 100,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
+                        child: Container(
+                          width: 400,
+                          height: 85,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: InkWell(
+                            onTap: () async {
+                              await _requestPermission();
+                              _pickFile();
+                            },
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _filePath == null ? 'Add or drop your' : 'File Selected',
+                                    style: TextStyle(
+                                      color: defaultColor,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    _filePath == null ? ' file in here' : 'File Selected',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(height: screenHeight / 30),
                       defaultButton(
@@ -256,5 +409,41 @@ class SignupPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _requestPermission() async {
+    // Request external storage permission
+    var status = await Permission.storage.request();
+    if (status.isDenied || status.isPermanentlyDenied) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Permission Required'),
+          content: Text('Please allow access to external storage to upload files.'),
+          actions:[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: Text('Open Settings'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        _filePath = result.files.single.path!;
+      });
+    }
   }
 }
