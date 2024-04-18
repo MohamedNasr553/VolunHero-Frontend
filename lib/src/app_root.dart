@@ -26,9 +26,7 @@ class AppRoot extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => HomeLayoutCubit()
-            ..initializeBottomItems()
-
+          create: (BuildContext context) => HomeLayoutCubit()..initializeBottomItems()
         ),
       ],
       child: MaterialApp(
