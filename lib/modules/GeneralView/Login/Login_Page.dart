@@ -22,19 +22,19 @@ class LoginPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          SizedBox(
-            height: screenHeight / 0.5,
-            child: SvgPicture.asset(
-              "assets/images/Vector_401.svg",
-              width: double.infinity,
-              alignment: Alignment.topCenter,
+      body: SingleChildScrollView(
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            SizedBox(
+              height: screenHeight / 0.5,
+              child: SvgPicture.asset(
+                "assets/images/Vector_401.svg",
+                width: double.infinity,
+                alignment: Alignment.topCenter,
+              ),
             ),
-          ),
-          SingleChildScrollView(
-            child: Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -202,8 +202,8 @@ class LoginPage extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -83,7 +83,6 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  cubit.changeBottomNavBar(4);
                   navigateAndFinish(context, const RoadBlocksPage());
                 },
               ),

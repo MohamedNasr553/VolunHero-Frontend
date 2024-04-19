@@ -14,6 +14,7 @@ import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.da
 import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
+import 'package:flutter_code/modules/UserView/UserChats/UserChatPage.dart';
 import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
@@ -33,7 +34,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: const OnBoarding(),
+        home: const UserChatsPage(),
       ),
     );
   }
