@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -32,7 +32,7 @@ class MedicalHelp extends StatelessWidget {
           ),
           color: HexColor("858888"),
           onPressed:(){
-            navigateToPage(context,MainScreen());
+            navigateToPage(context, const GetSupport());
           },
         ),
         title:  StrokeText(
@@ -74,7 +74,7 @@ class MedicalHelp extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth / 30, vertical: screenHeight / 100),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
@@ -84,7 +84,7 @@ class MedicalHelp extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               blurRadius: 10.0,
               spreadRadius: -5.0,
-              offset: Offset(15.0, 5.0), // Right and bottom shadow
+              offset: const Offset(15.0, 5.0), // Right and bottom shadow
             ),
           ],
         ),

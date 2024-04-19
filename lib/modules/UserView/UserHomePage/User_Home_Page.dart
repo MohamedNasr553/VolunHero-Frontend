@@ -22,7 +22,7 @@ class _HomePageState extends State<UserHomePage> {
   void initState() {
     super.initState();
     // After 3 seconds, set the _showWidget to true
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _showWidget = true;
       });
@@ -35,7 +35,7 @@ class _HomePageState extends State<UserHomePage> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     for (int i = 1; i <= 5; i++) {
-      if(i%2==0 ){
+      if(i%2==0){
         posts.add({
           'photo': 'assets/images/logo.png', // Dummy image filename
           'name': 'User $i Name', // Dummy description
@@ -72,15 +72,22 @@ class _HomePageState extends State<UserHomePage> {
     return Scaffold(
       appBar: AppBar(
         leading: Builder(builder: (context) {
-          return IconButton(
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-            icon: CircleAvatar(
-              child: ClipOval(
-                child:  Image.asset(
-                  "assets/images/logo.png"
-                )
+          return Padding(
+            padding: EdgeInsetsDirectional.only(
+              start: screenWidth / 40,
+            ),
+            child: IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.transparent,
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/images/logo.png"
+                  )
+                ),
               ),
             ),
           );
@@ -91,7 +98,7 @@ class _HomePageState extends State<UserHomePage> {
               top: screenHeight / 300,
             ),
             child: Container(
-              width: screenWidth / 1.46,
+              width: screenWidth / 1.42,
               height: screenHeight / 25,
               child: TextFormField(
                 controller: searchController,
@@ -146,7 +153,7 @@ class _HomePageState extends State<UserHomePage> {
             padding: EdgeInsetsDirectional.only(
               top: screenHeight / 300,
               start: screenWidth / 80,
-              end: screenWidth / 80,
+              end: screenWidth / 60,
             ),
             child: IconButton(
               onPressed: () {
@@ -159,7 +166,6 @@ class _HomePageState extends State<UserHomePage> {
       ),
       drawer: const SidePage(),
       body:_showWidget==false?ListView.builder(
-
         itemCount: 10, // Number of posts
         itemBuilder: (BuildContext context, int index) {
           return Shimmer.fromColors(
@@ -201,8 +207,6 @@ class _HomePageState extends State<UserHomePage> {
                           )
                         ],
                       ),
-
-
                     ],
                   ),
                   SizedBox(height: screenHeight/100,),
@@ -222,9 +226,9 @@ class _HomePageState extends State<UserHomePage> {
             ),
           );
         },
-      ): Column(
+      ):
+      Column(
         children: [
-
           Expanded(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
@@ -233,7 +237,6 @@ class _HomePageState extends State<UserHomePage> {
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
                 child: Container(
                   width: double.infinity,
-
                   color: Colors.white,
                 ),
               ),
@@ -244,7 +247,8 @@ class _HomePageState extends State<UserHomePage> {
       ),
     );
   }
-  Widget buildPostItem(index,context){
+
+  Widget buildPostItem(index, context){
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -309,8 +313,11 @@ class _HomePageState extends State<UserHomePage> {
                     ],
                   ),
                   const Spacer(),
-                  SvgPicture.asset(
-                    'assets/images/postSettings.svg',
+                  IconButton(
+                    onPressed: (){},
+                    icon: SvgPicture.asset(
+                      'assets/images/postSettings.svg',
+                    ),
                   ),
                   IconButton(
                     onPressed: (){},
@@ -318,7 +325,6 @@ class _HomePageState extends State<UserHomePage> {
                       'assets/images/closePost.svg',
                     ),
                   ),
-
                 ],
               ),
               const SizedBox(height: 1,),

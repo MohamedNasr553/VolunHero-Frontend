@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -48,7 +49,7 @@ class _OrganizationSignUpState extends State<OrganizationSignUp> {
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
                 onPressed: () {
-                  navigateAndFinish(context, const OnBoarding2());
+                  navigateAndFinish(context, const OnBoarding());
                 },
               ),
             ),

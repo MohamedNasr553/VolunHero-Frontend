@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -77,7 +78,7 @@ class OnBoarding extends StatelessWidget {
           const SizedBox(height: 15.0),
           defaultButton(
             function: () {
-              navigateAndFinish(context, const UserSignupPage());
+              navigateAndFinish(context, const OnBoarding2());
             },
             fontWeight: FontWeight.w300,
             text: 'Sign up',

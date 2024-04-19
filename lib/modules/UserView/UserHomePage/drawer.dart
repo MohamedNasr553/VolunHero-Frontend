@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
-import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/UserView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/Roadblocks.dart';
 import 'package:flutter_code/modules/UserView/UserSavedPost/User_Saved_Posts.dart';
@@ -18,6 +18,7 @@ class SidePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -87,9 +88,14 @@ class SidePage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.local_phone_outlined,
-                  size: 35.0,
+                leading: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    end: screenWidth / 60,
+                  ),
+                  child: const Icon(
+                    Icons.local_phone_outlined,
+                    size: 35.0,
+                  ),
                 ),
                 title: const Text(
                   'Video Call',
@@ -99,15 +105,19 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  cubit.changeBottomNavBar(1);
-                  navigateAndFinish(
-                      context, const GetSupport());
+                  // cubit.changeBottomNavBar(1);
+                  navigateAndFinish(context, const GetSupport());
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.save,
-                  size: 35.0,
+                leading: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    end: screenWidth / 60,
+                  ),
+                  child: const Icon(
+                    Icons.save,
+                    size: 35.0,
+                  ),
                 ),
                 title: const Text(
                   'Saved Posts',
@@ -117,15 +127,20 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  cubit.changeBottomNavBar(1);
+                  // cubit.changeBottomNavBar(1);
                   navigateAndFinish(context, const UserSavedPosts());
                 },
               ),
               const Divider(),
               ListTile(
-                leading: const Icon(
-                  Icons.info_outline,
-                  size: 35.0,
+                leading: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    end: screenWidth / 60,
+                  ),
+                  child: const Icon(
+                    Icons.info_outline,
+                    size: 35.0,
+                  ),
                 ),
                 title: const Text(
                   'Help and Support',
@@ -139,9 +154,14 @@ class SidePage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(
-                  Icons.settings_outlined,
-                  size: 35.0,
+                leading: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    end: screenWidth / 60,
+                  ),
+                  child: const Icon(
+                    Icons.settings_outlined,
+                    size: 35.0,
+                  ),
                 ),
                 title: const Text(
                   'Settings',

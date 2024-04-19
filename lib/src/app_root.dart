@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/modules/GeneralView/AllQuestions/AllQuestions_Page.dart';
+import 'package:flutter_code/modules/UserView/AllQuestions/AllQuestions_Page.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
-import 'package:flutter_code/modules/GeneralView/Education/Education_Page.dart';
+import 'package:flutter_code/modules/UserView/Education/Education_Page.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
-import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/UserView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
-import 'package:flutter_code/modules/GeneralView/MedicalHelp/MedicalHelp_Page.dart';
+import 'package:flutter_code/modules/UserView/MedicalHelp/MedicalHelp_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Page.dart';
@@ -16,7 +16,6 @@ import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
 import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
-import 'package:flutter_code/src/mainScreen.dart';
 
 class AppRoot extends StatelessWidget {
   const AppRoot({super.key});
@@ -26,13 +25,15 @@ class AppRoot extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => HomeLayoutCubit()..initializeBottomItems()
+          create: (BuildContext context) => HomeLayoutCubit()
+            ..initializeBottomItems()
+            ..homeLayoutScreens(),
         ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: const UserHomePage(),
+        home: const OnBoarding(),
       ),
     );
   }

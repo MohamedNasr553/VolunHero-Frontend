@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
+import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -27,7 +29,7 @@ class OrganizationNotificationPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               StrokeText(
-                text: "UserNotifications",
+                text: "Notifications",
                 textStyle: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.w500,
@@ -42,11 +44,13 @@ class OrganizationNotificationPage extends StatelessWidget {
             Padding(
               padding: EdgeInsetsDirectional.only(end: screenWidth / 35),
               child: IconButton(
-                  onPressed: () {},
-                  iconSize: 30.0,
-                  icon: const Icon(
-                    Icons.settings_outlined,
-                  ),
+                onPressed: () {
+                  navigateToPage(context, const SettingsPage());
+                },
+                iconSize: 30.0,
+                icon: const Icon(
+                  Icons.settings_outlined,
+                ),
               ),
             ),
           ],
@@ -78,17 +82,21 @@ class OrganizationNotificationPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth / 30, vertical: screenHeight / 120),
       child: Container(
+        height: screenHeight / 10,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: (index%2==0)?Colors.white:HexColor("0BA3A6").withOpacity(0.2),
+          color: (index % 2 == 0)
+              ? Colors.white
+              : HexColor("0BA3A6").withOpacity(0.2),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
               blurRadius: 10.0,
               spreadRadius: -5.0,
-              offset: Offset(15.0, 5.0), // Right and bottom shadow
+              offset: const Offset(15.0, 5.0), // Right and bottom shadow
             ),
           ],
         ),
@@ -100,12 +108,15 @@ class OrganizationNotificationPage extends StatelessWidget {
                 radius: 40.0,
                 backgroundImage: AssetImage(notifications[index]['image']),
               ),
-              const SizedBox(
-                width: 15.0,
+              SizedBox(
+                width: screenWidth / 50,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: screenHeight / 70,
+                  ),
                   Text(
                     notifications[index]['description'],
                     maxLines: 2,

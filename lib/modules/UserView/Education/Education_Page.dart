@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/UserView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class Questions extends StatelessWidget {
-  Questions({super.key});
+class Education extends StatelessWidget {
+  Education({super.key});
 
   List<Map<String, dynamic>> contacts = [];
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 1; i <= 10; i++) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    for (int i = 1; i <= 5; i++) {
       contacts.add({
         'image': 'assets/images/logo.png', // Dummy image filename
         'name': 'User $i Name', // Dummy description
-        'role': (i % 2 == 0) ? 'Teacher' : "Doctor" // Calculate time ago
+        'role': "Teacher" // Calculate time ago
       });
     }
 
@@ -29,11 +32,11 @@ class Questions extends StatelessWidget {
           ),
           color: HexColor("858888"),
           onPressed:(){
-            navigateToPage(context,MainScreen());
+            navigateToPage(context, const GetSupport());
           },
         ),
         title:  StrokeText(
-          text: "General",
+          text: "Education",
           strokeColor: Colors.white,
           textStyle: TextStyle(
               fontSize: 25,
@@ -45,6 +48,7 @@ class Questions extends StatelessWidget {
       ),
       body: Column(
         children: [
+
           Expanded(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
@@ -70,7 +74,7 @@ class Questions extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth / 30, vertical: screenHeight / 100),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

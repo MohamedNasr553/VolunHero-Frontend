@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -157,7 +159,7 @@ class LoginPage extends StatelessWidget {
                                   text: "Login Successfully",
                                   state: ToastStates.SUCCESS,
                                 );
-                                navigateAndFinish(context, const UserHomePage());
+                                navigateAndFinish(context, const VolunHeroUserLayout());
                               }
                             },
                             text: 'Login',
@@ -180,7 +182,7 @@ class LoginPage extends StatelessWidget {
                               SizedBox(width: screenWidth / 80),
                               InkWell(
                                 onTap: () {
-                                  navigateAndFinish(context, const UserSignupPage());
+                                  navigateAndFinish(context, const OnBoarding2());
                                 },
                                 child: const Text(
                                   "Sign Up",

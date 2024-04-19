@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -65,6 +67,7 @@ class _UserSavedPostsState extends State<UserSavedPosts> {
         });
       }
     }
+
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -76,7 +79,9 @@ class _UserSavedPostsState extends State<UserSavedPosts> {
             'assets/images/arrowLeft.svg',
           ),
           color: HexColor("858888"),
-          onPressed:(){},
+          onPressed:(){
+            navigateAndFinish(context, const VolunHeroUserLayout());
+          },
         ),
         title:  StrokeText(
           text: "Saved Posts",

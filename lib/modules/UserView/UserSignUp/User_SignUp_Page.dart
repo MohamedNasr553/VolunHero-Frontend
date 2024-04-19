@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -50,13 +51,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
                 icon: const Icon(Icons.arrow_back),
                 color: Colors.white,
                 onPressed: () {
-                  navigateAndFinish(context, const OnBoarding2());
+                  navigateAndFinish(context, const OnBoarding());
                 },
               ),
             ),
             Padding(
               padding: EdgeInsetsDirectional.only(
-                start: 10.0,
+                start: 15.0,
                 bottom: screenHeight / 0.68,
               ),
               child: const Row(
@@ -88,7 +89,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
             SizedBox(
               height: screenHeight / 0.69,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 40, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
                 child: Form(
                   key: formKey,
                   child: Column(

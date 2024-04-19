@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/src/mainScreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,7 +21,7 @@ class _ChatsPageState extends State<UserChatsPage> {
   void initState() {
     super.initState();
     // After 3 seconds, set the _showWidget to true
-    Future.delayed(const Duration(seconds: 6), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _showWidget = true;
       });
@@ -71,13 +72,13 @@ class _ChatsPageState extends State<UserChatsPage> {
                   children: [
                     IconButton(
                         onPressed: (){
-                          navigateToPage(context, MainScreen());
+                          navigateAndFinish(context, const VolunHeroUserLayout());
                         },
-                        icon: Icon(Icons.close,size: 32,),
+                        icon: const Icon(Icons.close,size: 32,),
                         color:Colors.white,
                     ),
                     SizedBox(width: screenWidth/18,),
-                    Text(
+                    const Text(
                        "UserChats",
                       style: TextStyle(
                         fontFamily: "Roboto",
@@ -86,7 +87,7 @@ class _ChatsPageState extends State<UserChatsPage> {
                         fontWeight: FontWeight.bold
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       onPressed: (){} ,
                       icon: Icon(
