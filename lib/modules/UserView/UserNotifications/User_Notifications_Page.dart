@@ -105,7 +105,7 @@ class UserNotificationPage extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 40.0,
+                radius: 28.0,
                 backgroundImage: AssetImage(notifications[index]['image']),
               ),
               SizedBox(

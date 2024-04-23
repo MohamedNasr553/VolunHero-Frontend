@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -34,7 +35,7 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
     for (int i = 1; i <= 5; i++) {
       if(i%2==0 ){
         posts.add({
-          'photo': 'assets/images/logo.png', // Dummy image filename
+          'photo': 'assets/images/OrganizationLogo.png', // Dummy image filename
           'name': 'User $i Name', // Dummy description
           'text': "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ", // Calculate time ago
           'image': 'assets/images/Rectangle 4160.png',
@@ -44,7 +45,7 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
         });
       }else{
         posts.add({
-          'photo': 'assets/images/logo.png', // Dummy image filename
+          'photo': 'assets/images/OrganizationLogo.png', // Dummy image filename
           'name': 'User $i Name', // Dummy description
           'text': "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ", // Calculate time ago
          // 'image': 'assets/images/Rectangle 4160.png',
@@ -55,7 +56,7 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
       }
       if(i==3){
         posts.add({
-          'photo': 'assets/images/logo.png', // Dummy image filename
+          'photo': 'assets/images/OrganizationLogo.png', // Dummy image filename
           'name': 'User $i Name', // Dummy description
           //'text': "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ", // Calculate time ago
           'image': 'assets/images/Rectangle 4160.png',
@@ -65,8 +66,10 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
         });
       }
     }
+
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -76,7 +79,9 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
             'assets/images/arrowLeft.svg',
           ),
           color: HexColor("858888"),
-          onPressed:(){},
+          onPressed:(){
+            navigateAndFinish(context, const VolunHeroOrganizationLayout());
+          },
         ),
         title:  StrokeText(
           text: "Saved Posts",

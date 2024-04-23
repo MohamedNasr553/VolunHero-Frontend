@@ -1,49 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/modules/UserView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class Questions extends StatelessWidget {
-  Questions({super.key});
+class Education extends StatelessWidget {
+  Education({super.key});
 
   List<Map<String, dynamic>> contacts = [];
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 1; i <= 10; i++) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    for (int i = 1; i <= 5; i++) {
       contacts.add({
         'image': 'assets/images/logo.png', // Dummy image filename
         'name': 'User $i Name', // Dummy description
-        'role': (i % 2 == 0) ? 'Teacher' : "Doctor" // Calculate time ago
+        'role': "Teacher" // Calculate time ago
       });
     }
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: SvgPicture.asset(
+        leading:  IconButton(
+          icon:SvgPicture.asset(
             'assets/images/arrowLeft.svg',
           ),
           color: HexColor("858888"),
-          onPressed: () {
+          onPressed:(){
             navigateToPage(context, const GetSupport());
           },
         ),
-        title: StrokeText(
-          text: "General",
+        title:  StrokeText(
+          text: "Education",
           strokeColor: Colors.white,
           textStyle: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
               fontFamily: "Roboto",
-              color: HexColor("296E6F")),
+              color: HexColor("296E6F")
+          ),
         ),
       ),
       body: Column(
         children: [
+
           Expanded(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
@@ -79,7 +84,7 @@ class Questions extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               blurRadius: 10.0,
               spreadRadius: -5.0,
-              offset: const Offset(15.0, 5.0), // Right and bottom shadow
+              offset: Offset(15.0, 5.0), // Right and bottom shadow
             ),
           ],
         ),
@@ -92,7 +97,8 @@ class Questions extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 40.0,
-                    backgroundImage: AssetImage(contacts[index]['image']),
+                    backgroundImage:
+                    AssetImage(contacts[index]['image']),
                   ),
                   Padding(
                     padding: EdgeInsetsDirectional.only(
@@ -106,39 +112,39 @@ class Questions extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                width: screenWidth / 20,
-              ),
+              SizedBox(width: screenWidth/20,),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     contacts[index]['name'],
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: "Roboto",
                         color: Colors.black,
                         fontSize: 15,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold
+                    ),
                   ),
-                  SizedBox(
-                    height: screenHeight / 300,
-                  ),
+                  SizedBox(height: screenHeight/300,),
                   Text(
                     contacts[index]['role'],
-                    style: const TextStyle(fontWeight: FontWeight.w100),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w100
+                    ),
                   )
                 ],
               ),
-              const Spacer(),
+              Spacer(),
               IconButton(
-                onPressed: () {
+                onPressed: (){
                   showToast(text: "Calling...", state: ToastStates.SUCCESS);
                 },
-                icon: SvgPicture.asset(
+                icon:SvgPicture.asset(
                   'assets/images/Phone_fill.svg',
                 ),
                 color: HexColor("039FA2"),
+
               )
             ],
           ),

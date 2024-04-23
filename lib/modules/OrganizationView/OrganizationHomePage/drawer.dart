@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/modules/OrganizationView/OrganizationSavedPosts/Organization_Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
-import 'package:flutter_code/modules/UserView/RoadBlocks/Roadblocks.dart';
-import 'package:flutter_code/modules/UserView/UserSavedPost/User_Saved_Posts.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 
-class SidePage extends StatelessWidget {
-  const SidePage({super.key});
+class OrganizationSidePage extends StatelessWidget {
+  const OrganizationSidePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,13 @@ class SidePage extends StatelessWidget {
                 accountName: const Text('@UserName'),
                 accountEmail: const Text('user@gmail.com'),
                 currentAccountPicture: CircleAvatar(
-                  child: ClipOval(child: Image.asset("assets/images/logo.png")),
+                  backgroundColor: defaultColor,
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/images/OrganizationLogo.png",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 decoration: const BoxDecoration(
                   color: defaultColor,
@@ -69,14 +74,14 @@ class SidePage extends StatelessWidget {
                 leading: IconButton(
                   onPressed: () {},
                   icon: SvgPicture.asset(
-                    'assets/images/View_alt_fill.svg',
+                    'assets/images/AddDonationFormLogo.svg',
                     width: 30.0,
                     height: 30.0,
                     fit: BoxFit.cover,
                   ),
                 ),
                 title: const Text(
-                  'RoadBlocks',
+                  'Add Donation Form',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Roboto',
@@ -84,7 +89,7 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  navigateAndFinish(context, const RoadBlocksPage());
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -128,7 +133,33 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  navigateAndFinish(context, const UserSavedPosts());
+                  navigateAndFinish(context, const OrganizationSavedPosts());
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 65,
+                  top: screenHeight / 300,
+                ),
+                leading: IconButton(
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    "assets/images/File_dock.svg",
+                    width: 30.0,
+                    height: 30.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                title: const Text(
+                  'Donation Forms',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Roboto',
+                    fontSize: 15.0,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
                 },
               ),
               const Divider(),

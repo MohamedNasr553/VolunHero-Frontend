@@ -18,7 +18,7 @@ class OrganizationNotificationPage extends StatelessWidget {
 
     for (int i = 1; i <= 10; i++) {
       notifications.add({
-        'image': 'assets/images/logo.png', // Dummy image filename
+        'image': 'assets/images/OrganizationLogo.png', // Dummy image filename
         'description': 'Notification $i description', // Dummy description
         'time': '10m' // Calculate time ago
       });
@@ -105,7 +105,7 @@ class OrganizationNotificationPage extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 40.0,
+                radius: 28.0,
                 backgroundImage: AssetImage(notifications[index]['image']),
               ),
               SizedBox(
