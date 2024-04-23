@@ -10,7 +10,8 @@ class VolunHeroUserLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeLayoutCubit(),
-      child: BlocBuilder<HomeLayoutCubit, LayoutStates>(
+      child: BlocConsumer<HomeLayoutCubit, LayoutStates>(
+        listener: (context, state) {},
         builder: (context, state) {
           final homeLayoutBloc = BlocProvider.of<HomeLayoutCubit>(context);
           homeLayoutBloc.initializeBottomItems();

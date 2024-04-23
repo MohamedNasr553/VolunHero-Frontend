@@ -22,7 +22,6 @@ class SidePage extends StatelessWidget {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var cubit = HomeLayoutCubit.get(context);
         return Drawer(
           child: SmoothListView(
             duration: const Duration(milliseconds: 200),

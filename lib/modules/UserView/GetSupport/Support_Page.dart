@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/UserView/AllQuestions/AllQuestions_Page.dart';
 import 'package:flutter_code/modules/UserView/Education/Education_Page.dart';
 import 'package:flutter_code/modules/UserView/MedicalHelp/MedicalHelp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
@@ -14,88 +19,109 @@ class GetSupport extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: screenWidth,
-            height: screenHeight / 3,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/getSupportpng.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: screenWidth / 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: screenHeight / 4,
-                ),
-                Text(
-                  "Support Calls",
-                  style: TextStyle(
-                    fontFamily: "Roboto",
-                    fontSize: 32.0,
-                    fontWeight: FontWeight.w700,
-                    color: HexColor("296E6F"),
-                  ),
-                ),
-                StrokeText(
-                  text: "For easy communication",
-                  strokeColor: Colors.white,
-                  textStyle: TextStyle(
-                    fontFamily: "Roboto",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    color: HexColor("296E6F"),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Column(
+    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          body: Stack(
             children: [
-              SizedBox(height: screenHeight / 3),
-              boxElement(
-                  screenHeight,
-                  screenWidth,
-                  "assets/images/Rectangle 4184.png",
-                  "General",
-                  "Get support from all volunteers",
-                  context,
-                  Questions()),
-              boxElement(
-                  screenHeight,
-                  screenWidth,
-                  "assets/images/Rectangle 4189.png",
-                  "Education",
-                  "Get support from volunteering teachers",
-                  context,
-                  Education()),
-              boxElement(
-                  screenHeight,
-                  screenWidth,
-                  "assets/images/Rectangle 4191.png",
-                  "Medical",
-                  "Get support from volunteering doctors",
-                  context,
-                  MedicalHelp()),
+              Container(
+                width: screenWidth,
+                height: screenHeight / 3,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/getSupportpng.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: screenWidth / 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: screenHeight / 4,
+                    ),
+                    Text(
+                      "Support Calls",
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.w700,
+                        color: HexColor("296E6F"),
+                      ),
+                    ),
+                    StrokeText(
+                      text: "For easy communication",
+                      strokeColor: Colors.white,
+                      textStyle: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        color: HexColor("296E6F"),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(height: screenHeight / 3),
+                  boxElement(
+                      screenHeight,
+                      screenWidth,
+                      "assets/images/Rectangle 4184.png",
+                      "General",
+                      "Get support from all volunteers",
+                      context,
+                      Questions()),
+                  boxElement(
+                      screenHeight,
+                      screenWidth,
+                      "assets/images/Rectangle 4189.png",
+                      "Education",
+                      "Get support from volunteering teachers",
+                      context,
+                      Education()),
+                  boxElement(
+                      screenHeight,
+                      screenWidth,
+                      "assets/images/Rectangle 4191.png",
+                      "Medical",
+                      "Get support from volunteering doctors",
+                      context,
+                      MedicalHelp()),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 60,
+                  top: screenHeight / 30,
+                ),
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/arrowLeft.svg',
+                  ),
+                  color: HexColor("858888"),
+                  onPressed:(){
+                    navigateToPage(context, const VolunHeroUserLayout());
+                  },
+                ),
+              ),
             ],
-          )
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 
   Widget boxElement(var screenHeight, var screenWidth, String assetPath,
       String title, String text, BuildContext context, Widget page) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth / 25, vertical: screenHeight / 70),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth / 25, vertical: screenHeight / 70),
       child: Container(
         width: double.infinity,
         height: screenHeight / 7.5,
@@ -170,7 +196,8 @@ class GetSupport extends StatelessWidget {
                             color: HexColor("00B5B9"),
                             borderRadius: BorderRadius.circular(20)),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: screenWidth/46),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth / 46),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
