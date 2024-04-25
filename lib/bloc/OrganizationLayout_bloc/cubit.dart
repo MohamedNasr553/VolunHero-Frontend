@@ -8,43 +8,55 @@ import 'package:flutter_code/modules/OrganizationView/OrganizationHomePage/organ
 import 'package:flutter_code/modules/OrganizationView/OrganizationNotifications/Organization_Notifications_Page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomeOrganizationLayoutCubit extends Cubit<OrganizationLayoutStates> {
-  HomeOrganizationLayoutCubit() : super(OrganizationLayoutInitialState());
+class OrganizationLayoutCubit extends Cubit<OrganizationLayoutStates> {
+  OrganizationLayoutCubit() : super(OrgLayoutInitialState());
 
-  static HomeOrganizationLayoutCubit get(context) => BlocProvider.of(context);
+  static OrganizationLayoutCubit get(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
   bool isActive = false;
 
   List<BottomNavigationBarItem> bottomItems = [];
-  List<Widget> layoutScreens = [];
 
-  Widget activatedSvg = SvgPicture.asset(
-    'assets/images/AddDonationFormActivated.svg',
-    width: 25.0,
-    height: 25.0,
-    fit: BoxFit.cover,
-  );
-
-  Widget deactivatedSvg = SvgPicture.asset(
-    'assets/images/AddDonationFormLogo.svg',
-    width: 25.0,
-    height: 25.0,
-    fit: BoxFit.cover,
-  );
+  Widget changeBottomIcon(int index, Widget a, Widget b) {
+    emit(OrgChangeBottomIconColor());
+    if (currentIndex == index) {
+      return a;
+    }
+    return b;
+  }
 
   void initializeBottomItems() {
     bottomItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.home_filled,
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+          0,
+          SvgPicture.asset(
+            "assets/images/Home_fill_colored.svg",
+            width: 25.0,
+            height: 25.0,
+          ),
+          SvgPicture.asset(
+            "assets/images/Home_fill.svg",
+            width: 25.0,
+            height: 25.0,
+          ),
         ),
         label: 'Home',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.local_phone_outlined,
-        ),
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+            1,
+            SvgPicture.asset(
+              "assets/images/Phone_fill.svg",
+              width: 25.0,
+              height: 25.0,
+            ),
+            SvgPicture.asset(
+              "assets/images/supportIcon.svg",
+              width: 25.0,
+              height: 25.0,
+            )),
         label: 'Support',
       ),
       const BottomNavigationBarItem(
@@ -53,32 +65,50 @@ class HomeOrganizationLayoutCubit extends Cubit<OrganizationLayoutStates> {
         ),
         label: 'Post',
       ),
-      const BottomNavigationBarItem(
-        icon: Icon(
-          Icons.notifications,
-        ),
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+            3,
+            SvgPicture.asset(
+              "assets/images/Bell_fill_colored.svg",
+              width: 25.0,
+              height: 25.0,
+            ),
+            SvgPicture.asset(
+              "assets/images/Bell_fill.svg",
+              width: 25.0,
+              height: 25.0,
+            )),
         label: 'Notifications',
       ),
       BottomNavigationBarItem(
-        icon: isActive ? activatedSvg : deactivatedSvg,
+        icon: changeBottomIcon(
+            4,
+            SvgPicture.asset(
+              "assets/images/AddDonationFormActivated.svg",
+              width: 20.0,
+              height: 20.0,
+            ),
+            SvgPicture.asset(
+              "assets/images/AddDonationFormLogo.svg",
+              width: 25.0,
+              height: 25.0,
+            )),
         label: 'Donation Form',
       ),
     ];
   }
 
-  void homeLayoutScreens() {
-    layoutScreens = [
-      const OrganizationHomePage(),
-      const GetSupport(),
-      CreatePost(),
-      OrganizationNotificationPage(),
-      const AddDonationForm(),
-    ];
-  }
+  var layoutScreens = [
+    const OrganizationHomePage(),
+    const GetSupport(),
+    CreatePost(),
+    OrganizationNotificationPage(),
+    const AddDonationForm()
+  ];
 
-  void changeBottomNavBar(int index) {
+  void orgChangeBottomNavBar(int index) {
     currentIndex = index;
     initializeBottomItems();
-    emit(OrganizationHomeChangeBottomNavBarState());
+    emit(OrgHomeChangeBottomNavBarState());
   }
 }

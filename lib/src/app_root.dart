@@ -29,12 +29,10 @@ class AppRoot extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => HomeLayoutCubit()
             ..initializeBottomItems()
-            ..homeLayoutScreens(),
         ),
         BlocProvider(
-          create: (BuildContext context) => HomeOrganizationLayoutCubit()
+          create: (BuildContext context) => OrganizationLayoutCubit()
             ..initializeBottomItems()
-            ..homeLayoutScreens(),
         ),
       ],
       child: MaterialApp(

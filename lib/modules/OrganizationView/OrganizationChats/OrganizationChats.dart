@@ -51,7 +51,6 @@ class _ChatsPageState extends State<OrganizationChatsPage> {
           "newMessages":3
         });
       }
-
     }
 
     return Scaffold(
@@ -71,7 +70,7 @@ class _ChatsPageState extends State<OrganizationChatsPage> {
                   children: [
                     IconButton(
                       onPressed: (){
-                        // navigateToPage(context, const UserHomePage());
+                        // navigateToPage(context, const VolunHeroOrganizationLayout());
                       },
                       icon: const Icon(Icons.close,size: 32,),
                       color:Colors.white,

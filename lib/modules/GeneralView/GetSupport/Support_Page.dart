@@ -95,21 +95,6 @@ class GetSupport extends StatelessWidget {
                       MedicalHelp()),
                 ],
               ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 60,
-                  top: screenHeight / 30,
-                ),
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/images/arrowLeft.svg',
-                  ),
-                  color: HexColor("858888"),
-                  onPressed:(){
-                    navigateToPage(context, const VolunHeroUserLayout());
-                  },
-                ),
-              ),
             ],
           ),
         );

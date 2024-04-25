@@ -1,10 +1,9 @@
 abstract class OrganizationLayoutStates {}
 
-class OrganizationLayoutInitialState extends OrganizationLayoutStates {}
+class OrgLayoutInitialState extends OrganizationLayoutStates {}
 
-class OrganizationChangeBottomNavBarState extends OrganizationLayoutStates {}
+class OrgChangeBottomNavBarState extends OrganizationLayoutStates {}
 
-class OrganizationHomeChangeBottomNavBarState extends OrganizationLayoutStates{}
+class OrgHomeChangeBottomNavBarState extends OrganizationLayoutStates{}
 
-class OrganizationToggleRoadBlocksState extends OrganizationLayoutStates {}
-
+class OrgChangeBottomIconColor extends OrganizationLayoutStates{}

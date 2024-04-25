@@ -11,15 +11,7 @@ class AddDonationForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:  IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/arrowLeft.svg',
-          ),
-          color: HexColor("858888"),
-          onPressed:(){
-            navigateToPage(context, const VolunHeroOrganizationLayout());
-          },
-        ),
+
       ),
     );
   }

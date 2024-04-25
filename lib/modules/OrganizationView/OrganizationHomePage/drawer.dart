@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
 import 'package:flutter_code/modules/OrganizationView/OrganizationSavedPosts/Organization_Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
@@ -21,6 +23,8 @@ class OrganizationSidePage extends StatelessWidget {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var cubit = OrganizationLayoutCubit.get(context);
+
         return Drawer(
           child: SmoothListView(
             duration: const Duration(milliseconds: 200),
@@ -44,7 +48,6 @@ class OrganizationSidePage extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsetsDirectional.only(
                   start: screenWidth / 65,
-                  top: screenHeight / 60,
                 ),
                 leading: IconButton(
                   onPressed: () {},
@@ -89,7 +92,8 @@ class OrganizationSidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  cubit.orgChangeBottomNavBar(4);
+                  navigateAndFinish(context, const VolunHeroOrganizationLayout());
                 },
               ),
               ListTile(
@@ -111,7 +115,8 @@ class OrganizationSidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  navigateAndFinish(context, const GetSupport());
+                  cubit.orgChangeBottomNavBar(1);
+                  navigateAndFinish(context, const VolunHeroOrganizationLayout());
                 },
               ),
               ListTile(
@@ -210,7 +215,7 @@ class OrganizationSidePage extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 7.5,
+                  top: screenHeight / 30,
                   end: screenWidth / 60,
                 ),
                 child: ListTile(
@@ -218,12 +223,17 @@ class OrganizationSidePage extends StatelessWidget {
                     Icons.add_circle_outline_sharp,
                     size: 30.0,
                   ),
-                  title: const Text(
-                    'Add Account',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Roboto',
-                      fontSize: 15.0,
+                  title: Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 55,
+                    ),
+                    child: const Text(
+                      'Add Account',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
+                      ),
                     ),
                   ),
                   onTap: () {

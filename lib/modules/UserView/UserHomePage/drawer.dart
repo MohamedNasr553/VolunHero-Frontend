@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
-import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
-import 'package:flutter_code/modules/UserView/RoadBlocks/Roadblocks.dart';
-import 'package:flutter_code/modules/UserView/UserSavedPost/User_Saved_Posts.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,10 +16,11 @@ class SidePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        var cubit = HomeLayoutCubit.get(context);
+
         return Drawer(
           child: SmoothListView(
             duration: const Duration(milliseconds: 200),
@@ -36,66 +35,71 @@ class SidePage extends StatelessWidget {
                   color: defaultColor,
                 ),
               ),
-              ListTile(
-                contentPadding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 65,
-                  top: screenHeight / 60,
-                ),
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    "assets/images/User_circle.svg",
-                    width: 30.0,
-                    height: 30.0,
-                    fit: BoxFit.cover,
+              Row(
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      "assets/images/User_circle.svg",
+                      width: 30.0,
+                      height: 30.0,
+                    ),
                   ),
-                ),
-                title: const Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Roboto',
-                    fontSize: 15.0,
+                  SizedBox(
+                    width: screenWidth / 40,
                   ),
-                ),
-                onTap: () {
-                  Navigator.pop(context); // Close the drawer
-                },
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // Close the drawer
+                    },
+                    child: const Text(
+                      'Profile',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: SvgPicture.asset(
+                      'assets/images/View_alt_fill.svg',
+                      width: 30.0,
+                      height: 30.0,
+                    ),
+                  ),
+                  SizedBox(
+                    width: screenWidth / 40,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // Close the drawer
+                    },
+                    child: const Text(
+                      'RoadBlocks',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  )
+                ],
               ),
               ListTile(
                 contentPadding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 65,
+                  start: screenWidth / 35,
                 ),
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    'assets/images/View_alt_fill.svg',
-                    width: 30.0,
-                    height: 30.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: const Text(
-                  'RoadBlocks',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Roboto',
-                    fontSize: 15.0,
-                  ),
-                ),
-                onTap: () {
-                  navigateAndFinish(context, const RoadBlocksPage());
-                },
-              ),
-              ListTile(
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: screenWidth / 60,
-                  ),
-                  child: const Icon(
-                    Icons.local_phone_outlined,
-                    size: 30.0,
-                  ),
+                leading: const Icon(
+                  Icons.local_phone_outlined,
+                  size: 30.0,
                 ),
                 title: const Text(
                   'Video Call',
@@ -106,41 +110,18 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  navigateAndFinish(context, const GetSupport());
-                },
-              ),
-              ListTile(
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: screenWidth / 60,
-                  ),
-                  child: const Icon(
-                    Icons.save,
-                    size: 30.0,
-                  ),
-                ),
-                title: const Text(
-                  'Saved Posts',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Roboto',
-                    fontSize: 15.0,
-                  ),
-                ),
-                onTap: () {
-                  navigateAndFinish(context, const UserSavedPosts());
+                  cubit.changeBottomNavBar(1);
+                  navigateAndFinish(context, const VolunHeroUserLayout());
                 },
               ),
               const Divider(),
               ListTile(
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: screenWidth / 60,
-                  ),
-                  child: const Icon(
-                    Icons.info_outline,
-                    size: 30.0,
-                  ),
+                contentPadding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 35,
+                ),
+                leading: const Icon(
+                  Icons.info_outline,
+                  size: 30.0,
                 ),
                 title: const Text(
                   'Help and Support',
@@ -155,14 +136,12 @@ class SidePage extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: screenWidth / 60,
-                  ),
-                  child: const Icon(
-                    Icons.settings_outlined,
-                    size: 30.0,
-                  ),
+                contentPadding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 35,
+                ),
+                leading: const Icon(
+                  Icons.settings_outlined,
+                  size: 30.0,
                 ),
                 title: const Text(
                   'Settings',
@@ -174,41 +153,37 @@ class SidePage extends StatelessWidget {
                 ),
                 onTap: () {
                   navigateToPage(context, const SettingsPage());
-                  // Navigator.pop(context); // Close the drawer
+                  Navigator.pop(context); // Close the drawer
                 },
               ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
+              ListTile(
+                contentPadding: EdgeInsetsDirectional.only(
                   top: screenHeight / 7.5,
-                  end: screenWidth / 60,
+                  start: screenWidth / 35,
                 ),
-                child: ListTile(
-                  leading: const Icon(
-                    Icons.add_circle_outline_sharp,
-                    size: 30.0,
-                  ),
-                  title: const Text(
-                    'Add Account',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Roboto',
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context); // Close the drawer
-                  },
+                leading: const Icon(
+                  Icons.add_circle_outline_sharp,
+                  size: 30.0,
                 ),
+                title: const Text(
+                  'Add Account',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Roboto',
+                    fontSize: 15.0,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                },
               ),
               ListTile(
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: screenWidth / 60,
-                  ),
-                  child: const Icon(
-                    Icons.exit_to_app_outlined,
-                    size: 30.0,
-                  ),
+                contentPadding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 35,
+                ),
+                leading: const Icon(
+                  Icons.exit_to_app_outlined,
+                  size: 30.0,
                 ),
                 title: const Text(
                   'Log out',

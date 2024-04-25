@@ -217,7 +217,6 @@ class _ChatsPageState extends State<UserChatsPage> {
   }
 
   Widget buildChatItem(index, context) {
-    var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     Color hexColor = HexColor("0BA3A6");

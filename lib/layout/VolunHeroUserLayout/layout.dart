@@ -2,50 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/shared/styles/colors.dart';
 
 class VolunHeroUserLayout extends StatelessWidget {
   const VolunHeroUserLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeLayoutCubit(),
-      child: BlocConsumer<HomeLayoutCubit, LayoutStates>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          final homeLayoutBloc = BlocProvider.of<HomeLayoutCubit>(context);
-          homeLayoutBloc.initializeBottomItems();
-          homeLayoutBloc.homeLayoutScreens();
+    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var userLayoutBloc = BlocProvider.of<HomeLayoutCubit>(context);
 
-          return Scaffold(
-            body: homeLayoutBloc.layoutScreens[homeLayoutBloc.currentIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: Colors.white,
-              iconSize: 25.0,
-              selectedLabelStyle: const TextStyle(
-                fontSize: 8.0,
-                fontWeight: FontWeight.bold,
-              ),
-              unselectedLabelStyle: const TextStyle(
-                fontSize: 8.0,
-                fontWeight: FontWeight.bold,
-              ),
-              currentIndex: homeLayoutBloc.currentIndex,
-              items: homeLayoutBloc.bottomItems,
-              onTap: (index) {
-                if (index == 4 && !homeLayoutBloc.isActive) {
-                  homeLayoutBloc.isActive = true;
-                  homeLayoutBloc.initializeBottomItems();
-                } else if (index != 4 && homeLayoutBloc.isActive) {
-                  homeLayoutBloc.isActive = false;
-                  homeLayoutBloc.initializeBottomItems();
-                }
-                homeLayoutBloc.changeBottomNavBar(index);
-              },
+        return Scaffold(
+          body: userLayoutBloc.layoutScreens[userLayoutBloc.currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            iconSize: 25.0,
+            selectedLabelStyle: const TextStyle(
+              fontSize: 8.0,
+              fontWeight: FontWeight.bold,
             ),
-          );
-        },
-      ),
+            unselectedLabelStyle: const TextStyle(
+              fontSize: 8.0,
+              fontWeight: FontWeight.bold,
+            ),
+            selectedItemColor: defaultColor,
+            unselectedItemColor: Colors.black54,
+            currentIndex: userLayoutBloc.currentIndex,
+            items: userLayoutBloc.bottomItems,
+            onTap: (index) {
+              userLayoutBloc.changeBottomNavBar(index);
+            },
+          ),
+        );
+      },
     );
   }
 }

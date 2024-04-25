@@ -8,4 +8,4 @@ class HomeChangeBottomNavBarState extends LayoutStates{}
 
 class ToggleRoadBlocksState extends LayoutStates {}
 
-// class ChangeBottomIconColor extends LayoutStates{}
+class ChangeBottomIconColor extends LayoutStates{}
