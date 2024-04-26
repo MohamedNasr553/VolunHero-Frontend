@@ -19,6 +19,7 @@ class OrganizationSignUp extends StatefulWidget {
 class _OrganizationSignUpState extends State<OrganizationSignUp> {
   var formKey = GlobalKey<FormState>();
   var organizationController = TextEditingController();
+  var organizationUserNameController = TextEditingController();
   var emailAddressController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
@@ -117,6 +118,31 @@ class _OrganizationSignUpState extends State<OrganizationSignUp> {
                         controller: organizationController,
                         type: TextInputType.text,
                         hintText: 'Organization Name',
+                      ),
+                      SizedBox(height: screenHeight / 50),
+                      const StrokeText(
+                        text: "Username",
+                        textStyle: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                        strokeWidth: 1.0,
+                        strokeColor: Colors.black,
+                      ),
+                      SizedBox(
+                        height: screenHeight / 100,
+                      ),
+                      defaultTextFormField(
+                        validate: (value) {
+                          if (value!.isEmpty) {
+                            return 'please enter your Username';
+                          }
+                          return null;
+                        },
+                        controller: organizationUserNameController,
+                        type: TextInputType.text,
+                        hintText: 'Username',
                       ),
                       SizedBox(height: screenHeight / 50),
                       const StrokeText(

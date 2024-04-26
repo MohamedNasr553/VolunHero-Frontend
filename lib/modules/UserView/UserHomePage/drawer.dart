@@ -158,7 +158,7 @@ class SidePage extends StatelessWidget {
               ),
               ListTile(
                 contentPadding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 7.5,
+                  top: screenHeight / 5.5,
                   start: screenWidth / 35,
                 ),
                 leading: const Icon(

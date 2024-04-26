@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class AddDonationForm extends StatelessWidget {
-  const AddDonationForm({super.key});
+class UpdateDonationForm extends StatelessWidget {
+  const UpdateDonationForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class AddDonationForm extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Donation Form',
+          'Edit Donation Form',
           style: TextStyle(
             fontSize: 23.0,
             color: HexColor("296E6F"),
@@ -198,10 +197,10 @@ class AddDonationForm extends StatelessWidget {
                   function: (){
                     if (formKey.currentState!.validate()) {
                       showToast(
-                        text: "Form Created Successfully",
+                        text: "Form updated successfully",
                         state: ToastStates.SUCCESS,
                       );
-                      navigateAndFinish(context, const VolunHeroOrganizationLayout());
+                      // navigateAndFinish(context, const VolunHeroOrganizationLayout());
                     }
                   },
                   text: 'Submit',

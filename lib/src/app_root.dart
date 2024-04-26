@@ -17,6 +17,7 @@ import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Pag
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
 import 'package:flutter_code/modules/UserView/UserChats/UserChatPage.dart';
+import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 class AppRoot extends StatelessWidget {
@@ -38,7 +39,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: const VolunHeroOrganizationLayout(),
+        home: OnBoarding(),
       ),
     );
   }

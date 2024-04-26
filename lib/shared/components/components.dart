@@ -48,17 +48,20 @@ Widget defaultTextFormField({
   String? labelText,
   required String hintText,
   IconData? suffix,
-  double hintSize = 14.0,
-  double radius = 3.0,
+  double hintSize = 11.0,
+  double radius = 4.0,
   Color borderColor = Colors.grey,
   VoidCallback? suffixPressed,
   Color textFieldColor = Colors.black,
+  double width = 20.0,
+  double height = 10.0,
 }) {
   return TextFormField(
+    onTap: onTap,
     controller: controller,
     validator: validate,
     style: const TextStyle(
-      fontSize: 15.0,
+      fontSize: 13.0,
       fontWeight: FontWeight.w500,
     ),
     obscureText: isPassword,
@@ -76,8 +79,7 @@ Widget defaultTextFormField({
       ),
       fillColor: Colors.white,
       filled: true,
-      contentPadding:
-          const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+      contentPadding: EdgeInsets.symmetric(vertical: height, horizontal: width),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
         borderSide: BorderSide(
