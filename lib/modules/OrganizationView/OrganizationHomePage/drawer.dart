@@ -4,6 +4,7 @@ import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
+import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllForms.dart';
 import 'package:flutter_code/modules/OrganizationView/OrganizationSavedPosts/Organization_Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
@@ -164,7 +165,7 @@ class OrganizationSidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pop(context);
+                  navigateAndFinish(context, const AllDonationForms());
                 },
               ),
               const Divider(),

@@ -74,7 +74,7 @@ class _UserSavedPostsState extends State<OrganizationSavedPosts> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
-        leading:  IconButton(
+        leading: IconButton(
           icon:SvgPicture.asset(
             'assets/images/arrowLeft.svg',
           ),
