@@ -58,6 +58,7 @@ dependencies:
   get: ^4.6.6
   image: ^3.2.0
   flutter_tflite: ^1.0.1
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
