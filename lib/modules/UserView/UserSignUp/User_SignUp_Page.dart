@@ -40,8 +40,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return BlocConsumer<UserSignUpCubit, UserSignUpStates>(
-      listener: (context, states){},
-      builder: (context, states){
+      listener: (context, states) {},
+      builder: (context, states) {
         return Scaffold(
           body: SingleChildScrollView(
             child: Container(
@@ -99,7 +99,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your First Name';
                                 }
@@ -124,7 +124,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your Last Name';
                                 }
@@ -149,7 +149,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your Last Name';
                                 }
@@ -174,7 +174,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'Enter your date of birth in YYYY-MM-DD';
                                 }
@@ -199,7 +199,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your address';
                                 }
@@ -220,11 +220,9 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your username';
                                 }
@@ -249,7 +247,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your Email Address';
                                 }
@@ -274,7 +272,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your Password';
                                 }
@@ -283,10 +281,12 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               controller: passwordController,
                               type: TextInputType.visiblePassword,
                               hintText: 'Password',
-                              isPassword: UserSignUpCubit.get(context).isPassword,
+                              isPassword:
+                                  UserSignUpCubit.get(context).isPassword,
                               suffix: UserSignUpCubit.get(context).suffix,
-                              suffixPressed: (){
-                                UserSignUpCubit.get(context).changeVisibility();
+                              suffixPressed: () {
+                                UserSignUpCubit.get(context)
+                                    .changePasswordVisibility();
                               },
                             ),
                             SizedBox(height: screenHeight / 50),
@@ -304,7 +304,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               height: screenHeight / 100,
                             ),
                             defaultTextFormField(
-                              validate: (value){
+                              validate: (value) {
                                 if (value!.isEmpty) {
                                   return 'please confirm password';
                                 }
@@ -316,10 +316,12 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               controller: confirmPasswordController,
                               type: TextInputType.visiblePassword,
                               hintText: 'Confirm Password',
-                              isPassword: UserSignUpCubit.get(context).isPassword,
-                              suffix: UserSignUpCubit.get(context).suffix,
-                              suffixPressed: (){
-                                UserSignUpCubit.get(context).changeVisibility();
+                              isPassword:
+                                  UserSignUpCubit.get(context).isCPassword,
+                              suffix: UserSignUpCubit.get(context).cSuffix,
+                              suffixPressed: () {
+                                UserSignUpCubit.get(context)
+                                    .changeCPasswordVisibility();
                               },
                             ),
                             SizedBox(height: screenHeight / 50),
@@ -348,7 +350,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   ),
                                   activeColor: defaultColor,
                                   dense: true,
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   value: 'General',
                                   contentPadding: EdgeInsets.zero,
                                   groupValue: selectedItem,
@@ -369,7 +372,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   dense: true,
                                   contentPadding: EdgeInsets.zero,
                                   activeColor: defaultColor,
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   value: 'Medical',
                                   groupValue: selectedItem,
                                   onChanged: (value) {
@@ -389,7 +393,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   dense: true,
                                   contentPadding: EdgeInsets.zero,
                                   activeColor: defaultColor,
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   value: 'Educational',
                                   groupValue: selectedItem,
                                   onChanged: (value) {
@@ -430,10 +435,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   },
                                   child: Center(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          _filePath == null ? 'Add or drop your' : 'File Selected',
+                                          _filePath == null
+                                              ? 'Add or drop your'
+                                              : 'File Selected',
                                           style: const TextStyle(
                                             color: defaultColor,
                                             fontSize: 14.0,
@@ -441,7 +449,9 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                           ),
                                         ),
                                         Text(
-                                          _filePath == null ? ' file in here' : ' tap to select another',
+                                          _filePath == null
+                                              ? ' file in here'
+                                              : ' tap to select another',
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 14.0,
@@ -467,18 +477,24 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   UserSignUpCubit.get(context).registerUser(
                                     firstName: firstNameController.text,
                                     lastName: lastNameController.text,
-                                    dob: dateOfBirthController.text,
+                                    DOB: dateOfBirthController.text,
                                     address: addressController.text,
-                                    username: userNameController.text,
+                                    userName: userNameController.text,
                                     email: emailAddressController.text,
                                     password: passwordController.text,
-                                    cPassword: confirmPasswordController.text,
+                                    cpassword: confirmPasswordController.text,
                                     phone: phoneController.text,
                                     specification: selectedItem,
                                     // Convert _filePath to File object
-                                    attachments: _filePath != null ? File(_filePath!) : null,
+                                    attachments: _filePath != null
+                                        ? File(_filePath!)
+                                        : null,
                                     classification: classification,
                                   );
+                                  // showToast(
+                                  //   text: UserSignUpCubit.get(context).signupModel!.message!,
+                                  //   state: ToastStates.ERROR,
+                                  // );
                                 }
                               },
                               text: 'Sign up',
@@ -523,7 +539,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                   Padding(
                     padding: EdgeInsetsDirectional.only(
                       start: 15.0,
-                      bottom: screenHeight / 0.606,
+                      bottom: screenHeight / 0.601,
                     ),
                     child: const Row(
                       children: [
@@ -567,18 +583,19 @@ class _UserSignupPageState extends State<UserSignupPage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Permission Required'),
-          content: Text('Please allow access to external storage to upload files.'),
-          actions:[
+          title: const Text('Permission Required'),
+          content: const Text(
+              'Please allow access to external storage to upload files.'),
+          actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 openAppSettings();
               },
-              child: Text('Open Settings'),
+              child: const Text('Open Settings'),
             ),
           ],
         ),

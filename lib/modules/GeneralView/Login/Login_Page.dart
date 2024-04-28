@@ -22,14 +22,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    var screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, states) {},
         builder: (context, states) {
@@ -133,10 +127,12 @@ class LoginPage extends StatelessWidget {
                                   height: 6.0,
                                 ),
                                 defaultTextFormField(
-                                  isPassword: UserLoginCubit.get(context).isPassword,
+                                  isPassword:
+                                      UserLoginCubit.get(context).isPassword,
                                   suffix: UserLoginCubit.get(context).suffix,
-                                  suffixPressed: (){
-                                    UserLoginCubit.get(context).changeVisibility();
+                                  suffixPressed: () {
+                                    UserLoginCubit.get(context)
+                                        .changeVisibility();
                                   },
                                   validate: (value) {
                                     if (value!.isEmpty) {
@@ -172,11 +168,14 @@ class LoginPage extends StatelessWidget {
                                 defaultButton(
                                   function: () {
                                     if (formKey.currentState!.validate()) {
-                                      String response =  UserLoginCubit.get(context).loginUser(
+                                      String response =
+                                          UserLoginCubit.get(context).loginUser(
                                         email: emailAddressController.text,
                                         password: passwordController.text,
                                       );
-                                     showToast(text: response, state: ToastStates.ERROR);
+                                      showToast(
+                                          text: response,
+                                          state: ToastStates.ERROR);
                                       navigateAndFinish(
                                           context, const VolunHeroUserLayout());
                                     }
@@ -226,7 +225,6 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           );
-        }
-    );
+        });
   }
 }

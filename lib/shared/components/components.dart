@@ -101,7 +101,6 @@ Widget defaultTextFormField({
           width: 0.5,
         ),
       ),
-      // Add suffix icon conditionally based on isPassword
       suffixIcon: isPassword
           ? IconButton(
               icon: Icon(

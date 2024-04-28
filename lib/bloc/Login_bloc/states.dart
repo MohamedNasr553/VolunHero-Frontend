@@ -7,7 +7,6 @@ class UserLoginErrorState extends UserLoginStates{
   UserLoginErrorState(this.error);
 }
 
-
 class UserLoginLoadingState extends UserLoginStates{}
 
 class UserLoginSuccessState extends UserLoginStates{}

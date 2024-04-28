@@ -36,11 +36,11 @@ class AppRoot extends StatelessWidget {
             ..initializeBottomItems()
         ),
         BlocProvider(
-            create: (BuildContext context) => UserSignUpCubit()
-        ),
-        BlocProvider(
           create: (BuildContext context) => OrganizationLayoutCubit()
             ..initializeBottomItems()
+        ),
+        BlocProvider(
+            create: (BuildContext context) => UserSignUpCubit()
         ),
         BlocProvider(
             create: (BuildContext context) => UserLoginCubit()
@@ -49,7 +49,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home:  LoginPage(),
+        home: UserSignupPage(),
       ),
     );
   }

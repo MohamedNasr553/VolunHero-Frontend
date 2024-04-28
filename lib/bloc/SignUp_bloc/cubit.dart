@@ -1,71 +1,86 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/states.dart';
 import 'package:flutter_code/models/SignUpModel.dart';
+import 'package:flutter_code/shared/components/components.dart';
+
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
 class UserSignUpCubit extends Cubit<UserSignUpStates> {
   UserSignUpCubit() : super(UserSignUpInitialState());
 
-  static UserSignUpCubit get(context) => BlocProvider.of(context);
+  static UserSignUpCubit get(context) =>
+      BlocProvider.of<UserSignUpCubit>(context);
 
   bool isPassword = true;
   IconData suffix = Icons.visibility;
 
-  void changeVisibility() {
+  void changePasswordVisibility() {
     isPassword = !isPassword;
-
     suffix = isPassword ? Icons.visibility : Icons.visibility_off;
     emit(RegisterChangePasswordVisibilityState());
   }
 
-  /// -------------- User Registration ---------------
+  bool isCPassword = true;
+  IconData cSuffix = Icons.visibility;
+
+  void changeCPasswordVisibility() {
+    isCPassword = !isCPassword;
+    cSuffix = isCPassword ? Icons.visibility : Icons.visibility_off;
+    emit(RegisterChangeCPasswordVisibilityState());
+  }
+
   SignupModel? signupModel;
 
   void registerUser({
     required String firstName,
     required String lastName,
-    required String dob,
+      required String DOB,
     required String address,
-    required String username,
+    required String userName,
     required String email,
     required String password,
-    required String cPassword,
+    required String cpassword,
     required String phone,
     required String specification,
-    required File? attachments,
     required String classification,
+    File? attachments,
   }) {
     emit(UserSignUpLoadingState());
-
-    // Check if attachments are required
-    bool attachmentsRequired = (classification == "medical" || classification == "educational");
-
-    // If attachments are required and not provided
-    if (attachmentsRequired && attachments == null) {
-      emit(UserSignUpErrorState("Attachments are required for medical or educational classifications"));
-      return;
-    }
 
     Map<String, dynamic> requestData = {
       'firstName': firstName,
       'lastName': lastName,
-      'dob': dob,
+      'DOB': DOB,
       'address': address,
-      'username': username,
+      'userName': userName,
       'email': email,
       'password': password,
-      'cPassword': cPassword,
+      'cpassword': cpassword,
       'phone': phone,
       'specification': specification,
     };
 
-    // Add attachments to the request data if provided
+    bool attachmentsRequired =
+        (classification == "medical" || classification == "educational");
+
     if (attachmentsRequired && attachments != null) {
-      requestData['attachments'] = attachments;
+      // Convert File to List<int> (bytes)
+      List<int> fileBytes = attachments.readAsBytesSync();
+      requestData['attachments'] = base64Encode(fileBytes);
+    }
+    else if (attachmentsRequired && attachments == null) {
+      showToast(
+        text:
+            'Attachments are required for medical or educational classifications',
+        state: ToastStates.ERROR,
+      );
+      emit(UserSignUpErrorState(
+          "Attachments are required for medical or educational classifications"));
+      return;
     }
 
     DioHelper.postData(
@@ -77,6 +92,7 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
       emit(UserSignUpSuccessState());
     }).catchError((error) {
       print(error);
+
       emit(UserSignUpErrorState(error.toString()));
     });
   }

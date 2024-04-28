@@ -13,3 +13,5 @@ class UserSignUpErrorState extends UserSignUpStates{
 }
 
 class RegisterChangePasswordVisibilityState extends UserSignUpStates{}
+
+class RegisterChangeCPasswordVisibilityState extends UserSignUpStates{}

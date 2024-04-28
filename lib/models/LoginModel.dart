@@ -15,7 +15,7 @@ class LoginModel{
 class DecodedToken {
   String? id;
   String? role;
-  int? iat; // Changed type to int for iat and exp
+  int? iat;
   int? exp;
 
   DecodedToken({
@@ -32,10 +32,5 @@ class DecodedToken {
       iat: map['iat'],
       exp: map['exp'],
     );
-  }
-
-  @override
-  String toString() {
-    return '{\n_id: $id\nrole: $role\niat: $iat\nexp: $exp\n}\n';
   }
 }
