@@ -133,7 +133,11 @@ class LoginPage extends StatelessWidget {
                                   height: 6.0,
                                 ),
                                 defaultTextFormField(
-                                  isPassword: true,
+                                  isPassword: UserLoginCubit.get(context).isPassword,
+                                  suffix: UserLoginCubit.get(context).suffix,
+                                  suffixPressed: (){
+                                    UserLoginCubit.get(context).changeVisibility();
+                                  },
                                   validate: (value) {
                                     if (value!.isEmpty) {
                                       return 'please enter your Password';

@@ -11,3 +11,5 @@ class UserLoginErrorState extends UserLoginStates{
 class UserLoginLoadingState extends UserLoginStates{}
 
 class UserLoginSuccessState extends UserLoginStates{}
+
+class LoginChangePasswordState extends UserLoginStates{}

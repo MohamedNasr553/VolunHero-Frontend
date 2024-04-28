@@ -1,4 +1,7 @@
+
+
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/models/LoginModel.dart';
@@ -13,6 +16,15 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
    LoginModel? loginModel;
 
+   bool isPassword = true;
+   IconData suffix = Icons.visibility;
+
+   void changeVisibility() {
+     isPassword = !isPassword;
+
+     suffix = isPassword ? Icons.visibility : Icons.visibility_off;
+     emit(LoginChangePasswordState());
+   }
 
    String loginUser({
       required String email,
@@ -33,10 +45,13 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
          loginModel = LoginModel.fromJson(value.data);
          emit(UserLoginSuccessState());
          String? accessToken = loginModel?.access_token;
-         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken!);
+         Map<String, dynamic> decodedTokenMap = JwtDecoder.decode(accessToken!);
          print("+++++++++++++++++++++++++++++++\n");
-         print(decodedToken.toString());
+         //print(decodedTokenMap.toString());
          //{_id: 662e2849c4ed7f0e0e58eff6, role: User, iat: 1714329692, exp: 1714331492}
+         DecodedToken? decodedToken ;
+         decodedToken = DecodedToken.fromMap(decodedTokenMap);
+         print(decodedToken);
          print("+++++++++++++++++++++++++++++++\n");
          return (value.toString());
 
