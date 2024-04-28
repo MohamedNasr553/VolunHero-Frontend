@@ -53,6 +53,11 @@ dependencies:
   shimmer: ^3.0.0
   file_picker: ^4.0.0
   permission_handler: ^11.3.1
+  camera: ^0.8.1+6
+  flutter_tts: ^3.2.0
+  get: ^4.6.6
+  image: ^3.2.0
+  flutter_tflite: ^1.0.1
 
 dev_dependencies:
   flutter_test:
