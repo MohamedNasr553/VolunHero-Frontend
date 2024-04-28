@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart
 import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllForms.dart';
 import 'package:flutter_code/modules/UserView/UserChats/UserChatPage.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
+import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 class AppRoot extends StatelessWidget {
@@ -33,6 +35,9 @@ class AppRoot extends StatelessWidget {
             ..initializeBottomItems()
         ),
         BlocProvider(
+            create: (BuildContext context) => UserSignUpCubit()
+        ),
+        BlocProvider(
           create: (BuildContext context) => OrganizationLayoutCubit()
             ..initializeBottomItems()
         ),
@@ -40,7 +45,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home:  VolunHeroUserLayout(),
+        home: const UserSignupPage(),
       ),
     );
   }

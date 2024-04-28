@@ -39,7 +39,7 @@ class CameraView extends StatelessWidget {
                   ),
                 )
           ])
-          : const Center(child: Text("Loading Perview..."),);
+          : const Center(child: Text("Loading Preview..."),);
         }
       ),
     );

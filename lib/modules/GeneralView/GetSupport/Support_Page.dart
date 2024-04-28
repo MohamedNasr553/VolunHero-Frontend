@@ -151,7 +151,7 @@ class GetSupport extends StatelessWidget {
                     color: HexColor("318284"),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 1.0,
                 ),
                 Text(
