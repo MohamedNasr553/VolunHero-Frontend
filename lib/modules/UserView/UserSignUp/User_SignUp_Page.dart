@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/states.dart';
+import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -468,33 +469,42 @@ class _UserSignupPageState extends State<UserSignupPage> {
                             defaultButton(
                               function: () {
                                 if (formKey.currentState!.validate()) {
-                                  String classification = '';
-                                  if (selectedItem == 'Medical') {
-                                    classification = 'medical';
-                                  } else if (selectedItem == 'Educational') {
-                                    classification = 'educational';
+                                  if (selectedItem.isEmpty) {
+                                    showToast(
+                                      text: 'Please select a specification',
+                                      state: ToastStates.ERROR,
+                                    );
                                   }
-                                  UserSignUpCubit.get(context).registerUser(
-                                    firstName: firstNameController.text,
-                                    lastName: lastNameController.text,
-                                    DOB: dateOfBirthController.text,
-                                    address: addressController.text,
-                                    userName: userNameController.text,
-                                    email: emailAddressController.text,
-                                    password: passwordController.text,
-                                    cpassword: confirmPasswordController.text,
-                                    phone: phoneController.text,
-                                    specification: selectedItem,
-                                    // Convert _filePath to File object
-                                    attachments: _filePath != null
-                                        ? File(_filePath!)
-                                        : null,
-                                    classification: classification,
-                                  );
-                                  // showToast(
-                                  //   text: UserSignUpCubit.get(context).signupModel!.message!,
-                                  //   state: ToastStates.ERROR,
-                                  // );
+                                  else{
+                                    String classification = '';
+                                    if (selectedItem == 'Medical') {
+                                      classification = 'medical';
+                                    } else if (selectedItem == 'Educational') {
+                                      classification = 'educational';
+                                    }
+                                    UserSignUpCubit.get(context).registerUser(
+                                      firstName: firstNameController.text,
+                                      lastName: lastNameController.text,
+                                      DOB: dateOfBirthController.text,
+                                      address: addressController.text,
+                                      userName: userNameController.text,
+                                      email: emailAddressController.text,
+                                      password: passwordController.text,
+                                      cpassword: confirmPasswordController.text,
+                                      phone: phoneController.text,
+                                      specification: selectedItem,
+                                      // Convert _filePath to File object
+                                      attachments: _filePath != null
+                                          ? File(_filePath!)
+                                          : null,
+                                      classification: classification,
+                                    );
+                                    // showToast(
+                                    //   text: UserSignUpCubit.get(context).signupModel!.message!,
+                                    //   state: ToastStates.ERROR,
+                                    // );
+                                    // navigateAndFinish(context, const VolunHeroUserLayout());
+                                  }
                                 }
                               },
                               text: 'Sign up',
