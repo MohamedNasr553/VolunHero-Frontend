@@ -165,26 +165,26 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight / 5.0),
+                                (states is! UserLoginLoadingState)?
                                 defaultButton(
-                                  function: () {
+                                  function: () async {
                                     if (formKey.currentState!.validate()) {
-                                      String response =
-                                          UserLoginCubit.get(context).loginUser(
+                                      var result = await UserLoginCubit.get(context).loginUser(
                                         email: emailAddressController.text,
                                         password: passwordController.text,
                                       );
-                                      showToast(
-                                          text: response,
-                                          state: ToastStates.ERROR);
-                                      navigateAndFinish(
-                                          context, const VolunHeroUserLayout());
+
+                                      if (result == "Logged in Successfully") {
+                                        navigateAndFinish(context, const VolunHeroUserLayout());
+                                      }
                                     }
+
                                   },
-                                  text: 'Login',
+                                  text:   "Login",
                                   isUpperCase: false,
                                   fontWeight: FontWeight.w300,
                                   width: screenWidth / 1.1,
-                                ),
+                                ): Center(child: CircularProgressIndicator(color:defaultColor ,) ,),
                                 SizedBox(height: screenHeight / 70),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

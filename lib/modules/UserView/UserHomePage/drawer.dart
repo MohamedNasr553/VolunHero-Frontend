@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -194,6 +195,7 @@ class SidePage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  navigateAndFinish(context,  LoginPage());
                   // navigateToPage(context, const SettingsPage());
                 },
               ),

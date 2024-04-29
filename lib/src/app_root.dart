@@ -49,7 +49,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: UserSignupPage(),
+        home: LoginPage(),
       ),
     );
   }
