@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
 
-class UserChatsPage extends StatefulWidget {
-  const UserChatsPage({super.key});
+class ChatsPage extends StatefulWidget {
+  const ChatsPage({super.key});
 
   @override
-  State<UserChatsPage> createState() => _ChatsPageState();
+  State<ChatsPage> createState() => _ChatsPageState();
 }
 
-class _ChatsPageState extends State<UserChatsPage> {
+class _ChatsPageState extends State<ChatsPage> {
   List<Map<String, dynamic>> chats = [];
   bool _showWidget = false;
 

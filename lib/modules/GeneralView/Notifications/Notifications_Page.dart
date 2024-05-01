@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class OrganizationNotificationPage extends StatelessWidget {
-  OrganizationNotificationPage({super.key});
+class NotificationPage extends StatelessWidget {
+  NotificationPage({super.key});
 
   List<Map<String, dynamic>> notifications = [];
 
@@ -18,7 +17,7 @@ class OrganizationNotificationPage extends StatelessWidget {
 
     for (int i = 1; i <= 10; i++) {
       notifications.add({
-        'image': 'assets/images/OrganizationLogo.png', // Dummy image filename
+        'image': 'assets/images/logo.png', // Dummy image filename
         'description': 'Notification $i description', // Dummy description
         'time': '10m' // Calculate time ago
       });

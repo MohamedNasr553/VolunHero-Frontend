@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/states.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
 import 'package:flutter_code/modules/OrganizationView/AddDonationForm/AddDonationForm.dart';
-import 'package:flutter_code/modules/OrganizationView/OrganizationHomePage/organizationHomePage.dart';
-import 'package:flutter_code/modules/OrganizationView/OrganizationNotifications/Organization_Notifications_Page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class OrganizationLayoutCubit extends Cubit<OrganizationLayoutStates> {
@@ -99,10 +99,10 @@ class OrganizationLayoutCubit extends Cubit<OrganizationLayoutStates> {
   }
 
   var layoutScreens = [
-    const OrganizationHomePage(),
+    const HomePage(),
     const GetSupport(),
     CreatePost(),
-    OrganizationNotificationPage(),
+    NotificationPage(),
     const AddDonationForm()
   ];
 

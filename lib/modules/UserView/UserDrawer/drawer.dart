@@ -4,14 +4,15 @@ import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 
-class SidePage extends StatelessWidget {
-  const SidePage({super.key});
+class UserSidePage extends StatelessWidget {
+  const UserSidePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +94,28 @@ class SidePage extends StatelessWidget {
                     ),
                   )
                 ],
+              ),
+              ListTile(
+                leading: Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 35,
+                  ),
+                  child: const Icon(
+                    Icons.save,
+                    size: 30.0,
+                  ),
+                ),
+                title: const Text(
+                  'Saved Posts',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Roboto',
+                    fontSize: 15.0,
+                  ),
+                ),
+                onTap: () {
+                  navigateAndFinish(context, const SavedPosts());
+                },
               ),
               ListTile(
                 contentPadding: EdgeInsetsDirectional.only(

@@ -80,7 +80,10 @@ class AllDonationForms extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 30, top: screenHeight / 50),
+                start: screenWidth / 20,
+                top: screenHeight / 50,
+                end: screenWidth / 20,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -107,7 +110,7 @@ class AllDonationForms extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -125,7 +128,7 @@ class AllDonationForms extends StatelessWidget {
                     onPressed: () {
                       navigateToPage(context, const UpdateDonationForm());
                     },
-                    child:  Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(

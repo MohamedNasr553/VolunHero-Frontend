@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
-import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -180,11 +179,11 @@ class LoginPage extends StatelessWidget {
                                     }
 
                                   },
-                                  text:   "Login",
+                                  text: "Login",
                                   isUpperCase: false,
                                   fontWeight: FontWeight.w300,
                                   width: screenWidth / 1.1,
-                                ): Center(child: CircularProgressIndicator(color:defaultColor ,) ,),
+                                ): const Center(child: CircularProgressIndicator(color:defaultColor ,) ,),
                                 SizedBox(height: screenHeight / 70),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/modules/OrganizationView/OrganizationHomePage/drawer.dart';
-import 'package:flutter_code/modules/UserView/UserChats/UserChatPage.dart';
+import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
 
-class OrganizationHomePage extends StatefulWidget {
-  const OrganizationHomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<OrganizationHomePage> createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<OrganizationHomePage> {
+class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
   List<Map<String, dynamic>> posts = [];
   bool _showWidget = false;
@@ -37,7 +36,7 @@ class _HomePageState extends State<OrganizationHomePage> {
     for (int i = 1; i <= 5; i++) {
       if (i % 2 == 0) {
         posts.add({
-          'photo': 'assets/images/OrganizationLogo.png',
+          'photo': 'assets/images/logo.png',
           // Dummy image filename
           'name': 'User $i Name',
           // Dummy description
@@ -51,7 +50,7 @@ class _HomePageState extends State<OrganizationHomePage> {
         });
       } else {
         posts.add({
-          'photo': 'assets/images/OrganizationLogo.png',
+          'photo': 'assets/images/logo.png',
           // Dummy image filename
           'name': 'User $i Name',
           // Dummy description
@@ -66,7 +65,7 @@ class _HomePageState extends State<OrganizationHomePage> {
       }
       if (i == 3) {
         posts.add({
-          'photo': 'assets/images/OrganizationLogo.png',
+          'photo': 'assets/images/logo.png',
           // Dummy image filename
           'name': 'User $i Name',
           // Dummy description
@@ -93,8 +92,7 @@ class _HomePageState extends State<OrganizationHomePage> {
               icon: CircleAvatar(
                 radius: 40,
                 backgroundColor: Colors.transparent,
-                child: ClipOval(
-                    child: Image.asset("assets/images/OrganizationLogo.png")),
+                child: ClipOval(child: Image.asset("assets/images/logo.png")),
               ),
             ),
           );
@@ -164,17 +162,18 @@ class _HomePageState extends State<OrganizationHomePage> {
             ),
             child: IconButton(
                 onPressed: () {
-                  navigateToPage(context, const UserChatsPage());
+                  navigateToPage(context, const ChatsPage());
                 },
                 icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
           ),
         ],
       ),
-      drawer: const OrganizationSidePage(),
+      // if user open drawer = UserSidePage() else drawer = OrganizationSidePage()
+      // drawer: const SidePage(),
       body: _showWidget == false
           ? ListView.builder(
               itemCount: 10, // Number of posts
-              itemBuilder: (context, index) {
+              itemBuilder: (BuildContext context, int index) {
                 return Shimmer.fromColors(
                   period: const Duration(milliseconds: 1500),
                   baseColor: Colors.grey,
@@ -205,7 +204,7 @@ class _HomePageState extends State<OrganizationHomePage> {
                                             BorderRadius.circular(10)),
                                   ),
                                 ),
-                                const SizedBox(
+                                SizedBox(
                                   height: 5,
                                 ),
                                 SizedBox(
@@ -369,7 +368,7 @@ class _HomePageState extends State<OrganizationHomePage> {
                         ? SizedBox(
                             height: screenHeight / 100,
                           )
-                        : const SizedBox(
+                        : SizedBox(
                             height: 0,
                           ),
                     posts[index]['image'] != null

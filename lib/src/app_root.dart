@@ -19,7 +19,7 @@ import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Pag
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
 import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllForms.dart';
-import 'package:flutter_code/modules/UserView/UserChats/UserChatPage.dart';
+import 'package:flutter_code/modules/OrganizationView/UpdateDonationForm/updateForm.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
@@ -32,19 +32,15 @@ class AppRoot extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (BuildContext context) => HomeLayoutCubit()
-            ..initializeBottomItems()
-        ),
+            create: (BuildContext context) =>
+                HomeLayoutCubit()..initializeBottomItems()),
         BlocProvider(
-          create: (BuildContext context) => OrganizationLayoutCubit()
-            ..initializeBottomItems()
-        ),
+            create: (BuildContext context) =>
+                OrganizationLayoutCubit()..initializeBottomItems()),
         BlocProvider(
-            create: (BuildContext context) => UserSignUpCubit()
+          create: (BuildContext context) => UserSignUpCubit(),
         ),
-        BlocProvider(
-            create: (BuildContext context) => UserLoginCubit()
-        ),
+        BlocProvider(create: (BuildContext context) => UserLoginCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

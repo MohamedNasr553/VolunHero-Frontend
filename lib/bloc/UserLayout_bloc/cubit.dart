@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
-import 'package:flutter_code/modules/UserView/RoadBlocks/Roadblocks.dart';
+import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/camera_view.dart';
-import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
-import 'package:flutter_code/modules/UserView/UserNotifications/User_Notifications_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeLayoutCubit extends Cubit<LayoutStates> {
@@ -100,11 +99,11 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   }
 
   var layoutScreens = [
-    const UserHomePage(),
+    const HomePage(),
     const GetSupport(),
     CreatePost(),
-    UserNotificationPage(),
-     CameraView()
+    NotificationPage(),
+    const CameraView()
   ];
 
   void changeBottomNavBar(int index) {

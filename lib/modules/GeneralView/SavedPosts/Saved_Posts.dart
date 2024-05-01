@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/modules/UserView/UserHomePage/User_Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class UserSavedPosts extends StatefulWidget {
-  const UserSavedPosts({super.key});
+class SavedPosts extends StatefulWidget {
+  const SavedPosts({super.key});
 
   @override
-  State<UserSavedPosts> createState() => _UserSavedPostsState();
+  State<SavedPosts> createState() => _UserSavedPostsState();
 }
 
-class _UserSavedPostsState extends State<UserSavedPosts> {
+class _UserSavedPostsState extends State<SavedPosts> {
   List<Map<String, dynamic>> posts = [];
   bool _showWidget = false;
 
