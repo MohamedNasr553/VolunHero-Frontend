@@ -56,6 +56,7 @@ Widget defaultTextFormField({
   Color textFieldColor = Colors.black,
   double width = 20.0,
   double height = 10.0,
+  double outlineBorderWidth = 0.5,
 }) {
   return TextFormField(
     onTap: onTap,
@@ -85,21 +86,21 @@ Widget defaultTextFormField({
         borderRadius: BorderRadius.circular(radius),
         borderSide: BorderSide(
           color: borderColor,
-          width: 0.5,
+          width: outlineBorderWidth,
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
         borderSide: BorderSide(
           color: borderColor,
-          width: 0.5,
+          width: outlineBorderWidth,
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
         borderSide: BorderSide(
           color: borderColor,
-          width: 0.5,
+          width: outlineBorderWidth,
         ),
       ),
       suffixIcon: isPassword
