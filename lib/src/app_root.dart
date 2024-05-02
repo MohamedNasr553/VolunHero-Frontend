@@ -25,6 +25,8 @@ import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.d
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
+import '../modules/UserView/UserProfilePage/Profile_Page.dart';
+
 class AppRoot extends StatelessWidget {
   const AppRoot({super.key});
 
@@ -46,7 +48,7 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: DetailedPost(),
+        home: ProfilePage(),
       ),
     );
   }
