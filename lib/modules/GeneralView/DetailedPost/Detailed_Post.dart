@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-import '../../../shared/components/components.dart';
 
 class DetailedPost extends StatelessWidget {
   DetailedPost({super.key});
@@ -35,7 +34,7 @@ class DetailedPost extends StatelessWidget {
                child: Image.asset("assets/images/OrganizationLogo.png"),
              ),
              SizedBox(width: screenWidth/20,),
-             Column(
+             const Column(
                mainAxisAlignment: MainAxisAlignment.start,
                crossAxisAlignment: CrossAxisAlignment.start,
                children: [
@@ -67,7 +66,7 @@ class DetailedPost extends StatelessWidget {
                       color: Colors.grey.withOpacity(0.5),
                       blurRadius: 10.0,
                       spreadRadius: -5.0,
-                      offset: Offset(10.0, 10.0), // Right and bottom shadow
+                      offset: const Offset(10.0, 10.0), // Right and bottom shadow
                     ),
                   ],
                 ),
@@ -78,7 +77,7 @@ class DetailedPost extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 20.0,
                             backgroundImage:
                             AssetImage("assets/images/OrganizationLogo.png"),
@@ -87,7 +86,7 @@ class DetailedPost extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 "User Name",
                                 style: TextStyle(
                                     fontFamily: "Roboto",
@@ -97,7 +96,7 @@ class DetailedPost extends StatelessWidget {
         
                                 ),
                               ),
-                              SizedBox(height: 0.5,),
+                              const SizedBox(height: 0.5,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -108,7 +107,7 @@ class DetailedPost extends StatelessWidget {
                                         fontSize: 10
                                     ),
                                   ),
-                                  SizedBox(width: 2,),
+                                  const SizedBox(width: 2,),
                                   SvgPicture.asset(
                                     'assets/images/earthIcon.svg',
                                   ),
@@ -116,7 +115,7 @@ class DetailedPost extends StatelessWidget {
                               )
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           SvgPicture.asset(
                             'assets/images/postSettings.svg',
                           ),
@@ -129,14 +128,14 @@ class DetailedPost extends StatelessWidget {
         
                         ],
                       ),
-                      SizedBox(height: 1,),
+                      const SizedBox(height: 1,),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "Join us for voluntering",
                               maxLines:  5,
                               overflow: TextOverflow.ellipsis,
@@ -151,12 +150,12 @@ class DetailedPost extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 1,),
+                      const SizedBox(height: 1,),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 2.0,vertical: 4),
                         child: Row(
                           children: [
-                            Icon(Icons.add_reaction),
+                            const Icon(Icons.add_reaction),
                             SizedBox(width: screenWidth/100,),
                             Text(
                               "Ahmed and 5 others",
@@ -166,7 +165,7 @@ class DetailedPost extends StatelessWidget {
                                   color: HexColor("575757")
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               "123 comments",
                               style: TextStyle(
@@ -177,7 +176,7 @@ class DetailedPost extends StatelessWidget {
                             ),
                           ],),
                       ),
-                      SizedBox(height: 1, ),
+                      const SizedBox(height: 1, ),
                       Container(height: 1,color: Colors.grey[200],),
                       Center(
                         child: Padding(
@@ -186,9 +185,9 @@ class DetailedPost extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 postSubComponent("assets/images/like.svg","Like"),
-                                Spacer(),
+                                const Spacer(),
                                 postSubComponent("assets/images/comment.svg","Comment"),
-                                Spacer(),
+                                const Spacer(),
                                 postSubComponent("assets/images/share.svg","Share"),
                               ],
                             )
@@ -203,11 +202,11 @@ class DetailedPost extends StatelessWidget {
             ),
             Container(height: 1,color: HexColor("9B9B9B"),),
             ListView.separated(
-              physics:  NeverScrollableScrollPhysics(),
+              physics:  const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (context, index) => buildCommentItem(index, context),
               separatorBuilder: (context, index) => Padding(
-                padding:  EdgeInsetsDirectional.symmetric(horizontal: 8),
+                padding:  const EdgeInsetsDirectional.symmetric(horizontal: 8),
                 child: Container(
                   width: double.infinity,
                   color: Colors.white,
@@ -245,11 +244,11 @@ class DetailedPost extends StatelessWidget {
                 children: [
                   Text(
                     comments[index]["name"],
-                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,fontFamily: "Roboto"),
+                    style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold,fontFamily: "Roboto"),
                   ),
                   Text(
                     comments[index]["text"],
-                    style: TextStyle(fontSize: 14,fontFamily: "Roboto"),
+                    style: const TextStyle(fontSize: 14,fontFamily: "Roboto"),
                   ),
                 ],
               ),
@@ -268,7 +267,7 @@ class DetailedPost extends StatelessWidget {
         child: Row(
           children: [
             SvgPicture.asset(assetIcon),
-            SizedBox(width: 1,),
+            const SizedBox(width: 1,),
             Text(
               action,
               style: TextStyle(

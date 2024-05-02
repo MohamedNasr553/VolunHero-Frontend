@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,7 +37,7 @@ class UserEditProfile extends StatelessWidget {
               padding: EdgeInsetsDirectional.only(top: screenHeight / 15,),
               child: IconButton(
                 onPressed: (){
-        
+                  navigateAndFinish(context, ProfilePage());
                 },
                 icon: const Icon(
                   Icons.arrow_back,

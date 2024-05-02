@@ -43,7 +43,9 @@ class AppRoot extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => UserSignUpCubit(),
         ),
-        BlocProvider(create: (BuildContext context) => UserLoginCubit()),
+        BlocProvider(
+          create: (BuildContext context) => UserLoginCubit(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

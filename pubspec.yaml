@@ -59,6 +59,7 @@ dependencies:
   image: ^3.2.0
   flutter_tflite: ^1.0.1
   jwt_decoder: ^2.0.1
+  image_picker: ^0.8.3+2
 
 dev_dependencies:
   flutter_test:
