@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -39,6 +38,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    print(_filePath);
 
     return BlocConsumer<UserSignUpCubit, UserSignUpStates>(
       listener: (context, states) {},
@@ -496,14 +496,23 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       // Convert _filePath to File object
                                       attachments: _filePath != null
                                           ? File(_filePath!)
-                                          : null,
+                                          : throw Exception('No file selected'),
                                       classification: classification,
                                     );
-                                    // showToast(
-                                    //   text: UserSignUpCubit.get(context).signupModel!.message!,
-                                    //   state: ToastStates.ERROR,
-                                    // );
-                                    // navigateAndFinish(context, const VolunHeroUserLayout());
+                                    // if (UserSignUpCubit.get(context).signupModel != null) {
+                                    //   if (UserSignUpCubit.get(context).signupModel!.message == 'success') {
+                                    //     showToast(
+                                    //       text: UserSignUpCubit.get(context).signupModel!.message!,
+                                    //       state: ToastStates.ERROR,
+                                    //     );
+                                    //   } else {
+                                    //     showToast(
+                                    //       text: 'Registered Successfully',
+                                    //       state: ToastStates.SUCCESS,
+                                    //     );
+                                    //   }
+                                    // }
+                                    // navigateAndFinish(context, LoginPage());
                                   }
                                 }
                               },
@@ -546,37 +555,37 @@ class _UserSignupPageState extends State<UserSignupPage> {
                     ),
                   ),
                   // Create Account Text
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: 15.0,
-                      bottom: screenHeight / 0.601,
-                    ),
-                    child: const Row(
-                      children: [
-                        StrokeText(
-                          text: "Cre",
-                          textStyle: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.w900,
-                            color: Color.fromARGB(255, 47, 129, 131),
-                          ),
-                          strokeWidth: 3.0,
-                          strokeColor: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 2.0,
-                        ),
-                        Text(
-                          "ate Account",
-                          style: TextStyle(
-                            fontSize: 32.0,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.only(
+                  //     start: 15.0,
+                  //     bottom: screenHeight / 0.601,
+                  //   ),
+                  //   child: const Row(
+                  //     children: [
+                  //       StrokeText(
+                  //         text: "Cre",
+                  //         textStyle: TextStyle(
+                  //           fontSize: 32.0,
+                  //           fontWeight: FontWeight.w900,
+                  //           color: Color.fromARGB(255, 47, 129, 131),
+                  //         ),
+                  //         strokeWidth: 3.0,
+                  //         strokeColor: Colors.white,
+                  //       ),
+                  //       SizedBox(
+                  //         width: 2.0,
+                  //       ),
+                  //       Text(
+                  //         "ate Account",
+                  //         style: TextStyle(
+                  //           fontSize: 32.0,
+                  //           fontWeight: FontWeight.w900,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -595,7 +604,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
         builder: (context) => AlertDialog(
           title: const Text('Permission Required'),
           content: const Text(
-              'Please allow access to external storage to upload files.'),
+              'Please allow access to external storage to upload files.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -622,4 +632,5 @@ class _UserSignupPageState extends State<UserSignupPage> {
       });
     }
   }
+
 }

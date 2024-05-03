@@ -10,6 +10,18 @@ class DioHelper {
         receiveDataWhenStatusError: true,
       ),
     );
+
+    // Add interceptors for error handling
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioError error, handler) {
+          // Handle error here, e.g., log, show toast, etc.
+          print('Dio error: $error');
+          // Continue processing the error
+          return handler.next(error);
+        },
+      ),
+    );
   }
 
   static Future<Response> getData({
@@ -20,6 +32,7 @@ class DioHelper {
     return await dio.get(
       url,
       queryParameters: query,
+      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
     );
   }
 
@@ -33,6 +46,7 @@ class DioHelper {
       url,
       queryParameters: query,
       data: data,
+      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
     );
   }
 
@@ -46,6 +60,7 @@ class DioHelper {
       url,
       queryParameters: query,
       data: data,
+      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
     );
   }
 }

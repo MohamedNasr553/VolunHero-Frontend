@@ -66,7 +66,6 @@ Widget defaultTextFormField({
       fontSize: 13.0,
       fontWeight: FontWeight.w500,
     ),
-    obscureText: isPassword,
     decoration: InputDecoration(
       labelText: labelText,
       labelStyle: const TextStyle(
@@ -112,6 +111,14 @@ Widget defaultTextFormField({
               onPressed: suffixPressed,
             )
           : null,
+      // suffix: (suffix != null)
+      //     ? IconButton(
+      //   icon: Icon(
+      //     suffix,
+      //   ),
+      //   onPressed: suffixPressed,
+      // )
+      //     : null,
     ),
   );
 }
