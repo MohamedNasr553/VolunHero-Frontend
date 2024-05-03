@@ -13,7 +13,7 @@ class DetailedChat extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var chatMessage = TextEditingController();
-
+    final keyboardSize = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
