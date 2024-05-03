@@ -125,23 +125,67 @@ class LoginPage extends StatelessWidget {
                                 const SizedBox(
                                   height: 6.0,
                                 ),
-                                defaultTextFormField(
-                                  isPassword:
-                                      UserLoginCubit.get(context).isPassword,
-                                  suffix: UserLoginCubit.get(context).suffix,
-                                  suffixPressed: () {
-                                    UserLoginCubit.get(context)
-                                        .changeVisibility();
-                                  },
-                                  validate: (value) {
+                                TextFormField(
+                                  obscureText: (UserLoginCubit.get(context).isPassword) ? true : false,
+                                  controller: passwordController,
+                                  validator: (value) {
                                     if (value!.isEmpty) {
                                       return 'please enter your Password';
                                     }
                                     return null;
                                   },
-                                  controller: passwordController,
-                                  type: TextInputType.visiblePassword,
-                                  hintText: 'Password',
+                                  style: const TextStyle(
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  decoration: InputDecoration(
+                                    labelStyle: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                    hintText: 'Password',
+                                    hintStyle: TextStyle(
+                                      fontSize: 12.0,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 20,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade400,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        UserLoginCubit.get(context).suffix,
+                                      ),
+                                      onPressed: () {
+                                        UserLoginCubit.get(context)
+                                            .changeVisibility();
+                                      },
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: screenHeight / 90),
                                 Padding(

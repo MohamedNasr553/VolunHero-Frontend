@@ -111,14 +111,6 @@ Widget defaultTextFormField({
               onPressed: suffixPressed,
             )
           : null,
-      // suffix: (suffix != null)
-      //     ? IconButton(
-      //   icon: Icon(
-      //     suffix,
-      //   ),
-      //   onPressed: suffixPressed,
-      // )
-      //     : null,
     ),
   );
 }

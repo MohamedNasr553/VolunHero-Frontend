@@ -272,23 +272,67 @@ class _UserSignupPageState extends State<UserSignupPage> {
                             SizedBox(
                               height: screenHeight / 100,
                             ),
-                            defaultTextFormField(
-                              validate: (value) {
+                            TextFormField(
+                              obscureText: (UserSignUpCubit.get(context).isPassword) ? true : false,
+                              controller: passwordController,
+                              validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'please enter your Password';
                                 }
                                 return null;
                               },
-                              controller: passwordController,
-                              type: TextInputType.visiblePassword,
-                              hintText: 'Password',
-                              isPassword:
-                                  UserSignUpCubit.get(context).isPassword,
-                              suffix: UserSignUpCubit.get(context).suffix,
-                              suffixPressed: () {
-                                UserSignUpCubit.get(context)
-                                    .changePasswordVisibility();
-                              },
+                              style: const TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                hintText: 'Password',
+                                hintStyle: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey.shade500,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    UserSignUpCubit.get(context).suffix,
+                                  ),
+                                  onPressed: () {
+                                    UserSignUpCubit.get(context)
+                                        .changePasswordVisibility();
+                                  },
+                                ),
+                              ),
                             ),
                             SizedBox(height: screenHeight / 50),
                             const StrokeText(
@@ -304,26 +348,67 @@ class _UserSignupPageState extends State<UserSignupPage> {
                             SizedBox(
                               height: screenHeight / 100,
                             ),
-                            defaultTextFormField(
-                              validate: (value) {
+                            TextFormField(
+                              obscureText: (UserSignUpCubit.get(context).isCPassword) ? true : false,
+                              controller: confirmPasswordController,
+                              validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'please confirm password';
-                                }
-                                if (value != passwordController.text) {
-                                  return 'Passwords are not same';
+                                  return 'Confirm Password must be entered';
                                 }
                                 return null;
                               },
-                              controller: confirmPasswordController,
-                              type: TextInputType.visiblePassword,
-                              hintText: 'Confirm Password',
-                              isPassword:
-                                  UserSignUpCubit.get(context).isCPassword,
-                              suffix: UserSignUpCubit.get(context).cSuffix,
-                              suffixPressed: () {
-                                UserSignUpCubit.get(context)
-                                    .changeCPasswordVisibility();
-                              },
+                              style: const TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                hintText: 'Confirm Password',
+                                hintStyle: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey.shade500,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    UserSignUpCubit.get(context).cSuffix,
+                                  ),
+                                  onPressed: () {
+                                    UserSignUpCubit.get(context)
+                                        .changeCPasswordVisibility();
+                                  },
+                                ),
+                              ),
                             ),
                             SizedBox(height: screenHeight / 50),
                             const StrokeText(
@@ -474,8 +559,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       text: 'Please select a specification',
                                       state: ToastStates.ERROR,
                                     );
-                                  }
-                                  else{
+                                  } else {
                                     String classification = '';
                                     if (selectedItem == 'Medical') {
                                       classification = 'medical';
@@ -496,19 +580,19 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       // Convert _filePath to File object
                                       attachments: _filePath != null
                                           ? File(_filePath!)
-                                          : throw Exception('No file selected'),
+                                          : null,
                                       classification: classification,
                                     );
                                     // if (UserSignUpCubit.get(context).signupModel != null) {
                                     //   if (UserSignUpCubit.get(context).signupModel!.message == 'success') {
                                     //     showToast(
-                                    //       text: UserSignUpCubit.get(context).signupModel!.message!,
-                                    //       state: ToastStates.ERROR,
+                                    //       text: 'Registered Successfully',
+                                    //       state: ToastStates.SUCCESS,
                                     //     );
                                     //   } else {
                                     //     showToast(
-                                    //       text: 'Registered Successfully',
-                                    //       state: ToastStates.SUCCESS,
+                                    //       text: UserSignUpCubit.get(context).signupModel!.message!,
+                                    //       state: ToastStates.ERROR,
                                     //     );
                                     //   }
                                     // }
@@ -555,37 +639,37 @@ class _UserSignupPageState extends State<UserSignupPage> {
                     ),
                   ),
                   // Create Account Text
-                  // Padding(
-                  //   padding: EdgeInsetsDirectional.only(
-                  //     start: 15.0,
-                  //     bottom: screenHeight / 0.601,
-                  //   ),
-                  //   child: const Row(
-                  //     children: [
-                  //       StrokeText(
-                  //         text: "Cre",
-                  //         textStyle: TextStyle(
-                  //           fontSize: 32.0,
-                  //           fontWeight: FontWeight.w900,
-                  //           color: Color.fromARGB(255, 47, 129, 131),
-                  //         ),
-                  //         strokeWidth: 3.0,
-                  //         strokeColor: Colors.white,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 2.0,
-                  //       ),
-                  //       Text(
-                  //         "ate Account",
-                  //         style: TextStyle(
-                  //           fontSize: 32.0,
-                  //           fontWeight: FontWeight.w900,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: 15.0,
+                      bottom: screenHeight / 0.601,
+                    ),
+                    child: const Row(
+                      children: [
+                        StrokeText(
+                          text: "Cre",
+                          textStyle: TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.w900,
+                            color: Color.fromARGB(255, 47, 129, 131),
+                          ),
+                          strokeWidth: 3.0,
+                          strokeColor: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 2.0,
+                        ),
+                        Text(
+                          "ate Account",
+                          style: TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -604,7 +688,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
         builder: (context) => AlertDialog(
           title: const Text('Permission Required'),
           content: const Text(
-              'Please allow access to external storage to upload files.',
+            'Please allow access to external storage to upload files.',
           ),
           actions: [
             TextButton(
@@ -632,5 +716,4 @@ class _UserSignupPageState extends State<UserSignupPage> {
       });
     }
   }
-
 }

@@ -33,8 +33,6 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
   }
 
   SignupModel? signupModel;
-  String? _filePath;
-
   void registerUser({
     required String firstName,
     required String lastName,
@@ -47,13 +45,9 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
     required String phone,
     required String specification,
     required String classification,
-    required File? attachments,
+    File? attachments,
   }) async {
     emit(UserSignUpLoadingState());
-
-    if (attachments != null) {
-      _filePath = attachments.path;
-    }
 
     dio.FormData formData = dio.FormData();
 
@@ -70,39 +64,34 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
       MapEntry('specification', specification),
     ]);
 
+    bool attachmentsRequired =
+    (classification == "medical" || classification == "educational");
+
     print(formData.fields);
-    print('File path: $_filePath');
-    print('File path before adding attachment: $_filePath');
 
-    if (classification == "medical" || classification == "educational") {
-      if (_filePath != null) {
-        // Add the file to the form data
-        String fileName = _filePath!.split('/').last;
-        formData.files.add(
-          MapEntry(
-            'attachments',
-            await dio.MultipartFile.fromFile(
-              _filePath!,
-              filename: fileName,
-            ),
-          ),
-        );
+    if (attachmentsRequired && attachments != null) {
+      String fileName = attachments.path.split('/').last;
+      formData.files.add(MapEntry(
+        'attachments',
+        await dio.MultipartFile.fromFile(
+          attachments.path,
+          filename: fileName,
+        ),
+      ));
 
-        print('FormData files: ${formData.files}');
-      } else {
-        // Handle case where attachments are required but not provided
-        showToast(
-          text: 'Specification attachment is required.',
-          state: ToastStates.ERROR,
-        );
-        emit(
-          UserSignUpErrorState(
-            "Specification attachment is required.",
-          ),
-        );
-        return;
-      }
+      print('FormData files: ${formData.files}');
     }
+    else if (attachmentsRequired && attachments == null) {
+      showToast(
+        text:
+        'Attachments are required for medical or educational classifications',
+        state: ToastStates.ERROR,
+      );
+      emit(UserSignUpErrorState(
+          "Attachments are required for medical or educational classifications"));
+      return;
+    }
+
     try {
       dio.Response response = await DioHelper.dio.post(
         REGISTER,
@@ -114,13 +103,10 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
           },
         ),
       );
-
       signupModel = SignupModel.fromJson(response.data);
 
       emit(UserSignUpSuccessState());
     } catch (error) {
-      print(error);
-
       emit(UserSignUpErrorState(error.toString()));
     }
   }

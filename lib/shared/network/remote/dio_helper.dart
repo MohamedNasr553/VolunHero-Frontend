@@ -16,7 +16,7 @@ class DioHelper {
       InterceptorsWrapper(
         onError: (DioError error, handler) {
           // Handle error here, e.g., log, show toast, etc.
-          print('Dio error: $error');
+          print('$error');
           // Continue processing the error
           return handler.next(error);
         },
