@@ -30,7 +30,14 @@ import 'package:flutter_code/shared/styles/themes.dart';
 import '../modules/UserView/UserProfilePage/Profile_Page.dart';
 
 class AppRoot extends StatelessWidget {
-  const AppRoot({super.key});
+  final bool onBoarding;
+  final Widget startWidget;
+
+  const AppRoot({
+    super.key,
+    required this.onBoarding,
+    required this.startWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +59,8 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: LoginPage(),
+        home: startWidget,
       ),
     );
   }
 }
-
-

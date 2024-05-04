@@ -4,6 +4,8 @@ import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/components/constants.dart';
+import 'package:flutter_code/shared/network/local/CacheHelper.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -24,8 +26,30 @@ class LoginPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-        listener: (context, states) {},
-        builder: (context, states) {
+        listener: (context, state) {
+          if (state is UserLoginSuccessState) {
+            // Save User Token
+              CacheHelper.saveData(
+                key: "token",
+                value: UserLoginCubit.get(context).loginModel!.refresh_token,
+                // UserLoginCubit.get(context).loginModel?.refresh_token
+              ).then((value) {
+                navigateAndFinish(context, const VolunHeroUserLayout());
+              });
+
+              showToast(
+                text: "Logged in Successfully",
+                state: ToastStates.SUCCESS,
+              );
+            }
+          if(state is UserLoginErrorState) {
+            showToast(
+              text: "Can't log in",
+              state: ToastStates.ERROR,
+            );
+          }
+        },
+        builder: (context, state) {
           return Scaffold(
             body: SingleChildScrollView(
               child: Stack(
@@ -208,24 +232,22 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight / 5.0),
-                                (states is! UserLoginLoadingState)?
+                                (state is! UserLoginLoadingState)?
                                 defaultButton(
                                   function: () async {
                                     if (formKey.currentState!.validate()) {
-                                      var result = UserLoginCubit.get(context).loginUser(
+                                      UserLoginCubit.get(context).loginUser(
                                         email: emailAddressController.text,
                                         password: passwordController.text,
                                       ).then((value) {
                                         print(value);
                                          UserLoginCubit.get(context).getLoggedInUserData(
                                             token: UserLoginCubit.get(context).loginModel?.refresh_token ?? "" );
-                                        if (value == "Logged in Successfully") {
-                                          navigateAndFinish(context, const VolunHeroUserLayout());
-                                        }
                                       });
 
+                                      userToken = await getUserToken();
+                                      print(userToken);
                                     }
-
                                   },
                                   text: "Login",
                                   isUpperCase: false,

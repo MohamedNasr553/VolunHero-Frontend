@@ -46,7 +46,7 @@ class DioHelper {
       url,
       queryParameters: query,
       data: data,
-      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
+      options: Options(headers: {'authorization': 'Volunhero__$token'}),
     );
   }
 
@@ -60,7 +60,7 @@ class DioHelper {
       url,
       queryParameters: query,
       data: data,
-      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
+      options: Options(headers: {'authorization': 'Volunhero__$token'}),
     );
   }
 

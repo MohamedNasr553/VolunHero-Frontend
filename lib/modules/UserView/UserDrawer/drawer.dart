@@ -8,6 +8,7 @@ import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
@@ -34,10 +35,25 @@ class UserSidePage extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 children: [
                   UserAccountsDrawerHeader(
-                    accountName: Text(UserLoginCubit.get(context).loggedInUser?.userName??  "@username"),
-                    accountEmail: Text(UserLoginCubit.get(context).loggedInUser?.email??  "@username@gmail"),
+                    accountName: Text(
+                      UserLoginCubit.get(context).loggedInUser?.userName ??
+                          "@username",
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    accountEmail: Text(
+                      UserLoginCubit.get(context).loggedInUser?.email ??
+                          "@username@gmail",
+                      style: const TextStyle(
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
                     currentAccountPicture: CircleAvatar(
-                      child: ClipOval(child: Image.asset("assets/images/logo.png")),
+                      child: ClipOval(
+                          child: Image.asset("assets/images/logo.png")),
                     ),
                     decoration: const BoxDecoration(
                       color: defaultColor,
@@ -59,7 +75,7 @@ class UserSidePage extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                         // Navigator.pop(context); // Close the drawer
+                          // Navigator.pop(context); // Close the drawer
                           navigateAndFinish(context, ProfilePage());
                         },
                         child: const Text(
@@ -103,14 +119,9 @@ class UserSidePage extends StatelessWidget {
                     ],
                   ),
                   ListTile(
-                    leading: Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 35,
-                      ),
-                      child: const Icon(
-                        Icons.save,
-                        size: 30.0,
-                      ),
+                    leading: const Icon(
+                      Icons.save,
+                      size: 30.0,
                     ),
                     title: const Text(
                       'Saved Posts',
@@ -184,7 +195,7 @@ class UserSidePage extends StatelessWidget {
                     ),
                     onTap: () {
                       navigateToPage(context, const SettingsPage());
-                       // Close the drawer
+                      // Close the drawer
                     },
                   ),
                   ListTile(
@@ -225,8 +236,8 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      navigateAndFinish(context,  LoginPage());
-                      // navigateToPage(context, const SettingsPage());
+                      // Remove token
+                      signOut(context);
                     },
                   ),
                 ],

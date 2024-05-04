@@ -1,16 +1,10 @@
-import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:http/http.dart' as http;
 import '../../shared/network/endpoints.dart';
 import '../../shared/network/remote/dio_helper.dart';
 
@@ -31,9 +25,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     suffix = isPassword ? Icons.visibility : Icons.visibility_off;
     emit(LoginChangePasswordState());
   }
-
-
-
 
   Future<String> loginUser({
     required String email,
@@ -78,18 +69,12 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   LoggedInUserData? loggedInUserData;
   LoggedInUser? loggedInUser;
 
-  Future<String> getLoggedInUserData({
-    required String token
-}) async{
+  Future<String> getLoggedInUserData({required String token}) async {
     //print("MY TOKEN $token");
-    try{
-
+    try {
       emit(GetLoggedInUserLoadingState());
 
-      var value = await DioHelper.getData(
-          url: "/users/me",
-          token: token
-      );
+      var value = await DioHelper.getData(url: "/users/me", token: token);
 
       print(value);
       emit(GetLoggedInUserSuccessState());
@@ -98,19 +83,17 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       loggedInUser = loggedInUserData?.doc;
 
       print(loggedInUser.toString());
-
-    }catch(error){
+    } catch (error) {
       emit(GetLoggedInUserErrorState(error.toString()));
       print(error.toString());
     }
     return "";
-}
-
+  }
 
   Future<void> updateLoggedInUserData({
     required String token,
-     required String firstName,
-     required String lastName,
+    required String firstName,
+    required String lastName,
     required String userName,
     required String phone,
     required List<String> locations,
@@ -120,9 +103,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       Map<String, dynamic> requestData = {
         'firstName': firstName,
         'lastName': lastName,
-        'userName':userName,
-        'phone':phone,
-        'locations':locations
+        'userName': userName,
+        'phone': phone,
+        'locations': locations
       };
       print(requestData.toString());
       var value = await DioHelper.patchData(
@@ -130,8 +113,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         token: token,
         data: requestData,
       );
-
-
       print(value); // Check the patched data
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
@@ -139,9 +120,4 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       print('Error updating user data: $error');
     }
   }
-
-
-
-
-
 }

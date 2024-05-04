@@ -3,6 +3,7 @@ import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/network/local/CacheHelper.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
@@ -14,6 +15,14 @@ class OnBoarding extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    void submit(){
+      CacheHelper.saveData(
+        key: 'onBoarding',
+        value: true,
+      ).then((value){
+        navigateAndFinish(context, LoginPage());
+      });
+    }
 
     return Scaffold(
       body: Column(
@@ -68,7 +77,7 @@ class OnBoarding extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              navigateAndFinish(context, LoginPage());
+              submit();
             },
             text: 'Login',
             isUpperCase: false,

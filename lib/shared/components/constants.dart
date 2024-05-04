@@ -1,10 +1,11 @@
+import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/network/local/CacheHelper.dart';
-
 
 void signOut(context){
   CacheHelper.removeData(key: "token").then((value){
     if(value){
-      // navigateAndFinish(context, ShopLoginScreen());
+      navigateAndFinish(context, LoginPage());
     }
   });
 }
