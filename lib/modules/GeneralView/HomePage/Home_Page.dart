@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
+
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../UserView/UserDrawer/drawer.dart';
+
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -41,7 +44,7 @@ class _HomePageState extends State<HomePage> {
           'name': 'User $i Name',
           // Dummy description
           'text':
-              "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ",
+          "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ",
           // Calculate time ago
           'image': 'assets/images/Rectangle 4160.png',
           'duration': '2h.',
@@ -55,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           'name': 'User $i Name',
           // Dummy description
           'text':
-              "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ",
+          "Do you know of a shelter that accepts clothing donation or household applications? Your recommendations are much appreciated! ",
           // Calculate time ago
           // 'image': 'assets/images/Rectangle 4160.png',
           'duration': '2h.',
@@ -85,12 +88,12 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsetsDirectional.only(
               start: screenWidth / 40,
             ),
-            child: IconButton(
-              onPressed: () {
+            child: GestureDetector(
+              onTap: () {
                 Scaffold.of(context).openDrawer();
               },
-              icon: CircleAvatar(
-                radius: 40,
+              child: CircleAvatar(
+                radius: 30,
                 backgroundColor: Colors.transparent,
                 child: ClipOval(child: Image.asset("assets/images/logo.png")),
               ),
@@ -168,99 +171,98 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      // if user open drawer = UserSidePage() else drawer = OrganizationSidePage()
-      // drawer: const SidePage(),
+      drawer: const UserSidePage(),
       body: _showWidget == false
           ? ListView.builder(
-              itemCount: 10, // Number of posts
-              itemBuilder: (BuildContext context, int index) {
-                return Shimmer.fromColors(
-                  period: const Duration(milliseconds: 1500),
-                  baseColor: Colors.grey,
-                  highlightColor: Colors.white30,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 20,
-                            ),
-                            SizedBox(
-                              width: screenWidth / 40,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: screenHeight / 75,
-                                  width: screenWidth / 4,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                SizedBox(
-                                  height: screenHeight / 75,
-                                  width: screenWidth / 2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey,
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: screenHeight / 100,
-                        ),
-                        Center(
-                          child: SizedBox(
-                            height: screenHeight / 4,
-                            width: screenWidth,
+        itemCount: 10, // Number of posts
+        itemBuilder: (BuildContext context, int index) {
+          return Shimmer.fromColors(
+            period: const Duration(milliseconds: 1500),
+            baseColor: Colors.grey,
+            highlightColor: Colors.white30,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 20,
+                      ),
+                      SizedBox(
+                        width: screenWidth / 40,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: screenHeight / 75,
+                            width: screenWidth / 4,
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(10)),
+                                  borderRadius:
+                                  BorderRadius.circular(10)),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          SizedBox(
+                            height: screenHeight / 75,
+                            width: screenWidth / 2,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius:
+                                  BorderRadius.circular(10)),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              },
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) =>
-                        buildPostItem(index, context),
-                    separatorBuilder: (context, index) => Padding(
-                      padding:
-                          const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  SizedBox(
+                    height: screenHeight / 100,
+                  ),
+                  Center(
+                    child: SizedBox(
+                      height: screenHeight / 4,
+                      width: screenWidth,
                       child: Container(
-                        width: double.infinity,
-                        color: Colors.white,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                    itemCount: posts.length,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+          );
+        },
+      )
+          : Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) =>
+                  buildPostItem(index, context),
+              separatorBuilder: (context, index) => Padding(
+                padding:
+                const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),
+              itemCount: posts.length,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -353,31 +355,31 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     posts[index]['text'] != null
                         ? Text(
-                            posts[index]['text'],
-                            maxLines: posts[index]['image'] != null ? 2 : 5,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 12,
-                            ),
-                          )
+                      posts[index]['text'],
+                      maxLines: posts[index]['image'] != null ? 2 : 5,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: "Robot",
+                        fontSize: 12,
+                      ),
+                    )
                         : const SizedBox(
-                            height: 0,
-                          ),
+                      height: 0,
+                    ),
                     posts[index]['image'] != null
                         ? SizedBox(
-                            height: screenHeight / 100,
-                          )
+                      height: screenHeight / 100,
+                    )
                         : SizedBox(
-                            height: 0,
-                          ),
+                      height: 0,
+                    ),
                     posts[index]['image'] != null
                         ? Image.asset(
-                            posts[index]['image'],
-                          )
+                      posts[index]['image'],
+                    )
                         : Container(
-                            height: 0.5,
-                          )
+                      height: 0.5,
+                    )
                   ],
                 ),
               ),
@@ -386,7 +388,7 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
+                const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4),
                 child: Row(
                   children: [
                     const Icon(Icons.add_reaction),

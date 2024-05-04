@@ -212,14 +212,18 @@ class LoginPage extends StatelessWidget {
                                 defaultButton(
                                   function: () async {
                                     if (formKey.currentState!.validate()) {
-                                      var result = await UserLoginCubit.get(context).loginUser(
+                                      var result = UserLoginCubit.get(context).loginUser(
                                         email: emailAddressController.text,
                                         password: passwordController.text,
-                                      );
+                                      ).then((value) {
+                                        print(value);
+                                         UserLoginCubit.get(context).getLoggedInUserData(
+                                            token: UserLoginCubit.get(context).loginModel?.refresh_token ?? "" );
+                                        if (value == "Logged in Successfully") {
+                                          navigateAndFinish(context, const VolunHeroUserLayout());
+                                        }
+                                      });
 
-                                      if (result == "Logged in Successfully") {
-                                        navigateAndFinish(context, const VolunHeroUserLayout());
-                                      }
                                     }
 
                                   },

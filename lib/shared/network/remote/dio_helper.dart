@@ -32,7 +32,7 @@ class DioHelper {
     return await dio.get(
       url,
       queryParameters: query,
-      options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
+      options: Options(headers: {'authorization': 'Volunhero__$token'}),
     );
   }
 
@@ -63,4 +63,25 @@ class DioHelper {
       options: Options(headers: {'Authorization': 'Volunhero__ $token'}),
     );
   }
+
+
+  static Future<Response> patchData({
+    required String url,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    try {
+      return dio.patch(
+        url,
+        queryParameters: query,
+        data: data,
+        options: Options(headers: {'authorization': 'Volunhero__$token'}),
+      );
+    } catch (e) {
+      throw Exception('Failed to patch data: $e');
+    }
+  }
+
+
 }

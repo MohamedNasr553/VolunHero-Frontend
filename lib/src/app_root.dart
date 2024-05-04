@@ -13,6 +13,7 @@ import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart
 import 'package:flutter_code/modules/GeneralView/Education/Education_Page.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
+import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/MedicalHelp/MedicalHelp_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
@@ -51,8 +52,10 @@ class AppRoot extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
-        home: UserSignupPage(),
+        home: LoginPage(),
       ),
     );
   }
 }
+
+

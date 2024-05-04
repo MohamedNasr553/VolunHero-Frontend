@@ -8,7 +8,7 @@ class LoginModel{
   LoginModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     access_token = json['access_token'];
-    refresh_token = json['refresh_token'];
+    refresh_token = json['refresh_Token'];
   }
 }
 //{_id: 662e2849c4ed7f0e0e58eff6, role: User, iat: 1714329692, exp: 1714331492}
@@ -32,5 +32,15 @@ class DecodedToken {
       iat: map['iat'],
       exp: map['exp'],
     );
+  }
+
+  @override
+  String toString() {
+    return '{'
+        '"id": "${id ?? ''}", '
+        '"role": "${role ?? ''}", '
+        '"iat": $iat, '
+        '"exp": $exp'
+        '}';
   }
 }

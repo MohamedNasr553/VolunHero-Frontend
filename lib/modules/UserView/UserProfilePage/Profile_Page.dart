@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -70,326 +73,477 @@ class ProfilePage extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: defaultColor,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/arrow_left_white.svg',
+    return BlocConsumer<UserLoginCubit,UserLoginStates>(
+      listener: (context,state){},
+      builder: (context,state){
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: defaultColor,
+            leading: IconButton(
+              icon: SvgPicture.asset(
+                'assets/images/arrow_left_white.svg',
+              ),
+              onPressed: () {
+                navigateAndFinish(context, const VolunHeroUserLayout());
+              },
+            ),
           ),
-          onPressed: () {
-            navigateAndFinish(context, const VolunHeroUserLayout());
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Profile and Cover photo
-            Stack(
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Cover Photo
-                Container(
-                  height: screenHeight / 7.5,
-                  width: double.infinity,
-                  color: defaultColor,
-                ),
-                // Upload Cover Photo Icon
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 1.14,
-                    top: screenHeight / 12.5,
-                  ),
-                  child: IconButton(
-                    // Upload Cover Photo from mobile Gallery
-                    onPressed: _uploadPhoto,
-                    icon: CircleAvatar(
-                      radius: 15.0,
-                      backgroundColor: Colors.grey[400],
-                      child: const Icon(
-                        Icons.camera_alt_outlined,
-                        size: 20.0,
-                        color: Colors.black,
-                      ),
+                // Profile and Cover photo
+                Stack(
+                  children: [
+                    // Cover Photo
+                    Container(
+                      height: screenHeight / 7.5,
+                      width: double.infinity,
+                      color: defaultColor,
                     ),
-                  ),
-                ),
-                // Profile Photo
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 25,
-                    top: screenHeight / 13.5,
-                  ),
-                  child: Stack(
-                    alignment: AlignmentDirectional.bottomEnd,
-                    children: [
-                      const CircleAvatar(
-                        radius: 45.0,
-                        backgroundImage: AssetImage('assets/images/man_photo.png'),
+                    // Upload Cover Photo Icon
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 1.14,
+                        top: screenHeight / 12.5,
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          width: 25,
-                          height: 25,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade400,
-                          ),
+                      child: IconButton(
+                        // Upload Cover Photo from mobile Gallery
+                        onPressed: _uploadPhoto,
+                        icon: CircleAvatar(
+                          radius: 15.0,
+                          backgroundColor: Colors.grey[400],
                           child: const Icon(
                             Icons.camera_alt_outlined,
-                            size: 18,
+                            size: 20.0,
                             color: Colors.black,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            // Username & UserEmail
-            Padding(
-              padding: EdgeInsetsDirectional.only(
-                start: screenWidth / 30,
-                top: screenHeight / 70,
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    userName,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.black.withOpacity(0.7),
-                      fontWeight: FontWeight.w700,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 1.0,
-                  ),
-                  Text(
-                    userEmail,
-                    style: TextStyle(
-                      fontSize: 9.0,
-                      color: Colors.black.withOpacity(0.5),
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: screenHeight / 90),
-            // Personal Details
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      blurRadius: 10.0,
-                      spreadRadius: -5.0,
-                      offset: const Offset(10.0, 10.0), // Right and bottom shadow
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                    // Profile Photo
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 25,
+                        top: screenHeight / 13.5,
+                      ),
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
                         children: [
-                          const Text(
-                            "Personal Details",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontFamily: "Poppins",
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          const CircleAvatar(
+                            radius: 45.0,
+                            backgroundImage: AssetImage('assets/images/man_photo.png'),
                           ),
-                          const Spacer(),
-                          InkWell(
-                            onTap: () {
-                              navigateToPage(context, UserEditProfile());
-                            },
+                          GestureDetector(
+                            onTap: () {},
                             child: Container(
+                              width: 25,
+                              height: 25,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: HexColor("027E81"),
-                                ),
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade400,
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.only(
-                                  left: 8.0,
-                                  right: 8.0,
-                                  bottom: 4.0,
-                                  top: 4.0,
-                                ),
-                                child: Text(
-                                  "Edit Profile",
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: "Poppins",
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 18,
+                                color: Colors.black,
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: screenHeight / 80),
-                      Row(
-                        children: [
-                          SvgPicture.string(
-                            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>',
                           ),
-                          SizedBox(
-                            width: screenWidth / 30,
-                          ),
-                          SizedBox(
-                            width: screenWidth / 1.5,
-                            child: Text(
-                              university,
-                            ),
-                          )
                         ],
                       ),
-                      SizedBox(height: screenHeight / 60),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on_outlined),
-                          SizedBox(width: screenWidth / 30),
-                          SizedBox(
-                            width: screenWidth / 1.5,
-                            child: Text(
-                              "Lives in $city",
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: screenHeight / 70,
-                      ),
-                      const Text(
-                        "Contact Info",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight / 80),
-                      Row(
-                        children: [
-                          const Icon(Icons.phone),
-                          SizedBox(width: screenWidth / 30),
-                          SizedBox(
-                            width: screenWidth / 1.5,
-                            child: Text(
-                              phoneNumber,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            // Create post
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      blurRadius: 10.0,
-                      spreadRadius: -5.0,
-                      offset: const Offset(10.0, 10.0), // Right and bottom shadow
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                // Username & UserEmail
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 30,
+                    top: screenHeight / 70,
+                  ),
+                  child: Row(
                     children: [
-                      const Text(
-                        "Your Posts",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start ,
+                        children: [
+                          Text(
+                           "${UserLoginCubit.get(context).loggedInUser!.userName}",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.black.withOpacity(0.7),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 1.0,
+                          ),
+                          Text(
+                              UserLoginCubit.get(context).loggedInUser!.email,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black.withOpacity(0.5),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: screenHeight / 100),
-                      Container(
-                        height: 1,
-                        color: Colors.grey.shade300,
-                      ),
+                      Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(left: screenWidth / 20),
+                        padding: const EdgeInsets.all(14.0),
                         child: Row(
                           children: [
-                            Container(
-                              width: screenWidth / 1.5,
-                              child: TextFormField(
-                                controller: postController,
-                                decoration: const InputDecoration(
-                                  hintText: "What's on your mind ?",
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                  ),
-                                  border:
-                                      InputBorder.none, // Hide the border line
+                            Text(
+                              "Specification: ",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.black.withOpacity(0.7),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                                "${UserLoginCubit.get(context).loggedInUser!.specification}",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: defaultColor,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                maxLines: null,
-                              ),
-                            ),
-                            const Spacer(),
-                            IconButton(
-                              // Upload photo from device Gallery
-                              onPressed: _uploadPhoto,
-                              icon: Image.asset(
-                                'assets/images/Img_box_duotone_line.png',
-                                width: 25.0,
-                                height: 25.0,
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            // Posts
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) => buildPostItem(index, context),
-              separatorBuilder: (context, index) => Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.white,
+                SizedBox(height: screenHeight / 90),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 10.0,
+                          spreadRadius: -5.0,
+                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                "Account Info",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Poppins",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight/100,),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "0",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Posts",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${UserLoginCubit.get(context).loggedInUser!.followers.length}",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Followers",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${UserLoginCubit.get(context).loggedInUser!.following.length}",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Following",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          )
+
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              itemCount: posts.length,
+                // Personal Details
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 10.0,
+                          spreadRadius: -5.0,
+                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text(
+                                "Personal Details",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Poppins",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Spacer(),
+                              InkWell(
+                                onTap: () {
+                                  navigateToPage(context, UserEditProfile());
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(
+                                      color: HexColor("027E81"),
+                                    ),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 8.0,
+                                      right: 8.0,
+                                      bottom: 4.0,
+                                      top: 4.0,
+                                    ),
+                                    child: Text(
+                                      "Edit Profile",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontFamily: "Poppins",
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: screenHeight / 80),
+                          Row(
+                            children: [
+                              SvgPicture.string(
+                                '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>',
+                              ),
+                              SizedBox(
+                                width: screenWidth / 30,
+                              ),
+                              SizedBox(
+                                width: screenWidth / 1.5,
+                                child: Text(
+                                    UserLoginCubit.get(context).loggedInUser!.locations[0],
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: screenHeight / 60),
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on_outlined),
+                              SizedBox(width: screenWidth / 30),
+                              SizedBox(
+                                width: screenWidth / 1.5,
+                                child: Text(
+                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.locations[1]}",
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: screenHeight / 70,
+                          ),
+                          const Text(
+                            "Contact Info",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight / 80),
+                          Row(
+                            children: [
+                              const Icon(Icons.phone),
+                              SizedBox(width: screenWidth / 30),
+                              SizedBox(
+                                width: screenWidth / 1.5,
+                                child: Text(
+                                  UserLoginCubit.get(context).loggedInUser!.phone,
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Create post
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 10.0,
+                          spreadRadius: -5.0,
+                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Your Posts",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          SizedBox(height: screenHeight / 100),
+                          Container(
+                            height: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: screenWidth / 20),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: screenWidth / 1.5,
+                                  child: TextFormField(
+                                    controller: postController,
+                                    decoration: const InputDecoration(
+                                      hintText: "What's on your mind ?",
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14.0,
+                                      ),
+                                      border:
+                                      InputBorder.none, // Hide the border line
+                                    ),
+                                    maxLines: null,
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  // Upload photo from device Gallery
+                                  onPressed: _uploadPhoto,
+                                  icon: Image.asset(
+                                    'assets/images/Img_box_duotone_line.png',
+                                    width: 25.0,
+                                    height: 25.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Posts
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) => buildPostItem(index, context),
+                  separatorBuilder: (context, index) => Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                  ),
+                  itemCount: posts.length,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
