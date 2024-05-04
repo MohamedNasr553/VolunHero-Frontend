@@ -25,6 +25,7 @@ import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllFor
 import 'package:flutter_code/modules/OrganizationView/UpdateDonationForm/updateForm.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
+import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 import '../modules/UserView/UserProfilePage/Profile_Page.dart';
@@ -45,7 +46,7 @@ class AppRoot extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (BuildContext context) =>
-                HomeLayoutCubit()..initializeBottomItems()),
+                HomeLayoutCubit()..initializeBottomItems()..getAllPosts(token: userToken!)),
         BlocProvider(
             create: (BuildContext context) =>
                 OrganizationLayoutCubit()..initializeBottomItems()),

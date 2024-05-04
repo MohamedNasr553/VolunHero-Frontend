@@ -44,7 +44,7 @@ class LoginPage extends StatelessWidget {
             }
           if(state is UserLoginErrorState) {
             showToast(
-              text: "Can't log in",
+              text: "Login failed",
               state: ToastStates.ERROR,
             );
           }

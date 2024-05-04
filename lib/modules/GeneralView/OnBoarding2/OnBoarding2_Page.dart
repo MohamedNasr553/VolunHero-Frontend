@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/OrganizationView/OrganizationSignUp/Organization_SignUp_Page.dart';
 import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -15,15 +14,6 @@ class OnBoarding2 extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-
-    void submit(){
-      CacheHelper.saveData(
-        key: 'onBoarding',
-        value: true,
-      ).then((value){
-        navigateAndFinish(context, LoginPage());
-      });
-    }
 
     return Scaffold(
       body: Column(
@@ -78,7 +68,12 @@ class OnBoarding2 extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              submit();
+              CacheHelper.saveData(
+                key: 'onBoarding',
+                value: true,
+              ).then((value){
+                navigateAndFinish(context, const UserSignupPage());
+              });
             },
             text: 'Sign up as a user',
             isUpperCase: false,
@@ -89,7 +84,12 @@ class OnBoarding2 extends StatelessWidget {
           const SizedBox(height: 15.0),
           defaultButton(
             function: () {
-              submit();
+              CacheHelper.saveData(
+                key: 'onBoarding',
+                value: true,
+              ).then((value){
+                navigateAndFinish(context, const OrganizationSignUp());
+              });
             },
             fontWeight: FontWeight.w100,
             fontSize: 17.0,

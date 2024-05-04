@@ -74,7 +74,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     try {
       emit(GetLoggedInUserLoadingState());
 
-      var value = await DioHelper.getData(url: "/users/me", token: token);
+      var value = await DioHelper.getData(
+        url: GET_USER,
+        token: token,
+      );
 
       print(value);
       emit(GetLoggedInUserSuccessState());
@@ -109,7 +112,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       };
       print(requestData.toString());
       var value = await DioHelper.patchData(
-        url: "/users/updateMe",
+        url: UPDATE_USER,
         token: token,
         data: requestData,
       );

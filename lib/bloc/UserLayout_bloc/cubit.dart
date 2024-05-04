@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/camera_view.dart';
 import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
+import 'package:flutter_code/shared/network/endpoints.dart';
+import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeLayoutCubit extends Cubit<LayoutStates> {
@@ -16,6 +19,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   int currentIndex = 0;
   bool isActive = false;
 
+  /// -------------------- Bottom Navigation Bar -----------------------
   List<BottomNavigationBarItem> bottomItems = [];
 
   Widget changeBottomIcon(int index, Widget a, Widget b) {
@@ -111,4 +115,25 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     initializeBottomItems();
     emit(ChangeBottomNavBarState());
   }
+
+  /// ----------------------- Get All Posts API ------------------------
+
+  HomePagePostsResponse? homePagePostsModel;
+  void getAllPosts({required String token}) async {
+      emit(HomePagePostsLoadingState());
+
+      DioHelper.getData(
+        url: GET_ALL_POSTS,
+        token: token,
+      ).then((value){
+        homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
+
+        print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());
+        emit(HomePagePostsSuccessState());
+      }).catchError((error){
+        print(error.toString());
+
+        emit(HomePagePostsErrorState());
+      });
+    }
 }

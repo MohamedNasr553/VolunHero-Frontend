@@ -9,3 +9,9 @@ class HomeChangeBottomNavBarState extends LayoutStates{}
 class ToggleRoadBlocksState extends LayoutStates {}
 
 class ChangeBottomIconColor extends LayoutStates{}
+
+class HomePagePostsLoadingState extends LayoutStates{}
+
+class HomePagePostsSuccessState extends LayoutStates{}
+
+class HomePagePostsErrorState extends LayoutStates{}
