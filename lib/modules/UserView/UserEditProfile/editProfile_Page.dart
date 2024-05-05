@@ -17,7 +17,7 @@ class UserEditProfile extends StatelessWidget {
   var lastNameController = TextEditingController();
   var userNameController = TextEditingController();
   var phoneController = TextEditingController();
-  var locationController = TextEditingController();
+  var addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,7 @@ class UserEditProfile extends StatelessWidget {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        print("Building UserEditProfile widget");
         Map<String, dynamic> oldData = {
           "firstName": UserLoginCubit.get(context).loggedInUser!.firstName,
           "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
@@ -34,6 +35,7 @@ class UserEditProfile extends StatelessWidget {
           "phone": UserLoginCubit.get(context).loggedInUser!.phone,
           "locations": UserLoginCubit.get(context).loggedInUser!.locations,
         };
+        print("Old data: $oldData");
         return Scaffold(
           body: SingleChildScrollView(
             child: Stack(
@@ -118,7 +120,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: firstNameController,
                           type: TextInputType.text,
                           hintText:
-                              '${UserLoginCubit.get(context).loggedInUser!.firstName}',
+                              UserLoginCubit.get(context).loggedInUser!.firstName,
                         ),
                         SizedBox(
                           height: screenHeight / 30,
@@ -141,7 +143,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: lastNameController,
                           type: TextInputType.text,
                           hintText:
-                              '${UserLoginCubit.get(context).loggedInUser!.lastName}',
+                              UserLoginCubit.get(context).loggedInUser!.lastName,
                         ),
                         SizedBox(
                           height: screenHeight / 30,
@@ -164,7 +166,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: userNameController,
                           type: TextInputType.text,
                           hintText:
-                              '${UserLoginCubit.get(context).loggedInUser!.userName}',
+                              UserLoginCubit.get(context).loggedInUser!.userName,
                         ),
                         SizedBox(
                           height: screenHeight / 30,
@@ -187,13 +189,13 @@ class UserEditProfile extends StatelessWidget {
                           controller: phoneController,
                           type: TextInputType.phone,
                           hintText:
-                              '${UserLoginCubit.get(context).loggedInUser!.phone}',
+                              UserLoginCubit.get(context).loggedInUser!.phone,
                         ),
                         SizedBox(
                           height: screenHeight / 30,
                         ),
                         const Text(
-                          "Location",
+                          "Address",
                           style: TextStyle(
                             color: defaultColor,
                             fontWeight: FontWeight.w200,
@@ -207,10 +209,10 @@ class UserEditProfile extends StatelessWidget {
                             // }
                             // return null;
                           },
-                          controller: locationController,
+                          controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
-                              '${UserLoginCubit.get(context).loggedInUser!.locations[0]}',
+                              UserLoginCubit.get(context).loggedInUser!.address,
                         ),
                         SizedBox(
                           height: screenHeight / 15,
@@ -242,12 +244,12 @@ class UserEditProfile extends StatelessWidget {
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
                                           .phone;
-                              oldData["locations"][0] =
-                                  (locationController.text.trim() != "")
-                                      ? locationController.text
+                              oldData["address"] =
+                                  (addressController.text.trim() != "")
+                                      ? addressController.text
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
-                                          .locations[0];
+                                          .address;
                               print(oldData);
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(
@@ -259,9 +261,8 @@ class UserEditProfile extends StatelessWidget {
                                 lastName: oldData["lastName"],
                                 userName: oldData["userName"],
                                 phone: oldData["phone"],
-                                locations: oldData["locations"],
-                              )
-                                  .then((value) {
+                                address: oldData["address"],
+                              ).then((value) {
                                 showToast(
                                   text: "Profile Updated Successfully",
                                   state: ToastStates.SUCCESS,

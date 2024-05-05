@@ -167,13 +167,28 @@ class ProfilePage extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start ,
                         children: [
-                          Text(
-                           "${UserLoginCubit.get(context).loggedInUser!.userName}",
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.black.withOpacity(0.7),
-                              fontWeight: FontWeight.w700,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                               UserLoginCubit.get(context).loggedInUser!.firstName,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.black38.withOpacity(0.7),
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              SizedBox(width: screenWidth / 90),
+                              Text(
+                                UserLoginCubit.get(context).loggedInUser!.lastName,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.black38.withOpacity(0.7),
+                                  fontWeight: FontWeight.w800,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 1.0,
@@ -188,30 +203,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Specification: ",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.black.withOpacity(0.7),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                                "${UserLoginCubit.get(context).loggedInUser!.specification}",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  color: defaultColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                            )
-                          ],
-                        ),
-                      ),
+                      const Spacer(),
                     ],
                   ),
                 ),
@@ -236,9 +228,9 @@ class ProfilePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Account Info",
                                 style: TextStyle(
                                   color: Colors.black,
@@ -401,17 +393,39 @@ class ProfilePage extends StatelessWidget {
                           SizedBox(height: screenHeight / 80),
                           Row(
                             children: [
-                              SvgPicture.string(
-                                '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" /></svg>',
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 180,
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/images/Specification.svg',
+                                ),
                               ),
                               SizedBox(
                                 width: screenWidth / 30,
                               ),
                               SizedBox(
                                 width: screenWidth / 1.5,
-                                child: Text(
-                                    UserLoginCubit.get(context).loggedInUser!.locations[0],
-                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Specification: ",
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.black.withOpacity(0.7),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      UserLoginCubit.get(context).loggedInUser!.specification,
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: defaultColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                )
                               )
                             ],
                           ),
@@ -423,7 +437,7 @@ class ProfilePage extends StatelessWidget {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.locations[1]}",
+                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
                                 ),
                               )
                             ],

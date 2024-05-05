@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
@@ -23,10 +22,18 @@ class UserSidePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    final cubit = UserLoginCubit.get(context);
+
+    // Call getLoggedInUserData when the drawer is opened
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      cubit.getLoggedInUserData(token: userToken!);
+    });
+
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
         var cubit = HomeLayoutCubit.get(context);
+
         return BlocConsumer<UserLoginCubit, UserLoginStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -35,19 +42,40 @@ class UserSidePage extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 children: [
                   UserAccountsDrawerHeader(
-                    accountName: Text(
-                      UserLoginCubit.get(context).loggedInUser?.userName ??
-                          "@username",
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w900,
-                      ),
+                    accountName: Row(
+                      children: [
+                        Text(
+                          UserLoginCubit.get(context).loggedInUser?.firstName ??
+                              "First",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        SizedBox(width: screenWidth / 90),
+                        Text(
+                          UserLoginCubit.get(context).loggedInUser?.lastName ??
+                              "Last",
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        // Text(
+                        //   UserLoginCubit.get(context).loggedInUser?.userName ??
+                        //       "@username",
+                        //   style: const TextStyle(
+                        //     fontSize: 16.0,
+                        //     fontWeight: FontWeight.w900,
+                        //   ),
+                        // ),
+                      ],
                     ),
                     accountEmail: Text(
                       UserLoginCubit.get(context).loggedInUser?.email ??
                           "@username@gmail",
                       style: const TextStyle(
-                        fontSize: 10.0,
+                        fontSize: 11.0,
                         fontWeight: FontWeight.w300,
                       ),
                     ),

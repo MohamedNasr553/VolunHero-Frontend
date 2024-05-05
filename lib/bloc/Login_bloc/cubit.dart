@@ -70,7 +70,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   LoggedInUser? loggedInUser;
 
   Future<String> getLoggedInUserData({required String token}) async {
-    //print("MY TOKEN $token");
     try {
       emit(GetLoggedInUserLoadingState());
 
@@ -81,9 +80,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       print(value);
       emit(GetLoggedInUserSuccessState());
-      loggedInUserModel = LoggedInUserModel.fromJson(value.data);
-      loggedInUserData = loggedInUserModel?.data;
-      loggedInUser = loggedInUserData?.doc;
+      loggedInUser = LoggedInUser.fromJson(value.data['data']['doc']);
 
       print(loggedInUser.toString());
     } catch (error) {
@@ -99,7 +96,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String lastName,
     required String userName,
     required String phone,
-    required List<String> locations,
+    required String address,
   }) async {
     try {
       emit(UpdateLoggedInUserLoadingState());
@@ -108,15 +105,15 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         'lastName': lastName,
         'userName': userName,
         'phone': phone,
-        'locations': locations
+        'address': address
       };
-      print(requestData.toString());
+      print('Request Data: $requestData'.toString());
       var value = await DioHelper.patchData(
         url: UPDATE_USER,
         token: token,
         data: requestData,
       );
-      print(value); // Check the patched data
+      print('Response: $value');
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
       emit(UpdateLoggedInUserErrorState(error.toString()));
