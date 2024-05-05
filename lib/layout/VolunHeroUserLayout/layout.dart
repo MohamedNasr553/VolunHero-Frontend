@@ -9,6 +9,7 @@ class VolunHeroUserLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {

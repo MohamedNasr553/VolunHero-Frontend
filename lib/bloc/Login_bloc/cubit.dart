@@ -56,7 +56,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       print("+++++++++++++++++++++++++++++++\n");
       showToast(text: "Logged in Successfully", state: ToastStates.SUCCESS);
       //getLoggedInUserData(token: loginModel!.refresh_token!);
-
+      //getLoggedInUserData(token: loginModel!.refresh_token!);
       return "Logged in Successfully";
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));

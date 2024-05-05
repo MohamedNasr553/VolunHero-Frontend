@@ -281,7 +281,7 @@ class ProfilePage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).loggedInUser!.followers.length}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1)?UserLoginCubit.get(context).loggedInUser!.followers.length:0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -304,7 +304,7 @@ class ProfilePage extends StatelessWidget {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).loggedInUser!.following.length}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1)?UserLoginCubit.get(context).loggedInUser!.following.length:0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),

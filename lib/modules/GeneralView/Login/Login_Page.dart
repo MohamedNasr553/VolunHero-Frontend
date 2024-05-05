@@ -28,13 +28,16 @@ class LoginPage extends StatelessWidget {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, state) {
           if (state is UserLoginSuccessState) {
-            // Save User Token
+              // Save User Token
               CacheHelper.saveData(
                 key: "token",
                 value: UserLoginCubit.get(context).loginModel!.refresh_token,
                 // UserLoginCubit.get(context).loginModel?.refresh_token
               ).then((value) {
-                navigateAndFinish(context, const VolunHeroUserLayout());
+
+                  navigateAndFinish(context, const VolunHeroUserLayout());
+
+
               });
 
               showToast(
@@ -240,9 +243,11 @@ class LoginPage extends StatelessWidget {
                                         email: emailAddressController.text,
                                         password: passwordController.text,
                                       ).then((value) {
-                                        print(value);
+                                         print(value);
                                          UserLoginCubit.get(context).getLoggedInUserData(
-                                            token: UserLoginCubit.get(context).loginModel?.refresh_token ?? "" );
+                                             token: UserLoginCubit.get(context).loginModel?.refresh_token ?? "" ).then((value) {
+                                               navigateAndFinish(context, VolunHeroUserLayout());
+                                         });
                                       });
 
                                       userToken = await getUserToken();
