@@ -2,12 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/modules/UserView/UserDrawer/drawer.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -24,6 +26,12 @@ class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    UserLoginCubit.get(context).getLoggedInUserData(token: userToken!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -270,9 +278,16 @@ class _HomePageState extends State<HomePage> {
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
-    } else {
-      durationText =
-      '${difference.inMinutes.remainder(60)}m .';
+    }
+    else if(difference.inMinutes < 1){
+      durationText = '${difference.inSeconds}s .';
+    }
+    else {
+      durationText = '${difference.inMinutes.remainder(60)}m .';
+    }
+    // In Days
+    if(difference.inHours >= 24){
+      durationText = '${difference.inDays}d .';
     }
 
     return Padding(

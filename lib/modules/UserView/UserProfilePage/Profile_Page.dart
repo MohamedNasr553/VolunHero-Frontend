@@ -5,25 +5,30 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   List<Map<String, dynamic>> posts = [];
 
   @override
-  Widget build(BuildContext context) {
-    String userName = "Mahmoud Nader";
-    String userEmail = "mahnader222@gmail.com";
-    String phoneNumber = "+201127264619";
-    String university =
-        "Faculty of Computers and Artificial intelligence - Cairo University";
-    String city = "Cairo";
+  void initState() {
+    super.initState();
+    UserLoginCubit.get(context).getLoggedInUserData(token: userToken!);
+  }
 
+  @override
+  Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     var postController = TextEditingController();
@@ -265,7 +270,7 @@ class ProfilePage extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                  
+
                                     ],
                                   ),
                                 ),
@@ -288,7 +293,7 @@ class ProfilePage extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                  
+
                                     ],
                                   ),
                                 ),
@@ -311,7 +316,7 @@ class ProfilePage extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                  
+
                                     ],
                                   ),
                                 ),

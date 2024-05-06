@@ -4,31 +4,8 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/modules/GeneralView/AllQuestions/AllQuestions_Page.dart';
-import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
-import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
-import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
-import 'package:flutter_code/modules/GeneralView/Education/Education_Page.dart';
-import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
-import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
-import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
-import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
-import 'package:flutter_code/modules/GeneralView/MedicalHelp/MedicalHelp_Page.dart';
-import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
-import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
-import 'package:flutter_code/modules/GeneralView/ResetPassword/ResetPassword_Page.dart';
-import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
-import 'package:flutter_code/modules/GeneralView/Settings/yourAccountScreen.dart';
-import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllForms.dart';
-import 'package:flutter_code/modules/OrganizationView/UpdateDonationForm/updateForm.dart';
-import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
-import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
 import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
-
-import '../modules/UserView/UserProfilePage/Profile_Page.dart';
 
 class AppRoot extends StatelessWidget {
   final bool onBoarding;

@@ -125,9 +125,11 @@ Widget updateProfileTextFormField({
   String? labelText,
   required String hintText,
   Color textFieldColor = Colors.black,
+  bool readonly = false,
 }) =>
     TextFormField(
       cursorColor: defaultColor,
+      readOnly: readonly,
       style: TextStyle(
         fontSize: 15.0,
         color: textFieldColor.withOpacity(.6),
@@ -148,8 +150,9 @@ Widget updateProfileTextFormField({
         ),
         hintText: hintText,
         hintStyle: TextStyle(
-          fontSize: 14.0,
-          color: Colors.grey.shade500,
+          fontSize: 15.5,
+          color: Colors.black.withOpacity(0.65),
+          fontWeight: FontWeight.w500,
         ),
         focusColor: textFieldColor,
         enabledBorder: const UnderlineInputBorder(

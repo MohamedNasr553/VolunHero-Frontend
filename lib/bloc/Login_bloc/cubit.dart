@@ -103,17 +103,19 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       Map<String, dynamic> requestData = {
         'firstName': firstName,
         'lastName': lastName,
-        'userName': userName,
-        'phone': phone,
-        'address': address
+        'userName':userName,
+        'phone':phone,
+        'address': address,
       };
-      print('Request Data: $requestData'.toString());
+      print(requestData.toString());
+
       var value = await DioHelper.patchData(
         url: UPDATE_USER,
         token: token,
         data: requestData,
       );
-      print('Response: $value');
+
+      print(value);
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
       emit(UpdateLoggedInUserErrorState(error.toString()));

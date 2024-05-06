@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/components/constants.dart';
+import 'package:flutter_code/shared/network/local/CacheHelper.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -25,17 +26,38 @@ class UserEditProfile extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is UpdateLoggedInUserSuccessState) {
+          // Save User Token
+          CacheHelper.saveData(
+            key: "token",
+            value: userToken,
+          ).then((value) {
+            navigateAndFinish(context, const ProfilePage());
+          });
+          showToast(
+            text: "Profile Updated Successfully",
+            state: ToastStates.SUCCESS,
+          );
+        }
+        if (state is UpdateLoggedInUserErrorState) {
+          showToast(
+            text: "Something went wrong",
+            state: ToastStates.ERROR,
+          );
+        }
+      },
       builder: (context, state) {
-        print("Building UserEditProfile widget");
         Map<String, dynamic> oldData = {
           "firstName": UserLoginCubit.get(context).loggedInUser!.firstName,
           "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
           "userName": UserLoginCubit.get(context).loggedInUser!.userName,
           "phone": UserLoginCubit.get(context).loggedInUser!.phone,
-          "locations": UserLoginCubit.get(context).loggedInUser!.locations,
+          "address": UserLoginCubit.get(context).loggedInUser!.address,
         };
+
         print("Old data: $oldData");
+
         return Scaffold(
           body: SingleChildScrollView(
             child: Stack(
@@ -55,14 +77,12 @@ class UserEditProfile extends StatelessWidget {
                     top: screenHeight / 15,
                   ),
                   child: IconButton(
-                    onPressed: () {
-                      navigateAndFinish(context, ProfilePage());
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 23,
+                    icon: SvgPicture.asset(
+                      'assets/images/arrow_left_white.svg',
                     ),
+                    onPressed: () {
+                      navigateAndFinish(context, const ProfilePage());
+                    },
                   ),
                 ),
                 Padding(
@@ -112,19 +132,15 @@ class UserEditProfile extends StatelessWidget {
                         ),
                         updateProfileTextFormField(
                           validate: (value) {
-                            // if(value!.isEmpty){
-                            //   return 'First name is required';
-                            // }
-                            // return null;
+                            return null;
                           },
                           controller: firstNameController,
                           type: TextInputType.text,
-                          hintText:
-                              UserLoginCubit.get(context).loggedInUser!.firstName,
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .firstName,
                         ),
-                        SizedBox(
-                          height: screenHeight / 30,
-                        ),
+                        SizedBox(height: screenHeight / 30),
                         const Text(
                           "Last Name",
                           style: TextStyle(
@@ -135,42 +151,48 @@ class UserEditProfile extends StatelessWidget {
                         ),
                         updateProfileTextFormField(
                           validate: (value) {
-                            // if(value!.isEmpty){
-                            //   return 'Last name is required';
-                            // }
-                            // return null;
+                            return null;
                           },
                           controller: lastNameController,
                           type: TextInputType.text,
-                          hintText:
-                              UserLoginCubit.get(context).loggedInUser!.lastName,
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .lastName,
                         ),
-                        SizedBox(
-                          height: screenHeight / 30,
-                        ),
-                        const Text(
-                          "Username",
-                          style: TextStyle(
-                            color: defaultColor,
-                            fontWeight: FontWeight.w200,
-                            fontSize: 14.0,
-                          ),
+                        SizedBox(height: screenHeight / 30),
+                        Row(
+                          children: [
+                            const Text(
+                              "Username",
+                              style: TextStyle(
+                                color: defaultColor,
+                                fontWeight: FontWeight.w200,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                            SizedBox(width: screenWidth / 50),
+                            const Text(
+                              "*Read only",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 8.0,
+                              ),
+                            ),
+                          ],
                         ),
                         updateProfileTextFormField(
                           validate: (value) {
-                            // if(value!.isEmpty){
-                            //   return 'Username is required';
-                            // }
-                            // return null;
+                            return null;
                           },
+                          readonly: true,
                           controller: userNameController,
                           type: TextInputType.text,
-                          hintText:
-                              UserLoginCubit.get(context).loggedInUser!.userName,
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .userName,
                         ),
-                        SizedBox(
-                          height: screenHeight / 30,
-                        ),
+                        SizedBox(height: screenHeight / 30),
                         const Text(
                           "Phone Number",
                           style: TextStyle(
@@ -181,19 +203,14 @@ class UserEditProfile extends StatelessWidget {
                         ),
                         updateProfileTextFormField(
                           validate: (value) {
-                            // if(value!.isEmpty){
-                            //   return 'Phone number must not be empty';
-                            // }
-                            // return null;
+                            return null;
                           },
                           controller: phoneController,
                           type: TextInputType.phone,
                           hintText:
                               UserLoginCubit.get(context).loggedInUser!.phone,
                         ),
-                        SizedBox(
-                          height: screenHeight / 30,
-                        ),
+                        SizedBox(height: screenHeight / 30),
                         const Text(
                           "Address",
                           style: TextStyle(
@@ -204,19 +221,14 @@ class UserEditProfile extends StatelessWidget {
                         ),
                         updateProfileTextFormField(
                           validate: (value) {
-                            // if(value!.isEmpty){
-                            //   return 'Location must not be empty';
-                            // }
-                            // return null;
+                            return null;
                           },
                           controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
                               UserLoginCubit.get(context).loggedInUser!.address,
                         ),
-                        SizedBox(
-                          height: screenHeight / 15,
-                        ),
+                        SizedBox(height: screenHeight / 15),
                         defaultButton(
                           function: () {
                             if (formKey.currentState!.validate()) {
@@ -250,30 +262,18 @@ class UserEditProfile extends StatelessWidget {
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
                                           .address;
-                              print(oldData);
+
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(
-                                token: UserLoginCubit.get(context)
-                                        .loginModel
-                                        ?.refresh_token ??
-                                    "",
+                                token: userToken ?? "",
                                 firstName: oldData["firstName"],
                                 lastName: oldData["lastName"],
                                 userName: oldData["userName"],
                                 phone: oldData["phone"],
                                 address: oldData["address"],
-                              ).then((value) {
-                                showToast(
-                                  text: "Profile Updated Successfully",
-                                  state: ToastStates.SUCCESS,
-                                );
-                                UserLoginCubit.get(context).getLoggedInUserData(
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel
-                                            ?.refresh_token ??
-                                        "");
-                                navigateAndFinish(
-                                    context, const VolunHeroUserLayout());
+                              )
+                                  .then((value) {
+                                print('Updated Data: $oldData');
                               });
                             }
                           },

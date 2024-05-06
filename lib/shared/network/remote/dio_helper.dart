@@ -64,7 +64,6 @@ class DioHelper {
     );
   }
 
-
   static Future<Response> patchData({
     required String url,
     required Map<String, dynamic> data,
@@ -76,12 +75,12 @@ class DioHelper {
         url,
         queryParameters: query,
         data: data,
-        options: Options(headers: {'authorization': 'Volunhero__$token'}),
+        options: Options(headers: {
+          'authorization': 'Volunhero__$token',
+        }),
       );
     } catch (e) {
       throw Exception('Failed to patch data: $e');
     }
   }
-
-
 }

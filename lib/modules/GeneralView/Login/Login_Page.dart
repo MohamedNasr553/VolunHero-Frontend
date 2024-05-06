@@ -27,278 +27,290 @@ class LoginPage extends StatelessWidget {
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, state) {
-          if (state is UserLoginSuccessState) {
-              // Save User Token
-              CacheHelper.saveData(
-                key: "token",
-                value: UserLoginCubit.get(context).loginModel!.refresh_token,
-                // UserLoginCubit.get(context).loginModel?.refresh_token
-              ).then((value) {
+      if (state is UserLoginSuccessState) {
+        // Save User Token
+        CacheHelper.saveData(
+          key: "token",
+          value: UserLoginCubit.get(context).loginModel!.refresh_token,
+          // UserLoginCubit.get(context).loginModel?.refresh_token
+        ).then((value) {
+          navigateAndFinish(context, const VolunHeroUserLayout());
+        });
 
-                  navigateAndFinish(context, const VolunHeroUserLayout());
-
-
-              });
-
-              showToast(
-                text: "Logged in Successfully",
-                state: ToastStates.SUCCESS,
-              );
-            }
-          if(state is UserLoginErrorState) {
-            showToast(
-              text: "Login failed",
-              state: ToastStates.ERROR,
-            );
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            body: SingleChildScrollView(
-              child: Stack(
-                alignment: Alignment.topCenter,
+        showToast(
+          text: "Logged in Successfully",
+          state: ToastStates.SUCCESS,
+        );
+      }
+      if (state is UserLoginErrorState) {
+        showToast(
+          text: "Login failed",
+          state: ToastStates.ERROR,
+        );
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              SizedBox(
+                height: screenHeight / 0.5,
+                child: SvgPicture.asset(
+                  "assets/images/Vector_401.svg",
+                  width: double.infinity,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: screenHeight / 0.5,
-                    child: SvgPicture.asset(
-                      "assets/images/Vector_401.svg",
-                      width: double.infinity,
-                      alignment: Alignment.topCenter,
+                  SizedBox(height: screenHeight / 14),
+                  SizedBox(height: screenHeight / 17),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 50,
+                      top: screenHeight / 10,
+                    ),
+                    child: const Row(
+                      children: [
+                        StrokeText(
+                          text: "We",
+                          textStyle: TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.w900,
+                            color: Color.fromARGB(255, 47, 129, 131),
+                          ),
+                          strokeWidth: 3.0,
+                          strokeColor: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 2.0,
+                        ),
+                        Text(
+                          "lcome Back !",
+                          style: TextStyle(
+                            fontSize: 32.0,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: screenHeight / 14),
-                      SizedBox(height: screenHeight / 17),
-                      Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          start: screenWidth / 50,
-                          top: screenHeight / 10,
-                        ),
-                        child: const Row(
+                  SizedBox(height: screenHeight / 15),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Form(
+                      key: formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            StrokeText(
-                              text: "We",
+                            const StrokeText(
+                              text: "Email Address",
                               textStyle: TextStyle(
-                                fontSize: 32.0,
-                                fontWeight: FontWeight.w900,
-                                color: Color.fromARGB(255, 47, 129, 131),
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
                               ),
-                              strokeWidth: 3.0,
-                              strokeColor: Colors.white,
+                              strokeWidth: 1.0,
+                              strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              width: 2.0,
+                            const SizedBox(
+                              height: 10.0,
                             ),
-                            Text(
-                              "lcome Back !",
-                              style: TextStyle(
-                                fontSize: 32.0,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
+                            defaultTextFormField(
+                              validate: (value) {
+                                if (value!.isEmpty) {
+                                  return 'please enter your email address';
+                                }
+                                return null;
+                              },
+                              controller: emailAddressController,
+                              type: TextInputType.emailAddress,
+                              hintText: 'Youremail@gmail.com',
+                            ),
+                            SizedBox(height: screenHeight / 40),
+                            const StrokeText(
+                              text: "Password",
+                              textStyle: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
                               ),
+                              strokeWidth: 1.0,
+                              strokeColor: Colors.black,
+                            ),
+                            const SizedBox(
+                              height: 6.0,
+                            ),
+                            TextFormField(
+                              obscureText:
+                                  (UserLoginCubit.get(context).isPassword)
+                                      ? true
+                                      : false,
+                              controller: passwordController,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'please enter your Password';
+                                }
+                                return null;
+                              },
+                              style: const TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                                hintText: 'Password',
+                                hintStyle: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey.shade500,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade400,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    UserLoginCubit.get(context).suffix,
+                                  ),
+                                  onPressed: () {
+                                    UserLoginCubit.get(context)
+                                        .changeVisibility();
+                                  },
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight / 90),
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: screenWidth / 1.55,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  navigateAndFinish(context, ForgetPassword());
+                                },
+                                child: const Text(
+                                  "Forget Password?",
+                                  style: TextStyle(
+                                    fontSize: 11.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight / 5.0),
+                            (state is! UserLoginLoadingState)
+                                ? defaultButton(
+                                    function: () async {
+                                      if (formKey.currentState!.validate()) {
+                                        UserLoginCubit.get(context)
+                                            .loginUser(
+                                          email: emailAddressController.text,
+                                          password: passwordController.text,
+                                        )
+                                            .then((value) {
+                                          print(value);
+                                          UserLoginCubit.get(context)
+                                              .getLoggedInUserData(
+                                                  token: UserLoginCubit.get(
+                                                              context)
+                                                          .loginModel
+                                                          ?.refresh_token ??
+                                                      "")
+                                              .then((value) {
+                                            navigateAndFinish(
+                                                context, VolunHeroUserLayout());
+                                          });
+                                        });
+
+                                        userToken = await getUserToken();
+                                        print(userToken);
+                                      }
+                                    },
+                                    text: "Login",
+                                    isUpperCase: false,
+                                    fontWeight: FontWeight.w300,
+                                    width: screenWidth / 1.1,
+                                  )
+                                : const Center(
+                                    child: CircularProgressIndicator(
+                                      color: defaultColor,
+                                    ),
+                                  ),
+                            SizedBox(height: screenHeight / 70),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Don’t have an account?",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w200,
+                                    color: Colors.black.withOpacity(0.5),
+                                  ),
+                                ),
+                                SizedBox(width: screenWidth / 80),
+                                InkWell(
+                                  onTap: () {
+                                    navigateAndFinish(
+                                        context, const OnBoarding2());
+                                  },
+                                  child: const Text(
+                                    "Sign Up",
+                                    style: TextStyle(
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: defaultColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: screenHeight / 15),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Form(
-                          key: formKey,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const StrokeText(
-                                  text: "Email Address",
-                                  textStyle: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
-                                  strokeWidth: 1.0,
-                                  strokeColor: Colors.black,
-                                ),
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                                defaultTextFormField(
-                                  validate: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'please enter your email address';
-                                    }
-                                    return null;
-                                  },
-                                  controller: emailAddressController,
-                                  type: TextInputType.emailAddress,
-                                  hintText: 'Youremail@gmail.com',
-                                ),
-                                SizedBox(height: screenHeight / 40),
-                                const StrokeText(
-                                  text: "Password",
-                                  textStyle: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black,
-                                  ),
-                                  strokeWidth: 1.0,
-                                  strokeColor: Colors.black,
-                                ),
-                                const SizedBox(
-                                  height: 6.0,
-                                ),
-                                TextFormField(
-                                  obscureText: (UserLoginCubit.get(context).isPassword) ? true : false,
-                                  controller: passwordController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'please enter your Password';
-                                    }
-                                    return null;
-                                  },
-                                  style: const TextStyle(
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  decoration: InputDecoration(
-                                    labelStyle: const TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                    hintText: 'Password',
-                                    hintStyle: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.grey.shade500,
-                                    ),
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 20,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade400,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade400,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                      borderSide: BorderSide(
-                                        color: Colors.grey.shade400,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        UserLoginCubit.get(context).suffix,
-                                      ),
-                                      onPressed: () {
-                                        UserLoginCubit.get(context)
-                                            .changeVisibility();
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight / 90),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.only(
-                                    start: screenWidth / 1.55,
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      navigateAndFinish(
-                                          context, ForgetPassword());
-                                    },
-                                    child: const Text(
-                                      "Forget Password?",
-                                      style: TextStyle(
-                                        fontSize: 11.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight / 5.0),
-                                (state is! UserLoginLoadingState)?
-                                defaultButton(
-                                  function: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      UserLoginCubit.get(context).loginUser(
-                                        email: emailAddressController.text,
-                                        password: passwordController.text,
-                                      ).then((value) {
-                                         print(value);
-                                         UserLoginCubit.get(context).getLoggedInUserData(
-                                             token: UserLoginCubit.get(context).loginModel?.refresh_token ?? "" ).then((value) {
-                                               navigateAndFinish(context, VolunHeroUserLayout());
-                                         });
-                                      });
-
-                                      userToken = await getUserToken();
-                                      print(userToken);
-                                    }
-                                  },
-                                  text: "Login",
-                                  isUpperCase: false,
-                                  fontWeight: FontWeight.w300,
-                                  width: screenWidth / 1.1,
-                                ): const Center(child: CircularProgressIndicator(color:defaultColor ,) ,),
-                                SizedBox(height: screenHeight / 70),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Don’t have an account?",
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w200,
-                                        color: Colors.black.withOpacity(0.5),
-                                      ),
-                                    ),
-                                    SizedBox(width: screenWidth / 80),
-                                    InkWell(
-                                      onTap: () {
-                                        navigateAndFinish(
-                                            context, const OnBoarding2());
-                                      },
-                                      child: const Text(
-                                        "Sign Up",
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: defaultColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          );
-        });
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

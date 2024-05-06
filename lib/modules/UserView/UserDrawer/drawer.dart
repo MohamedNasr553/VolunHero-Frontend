@@ -22,12 +22,10 @@ class UserSidePage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    final cubit = UserLoginCubit.get(context);
 
-    // Call getLoggedInUserData when the drawer is opened
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      cubit.getLoggedInUserData(token: userToken!);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   cubit.getLoggedInUserData(token: userToken!);
+    // });
 
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
@@ -87,9 +85,11 @@ class UserSidePage extends StatelessWidget {
                       color: defaultColor,
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
+                  ListTile(
+                    leading: Container(
+                      alignment: Alignment.centerLeft,
+                      width: screenWidth / 14,
+                      child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {},
                         icon: SvgPicture.asset(
@@ -98,28 +98,24 @@ class UserSidePage extends StatelessWidget {
                           height: 30.0,
                         ),
                       ),
-                      SizedBox(
-                        width: screenWidth / 40,
+                    ),
+                    title: const Text(
+                      'Profile',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
                       ),
-                      InkWell(
-                        onTap: () {
-                          // Navigator.pop(context); // Close the drawer
-                          navigateAndFinish(context, ProfilePage());
-                        },
-                        child: const Text(
-                          'Profile',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontFamily: 'Roboto',
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
+                    onTap: () {
+                      navigateAndFinish(context, const ProfilePage());
+                    },
                   ),
-                  Row(
-                    children: [
-                      IconButton(
+                  ListTile(
+                    leading: Container(
+                      alignment: Alignment.centerLeft,
+                      width: screenWidth / 14,
+                      child: IconButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {},
                         icon: SvgPicture.asset(
@@ -128,23 +124,18 @@ class UserSidePage extends StatelessWidget {
                           height: 30.0,
                         ),
                       ),
-                      SizedBox(
-                        width: screenWidth / 40,
+                    ),
+                    title: const Text(
+                      'RoadBlocks',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context); // Close the drawer
-                        },
-                        child: const Text(
-                          'RoadBlocks',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontFamily: 'Roboto',
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
                   ListTile(
                     leading: const Icon(
@@ -164,11 +155,8 @@ class UserSidePage extends StatelessWidget {
                     },
                   ),
                   ListTile(
-                    contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 35,
-                    ),
                     leading: const Icon(
-                      Icons.local_phone_outlined,
+                      Icons.phone,
                       size: 30.0,
                     ),
                     title: const Text(
@@ -186,9 +174,6 @@ class UserSidePage extends StatelessWidget {
                   ),
                   const Divider(),
                   ListTile(
-                    contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 35,
-                    ),
                     leading: const Icon(
                       Icons.info_outline,
                       size: 30.0,
@@ -206,9 +191,6 @@ class UserSidePage extends StatelessWidget {
                     },
                   ),
                   ListTile(
-                    contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 35,
-                    ),
                     leading: const Icon(
                       Icons.settings_outlined,
                       size: 30.0,
@@ -228,8 +210,8 @@ class UserSidePage extends StatelessWidget {
                   ),
                   ListTile(
                     contentPadding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 5.5,
-                      start: screenWidth / 35,
+                      top: screenHeight / 7,
+                      start: screenWidth / 30,
                     ),
                     leading: const Icon(
                       Icons.add_circle_outline_sharp,
@@ -249,7 +231,7 @@ class UserSidePage extends StatelessWidget {
                   ),
                   ListTile(
                     contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 35,
+                      start: screenWidth / 30,
                     ),
                     leading: const Icon(
                       Icons.exit_to_app_outlined,
