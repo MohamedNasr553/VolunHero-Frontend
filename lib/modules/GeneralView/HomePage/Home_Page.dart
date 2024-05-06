@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     UserLoginCubit.get(context).getLoggedInUserData(token: userToken!);
+    HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
   }
 
   @override

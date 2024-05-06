@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/CreatePost_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
@@ -32,6 +33,9 @@ class AppRoot extends StatelessWidget {
         ),
         BlocProvider(
           create: (BuildContext context) => UserLoginCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => CreatePostCubit(),
         ),
       ],
       child: MaterialApp(
