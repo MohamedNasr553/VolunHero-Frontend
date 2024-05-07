@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
+import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/components/constants.dart';
@@ -108,7 +109,7 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      navigateAndFinish(context, const ProfilePage());
+                      navigateAndFinish(context, const AnotherUserProfile());
                     },
                   ),
                   ListTile(

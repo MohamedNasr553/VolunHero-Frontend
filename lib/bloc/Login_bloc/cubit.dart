@@ -26,6 +26,16 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangePasswordState());
   }
 
+  bool follow = false;
+
+  void changeFollow() {
+    follow = !follow;
+    emit(LoginChangeFollowState());
+  }
+
+
+
+
   Future<String> loginUser({
     required String email,
     required String password,

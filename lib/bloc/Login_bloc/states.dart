@@ -13,6 +13,7 @@ class UserLoginLoadingState extends UserLoginStates {}
 class UserLoginSuccessState extends UserLoginStates {}
 
 class LoginChangePasswordState extends UserLoginStates {}
+class LoginChangeFollowState extends UserLoginStates {}
 
 class GetLoggedInUserLoadingState extends UserLoginStates {}
 
