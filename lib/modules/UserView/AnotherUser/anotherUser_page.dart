@@ -37,11 +37,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var postController = TextEditingController();
 
-    return BlocConsumer<UserLoginCubit,UserLoginStates>(
-      listener: (context,state){},
-      builder: (context,state){
+    return BlocConsumer<UserLoginCubit, UserLoginStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: defaultColor,
@@ -81,9 +80,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         children: [
                           const CircleAvatar(
                             radius: 45.0,
-                            backgroundImage: AssetImage('assets/images/man_photo.png'),
+                            backgroundImage:
+                                AssetImage('assets/images/man_photo.png'),
                           ),
-
                         ],
                       ),
                     ),
@@ -98,12 +97,14 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   child: Row(
                     children: [
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start ,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Text(
-                                UserLoginCubit.get(context).loggedInUser!.firstName,
+                                UserLoginCubit.get(context)
+                                    .loggedInUser!
+                                    .firstName,
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -113,7 +114,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                               SizedBox(width: screenWidth / 90),
                               Text(
-                                UserLoginCubit.get(context).loggedInUser!.lastName,
+                                UserLoginCubit.get(context)
+                                    .loggedInUser!
+                                    .lastName,
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -122,9 +125,16 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 ),
                               ),
                               SizedBox(width: screenWidth / 60),
-                              (UserLoginCubit.get(context).loggedInUser!.specification == 'Medical' ||
-                                  UserLoginCubit.get(context).loggedInUser!.specification == 'Educational')
-                                  ? const Icon(Icons.verified, color: Colors.blue)
+                              (UserLoginCubit.get(context)
+                                              .loggedInUser!
+                                              .specification ==
+                                          'Medical' ||
+                                      UserLoginCubit.get(context)
+                                              .loggedInUser!
+                                              .specification ==
+                                          'Educational')
+                                  ? const Icon(Icons.verified,
+                                      color: Colors.blue)
                                   : Container(),
                             ],
                           ),
@@ -150,83 +160,72 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   padding: EdgeInsetsDirectional.symmetric(
                     horizontal: screenWidth / 30,
                     vertical: screenHeight / 70,
-
                   ),
                   child: Row(
                     children: [
                       Expanded(
                           child: InkWell(
-                            onTap: (){
-                               UserLoginCubit.get(context).changeFollow();
-                            },
-                            child: (UserLoginCubit.get(context).follow == false)?Container(
-                              decoration: BoxDecoration(
-                                color: defaultColor,
-                                borderRadius: BorderRadius.circular(4)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: Center(
-                                  child: (
-                                      Text(
-                                          "Follow",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-
-                                        ),
-                                      )
+                        onTap: () {
+                          UserLoginCubit.get(context).changeFollow();
+                        },
+                        child: (UserLoginCubit.get(context).follow == false)
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    color: defaultColor,
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Center(
+                                    child: (Text(
+                                      "Follow",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Center(
+                                    child: (Text(
+                                      "Following",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )),
                                   ),
                                 ),
                               ),
-                            ):Container(
-                              decoration: BoxDecoration(
-                                  color:  Colors.black.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(4)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: Center(
-                                  child: (
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                      SizedBox(width: 2,),
+                      )),
+                      SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
-                            onTap: (){},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.black38.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(4)
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: Center(
-                                  child: (
-                                      Text(
-                                        "message",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                  ),
+                        onTap: () {},
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.black38.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Center(
+                              child: (Text(
+                                "message",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              ),
+                              )),
                             ),
-                          )
-                      ),
+                          ),
+                        ),
+                      )),
                     ],
                   ),
                 ),
@@ -241,7 +240,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           color: Colors.grey.withOpacity(0.5),
                           blurRadius: 10.0,
                           spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                          offset: const Offset(10.0, 10.0),
                         ),
                       ],
                     ),
@@ -263,7 +262,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                             ],
                           ),
-                          SizedBox(height: screenHeight/100,),
+                          SizedBox(
+                            height: screenHeight / 100,
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -287,7 +288,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-
                                     ],
                                   ),
                                 ),
@@ -295,7 +295,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1)?UserLoginCubit.get(context).loggedInUser!.followers.length:0}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -310,7 +310,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-
                                     ],
                                   ),
                                 ),
@@ -318,7 +317,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1)?UserLoginCubit.get(context).loggedInUser!.following.length:0}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -333,15 +332,12 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-
                                     ],
                                   ),
                                 ),
-
                               ],
                             ),
                           )
-
                         ],
                       ),
                     ),
@@ -359,7 +355,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           color: Colors.grey.withOpacity(0.5),
                           blurRadius: 10.0,
                           spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                          offset: const Offset(
+                              10.0, 10.0), // Right and bottom shadow
                         ),
                       ],
                     ),
@@ -379,7 +376,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-
                             ],
                           ),
                           SizedBox(height: screenHeight / 80),
@@ -409,7 +405,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         ),
                                       ),
                                       Text(
-                                        UserLoginCubit.get(context).loggedInUser!.specification,
+                                        UserLoginCubit.get(context)
+                                            .loggedInUser!
+                                            .specification,
                                         style: const TextStyle(
                                           fontSize: 12.0,
                                           color: defaultColor,
@@ -417,8 +415,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         ),
                                       ),
                                     ],
-                                  )
-                              )
+                                  ))
                             ],
                           ),
                           SizedBox(height: screenHeight / 60),
@@ -452,7 +449,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  UserLoginCubit.get(context).loggedInUser!.phone,
+                                  UserLoginCubit.get(context)
+                                      .loggedInUser!
+                                      .phone,
                                 ),
                               )
                             ],
@@ -474,7 +473,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           color: Colors.grey.withOpacity(0.5),
                           blurRadius: 10.0,
                           spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
+                          offset: const Offset(
+                              10.0, 10.0), // Right and bottom shadow
                         ),
                       ],
                     ),
@@ -497,12 +497,12 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  "No Posts Yet",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    color:  Colors.black.withOpacity(0.5),
-                                  ),
+                                "No Posts Yet",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
                               ),
                             ),
                           )
@@ -512,7 +512,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   ),
                 ),
                 // Posts
-
               ],
             ),
           ),
@@ -521,12 +520,16 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     );
   }
 
-  Widget buildLoadingWidget(context){
+  Widget buildLoadingWidget(context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context).homePagePostsModel?.modifiedPosts.length ?? 0,
+      itemCount: HomeLayoutCubit.get(context)
+              .homePagePostsModel
+              ?.modifiedPosts
+              .length ??
+          0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           period: const Duration(milliseconds: 1000),
@@ -554,8 +557,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           child: Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey,
-                                borderRadius:
-                                BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                         const SizedBox(
@@ -567,8 +569,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey,
-                              borderRadius:
-                              BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         )
@@ -612,13 +613,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   final homePagePostsModel = cubit.homePagePostsModel;
                   if (homePagePostsModel != null) {
                     if (index < homePagePostsModel.modifiedPosts.length) {
-                      return buildPostItem(homePagePostsModel.modifiedPosts[index], context);
+                      return buildPostItem(
+                          homePagePostsModel.modifiedPosts[index], context);
                     }
                   }
                   return const Text("No Posts Available");
                 },
                 separatorBuilder: (context, index) => Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  padding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 16),
                   child: Container(
                     width: double.infinity,
                     color: Colors.white,
@@ -629,12 +632,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
             ),
           ],
         );
-      }
-      else {
+      } else {
         return const Center(child: Text('No posts available'));
       }
-    }
-    else {
+    } else {
       return buildLoadingWidget(context);
     }
   }
@@ -657,15 +658,13 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
-    }
-    else if(difference.inMinutes < 1){
+    } else if (difference.inMinutes < 1) {
       durationText = '${difference.inSeconds}s .';
-    }
-    else {
+    } else {
       durationText = '${difference.inMinutes.remainder(60)}m .';
     }
     // In Days
-    if(difference.inHours >= 24){
+    if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d .';
     }
 
@@ -760,21 +759,22 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                      postDetails.content,
-                      maxLines: (postDetails.attachments) != null ? 6 : 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: "Robot",
-                        fontSize: 13.0,
-                      ),
-                    )
+                            postDetails.content,
+                            maxLines:
+                                (postDetails.attachments) != null ? 6 : 10,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: "Robot",
+                              fontSize: 13.0,
+                            ),
+                          )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
                     if (postDetails.attachments.isNotEmpty)
-                    // check if there's more than one
+                      // check if there's more than one
                       if (postDetails.attachments.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -800,15 +800,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         )
                       else
                         Image(
-                          image: NetworkImage(postDetails.attachments[0].secure_url),
+                          image: NetworkImage(
+                              postDetails.attachments[0].secure_url),
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: postDetails.attachments.asMap().entries.map((entry) {
+                      children:
+                          postDetails.attachments.asMap().entries.map((entry) {
                         return GestureDetector(
-                          onTap: () => carouselController.animateToPage(entry.key),
+                          onTap: () =>
+                              carouselController.animateToPage(entry.key),
                           child: Container(
                             width: 7.0,
                             height: 7.0,
@@ -818,7 +821,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key ? defaultColor : Colors.grey,
+                              color: _currentImageIndex == entry.key
+                                  ? defaultColor
+                                  : Colors.grey,
                             ),
                           ),
                         );
@@ -837,25 +842,27 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/Blue_Like.svg',
-                        width: 22.0,
-                        height: 22.0,
-                      ),
-                    )
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/Blue_Like.svg',
+                              width: 22.0,
+                              height: 22.0,
+                            ),
+                          )
                         : Container(),
-                    (postDetails.likesCount > 0) ?
-                    Text(
-                      '${postDetails.likesCount}',
-                      style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 12,
-                        color: HexColor("575757"),
-                      ),
-                    ): Container(),
+                    (postDetails.likesCount > 0)
+                        ? Text(
+                            '${postDetails.likesCount}',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          )
+                        : Container(),
                     const Spacer(),
+
                     /// Post Comments
                     // postDetails.likesCount > 0
                     //     ? IconButton(

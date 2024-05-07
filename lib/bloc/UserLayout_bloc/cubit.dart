@@ -7,6 +7,7 @@ import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/camera_view.dart';
 import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
+import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -119,22 +120,41 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   /// ----------------------- Get All Posts API ------------------------
 
   HomePagePostsResponse? homePagePostsModel;
+
   void getAllPosts({required String token}) async {
+    emit(HomePagePostsLoadingState());
 
-    // emit(HomePagePostsLoadingState());
-      DioHelper.getData(
-        url: GET_ALL_POSTS,
-        token: token,
-      ).then((value){
+    DioHelper.getData(
+      url: GET_ALL_POSTS,
+      token: token,
+    ).then((value) {
+      homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
 
-        homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
+      print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());
+      emit(HomePagePostsSuccessState());
+    }).catchError((error) {
+      print(error.toString());
 
-        print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());
-        emit(HomePagePostsSuccessState());
-      }).catchError((error){
-        print(error.toString());
+      emit(HomePagePostsErrorState());
+    });
+  }
 
-        emit(HomePagePostsErrorState());
-      });
-    }
+  /// ----------------------- Like Post API ------------------------
+
+  void likePost({required String token, required String postId}) {
+    emit(LikePostLoadingState());
+
+    DioHelper.patchData(
+      url: "/post/$postId/like",
+      token: token,
+    ).then((value) {
+      emit(LikePostSuccessState());
+
+      getAllPosts(token: token);
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(LikePostErrorState());
+    });
+  }
 }

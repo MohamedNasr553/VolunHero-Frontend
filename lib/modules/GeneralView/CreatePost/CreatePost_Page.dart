@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/cubit.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/states.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/CreatePostModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,6 +45,16 @@ class _CreatePostState extends State<CreatePost> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: HexColor("027E81"),
+            leading: IconButton(
+              onPressed: (){
+                HomeLayoutCubit.get(context).changeBottomNavBar(0);
+                navigateAndFinish(context, const VolunHeroUserLayout());
+              },
+              icon: SvgPicture.asset(
+                'assets/images/closePost.svg',
+                color: Colors.white,
+              ),
+            ),
             title: const Text(
               'Create Post',
               style: TextStyle(

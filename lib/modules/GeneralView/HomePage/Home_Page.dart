@@ -40,9 +40,9 @@ class _HomePageState extends State<HomePage> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return BlocConsumer<UserLoginCubit,UserLoginStates>(
-      listener: (BuildContext context,  state) {  },
-      builder: (BuildContext context,  state) {
+    return BlocConsumer<UserLoginCubit, UserLoginStates>(
+      listener: (BuildContext context, state) {},
+      builder: (BuildContext context, state) {
         return BlocConsumer<HomeLayoutCubit, LayoutStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -60,8 +60,8 @@ class _HomePageState extends State<HomePage> {
                       child: CircleAvatar(
                         radius: 30,
                         backgroundColor: Colors.transparent,
-                        child:
-                        ClipOval(child: Image.asset("assets/images/logo.png")),
+                        child: ClipOval(
+                            child: Image.asset("assets/images/logo.png")),
                       ),
                     ),
                   );
@@ -130,18 +130,20 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: IconButton(
                         onPressed: () {
-                          UserLoginCubit.get(context).getLoggedInChats().then((value){
+                          UserLoginCubit.get(context)
+                              .getLoggedInChats()
+                              .then((value) {
                             navigateToPage(context, const ChatsPage());
                           });
-
                         },
-                        icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
+                        icon:
+                            SvgPicture.asset("assets/images/messagesIcon.svg")),
                   ),
                 ],
               ),
               drawer: const UserSidePage(),
               body: ConditionalBuilder(
-                condition: ( state is HomePagePostsSuccessState),
+                condition: (state is HomePagePostsSuccessState),
                 builder: (BuildContext context) => buildPostsList(context),
                 fallback: (BuildContext context) => buildLoadingWidget(context),
               ),
@@ -149,17 +151,19 @@ class _HomePageState extends State<HomePage> {
           },
         );
       },
-
     );
-
   }
 
-  Widget buildLoadingWidget(context){
+  Widget buildLoadingWidget(context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context).homePagePostsModel?.modifiedPosts.length ?? 0,
+      itemCount: HomeLayoutCubit.get(context)
+              .homePagePostsModel
+              ?.modifiedPosts
+              .length ??
+          0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           period: const Duration(milliseconds: 1000),
@@ -187,8 +191,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey,
-                                borderRadius:
-                                BorderRadius.circular(10)),
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                         const SizedBox(
@@ -200,8 +203,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey,
-                              borderRadius:
-                              BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         )
@@ -245,13 +247,15 @@ class _HomePageState extends State<HomePage> {
                   final homePagePostsModel = cubit.homePagePostsModel;
                   if (homePagePostsModel != null) {
                     if (index < homePagePostsModel.modifiedPosts.length) {
-                      return buildPostItem(homePagePostsModel.modifiedPosts[index], context);
+                      return buildPostItem(
+                          homePagePostsModel.modifiedPosts[index], context);
                     }
                   }
                   return const Text("No Posts Available");
                 },
                 separatorBuilder: (context, index) => Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  padding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 16),
                   child: Container(
                     width: double.infinity,
                     color: Colors.white,
@@ -262,12 +266,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         );
-      }
-      else {
+      } else {
         return const Center(child: Text('No posts available'));
       }
-    }
-    else {
+    } else {
       return buildLoadingWidget(context);
     }
   }
@@ -290,15 +292,13 @@ class _HomePageState extends State<HomePage> {
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
-    }
-    else if(difference.inMinutes < 1){
+    } else if (difference.inMinutes < 1) {
       durationText = '${difference.inSeconds}s .';
-    }
-    else {
+    } else {
       durationText = '${difference.inMinutes.remainder(60)}m .';
     }
     // In Days
-    if(difference.inHours >= 24){
+    if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d .';
     }
 
@@ -393,14 +393,15 @@ class _HomePageState extends State<HomePage> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                      postDetails.content,
-                      maxLines: (postDetails.attachments) != null ? 6 : 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: "Robot",
-                        fontSize: 13.0,
-                      ),
-                    )
+                            postDetails.content,
+                            maxLines:
+                                (postDetails.attachments) != null ? 6 : 10,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: "Robot",
+                              fontSize: 13.0,
+                            ),
+                          )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
@@ -431,17 +432,20 @@ class _HomePageState extends State<HomePage> {
                             },
                           ),
                         )
-                        else
-                          Image(
-                            image: NetworkImage(postDetails.attachments[0].secure_url),
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+                      else
+                        Image(
+                          image: NetworkImage(
+                              postDetails.attachments[0].secure_url),
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: postDetails.attachments.asMap().entries.map((entry) {
+                      children:
+                          postDetails.attachments.asMap().entries.map((entry) {
                         return GestureDetector(
-                          onTap: () => carouselController.animateToPage(entry.key),
+                          onTap: () =>
+                              carouselController.animateToPage(entry.key),
                           child: Container(
                             width: 7.0,
                             height: 7.0,
@@ -451,7 +455,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key ? defaultColor : Colors.grey,
+                              color: _currentImageIndex == entry.key
+                                  ? defaultColor
+                                  : Colors.grey,
                             ),
                           ),
                         );
@@ -470,25 +476,27 @@ class _HomePageState extends State<HomePage> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/Blue_Like.svg',
-                        width: 22.0,
-                        height: 22.0,
-                      ),
-                    )
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/NewLikeColor.svg',
+                              width: 22.0,
+                              height: 22.0,
+                            ),
+                          )
                         : Container(),
-                    (postDetails.likesCount > 0) ?
-                        Text(
-                          '${postDetails.likesCount}',
-                          style: TextStyle(
-                            fontFamily: "Roboto",
-                            fontSize: 12,
-                            color: HexColor("575757"),
-                          ),
-                        ): Container(),
+                    (postDetails.likesCount > 0)
+                        ? Text(
+                            '${postDetails.likesCount}',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          )
+                        : Container(),
                     const Spacer(),
+
                     /// Post Comments
                     // postDetails.likesCount > 0
                     //     ? IconButton(
@@ -531,11 +539,33 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      postSubComponent("assets/images/like.svg", "Like"),
+                      (postDetails.likesCount > 0)
+                          ? postSubComponent(
+                              "assets/images/NewLikeColor.svg",
+                              " Like",
+                              color: HexColor("4267B2"),
+                              fontWeight: FontWeight.w600,
+                              onTap: (){
+                                HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                              },
+                          )
+                          : postSubComponent(
+                              "assets/images/like.svg",
+                              "Like",
+                              onTap: (){
+                                HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                              },
+                            ),
                       const Spacer(),
-                      postSubComponent("assets/images/comment.svg", "Comment"),
+                      postSubComponent(
+                        "assets/images/comment.svg",
+                        "Comment",
+                      ),
                       const Spacer(),
-                      postSubComponent("assets/images/share.svg", "Share"),
+                      postSubComponent(
+                        "assets/images/share.svg",
+                        "Share",
+                      ),
                     ],
                   ),
                 ),
@@ -547,21 +577,26 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action) {
+  Widget postSubComponent(String assetIcon, String action, {GestureTapCallback? onTap,
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
-      onTap: () {
-        showToast(text: action, state: ToastStates.SUCCESS);
-      },
+      onTap: onTap,
       child: Row(
         children: [
-          SvgPicture.asset(assetIcon),
-          const SizedBox(
-            width: 1,
+          SvgPicture.asset(
+            assetIcon,
+            color: color,
           ),
+          const SizedBox(width: 1),
           Text(
-              action,
-              style: TextStyle(
-                  fontSize: 12, fontFamily: "Roboto", color: HexColor("575757")),
+            action,
+            style: TextStyle(
+              fontSize: 12,
+              fontFamily: "Roboto",
+              color: color,
+              fontWeight: fontWeight,
+            ),
           )
         ],
       ),

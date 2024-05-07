@@ -109,7 +109,8 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      navigateAndFinish(context, const AnotherUserProfile());
+                      // navigateAndFinish(context, const AnotherUserProfile());
+                      navigateAndFinish(context, const ProfilePage());
                     },
                   ),
                   ListTile(
