@@ -3,6 +3,7 @@ const REGISTER = "/auth/signUp";
 const LOGIN = "/auth/login";
 
 const GET_USER = "/users/me";
+const GET_CHATS = "/chat";
 
 const UPDATE_USER = "/users/updateMe";
 

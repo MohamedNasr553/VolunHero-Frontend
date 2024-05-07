@@ -5,6 +5,7 @@ import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import '../../models/ChatsModel.dart';
 import '../../shared/network/endpoints.dart';
 import '../../shared/network/remote/dio_helper.dart';
 
@@ -131,5 +132,34 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(UpdateLoggedInUserErrorState(error.toString()));
       print('Error updating user data: $error');
     }
+  }
+
+
+
+
+  ChatResponse? chatResponse;
+  List<Chat> chats=[];
+  Future<String> getLoggedInChats() async {
+    try {
+      emit(GetLoggedInUserChatsLoadingState());
+
+      var value = await DioHelper.getData(
+        url: GET_CHATS,
+      );
+
+      emit(GetLoggedInUserChatsSuccessState());
+      chatResponse = ChatResponse.fromJson(value.data);
+      for (int i =0;i<chatResponse!.chats!.length;i++){
+          chats.add(chatResponse!.chats[i]);
+      }
+      print("Chat Res: ");
+      print(chatResponse);
+      print("Chats: ");
+      print(chats);
+    } catch (error) {
+      emit(GetLoggedInUserChatsErrorState(error.toString()));
+      print(error.toString());
+    }
+    return "";
   }
 }

@@ -34,3 +34,14 @@ class UpdateLoggedInUserErrorState extends UserLoginStates {
 
   UpdateLoggedInUserErrorState(this.error);
 }
+
+
+class GetLoggedInUserChatsLoadingState extends UserLoginStates {}
+
+class GetLoggedInUserChatsErrorState extends UserLoginStates {
+  final String error;
+
+  GetLoggedInUserChatsErrorState(this.error);
+}
+
+class GetLoggedInUserChatsSuccessState extends UserLoginStates {}

@@ -3,6 +3,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
@@ -39,108 +40,118 @@ class _HomePageState extends State<HomePage> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: Builder(builder: (context) {
-              return Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 40,
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.transparent,
-                    child:
+    return BlocConsumer<UserLoginCubit,UserLoginStates>(
+      listener: (BuildContext context,  state) {  },
+      builder: (BuildContext context,  state) {
+        return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                leading: Builder(builder: (context) {
+                  return Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 40,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.transparent,
+                        child:
                         ClipOval(child: Image.asset("assets/images/logo.png")),
-                  ),
-                ),
-              );
-            }),
-            actions: [
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                ),
-                child: Container(
-                  width: screenWidth / 1.42,
-                  height: screenHeight / 25,
-                  child: TextFormField(
-                    controller: searchController,
-                    validator: (value) {
-                      return null;
-                    },
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey.shade500,
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 20.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
                       ),
                     ),
+                  );
+                }),
+                actions: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 300,
+                    ),
+                    child: Container(
+                      width: screenWidth / 1.42,
+                      height: screenHeight / 25,
+                      child: TextFormField(
+                        controller: searchController,
+                        validator: (value) {
+                          return null;
+                        },
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          hintText: 'Search...',
+                          hintStyle: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.grey.shade500,
+                          ),
+                          fillColor: Colors.white,
+                          filled: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 20.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7.0),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 0.5,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7.0),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 0.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(7.0),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 300,
+                      start: screenWidth / 80,
+                      end: screenWidth / 60,
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          UserLoginCubit.get(context).getLoggedInChats().then((value){
+                            navigateToPage(context, const ChatsPage());
+                          });
+
+                        },
+                        icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                  start: screenWidth / 80,
-                  end: screenWidth / 60,
-                ),
-                child: IconButton(
-                    onPressed: () {
-                      navigateToPage(context, const ChatsPage());
-                    },
-                    icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
+              drawer: const UserSidePage(),
+              body: ConditionalBuilder(
+                condition: ( state is HomePagePostsSuccessState),
+                builder: (BuildContext context) => buildPostsList(context),
+                fallback: (BuildContext context) => buildLoadingWidget(context),
               ),
-            ],
-          ),
-          drawer: const UserSidePage(),
-          body: ConditionalBuilder(
-            condition: ( state is HomePagePostsSuccessState),
-            builder: (BuildContext context) => buildPostsList(context),
-            fallback: (BuildContext context) => buildLoadingWidget(context),
-          ),
+            );
+          },
         );
       },
+
     );
+
   }
 
   Widget buildLoadingWidget(context){
