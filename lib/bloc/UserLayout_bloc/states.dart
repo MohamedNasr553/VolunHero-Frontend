@@ -21,3 +21,9 @@ class LikePostLoadingState extends LayoutStates{}
 class LikePostSuccessState extends LayoutStates{}
 
 class LikePostErrorState extends LayoutStates{}
+
+class DeletePostLoadingState extends LayoutStates{}
+
+class DeletePostSuccessState extends LayoutStates{}
+
+class DeletePostErrorState extends LayoutStates{}

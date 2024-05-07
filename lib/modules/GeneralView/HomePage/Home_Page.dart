@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                     padding: EdgeInsetsDirectional.only(
                       top: screenHeight / 300,
                     ),
-                    child: Container(
+                    child: SizedBox(
                       width: screenWidth / 1.42,
                       height: screenHeight / 25,
                       child: TextFormField(
@@ -367,7 +367,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _showPostOptions(postDetails, context);
+                    },
                     icon: SvgPicture.asset(
                       'assets/images/postSettings.svg',
                     ),
@@ -601,5 +603,54 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  void _showPostOptions(ModifiedPost? postDetails, BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        screenWidth / 2.8,
+        screenHeight / 6,
+        screenWidth / 2.8,
+        screenHeight / 6,
+      ),
+      items: <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: 'Edit Post',
+          child: ListTile(
+            title: Text('Edit Post'),
+            leading: Icon(Icons.edit),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'Save Post',
+          child: ListTile(
+            title: Text('Save Post'),
+            leading: Icon(Icons.save),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'Delete Post',
+          child: ListTile(
+            title: Text('Delete Post'),
+            leading: Icon(Icons.delete),
+          ),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((String? selectedValue) {
+      // Handle selection here
+      if (selectedValue == 'Edit Post') {
+        // Handle edit action
+      } else if (selectedValue == 'Save Post') {
+        // Handle save action
+      }
+      else if (selectedValue == 'Delete Post') {
+        HomeLayoutCubit.get(context).deletePost(token: userToken!, postId: postDetails!.id);
+      }
+    });
   }
 }

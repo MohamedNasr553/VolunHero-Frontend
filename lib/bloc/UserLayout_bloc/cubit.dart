@@ -157,4 +157,23 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(LikePostErrorState());
     });
   }
+
+  /// ----------------------- Delete Post API ------------------------
+
+  void deletePost({required String token, required String postId}) {
+    emit(DeletePostLoadingState());
+
+    DioHelper.deleteData(
+      url: "/post/$postId",
+      token: token,
+    ).then((value) {
+      emit(DeletePostSuccessState());
+
+      getAllPosts(token: token);
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(DeletePostErrorState());
+    });
+  }
 }

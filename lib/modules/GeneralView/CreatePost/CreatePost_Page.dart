@@ -82,6 +82,7 @@ class _CreatePostState extends State<CreatePost> {
                         attachments: attachments,
                         token: userToken!,
                       );
+                      HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
                       // Change Bottom Nav Bar to Home Screen
                       HomeLayoutCubit.get(context).changeBottomNavBar(0);
                       navigateAndFinish(context, const VolunHeroUserLayout());

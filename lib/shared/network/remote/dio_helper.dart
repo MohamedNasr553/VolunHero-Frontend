@@ -83,4 +83,24 @@ class DioHelper {
       throw Exception('Failed to patch data: $e');
     }
   }
+
+  static Future<Response> deleteData({
+    required String url,
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    try {
+      return dio.delete(
+        url,
+        queryParameters: query,
+        data: data,
+        options: Options(headers: {
+          'authorization': 'Volunhero__$token',
+        }),
+      );
+    } catch (e) {
+      throw Exception('Failed to patch data: $e');
+    }
+  }
 }
