@@ -120,12 +120,13 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
   HomePagePostsResponse? homePagePostsModel;
   void getAllPosts({required String token}) async {
-      emit(HomePagePostsLoadingState());
 
+    // emit(HomePagePostsLoadingState());
       DioHelper.getData(
         url: GET_ALL_POSTS,
         token: token,
       ).then((value){
+
         homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
 
         print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());

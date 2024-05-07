@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
           ),
           drawer: const UserSidePage(),
           body: ConditionalBuilder(
-            condition: (HomeLayoutCubit.get(context).homePagePostsModel != null || state is HomePagePostsLoadingState),
+            condition: ( state is HomePagePostsSuccessState),
             builder: (BuildContext context) => buildPostsList(context),
             fallback: (BuildContext context) => buildLoadingWidget(context),
           ),
