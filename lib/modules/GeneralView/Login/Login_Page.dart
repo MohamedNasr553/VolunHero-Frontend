@@ -28,15 +28,15 @@ class LoginPage extends StatelessWidget {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, state) {
       if (state is UserLoginSuccessState) {
-        // Save User Token
-        CacheHelper.saveData(
-          key: "token",
-          value: UserLoginCubit.get(context).loginModel!.refresh_token,
-          // UserLoginCubit.get(context).loginModel?.refresh_token
-        ).then((value) {
-          navigateAndFinish(context, const VolunHeroUserLayout());
-        });
-
+        if(UserLoginCubit.get(context).loginModel != null){
+          // Save User Token
+          CacheHelper.saveData(
+            key: "token",
+            value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+          ).then((value) {
+            navigateAndFinish(context, const VolunHeroUserLayout());
+          });
+        }
         showToast(
           text: "Logged in Successfully",
           state: ToastStates.SUCCESS,
@@ -48,6 +48,8 @@ class LoginPage extends StatelessWidget {
           state: ToastStates.ERROR,
         );
       }
+      navigateAndFinish(context, const VolunHeroUserLayout());
+
     }, builder: (context, state) {
       return Scaffold(
         body: SingleChildScrollView(
@@ -251,10 +253,7 @@ class LoginPage extends StatelessWidget {
                                                           .loginModel
                                                           ?.refresh_token ??
                                                       "")
-                                              .then((value) {
-                                            navigateAndFinish(
-                                                context, VolunHeroUserLayout());
-                                          });
+                                              .then((value) {});
                                         });
 
                                         userToken = await getUserToken();

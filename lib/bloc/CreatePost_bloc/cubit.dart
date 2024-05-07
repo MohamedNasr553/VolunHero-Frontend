@@ -14,7 +14,7 @@ class CreatePostCubit extends Cubit<CreatePostStates> {
   CreatePostsResponse? createPostsResponse;
   Future<void> createPost({
     required String content,
-    List<Attachments>? attachments,
+    List<Map<String, dynamic>>? attachments,
     required String token,
   }) async {
     try {
@@ -24,7 +24,7 @@ class CreatePostCubit extends Cubit<CreatePostStates> {
         'content': content,
       };
 
-      print(requestData.toString());
+      print('Data Sent: $requestData.toString()');
 
       // Add attachments to data if available
       if (attachments != null && attachments.isNotEmpty) {

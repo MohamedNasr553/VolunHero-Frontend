@@ -93,6 +93,13 @@ class Attachments {
       public_id: json['public_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'secure_url': secure_url,
+      'public_id': public_id,
+    };
+  }
 }
 
 // class CreatedBy {

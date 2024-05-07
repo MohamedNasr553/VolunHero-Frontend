@@ -515,7 +515,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 // Posts
-
               ],
             ),
           ),
@@ -737,7 +736,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => _showProfilePageBottomSheet(postDetails),
                     icon: SvgPicture.asset(
                       'assets/images/postSettings.svg',
                     ),
@@ -935,6 +934,112 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
+    );
+  }
+
+  void _showProfilePageBottomSheet(ModifiedPost? postDetails) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Container(
+          height: screenHeight / 3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.save, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Save Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Add this to your saved items.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.edit, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Edit Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Edit your post.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_forever, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Delete Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Delete this post from your profile.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                  HomeLayoutCubit.get(context).deletePost(token: userToken!, postId: postDetails!.id);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

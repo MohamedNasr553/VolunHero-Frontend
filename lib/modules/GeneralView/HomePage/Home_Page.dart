@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -240,28 +242,36 @@ class _HomePageState extends State<HomePage> {
       if (cubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
         return Column(
           children: [
-            Expanded(
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final homePagePostsModel = cubit.homePagePostsModel;
-                  if (homePagePostsModel != null) {
-                    if (index < homePagePostsModel.modifiedPosts.length) {
-                      return buildPostItem(
-                          homePagePostsModel.modifiedPosts[index], context);
-                    }
-                  }
-                  return const Text("No Posts Available");
-                },
-                separatorBuilder: (context, index) => Padding(
-                  padding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 16),
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                  ),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ListView.separated(
+                      reverse: true,
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final homePagePostsModel = cubit.homePagePostsModel;
+                        if (homePagePostsModel != null) {
+                          if (index < homePagePostsModel.modifiedPosts.length) {
+                            return buildPostItem(
+                                homePagePostsModel.modifiedPosts[index], context);
+                          }
+                        }
+                        return const Text("No Posts Available");
+                      },
+                      separatorBuilder: (context, index) => Padding(
+                        padding:
+                            const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                        child: Container(
+                          width: double.infinity,
+                          color: Colors.white,
+                        ),
+                      ),
+                      itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
+                    ),
+                  ],
                 ),
-                itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
               ),
             ),
           ],
@@ -367,9 +377,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {
-                      _showPostOptions(postDetails, context);
-                    },
+                    onPressed: () => _showHomePageBottomSheet(),
                     icon: SvgPicture.asset(
                       'assets/images/postSettings.svg',
                     ),
@@ -605,52 +613,108 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showPostOptions(ModifiedPost? postDetails, BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
-    showMenu<String>(
+  void _showHomePageBottomSheet() {
+    showModalBottomSheet(
       context: context,
-      position: RelativeRect.fromLTRB(
-        screenWidth / 2.8,
-        screenHeight / 6,
-        screenWidth / 2.8,
-        screenHeight / 6,
-      ),
-      items: <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: 'Edit Post',
-          child: ListTile(
-            title: Text('Edit Post'),
-            leading: Icon(Icons.edit),
+      builder: (BuildContext context) {
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Container(
+          height: screenHeight / 3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.save, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                        'Save Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Add this to your saved items.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.close, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Hide Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'See fewer posts like this.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.copy, size: 25,),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Copy link',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Copy post URL.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+            ],
           ),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Save Post',
-          child: ListTile(
-            title: Text('Save Post'),
-            leading: Icon(Icons.save),
-          ),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Delete Post',
-          child: ListTile(
-            title: Text('Delete Post'),
-            leading: Icon(Icons.delete),
-          ),
-        ),
-      ],
-      elevation: 8.0,
-    ).then((String? selectedValue) {
-      // Handle selection here
-      if (selectedValue == 'Edit Post') {
-        // Handle edit action
-      } else if (selectedValue == 'Save Post') {
-        // Handle save action
-      }
-      else if (selectedValue == 'Delete Post') {
-        HomeLayoutCubit.get(context).deletePost(token: userToken!, postId: postDetails!.id);
-      }
-    });
+        );
+      },
+    );
   }
 }

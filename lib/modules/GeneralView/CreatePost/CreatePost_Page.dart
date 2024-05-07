@@ -37,8 +37,8 @@ class _CreatePostState extends State<CreatePost> {
     final keyboardSize = MediaQuery.of(context).viewInsets.bottom;
 
     return BlocConsumer<CreatePostCubit, CreatePostStates>(
-      listener: (context, state){},
-      builder: (context, state){
+      listener: (context, state) {},
+      builder: (context, state) {
         var screenHeight = MediaQuery.of(context).size.height;
         var screenWidth = MediaQuery.of(context).size.width;
 
@@ -46,7 +46,7 @@ class _CreatePostState extends State<CreatePost> {
           appBar: AppBar(
             backgroundColor: HexColor("027E81"),
             leading: IconButton(
-              onPressed: (){
+              onPressed: () {
                 HomeLayoutCubit.get(context).changeBottomNavBar(0);
                 navigateAndFinish(context, const VolunHeroUserLayout());
               },
@@ -69,31 +69,40 @@ class _CreatePostState extends State<CreatePost> {
                 padding: EdgeInsets.all(screenWidth / 50),
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (state is! CreatePostLoadingState){
-                      List<Attachments>? attachments = [];
+                    if (state is! CreatePostLoadingState) {
+                      List<Map<String, dynamic>> attachmentsMapList = [];
                       if (postAttachment != null) {
-                        attachments.add(Attachments(
-                          secure_url: postAttachment!.path,
-                          public_id: 'unique_id',
-                        ));
+                        // Display the attachment
+                        Image.file(postAttachment!);
+                        attachmentsMapList.add({
+                          'secure_url': postAttachment!.path,
+                          'public_id': 'unique_id',
+                        });
+                        print(
+                            '----------------post attachment-----------: $postAttachment');
+                      }
+                      if (postContentController.text.isEmpty) {
+                        showToast(
+                          text: "Please enter your post content",
+                          state: ToastStates.ERROR,
+                        );
+                        return;
                       }
                       CreatePostCubit.get(context).createPost(
                         content: postContentController.text,
-                        attachments: attachments,
+                        attachments: attachmentsMapList,
                         token: userToken!,
                       );
-                      HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
+                      // HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
                       // Change Bottom Nav Bar to Home Screen
                       HomeLayoutCubit.get(context).changeBottomNavBar(0);
                       navigateAndFinish(context, const VolunHeroUserLayout());
-                    }
-                    else if (state is! CreatePostErrorState) {
+                    } else if (state is! CreatePostErrorState) {
                       showToast(
                         text: "Something went wrong",
                         state: ToastStates.ERROR,
                       );
-                    }
-                    else{
+                    } else {
                       const Center(
                         child: LinearProgressIndicator(
                           color: defaultColor,
@@ -110,10 +119,10 @@ class _CreatePostState extends State<CreatePost> {
                   child: Text(
                     'Post',
                     style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: HexColor("027E81"),
-                        fontFamily: "Poppins",
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: HexColor("027E81"),
+                      fontFamily: "Poppins",
                     ),
                   ),
                 ),
@@ -127,20 +136,20 @@ class _CreatePostState extends State<CreatePost> {
                   children: [
                     /// Name and Post Content
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: EdgeInsets.only(left: screenWidth / 55),
                       child: Column(
                         children: [
                           SizedBox(height: screenHeight / 40),
                           // User Profile and Username
-                          const Row(
+                          Row(
                             children: [
-                              CircleAvatar(
-                                radius: 17.0,
+                              const CircleAvatar(
+                                radius: 20.0,
                                 backgroundImage:
-                                AssetImage("assets/images/logo.png"),
+                                    AssetImage("assets/images/logo.png"),
                               ),
-                              SizedBox(width: 5),
-                              Text("Mohamed Nasr")
+                              SizedBox(width: screenWidth / 80),
+                              const Text("Mohamed Nasr"),
                             ],
                           ),
                           SizedBox(height: screenHeight / 80),
@@ -155,138 +164,176 @@ class _CreatePostState extends State<CreatePost> {
                                   fontSize: 15.0,
                                   color: Colors.grey,
                                 ),
-                                border: InputBorder.none, // Hide the border line
+                                border:
+                                    InputBorder.none, // Hide the border line
                               ),
                               style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: 'Poppins',
                               ),
-                              maxLines: 8,
+                              maxLines: (postAttachment != null) ? 3 : 8,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                        height: (keyboardSize == 0.0)
-                            ? (screenHeight / 3.63)
-                            : (screenHeight - keyboardSize - 60 - 600)),
-                    (keyboardSize == 0.0)
-                        ? Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFD9D9D9),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(56.0),
-                          topRight: Radius.circular(56.0),
-                        ),
-                      ),
-                      height: screenHeight / 4,
-                      width: screenWidth,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              top: screenHeight / 100,
-                            ),
-                            child: Container(
-                              height: screenHeight / 250,
-                              width: screenWidth / 7,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(10.0)),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(screenWidth / 14),
-                            child: Column(
+                          // Display the attachment if available
+                          if (postAttachment != null)
+                            Stack(
                               children: [
-                                // Photo / Video
-                                InkWell(
-                                  child: Row(
-                                    children: [
-                                      ImageIcon(
-                                        const AssetImage(
-                                          'assets/images/Img_box_duotone_line.png',
-                                        ),
-                                        size: 30,
-                                        color: HexColor("027E81"),
-                                      ),
-                                      const SizedBox(width: 7),
-                                      const Text(
-                                        "Photo/video",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto",
-                                        ),
-                                      ),
-                                    ],
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    start: screenWidth / 30,
+                                    end: screenWidth / 30,
                                   ),
-                                  onTap: () {
-                                    _uploadPhoto();
-                                  },
+                                  child: Image.file(postAttachment!),
                                 ),
-                                SizedBox(height: screenHeight / 35),
-                                // Emojis Keyboard
-                                InkWell(
-                                  child: Row(
-                                    children: [
-                                      ImageIcon(
-                                        const AssetImage(
-                                          'assets/images/happy.png',
-                                        ),
-                                        size: 30,
-                                        color: HexColor("027E81"),
-                                      ),
-                                      const SizedBox(width: 7),
-                                      const Text(
-                                        "Feeling/activity",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto",
-                                        ),
-                                      ),
-                                    ],
+                                Positioned(
+                                  top: screenWidth / 40,
+                                  right: screenHeight / 30,
+                                  child: Container(
+                                    color: Colors.grey.shade700,
+                                    width: screenWidth / 13,
+                                    height: screenHeight / 28,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.close, size: 16.0),
+                                      color: Colors.white,
+                                      onPressed: () {
+                                        setState(() {
+                                          postAttachment = null;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  onTap: () {
-                                    // Open the keyboard with emoji support
-                                    SystemChannels.textInput.invokeMethod('TextInput.show');
-                                  },
-                                ),
-                                SizedBox(height: screenHeight / 35),
-                                // Drop Location
-                                InkWell(
-                                  child: Row(
-                                    children: [
-                                      ImageIcon(
-                                        const AssetImage(
-                                          'assets/images/Favorites_fill.png',
-                                        ),
-                                        size: 30,
-                                        color: HexColor("027E81"),
-                                      ),
-                                      const SizedBox(width: 7),
-                                      const Text(
-                                        "Drop Location",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Roboto",
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                  },
                                 ),
                               ],
                             ),
-                          ),
                         ],
                       ),
-                    )
+                    ),
+                    (postAttachment != null)
+                        ? SizedBox(
+                            height: (keyboardSize == 0.0)
+                                ? (screenHeight / 4.9)
+                                : (screenHeight - keyboardSize - 60 - 600))
+                        : SizedBox(
+                            height: (keyboardSize == 0.0)
+                                ? (screenHeight / 3.63)
+                                : (screenHeight - keyboardSize - 60 - 600)),
+                    (keyboardSize == 0.0)
+                        ? Container(
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFD9D9D9),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(56.0),
+                                topRight: Radius.circular(56.0),
+                              ),
+                            ),
+                            height: screenHeight / 4,
+                            width: screenWidth,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    top: screenHeight / 100,
+                                  ),
+                                  child: Container(
+                                    height: screenHeight / 250,
+                                    width: screenWidth / 7,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(screenWidth / 14),
+                                  child: Column(
+                                    children: [
+                                      // Photo / Video
+                                      InkWell(
+                                        child: Row(
+                                          children: [
+                                            ImageIcon(
+                                              const AssetImage(
+                                                'assets/images/Img_box_duotone_line.png',
+                                              ),
+                                              size: 30,
+                                              color: HexColor("027E81"),
+                                            ),
+                                            const SizedBox(width: 7),
+                                            const Text(
+                                              "Photo/video",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto",
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          _uploadPhoto();
+                                        },
+                                      ),
+                                      SizedBox(height: screenHeight / 35),
+                                      // Emojis Keyboard
+                                      InkWell(
+                                        child: Row(
+                                          children: [
+                                            ImageIcon(
+                                              const AssetImage(
+                                                'assets/images/happy.png',
+                                              ),
+                                              size: 30,
+                                              color: HexColor("027E81"),
+                                            ),
+                                            const SizedBox(width: 7),
+                                            const Text(
+                                              "Feeling/activity",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto",
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          // Open the keyboard with emoji support
+                                          SystemChannels.textInput
+                                              .invokeMethod('TextInput.show');
+                                        },
+                                      ),
+                                      SizedBox(height: screenHeight / 35),
+                                      // Drop Location
+                                      InkWell(
+                                        child: Row(
+                                          children: [
+                                            ImageIcon(
+                                              const AssetImage(
+                                                'assets/images/Favorites_fill.png',
+                                              ),
+                                              size: 30,
+                                              color: HexColor("027E81"),
+                                            ),
+                                            const SizedBox(width: 7),
+                                            const Text(
+                                              "Drop Location",
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Roboto",
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {},
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         : Container(),
                   ],
                 ),
@@ -298,15 +345,16 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 
-  Future<void> _uploadPhoto() async {
+  void _uploadPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(
       source: ImageSource.gallery,
     );
 
     if (pickedFile != null) {
-      // For example:
-      // _handleImage(pickedFile);
+      setState(() {
+        postAttachment = File(pickedFile.path);
+      });
     }
   }
 }
