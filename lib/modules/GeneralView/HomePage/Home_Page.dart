@@ -25,11 +25,12 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
-
+  bool load = false;
   @override
   void initState() {
     super.initState();
@@ -144,11 +145,8 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               drawer: const UserSidePage(),
-              body: ConditionalBuilder(
-                condition: (state is HomePagePostsSuccessState),
-                builder: (BuildContext context) => buildPostsList(context),
-                fallback: (BuildContext context) => buildLoadingWidget(context),
-              ),
+              body:(state is! HomePagePostsLoadingState)?
+                buildPostsList(context):buildLoadingWidget(context)
             );
           },
         );
@@ -340,7 +338,7 @@ class _HomePageState extends State<HomePage> {
                     radius: 20.0,
                     backgroundImage: postDetails.createdBy.profilePic != null
                         ? AssetImage(postDetails.createdBy.profilePic!)
-                        : null,
+                        : AssetImage("assets/images/logo.png"),
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
@@ -424,7 +422,7 @@ class _HomePageState extends State<HomePage> {
                           carouselController: carouselController,
                           items: postDetails.attachments.map((attachment) {
                             return Image(
-                              image: NetworkImage(attachment.secure_url),
+                              image: NetworkImage(attachment.secure_url)   ,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             );
@@ -551,21 +549,21 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       (postDetails.likesCount > 0)
                           ? postSubComponent(
-                              "assets/images/NewLikeColor.svg",
-                              " Like",
-                              color: HexColor("4267B2"),
-                              fontWeight: FontWeight.w600,
-                              onTap: (){
-                                HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
-                              },
-                          )
+                        "assets/images/NewLikeColor.svg",
+                        " Like",
+                        color: HexColor("4267B2"),
+                        fontWeight: FontWeight.w600,
+                        onTap: (){
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                        },
+                      )
                           : postSubComponent(
-                              "assets/images/like.svg",
-                              "Like",
-                              onTap: (){
-                                HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
-                              },
-                            ),
+                        "assets/images/like.svg",
+                        "Like",
+                        onTap: (){
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                        },
+                      ),
                       const Spacer(),
                       postSubComponent(
                         "assets/images/comment.svg",

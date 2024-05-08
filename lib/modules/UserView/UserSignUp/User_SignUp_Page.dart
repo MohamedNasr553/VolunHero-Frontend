@@ -712,6 +712,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
 
     if (result != null) {
       setState(() {
+        showToast(text: _filePath??"file path b null", state: ToastStates.WARNING);
         _filePath = result.files.single.path!;
       });
     }

@@ -122,24 +122,32 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   HomePagePostsResponse? homePagePostsModel;
 
   void getAllPosts({required String token}) async {
-    emit(HomePagePostsLoadingState());
+
 
     DioHelper.getData(
       url: GET_ALL_POSTS,
       token: token,
     ).then((value) {
+      emit(HomePagePostsLoadingState());
       homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
 
       print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());
       emit(HomePagePostsSuccessState());
     }).catchError((error) {
       print(error.toString());
-
       emit(HomePagePostsErrorState());
     });
   }
 
   /// ----------------------- Like Post API ------------------------
+
+
+  void likePostUI(ModifiedPost post){
+     post.liked = !post.liked;
+     emit(ChangeLikePostState());
+  }
+
+
 
   void likePost({required String token, required String postId}) {
     emit(LikePostLoadingState());

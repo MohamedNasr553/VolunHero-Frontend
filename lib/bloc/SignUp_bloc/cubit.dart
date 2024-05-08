@@ -70,14 +70,14 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
     print(formData.fields);
 
     if (attachmentsRequired && attachments != null) {
-      String fileName = attachments.path.split('/').last;
-      formData.files.add(MapEntry(
-        'attachments',
-        await dio.MultipartFile.fromFile(
-          attachments.path,
-          filename: fileName,
-        ),
-      ));
+      // String fileName = attachments.path.split('/').last;
+      // formData.files.add(MapEntry(
+      //   'attachments',
+      //   await dio.MultipartFile.fromFile(
+      //     attachments.path,
+      //     filename: fileName,
+      //   ),
+      // ));
 
       print('FormData files: ${formData.files}');
     }
@@ -104,7 +104,9 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
         ),
       );
       signupModel = SignupModel.fromJson(response.data);
-
+      print("===============================");
+      print(response.data);
+      print("===============================");
       emit(UserSignUpSuccessState());
     } catch (error) {
       emit(UserSignUpErrorState(error.toString()));

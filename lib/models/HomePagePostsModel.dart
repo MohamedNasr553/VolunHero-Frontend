@@ -35,6 +35,7 @@ class ModifiedPost {
   int shareCount;
   DateTime createdAt;
   DateTime updatedAt;
+  bool liked = false;
   int v;
 
   ModifiedPost({

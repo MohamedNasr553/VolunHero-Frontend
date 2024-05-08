@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
             key: "token",
             value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
           ).then((value) {
-            navigateAndFinish(context, const VolunHeroUserLayout());
+          //  navigateAndFinish(context, const VolunHeroUserLayout());
           });
         }
         showToast(
@@ -48,11 +48,12 @@ class LoginPage extends StatelessWidget {
           state: ToastStates.ERROR,
         );
       }
-      navigateAndFinish(context, const VolunHeroUserLayout());
+      // navigateAndFinish(context, const VolunHeroUserLayout());
 
     }, builder: (context, state) {
       return Scaffold(
         body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
@@ -245,7 +246,7 @@ class LoginPage extends StatelessWidget {
                                           password: passwordController.text,
                                         )
                                             .then((value) {
-                                          print(value);
+
                                           UserLoginCubit.get(context)
                                               .getLoggedInUserData(
                                                   token: UserLoginCubit.get(
@@ -253,11 +254,14 @@ class LoginPage extends StatelessWidget {
                                                           .loginModel
                                                           ?.refresh_token ??
                                                       "")
-                                              .then((value) {});
+                                              .then((value) async{
+                                            navigateAndFinish(context, VolunHeroUserLayout());
+                                            userToken = await getUserToken();
+                                          });
                                         });
 
-                                        userToken = await getUserToken();
-                                        print(userToken);
+
+
                                       }
                                     },
                                     text: "Login",
