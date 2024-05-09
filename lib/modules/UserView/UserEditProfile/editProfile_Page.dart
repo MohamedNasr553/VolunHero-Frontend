@@ -31,7 +31,7 @@ class UserEditProfile extends StatelessWidget {
           // Save User Token
           CacheHelper.saveData(
             key: "token",
-            value: userToken,
+            value: userToken ?? "",
           ).then((value) {
             navigateAndFinish(context, const ProfilePage());
           });

@@ -14,9 +14,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   static UserLoginCubit get(context) => BlocProvider.of(context);
 
-  DecodedToken? decodedToken;
-  LoginModel? loginModel;
-
   bool isPassword = true;
   IconData suffix = Icons.visibility;
 
@@ -34,8 +31,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangeFollowState());
   }
 
-
-
+  DecodedToken? decodedToken;
+  LoginModel? loginModel;
 
   Future<String> loginUser({
     required String email,
@@ -52,23 +49,45 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: LOGIN,
         data: requestData,
       );
-
       print(value.toString());
-      loginModel = LoginModel.fromJson(value.data);
-      print(loginModel?.refresh_token);
-      emit(UserLoginSuccessState());
-      String? accessToken = loginModel?.access_token;
-      Map<String, dynamic> decodedTokenMap = JwtDecoder.decode(accessToken!);
-      print("+++++++++++++++++++++++++++++++\n");
 
-      decodedToken = DecodedToken.fromMap(decodedTokenMap);
-      print(decodedToken.toString());
-      print(decodedToken!.id);
-      print("+++++++++++++++++++++++++++++++\n");
-      showToast(text: "Logged in Successfully", state: ToastStates.SUCCESS);
-      //getLoggedInUserData(token: loginModel!.refresh_token!);
-      //getLoggedInUserData(token: loginModel!.refresh_token!);
-      return "Logged in Successfully";
+      loginModel = LoginModel.fromJson(value.data);
+
+      print(loginModel?.refresh_token);
+      String? accessToken = loginModel?.access_token;
+
+      // token validation
+      if (accessToken != null && accessToken.isNotEmpty) {
+        // Decode the token and check expiry
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        int? expiryTimeInSeconds = decodedToken['exp'];
+        if (expiryTimeInSeconds != null) {
+          DateTime expiryDateTime =
+          DateTime.fromMillisecondsSinceEpoch(expiryTimeInSeconds * 1000);
+          if (expiryDateTime.isAfter(DateTime.now())) {
+            // Token is valid, proceed with getting user data
+            emit(UserLoginSuccessState());
+            showToast(text: "Logged in Successfully", state: ToastStates.SUCCESS);
+            getLoggedInUserData(token: loginModel!.refresh_token!);
+            return "Logged in Successfully";
+          } else {
+            // Token has expired
+            emit(UserLoginErrorState("Token has expired"));
+            showToast(text: "Token has expired", state: ToastStates.ERROR);
+            return "Token has expired";
+          }
+        } else {
+          // Invalid token format
+          emit(UserLoginErrorState("Invalid token format"));
+          showToast(text: "Invalid token format", state: ToastStates.ERROR);
+          return "Invalid token format";
+        }
+      } else {
+        // Token is null or empty
+        emit(UserLoginErrorState("Token is null or empty"));
+        showToast(text: "Token is null or empty", state: ToastStates.ERROR);
+        return "Token is null or empty";
+      }
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));
       showToast(text: "Something went Wrong!", state: ToastStates.ERROR);
@@ -80,27 +99,34 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   LoggedInUserData? loggedInUserData;
   LoggedInUser? loggedInUser;
 
-  Future<String> getLoggedInUserData({required String token}) async {
+  Future<void> getLoggedInUserData({required String? token}) async {
     try {
+      if (token == null) {
+        emit(GetLoggedInUserErrorState("Token is null"));
 
+        return;
+      }
+
+      emit(GetLoggedInUserLoadingState());
 
       var value = await DioHelper.getData(
         url: GET_USER,
         token: token,
       );
-      print("----gettttt-----");
+      print(value);
+
+      loggedInUserModel = LoggedInUserModel.fromJson(value.data);
+      loggedInUserData = loggedInUserModel?.data;
+      loggedInUser = loggedInUserData?.doc;
 
       emit(GetLoggedInUserSuccessState());
-      loggedInUser = LoggedInUser.fromJson(value.data['data']['doc']);
-      print("----gettttt-----");
-      print(loggedInUser.toString());
     } catch (error) {
-      emit(GetLoggedInUserErrorState(error.toString()));
-      print(error.toString());
-    }
-    return "";
-  }
+      print('Error: $error');
 
+      emit(GetLoggedInUserErrorState(error.toString()));
+    }
+  }
+  
   Future<void> updateLoggedInUserData({
     required String token,
     required String firstName,
@@ -134,11 +160,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-
-
-
   ChatResponse? chatResponse;
-  List<Chat> chats=[];
+  List<Chat> chats = [];
   Future<String> getLoggedInChats() async {
     try {
       emit(GetLoggedInUserChatsLoadingState());
@@ -149,10 +172,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       emit(GetLoggedInUserChatsSuccessState());
       chatResponse = ChatResponse.fromJson(value.data);
-      for (int i =0;i<chatResponse!.chats!.length;i++){
+      for (int i =0;i<chatResponse!.chats.length;i++){
           chats.add(chatResponse!.chats[i]);
       }
-      print("Chat Res: ");
+      print("Chat Response => ");
       print(chatResponse);
       print("Chats: ");
       print(chats);

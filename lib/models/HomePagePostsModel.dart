@@ -99,12 +99,14 @@ class CreatedBy {
   String userName;
   String role;
   String? profilePic;
+  String? coverPic;
 
   CreatedBy({
     required this.id,
     required this.userName,
     required this.role,
     this.profilePic,
+    this.coverPic,
   });
 
   factory CreatedBy.fromJson(Map<String, dynamic> json) {
@@ -113,6 +115,7 @@ class CreatedBy {
       userName: json['userName'],
       role: json['role'],
       profilePic: json['profilePic'],
+      coverPic: json['coverPic'],
     );
   }
 }

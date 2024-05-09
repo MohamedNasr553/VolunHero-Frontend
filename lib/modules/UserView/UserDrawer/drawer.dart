@@ -25,7 +25,7 @@ class UserSidePage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   cubit.getLoggedInUserData(token: userToken!);
+    //   UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
     // });
 
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(

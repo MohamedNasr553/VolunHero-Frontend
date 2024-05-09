@@ -91,7 +91,7 @@ class _CreatePostState extends State<CreatePost> {
                       CreatePostCubit.get(context).createPost(
                         content: postContentController.text,
                         attachments: attachmentsMapList,
-                        token: userToken!,
+                        token: userToken ?? "",
                       );
                       // HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
                       // Change Bottom Nav Bar to Home Screen

@@ -106,7 +106,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   var layoutScreens = [
     const HomePage(),
     const GetSupport(),
-    CreatePost(),
+    const CreatePost(),
     NotificationPage(),
     const CameraView()
   ];
@@ -120,9 +120,9 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   /// ----------------------- Get All Posts API ------------------------
 
   HomePagePostsResponse? homePagePostsModel;
+  ModifiedPost? modifiedPost;
 
   void getAllPosts({required String token}) async {
-
 
     DioHelper.getData(
       url: GET_ALL_POSTS,
@@ -141,13 +141,10 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
   /// ----------------------- Like Post API ------------------------
 
-
   void likePostUI(ModifiedPost post){
      post.liked = !post.liked;
      emit(ChangeLikePostState());
   }
-
-
 
   void likePost({required String token, required String postId}) {
     emit(LikePostLoadingState());

@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: userToken!);
+    UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
   }
 
   @override
@@ -1033,7 +1033,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
-                  HomeLayoutCubit.get(context).deletePost(token: userToken!, postId: postDetails!.id);
+                  HomeLayoutCubit.get(context).deletePost(token: userToken ?? "", postId: postDetails!.id);
                 },
               ),
             ],

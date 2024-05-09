@@ -1,11 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
-import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
@@ -31,11 +27,15 @@ class _HomePageState extends State<HomePage> {
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
   bool load = false;
+
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: userToken!);
-    HomeLayoutCubit.get(context).getAllPosts(token: userToken!);
+    if (userToken != null && userToken!.isNotEmpty) {
+      print("Token is not null and not empty: $userToken");
+      UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
+      HomeLayoutCubit.get(context).getAllPosts(token: userToken ?? "");
+    }
   }
 
   @override
@@ -43,112 +43,111 @@ class _HomePageState extends State<HomePage> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (BuildContext context, state) {},
-      builder: (BuildContext context, state) {
-        return BlocConsumer<HomeLayoutCubit, LayoutStates>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                leading: Builder(builder: (context) {
-                  return Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 40,
+    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: Builder(builder: (context) {
+              return Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: screenWidth / 40,
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: Image.asset('assets/images/logo.png'),
+                      // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
+                      //  Image.asset('assets/images/nullProfile.png'):
+                      // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.transparent,
-                        child: ClipOval(
-                            child: Image.asset("assets/images/logo.png")),
+                  ),
+                ),
+              );
+            }),
+            actions: [
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  top: screenHeight / 300,
+                ),
+                child: SizedBox(
+                  width: screenWidth / 1.42,
+                  height: screenHeight / 25,
+                  child: TextFormField(
+                    controller: searchController,
+                    validator: (value) {
+                      return null;
+                    },
+                    style: const TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.grey,
                       ),
-                    ),
-                  );
-                }),
-                actions: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 300,
-                    ),
-                    child: SizedBox(
-                      width: screenWidth / 1.42,
-                      height: screenHeight / 25,
-                      child: TextFormField(
-                        controller: searchController,
-                        validator: (value) {
-                          return null;
-                        },
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.w500,
+                      hintText: 'Search...',
+                      hintStyle: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey.shade500,
+                      ),
+                      fillColor: Colors.white,
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 20.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 0.5,
                         ),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          hintText: 'Search...',
-                          hintStyle: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey.shade500,
-                          ),
-                          fillColor: Colors.white,
-                          filled: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 20.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7.0),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                              width: 0.5,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7.0),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                              width: 0.5,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7.0),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                              width: 0.5,
-                            ),
-                          ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(7.0),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 0.5,
                         ),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 300,
-                      start: screenWidth / 80,
-                      end: screenWidth / 60,
-                    ),
-                    child: IconButton(
-                        onPressed: () {
-                          UserLoginCubit.get(context)
-                              .getLoggedInChats()
-                              .then((value) {
-                            navigateToPage(context, const ChatsPage());
-                          });
-                        },
-                        icon:
-                            SvgPicture.asset("assets/images/messagesIcon.svg")),
-                  ),
-                ],
+                ),
               ),
-              drawer: const UserSidePage(),
-              body:(state is! HomePagePostsLoadingState)?
-                buildPostsList(context):buildLoadingWidget(context)
-            );
-          },
+              Padding(
+                padding: EdgeInsetsDirectional.only(
+                  top: screenHeight / 300,
+                  start: screenWidth / 80,
+                  end: screenWidth / 60,
+                ),
+                child: IconButton(
+                    onPressed: () {
+                      UserLoginCubit.get(context)
+                          .getLoggedInChats()
+                          .then((value) {
+                        navigateToPage(context, const ChatsPage());
+                      });
+                    },
+                    icon:
+                        SvgPicture.asset("assets/images/messagesIcon.svg")),
+              ),
+            ],
+          ),
+          drawer: const UserSidePage(),
+          body: (state is! HomePagePostsLoadingState)?
+            buildPostsList(context): buildLoadingWidget(context)
         );
       },
     );
@@ -336,9 +335,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   CircleAvatar(
                     radius: 20.0,
-                    backgroundImage: postDetails.createdBy.profilePic != null
+                    backgroundImage: (postDetails.createdBy.profilePic != null)
                         ? AssetImage(postDetails.createdBy.profilePic!)
-                        : AssetImage("assets/images/logo.png"),
+                        : const AssetImage("assets/images/nullProfile.png"),
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
@@ -422,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                           carouselController: carouselController,
                           items: postDetails.attachments.map((attachment) {
                             return Image(
-                              image: NetworkImage(attachment.secure_url)   ,
+                              image: NetworkImage(attachment.secure_url),
                               width: double.infinity,
                               fit: BoxFit.cover,
                             );
@@ -443,7 +442,8 @@ class _HomePageState extends State<HomePage> {
                       else
                         Image(
                           image: NetworkImage(
-                              postDetails.attachments[0].secure_url),
+                            postDetails.attachments[0].secure_url,
+                          ),
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
@@ -506,18 +506,18 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
 
                     /// Post Comments
-                    // postDetails.likesCount > 0
+                    // postDetails.commentsCount > 0
                     //     ? IconButton(
                     //   padding: EdgeInsets.zero,
                     //   onPressed: () {},
                     //   icon: SvgPicture.asset(
-                    //     'assets/images/like.svg',
+                    //     'assets/images/comment.svg',
                     //   ),
                     // )
                     //     : Container(),
-                    // (postDetails.likesCount > 0) ?
+                    // (postDetails.commentsCount > 0) ?
                     // Text(
-                    //   '${postDetails.likesCount}',
+                    //   '${postDetails.commentsCount}',
                     //   style: TextStyle(
                     //     fontFamily: "Roboto",
                     //     fontSize: 12,
@@ -554,14 +554,14 @@ class _HomePageState extends State<HomePage> {
                         color: HexColor("4267B2"),
                         fontWeight: FontWeight.w600,
                         onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
                         },
                       )
                           : postSubComponent(
                         "assets/images/like.svg",
                         "Like",
                         onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken!);
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
                         },
                       ),
                       const Spacer(),
