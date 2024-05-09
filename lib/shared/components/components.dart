@@ -216,7 +216,7 @@ Color chooseToastColor(ToastStates state) {
   Color color;
   switch (state) {
     case ToastStates.SUCCESS:
-      color = Colors.green;
+      color = defaultColor;
       break;
     case ToastStates.WARNING:
       color = Colors.yellow;

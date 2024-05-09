@@ -27,30 +27,30 @@ class LoginPage extends StatelessWidget {
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, state) {
-      if (state is UserLoginSuccessState) {
-        if(UserLoginCubit.get(context).loginModel != null){
-          // Save User Token
-          CacheHelper.saveData(
-            key: "token",
-            value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-          ).then((value) {
-          //  navigateAndFinish(context, const VolunHeroUserLayout());
-          });
-        }
-        showToast(
-          text: "Logged in Successfully",
-          state: ToastStates.SUCCESS,
-        );
-      }
-      if (state is UserLoginErrorState) {
-        showToast(
-          text: "Login failed",
-          state: ToastStates.ERROR,
-        );
-      }
-      // navigateAndFinish(context, const VolunHeroUserLayout());
+          if (state is UserLoginSuccessState) {
+            if(UserLoginCubit.get(context).loginModel != null){
+              // Save User Token
+              CacheHelper.saveData(
+                key: "token",
+                value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+              ).then((value) {
+                 navigateAndFinish(context, const VolunHeroUserLayout());
+              });
+            }
+            showToast(
+              text: "Logged in Successfully",
+              state: ToastStates.SUCCESS,
+            );
+          }
+          if (state is UserLoginErrorState) {
+            showToast(
+              text: "Login failed",
+              state: ToastStates.ERROR,
+            );
+          }
+          navigateAndFinish(context, const VolunHeroUserLayout());
 
-    }, builder: (context, state) {
+        }, builder: (context, state) {
       return Scaffold(
         body: SingleChildScrollView(
           physics: NeverScrollableScrollPhysics(),
@@ -238,32 +238,32 @@ class LoginPage extends StatelessWidget {
                             SizedBox(height: screenHeight / 5.0),
                             (state is! UserLoginLoadingState)
                                 ? defaultButton(
-                                    function: () async {
-                                      if (formKey.currentState!.validate()) {
-                                        UserLoginCubit.get(context)
-                                            .loginUser(
-                                          email: emailAddressController.text,
-                                          password: passwordController.text,
-                                        )
-                                            .then((value) {
+                                function: () async {
+                                  if (formKey.currentState!.validate()) {
+                                    UserLoginCubit.get(context)
+                                        .loginUser(
+                                      email: emailAddressController.text,
+                                      password: passwordController.text,
+                                    )
+                                        .then((value) {
 
-                                          UserLoginCubit.get(context)
-                                              .getLoggedInUserData(
-                                                  token: UserLoginCubit.get(
-                                                              context)
-                                                          .loginModel
-                                                          ?.refresh_token ??
-                                                      "")
-                                              .then((value) async{
-                                            navigateAndFinish(context, VolunHeroUserLayout());
-                                            userToken = await getUserToken();
-                                          });
-                                        });
+                                      UserLoginCubit.get(context)
+                                          .getLoggedInUserData(
+                                          token: UserLoginCubit.get(
+                                              context)
+                                              .loginModel
+                                              ?.refresh_token ??
+                                              "")
+                                          .then((value) async{
+                                        navigateAndFinish(context, VolunHeroUserLayout());
+                                        userToken = await getUserToken();
+                                      });
+                                    });
 
 
 
-                                      }
-                                    },
+                                  }
+                                },
                                     text: "Login",
                                     isUpperCase: false,
                                     fontWeight: FontWeight.w300,

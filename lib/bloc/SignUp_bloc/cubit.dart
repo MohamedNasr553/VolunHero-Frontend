@@ -46,6 +46,7 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
     required String specification,
     required String classification,
     File? attachments,
+    File? profilePic,
   }) async {
     emit(UserSignUpLoadingState());
 
@@ -63,23 +64,37 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
       MapEntry('phone', phone),
       MapEntry('specification', specification),
     ]);
-
+    print("classification: $classification");
     bool attachmentsRequired =
     (classification == "medical" || classification == "educational");
 
-    print(formData.fields);
+
+    print(classification);
+    if(profilePic!=null){
+      String fileName = profilePic.path.split('/').last;
+      formData.files.add(MapEntry(
+        'profilePic',
+        await dio.MultipartFile.fromFile(
+          profilePic.path,
+          filename: fileName,
+        ),
+      ));
+      print(formData.files);
+      print(profilePic.path);
+      print(fileName);
+    }
+
 
     if (attachmentsRequired && attachments != null) {
-      // String fileName = attachments.path.split('/').last;
-      // formData.files.add(MapEntry(
-      //   'attachments',
-      //   await dio.MultipartFile.fromFile(
-      //     attachments.path,
-      //     filename: fileName,
-      //   ),
-      // ));
+      String fileName = attachments.path.split('/').last;
+      formData.files.add(MapEntry(
+        'attachments',
+        await dio.MultipartFile.fromFile(
+          attachments.path,
+          filename: fileName,
+        ),
+      ));
 
-      print('FormData files: ${formData.files}');
     }
     else if (attachmentsRequired && attachments == null) {
       showToast(
@@ -91,7 +106,11 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
           "Attachments are required for medical or educational classifications"));
       return;
     }
-
+    print("Att: $attachments" );
+    print("prof: $profilePic" );
+    print("#######################");
+    print(formData.files);
+    print("#######################");
     try {
       dio.Response response = await DioHelper.dio.post(
         REGISTER,

@@ -33,7 +33,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
   var confirmPasswordController = TextEditingController();
   String selectedItem = '';
   String? _filePath;
-
+  String selectedProfile = '';
+  String? _profilePath;
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -493,6 +494,64 @@ class _UserSignupPageState extends State<UserSignupPage> {
                             ),
                             SizedBox(height: screenHeight / 50),
                             const StrokeText(
+                              text: "Profile Picture",
+                              textStyle: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              strokeWidth: 1.0,
+                              strokeColor: Colors.black,
+                            ),
+                            SizedBox(
+                              height: screenHeight / 100,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
+                              child: Container(
+                                width: 400,
+                                height: 85,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: InkWell(
+                                  onTap: () async {
+                                    await _requestPermission();
+                                    _pickProfileFile();
+                                  },
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          _profilePath == null
+                                              ? 'Add or drop your'
+                                              : 'File Selected',
+                                          style: const TextStyle(
+                                            color: defaultColor,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        Text(
+                                          _profilePath == null
+                                              ? ' Profile Pic in here'
+                                              : ' tap to select another',
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const StrokeText(
                               text: "Attachments",
                               textStyle: TextStyle(
                                 fontSize: 12.0,
@@ -551,9 +610,10 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               ),
                             ),
                             SizedBox(height: screenHeight / 20),
-                            defaultButton(
+                            (states is! UserSignUpLoadingState)?defaultButton(
                               function: () {
                                 if (formKey.currentState!.validate()) {
+                                  showToast(text: _profilePath??"profile b null XD", state: ToastStates.SUCCESS);
                                   if (selectedItem.isEmpty) {
                                     showToast(
                                       text: 'Please select a specification',
@@ -581,6 +641,9 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       attachments: _filePath != null
                                           ? File(_filePath!)
                                           : null,
+                                      profilePic: _profilePath != null
+                                          ? File(_profilePath!)
+                                          : null,
                                       classification: classification,
                                     );
                                     // if (UserSignUpCubit.get(context).signupModel != null) {
@@ -604,6 +667,10 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               isUpperCase: false,
                               fontWeight: FontWeight.w300,
                               width: screenWidth / 1.1,
+                            ):const Center(
+                              child: CircularProgressIndicator(
+                                color: defaultColor,
+                              ),
                             ),
                             SizedBox(height: screenHeight / 70),
                             Row(
@@ -714,6 +781,17 @@ class _UserSignupPageState extends State<UserSignupPage> {
       setState(() {
         showToast(text: _filePath??"file path b null", state: ToastStates.WARNING);
         _filePath = result.files.single.path!;
+      });
+    }
+  }
+
+  void _pickProfileFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      setState(() {
+        showToast(text: _profilePath??"file path b null", state: ToastStates.WARNING);
+        _profilePath = result.files.single.path!;
       });
     }
   }
