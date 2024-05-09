@@ -102,3 +102,27 @@ class LoggedInUser {
     return 'LoggedInUser{id: $id, firstName: $firstName, lastName: $lastName, userName: $userName, slugUserName: $slugUserName, email: $email, phone: $phone, role: $role, profilePic: $profilePic, coverPic: $coverPic, images: $images, dob: $dob, address: $address, gender: $gender, locations: $locations, specification: $specification, updatedAt: $updatedAt, v: $v}';
   }
 }
+
+class Following {
+  String userId;
+  String id;
+
+  Following({
+    required this.userId,
+    required this.id,
+  });
+
+  factory Following.fromJson(Map<String, dynamic> json) {
+    return Following(
+      userId: json['userId'],
+      id: json['_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userId'] = this.userId;
+    data['_id'] = this.id;
+    return data;
+  }
+}

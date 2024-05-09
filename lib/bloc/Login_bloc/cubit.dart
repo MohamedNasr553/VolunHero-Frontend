@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
+import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -13,7 +14,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   UserLoginCubit() : super(UserLoginInitialState());
 
   static UserLoginCubit get(context) => BlocProvider.of(context);
-
+  AnotherUser? anotherUser;
   bool isPassword = true;
   IconData suffix = Icons.visibility;
 
@@ -55,7 +56,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       print(loginModel?.refresh_token);
       String? accessToken = loginModel?.access_token;
-
+      emit(UserLoginSuccessState());
+      return "Logged In Successfully";
       // token validation
       if (accessToken != null && accessToken.isNotEmpty) {
         // Decode the token and check expiry
@@ -69,24 +71,24 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
             emit(UserLoginSuccessState());
             showToast(text: "Logged in Successfully", state: ToastStates.SUCCESS);
             getLoggedInUserData(token: loginModel!.refresh_token!);
-            return "Logged in Successfully";
+           // return "Logged in Successfully";
           } else {
             // Token has expired
             emit(UserLoginErrorState("Token has expired"));
             showToast(text: "Token has expired", state: ToastStates.ERROR);
-            return "Token has expired";
+           // return "Token has expired";
           }
         } else {
           // Invalid token format
           emit(UserLoginErrorState("Invalid token format"));
           showToast(text: "Invalid token format", state: ToastStates.ERROR);
-          return "Invalid token format";
+        //  return "Invalid token format";
         }
       } else {
         // Token is null or empty
         emit(UserLoginErrorState("Token is null or empty"));
         showToast(text: "Token is null or empty", state: ToastStates.ERROR);
-        return "Token is null or empty";
+       // return "Token is null or empty";
       }
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));
@@ -185,4 +187,51 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
     return "";
   }
+
+  /// --------------------------> make follow using endpoints <------------------
+  bool inFollowing({required String? followId}){
+    // id bat3 elanother
+    for(int i=0;i<loggedInUser!.following.length;i++){
+      if(loggedInUser!.following[i]["userId"] == followId){
+        print("3amelo follow y3m");
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> handleFollow({required String? token , required String? followId}) async {
+
+    try {
+      emit(FollowLoadingState());
+      var value;
+
+      if(inFollowing(followId: followId) == false){
+         value = await DioHelper.patchData(
+          url: "/users/${followId}/makefollow",
+          token: token,
+        );
+         emit(FollowSuccessState());
+      }else{
+        value = await DioHelper.patchData(
+          url: "/users/${followId}/makeunfollow",
+          token: token,
+        );
+        emit(UnFollowSuccessState());
+      }
+      print("message el follow");
+      print(value.data["message"] == "success");
+      print(inFollowing(followId: followId));
+      print("message el follow");
+    } catch (error) {
+      emit(FollowErrorState());
+      print('Error: $error');
+    }
+  }
+
+  int getAnotherUserFollowers(){
+    emit(GetAnotherUserFollowersState(anotherUser!.followers.length));
+    return (anotherUser!.followers.length);
+  }
+
 }

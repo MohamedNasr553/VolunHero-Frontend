@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
@@ -180,5 +181,33 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
       emit(DeletePostErrorState());
     });
+  }
+  /// ---------------------------Another User ------------------
+
+  AnotherUser? anotherUser;
+
+  Future<void> getAnotherUserData({required String? token,required String? id}) async {
+
+    try {
+      emit(GetAnotherUserDataLoadingState());
+      var value = await DioHelper.getData(
+        url: "/users/$id",
+        token: token,
+      );
+      print("el another user: ");
+      print(value);
+      print("el another user: ");
+
+      if (value != null) {
+        // Parse the JSON response and assign it to the 'anotherUser' variable
+        anotherUser = AnotherUser.fromJson(value.data["data"]["doc"]);
+        // Now you can access the details of the user through 'anotherUser'
+        print(anotherUser);
+        emit(GetAnotherUserDataSuccessState());
+      }
+    } catch (error) {
+      emit(GetAnotherUserDataErrorState());
+      print('Error: $error');
+    }
   }
 }

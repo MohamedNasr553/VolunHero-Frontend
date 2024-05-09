@@ -45,3 +45,18 @@ class GetLoggedInUserChatsErrorState extends UserLoginStates {
 }
 
 class GetLoggedInUserChatsSuccessState extends UserLoginStates {}
+
+//// TODO: {follow states}
+class FollowLoadingState extends UserLoginStates{}
+class FollowErrorState extends UserLoginStates{}
+class FollowSuccessState extends UserLoginStates{}
+class UnFollowSuccessState extends UserLoginStates{}
+class InFollowersState extends UserLoginStates{}
+class NotInFollowersState extends UserLoginStates{}
+
+/// another user getters states
+class GetAnotherUserFollowersState extends UserLoginStates{
+  final int followersLen;
+  GetAnotherUserFollowersState(this.followersLen);
+}
+

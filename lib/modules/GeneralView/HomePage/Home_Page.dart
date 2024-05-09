@@ -1,12 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/AnotherUser_bloc/cubit.dart';
+import 'package:flutter_code/bloc/AnotherUser_bloc/states.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
+import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserDrawer/drawer.dart';
+import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -141,16 +145,17 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     icon:
-                        SvgPicture.asset("assets/images/messagesIcon.svg")),
+                    SvgPicture.asset("assets/images/messagesIcon.svg")),
               ),
             ],
           ),
           drawer: const UserSidePage(),
           body: (state is! HomePagePostsLoadingState)?
-            buildPostsList(context): buildLoadingWidget(context)
-        );
+          buildPostsList(context): buildLoadingWidget(context)
+      );
       },
     );
+
   }
 
   Widget buildLoadingWidget(context) {
@@ -333,23 +338,53 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: (postDetails.createdBy.profilePic != null)
-                        ? AssetImage(postDetails.createdBy.profilePic!)
-                        : const AssetImage("assets/images/nullProfile.png"),
+                  InkWell(
+                    onTap: (){
+                      if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
+                        navigateToPage(context, ProfilePage());
+                      }else{
+                         HomeLayoutCubit.get(context).getAnotherUserData(
+                             token:userToken,
+                             id: postDetails.createdBy.id
+                         ).then((value) {
+                           UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
+                           navigateToPage(context,AnotherUserProfile());
+                         });
+                      }
+                    },
+                    child: CircleAvatar(
+                      radius: 20.0,
+                      backgroundImage: (postDetails.createdBy.profilePic != null)
+                          ? AssetImage(postDetails.createdBy.profilePic!)
+                          : const AssetImage("assets/images/nullProfile.png"),
+                    ),
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        postDetails.createdBy.userName,
-                        style: const TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                      InkWell(
+                        onTap: (){
+                          if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
+                            navigateToPage(context, ProfilePage());
+                          }else{
+                            HomeLayoutCubit.get(context).getAnotherUserData(
+                                token:userToken,
+                                id: postDetails.createdBy.id
+                            ).then((value) {
+                              UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
+                              navigateToPage(context,AnotherUserProfile());
+                            });
+                          }
+                        },
+                        child: Text(
+                          postDetails.createdBy.userName,
+                          style: const TextStyle(
+                            fontFamily: "Roboto",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 0.5),

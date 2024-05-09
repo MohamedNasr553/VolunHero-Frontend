@@ -29,3 +29,7 @@ class DeletePostLoadingState extends LayoutStates{}
 class DeletePostSuccessState extends LayoutStates{}
 
 class DeletePostErrorState extends LayoutStates{}
+//// Another User States
+class GetAnotherUserDataLoadingState extends LayoutStates{}
+class GetAnotherUserDataErrorState extends LayoutStates{}
+class GetAnotherUserDataSuccessState extends LayoutStates{}

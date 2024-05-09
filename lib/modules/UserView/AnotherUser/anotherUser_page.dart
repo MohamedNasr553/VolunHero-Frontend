@@ -6,6 +6,7 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -103,7 +104,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             children: [
                               Text(
                                 UserLoginCubit.get(context)
-                                    .loggedInUser!
+                                    .anotherUser!
                                     .firstName,
                                 style: TextStyle(
                                   fontSize: 18.0,
@@ -115,7 +116,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(width: screenWidth / 90),
                               Text(
                                 UserLoginCubit.get(context)
-                                    .loggedInUser!
+                                    .anotherUser!
                                     .lastName,
                                 style: TextStyle(
                                   fontSize: 18.0,
@@ -126,11 +127,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                               SizedBox(width: screenWidth / 60),
                               (UserLoginCubit.get(context)
-                                              .loggedInUser!
+                                              .anotherUser!
                                               .specification ==
                                           'Medical' ||
                                       UserLoginCubit.get(context)
-                                              .loggedInUser!
+                                              .anotherUser!
                                               .specification ==
                                           'Educational')
                                   ? const Icon(Icons.verified,
@@ -142,7 +143,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             height: 1.0,
                           ),
                           Text(
-                            UserLoginCubit.get(context).loggedInUser!.email,
+                            UserLoginCubit.get(context).anotherUser!.email,
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.black.withOpacity(0.5),
@@ -166,9 +167,19 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       Expanded(
                           child: InkWell(
                         onTap: () {
-                          UserLoginCubit.get(context).changeFollow();
+                            UserLoginCubit.get(context).handleFollow(
+                                token: userToken,
+                                followId:  UserLoginCubit.get(context).anotherUser!.id
+                            ).then((value) {
+                              UserLoginCubit.get(context).getLoggedInUserData(token: userToken);
+                              HomeLayoutCubit.get(context).getAnotherUserData(token: userToken, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
+                                UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
+                                UserLoginCubit.get(context).getAnotherUserFollowers();
+                              });
+                            });
+                            showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
                         },
-                        child: (UserLoginCubit.get(context).follow == false)
+                        child: (UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) == false)
                             ? Container(
                                 decoration: BoxDecoration(
                                     color: defaultColor,
@@ -176,13 +187,21 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: Center(
-                                    child: (Text(
+                                    child: (state is! FollowLoadingState)?(Text(
                                       "Follow",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
-                                    )),
+                                    )): Center(
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               )
@@ -193,17 +212,25 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: Center(
-                                    child: (Text(
+                                    child:(state is! FollowLoadingState)? (
+                                        Text(
                                       "Following",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
-                                    )),
-                                  ),
+                                    )): Center(
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
                                 ),
                               ),
-                      )),
+                      ))),
                       SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
@@ -295,7 +322,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                        "${UserLoginCubit.get(context).anotherUser!.followers.length}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -317,7 +344,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                        "${UserLoginCubit.get(context).anotherUser!.following.length}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -406,7 +433,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       ),
                                       Text(
                                         UserLoginCubit.get(context)
-                                            .loggedInUser!
+                                            .anotherUser!
                                             .specification,
                                         style: const TextStyle(
                                           fontSize: 12.0,
@@ -426,7 +453,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                  "Lives in ${UserLoginCubit.get(context).anotherUser!.address}",
                                 ),
                               )
                             ],
@@ -450,7 +477,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 width: screenWidth / 1.5,
                                 child: Text(
                                   UserLoginCubit.get(context)
-                                      .loggedInUser!
+                                      .anotherUser!
                                       .phone,
                                 ),
                               )

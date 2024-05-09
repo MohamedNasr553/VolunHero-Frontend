@@ -243,21 +243,16 @@ class LoginPage extends StatelessWidget {
                                         UserLoginCubit.get(context).loginUser(
                                           email: emailAddressController.text,
                                           password: passwordController.text,
-                                        );
-                                        //     .then((value) {
-                                        //
-                                        //   UserLoginCubit.get(context)
-                                        //       .getLoggedInUserData(
-                                        //       token: UserLoginCubit.get(
-                                        //           context)
-                                        //           .loginModel
-                                        //           ?.refresh_token ??
-                                        //           "")
-                                        //       .then((value) async{
-                                        //     // navigateAndFinish(context, VolunHeroUserLayout());
-                                        //     userToken = await getUserToken();
-                                        //   });
-                                        // });
+                                        ).then((value) async {
+                                          userToken = UserLoginCubit.get(context).loginModel!.refresh_token;
+                                          print("USER TOKEN1 $userToken");
+                                          print("USER TOKEN2 ${UserLoginCubit.get(context).loginModel!.refresh_token}");
+                                          UserLoginCubit.get(context)
+                                              .getLoggedInUserData(
+                                              token:userToken)
+                                              .then((value) async{
+                                            navigateAndFinish(context, VolunHeroUserLayout());});
+                                        });
                                       }
                                     },
                                     text: "Login",
