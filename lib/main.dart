@@ -15,7 +15,6 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
 
-
   Widget widget;
   // bool onBoarding = CacheHelper.get(key: 'onBoarding') ?? false;
 
@@ -33,7 +32,7 @@ void main() async {
   // }
 
   runApp(AppRoot(
- //   onBoarding: onBoarding,
+    // onBoarding: onBoarding,
     startWidget: LoginPage(),
   ));
 }

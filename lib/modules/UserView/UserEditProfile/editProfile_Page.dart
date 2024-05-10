@@ -273,6 +273,11 @@ class UserEditProfile extends StatelessWidget {
                                 address: oldData["address"],
                               )
                                   .then((value) {
+                                navigateAndFinish(context, const ProfilePage());
+                                showToast(
+                                  text: "Profile Updated Successfully",
+                                  state: ToastStates.SUCCESS,
+                                );
                                 print('Updated Data: $oldData');
                               });
                             }

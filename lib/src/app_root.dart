@@ -34,7 +34,6 @@ class AppRoot extends StatelessWidget {
         BlocProvider(
             create: (BuildContext context) =>
                 OrganizationLayoutCubit()..initializeBottomItems()),
-
         BlocProvider(
           create: (BuildContext context) => CreatePostCubit(),
         ),

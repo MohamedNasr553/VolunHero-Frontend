@@ -25,7 +25,6 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
   final CarouselController carouselController = CarouselController();
@@ -35,10 +34,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if ( UserLoginCubit.get(context).loginModel!.refresh_token != null &&  UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
-      print("Token is not null and not empty: ${UserLoginCubit.get(context).loginModel!.refresh_token}");
-   //   UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
-      //HomeLayoutCubit.get(context).getAllPosts(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    if (UserLoginCubit.get(context).loginModel!.refresh_token != null &&
+        UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
+      HomeLayoutCubit.get(context).getAllPosts(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     }
   }
 
@@ -51,111 +50,109 @@ class _HomePageState extends State<HomePage> {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            leading: Builder(builder: (context) {
-              return Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 40,
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: Image.asset('assets/images/logo.png'),
-                      // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
-                      //  Image.asset('assets/images/nullProfile.png'):
-                      // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
-                    ),
+            appBar: AppBar(
+              leading: Builder(builder: (context) {
+                return Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 40,
                   ),
-                ),
-              );
-            }),
-            actions: [
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                ),
-                child: SizedBox(
-                  width: screenWidth / 1.42,
-                  height: screenHeight / 25,
-                  child: TextFormField(
-                    controller: searchController,
-                    validator: (value) {
-                      return null;
+                  child: GestureDetector(
+                    onTap: () {
+                      Scaffold.of(context).openDrawer();
                     },
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey.shade500,
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 20.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset('assets/images/logo.png'),
+                        // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
+                        //  Image.asset('assets/images/nullProfile.png'):
+                        // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
                       ),
                     ),
                   ),
+                );
+              }),
+              actions: [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 300,
+                  ),
+                  child: SizedBox(
+                    width: screenWidth / 1.42,
+                    height: screenHeight / 25,
+                    child: TextFormField(
+                      controller: searchController,
+                      validator: (value) {
+                        return null;
+                      },
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        hintText: 'Search...',
+                        hintStyle: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey.shade500,
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                  start: screenWidth / 80,
-                  end: screenWidth / 60,
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 300,
+                    start: screenWidth / 80,
+                    end: screenWidth / 60,
+                  ),
+                  child: IconButton(
+                      onPressed: () {
+                        UserLoginCubit.get(context)
+                            .getLoggedInChats()
+                            .then((value) {
+                          navigateToPage(context, const ChatsPage());
+                        });
+                      },
+                      icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
                 ),
-                child: IconButton(
-                    onPressed: () {
-                      UserLoginCubit.get(context)
-                          .getLoggedInChats()
-                          .then((value) {
-                        navigateToPage(context, const ChatsPage());
-                      });
-                    },
-                    icon:
-                    SvgPicture.asset("assets/images/messagesIcon.svg")),
-              ),
-            ],
-          ),
-          drawer: const UserSidePage(),
-          body: (state is! HomePagePostsLoadingState)?
-          buildPostsList(context): buildLoadingWidget(context)
-      );
+              ],
+            ),
+            drawer: const UserSidePage(),
+            body: (state is! HomePagePostsLoadingState)
+                ? buildPostsList(context)
+                : buildLoadingWidget(context));
       },
     );
-
   }
 
   Widget buildLoadingWidget(context) {
@@ -164,9 +161,9 @@ class _HomePageState extends State<HomePage> {
 
     return ListView.builder(
       itemCount: HomeLayoutCubit.get(context)
-              .homePagePostsModel
-              ?.modifiedPosts
-              .length ??
+          .homePagePostsModel
+          ?.modifiedPosts
+          .length ??
           0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
@@ -257,14 +254,15 @@ class _HomePageState extends State<HomePage> {
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
                             return buildPostItem(
-                                homePagePostsModel.modifiedPosts[index], context);
+                                homePagePostsModel.modifiedPosts[index],
+                                context);
                           }
                         }
                         return const Text("No Posts Available");
                       },
                       separatorBuilder: (context, index) => Padding(
-                        padding:
-                            const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 16),
                         child: Container(
                           width: double.infinity,
                           color: Colors.white,
@@ -339,22 +337,28 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: (){
-                      if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
+                    onTap: () {
+                      if (postDetails.createdBy.id ==
+                          UserLoginCubit.get(context).loggedInUser!.id) {
                         navigateToPage(context, ProfilePage());
-                      }else{
-                         HomeLayoutCubit.get(context).getAnotherUserData(
-                             token: UserLoginCubit.get(context).loginModel!.refresh_token,
-                             id: postDetails.createdBy.id
-                         ).then((value) {
-                           UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                           navigateToPage(context,AnotherUserProfile());
-                         });
+                      } else {
+                        HomeLayoutCubit.get(context)
+                            .getAnotherUserData(
+                            token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token,
+                            id: postDetails.createdBy.id)
+                            .then((value) {
+                          UserLoginCubit.get(context).anotherUser =
+                              HomeLayoutCubit.get(context).anotherUser;
+                          navigateToPage(context, AnotherUserProfile());
+                        });
                       }
                     },
                     child: CircleAvatar(
                       radius: 20.0,
-                      backgroundImage: (postDetails.createdBy.profilePic != null)
+                      backgroundImage: (postDetails.createdBy.profilePic !=
+                          null)
                           ? AssetImage(postDetails.createdBy.profilePic!)
                           : const AssetImage("assets/images/nullProfile.png"),
                     ),
@@ -364,16 +368,21 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
-                        onTap: (){
-                          if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
+                        onTap: () {
+                          if (postDetails.createdBy.id ==
+                              UserLoginCubit.get(context).loggedInUser!.id) {
                             navigateToPage(context, ProfilePage());
-                          }else{
-                            HomeLayoutCubit.get(context).getAnotherUserData(
-                                token: UserLoginCubit.get(context).loginModel!.refresh_token,
-                                id: postDetails.createdBy.id
-                            ).then((value) {
-                              UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(context,AnotherUserProfile());
+                          } else {
+                            HomeLayoutCubit.get(context)
+                                .getAnotherUserData(
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                                id: postDetails.createdBy.id)
+                                .then((value) {
+                              UserLoginCubit.get(context).anotherUser =
+                                  HomeLayoutCubit.get(context).anotherUser;
+                              navigateToPage(context, AnotherUserProfile());
                             });
                           }
                         },
@@ -435,22 +444,22 @@ class _HomePageState extends State<HomePage> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                            postDetails.content,
-                            maxLines:
-                                (postDetails.attachments) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
-                            ),
-                          )
+                      postDetails.content,
+                      maxLines:
+                      (postDetails.attachments) != null ? 6 : 10,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: "Robot",
+                        fontSize: 13.0,
+                      ),
+                    )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
                     if (postDetails.attachments.isNotEmpty)
-                      // check if there's more than one
+                    // check if there's more than one
                       if (postDetails.attachments.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -485,7 +494,7 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
-                          postDetails.attachments.asMap().entries.map((entry) {
+                      postDetails.attachments.asMap().entries.map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -519,24 +528,24 @@ class _HomePageState extends State<HomePage> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            icon: SvgPicture.asset(
-                              'assets/images/NewLikeColor.svg',
-                              width: 22.0,
-                              height: 22.0,
-                            ),
-                          )
+                      padding: EdgeInsets.zero,
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/images/NewLikeColor.svg',
+                        width: 22.0,
+                        height: 22.0,
+                      ),
+                    )
                         : Container(),
                     (postDetails.likesCount > 0)
                         ? Text(
-                            '${postDetails.likesCount}',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          )
+                      '${postDetails.likesCount}',
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 12,
+                        color: HexColor("575757"),
+                      ),
+                    )
                         : Container(),
                     const Spacer(),
 
@@ -588,15 +597,25 @@ class _HomePageState extends State<HomePage> {
                         " Like",
                         color: HexColor("4267B2"),
                         fontWeight: FontWeight.w600,
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+                        onTap: () {
+                          HomeLayoutCubit.get(context).likePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "");
                         },
                       )
                           : postSubComponent(
                         "assets/images/like.svg",
                         "Like",
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+                        onTap: () {
+                          HomeLayoutCubit.get(context).likePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "");
                         },
                       ),
                       const Spacer(),
@@ -620,9 +639,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action, {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
+  Widget postSubComponent(String assetIcon, String action,
+      {GestureTapCallback? onTap,
+        Color color = const Color(0xFF575757),
+        FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -658,13 +678,16 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ListTile(
-                leading: const Icon(Icons.save, size: 25,),
+                leading: const Icon(
+                  Icons.save,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                        'Save Post',
+                      'Save Post',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
@@ -687,7 +710,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.close, size: 25,),
+                leading: const Icon(
+                  Icons.close,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,7 +742,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.copy, size: 25,),
+                leading: const Icon(
+                  Icons.copy,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
