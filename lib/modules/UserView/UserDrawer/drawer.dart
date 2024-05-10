@@ -15,6 +15,7 @@ import 'package:smooth_list_view/smooth_list_view.dart';
 
 import '../../../bloc/Login_bloc/cubit.dart';
 import '../../../bloc/Login_bloc/states.dart';
+import '../../GeneralView/Login/Login_Page.dart';
 
 class UserSidePage extends StatelessWidget {
   const UserSidePage({Key? key}) : super(key: key);
@@ -249,7 +250,8 @@ class UserSidePage extends StatelessWidget {
                     ),
                     onTap: () {
                       // Remove token
-                      signOut(context);
+                      navigateToPage(context, LoginPage());
+                      ///signOut(context);
                     },
                   ),
                 ],

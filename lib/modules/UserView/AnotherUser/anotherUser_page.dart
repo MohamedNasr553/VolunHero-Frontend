@@ -31,7 +31,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
   }
 
   @override
@@ -168,11 +168,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           child: InkWell(
                         onTap: () {
                             UserLoginCubit.get(context).handleFollow(
-                                token: userToken,
+                                token:  UserLoginCubit.get(context).loginModel!.refresh_token,
                                 followId:  UserLoginCubit.get(context).anotherUser!.id
                             ).then((value) {
-                              UserLoginCubit.get(context).getLoggedInUserData(token: userToken);
-                              HomeLayoutCubit.get(context).getAnotherUserData(token: userToken, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
+                              UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token);
+                              HomeLayoutCubit.get(context).getAnotherUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
                                 UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
                                 UserLoginCubit.get(context).getAnotherUserFollowers();
                               });

@@ -35,10 +35,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (userToken != null && userToken!.isNotEmpty) {
-      print("Token is not null and not empty: $userToken");
-      UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
-      HomeLayoutCubit.get(context).getAllPosts(token: userToken ?? "");
+    if ( UserLoginCubit.get(context).loginModel!.refresh_token != null &&  UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
+      print("Token is not null and not empty: ${UserLoginCubit.get(context).loginModel!.refresh_token}");
+   //   UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+      //HomeLayoutCubit.get(context).getAllPosts(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     }
   }
 
@@ -344,7 +344,7 @@ class _HomePageState extends State<HomePage> {
                         navigateToPage(context, ProfilePage());
                       }else{
                          HomeLayoutCubit.get(context).getAnotherUserData(
-                             token:userToken,
+                             token: UserLoginCubit.get(context).loginModel!.refresh_token,
                              id: postDetails.createdBy.id
                          ).then((value) {
                            UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
@@ -369,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                             navigateToPage(context, ProfilePage());
                           }else{
                             HomeLayoutCubit.get(context).getAnotherUserData(
-                                token:userToken,
+                                token: UserLoginCubit.get(context).loginModel!.refresh_token,
                                 id: postDetails.createdBy.id
                             ).then((value) {
                               UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
@@ -589,14 +589,14 @@ class _HomePageState extends State<HomePage> {
                         color: HexColor("4267B2"),
                         fontWeight: FontWeight.w600,
                         onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
                         },
                       )
                           : postSubComponent(
                         "assets/images/like.svg",
                         "Like",
                         onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
+                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
                         },
                       ),
                       const Spacer(),

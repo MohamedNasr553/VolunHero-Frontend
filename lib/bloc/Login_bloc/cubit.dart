@@ -103,12 +103,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<void> getLoggedInUserData({required String? token}) async {
     try {
-      if (token == null) {
-        emit(GetLoggedInUserErrorState("Token is null"));
-
-        return;
-      }
-
+      print("token in get logged in user: ");
+      print(token);
+      print("token in get logged in user: ");
       emit(GetLoggedInUserLoadingState());
 
       var value = await DioHelper.getData(
@@ -120,7 +117,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       loggedInUserModel = LoggedInUserModel.fromJson(value.data);
       loggedInUserData = loggedInUserModel?.data;
       loggedInUser = loggedInUserData?.doc;
-
+      print("XXXXXXXXXXXXXXXXXXXXX");
+      print(loggedInUser.toString());
+      print("XXXXXXXXXXXXXXXXXXXXX");
       emit(GetLoggedInUserSuccessState());
     } catch (error) {
       print('Error: $error');

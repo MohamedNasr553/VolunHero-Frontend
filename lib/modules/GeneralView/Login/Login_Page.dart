@@ -12,6 +12,8 @@ import 'package:stroke_text/stroke_text.dart';
 
 import '../../../bloc/Login_bloc/cubit.dart';
 import '../../../bloc/Login_bloc/states.dart';
+import '../../../bloc/UserLayout_bloc/cubit.dart';
+import '../../../bloc/UserLayout_bloc/states.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -24,33 +26,11 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
         listener: (context, state) {
-      if (state is UserLoginSuccessState) {
-        if (UserLoginCubit.get(context).loginModel != null) {
-          // Save User Token
-          CacheHelper.saveData(
-            key: "token",
-            value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-            // value: userToken ?? "",
-          ).then((value) {
-            navigateAndFinish(context, const VolunHeroUserLayout());
-          });
-        }
-        showToast(
-          text: "Logged in Successfully",
-          state: ToastStates.SUCCESS,
-        );
-      }
-      if (state is UserLoginErrorState) {
-        showToast(
-          text: "Login failed",
-          state: ToastStates.ERROR,
-        );
-      }
-      // navigateAndFinish(context, const VolunHeroUserLayout());
-    }, builder: (context, state) {
+
+        },
+        builder: (context, state) {
       return Scaffold(
         body: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
@@ -243,16 +223,14 @@ class LoginPage extends StatelessWidget {
                                         UserLoginCubit.get(context).loginUser(
                                           email: emailAddressController.text,
                                           password: passwordController.text,
-                                        ).then((value) async {
-                                          userToken = UserLoginCubit.get(context).loginModel!.refresh_token;
-                                          print("USER TOKEN1 $userToken");
-                                          print("USER TOKEN2 ${UserLoginCubit.get(context).loginModel!.refresh_token}");
-                                          UserLoginCubit.get(context)
-                                              .getLoggedInUserData(
-                                              token:userToken)
-                                              .then((value) async{
-                                            navigateAndFinish(context, VolunHeroUserLayout());});
+                                        ).then((value){
+                                          UserLoginCubit.get(context).getLoggedInUserData(token: UserLoginCubit.get(context).loginModel!.refresh_token).then((value){
+                                               if(UserLoginCubit.get(context).loggedInUser!=null){
+                                                 navigateAndFinish(context, VolunHeroUserLayout());
+                                               }
+                                          });
                                         });
+
                                       }
                                     },
                                     text: "Login",

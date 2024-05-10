@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
   }
 
   @override
@@ -408,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.locations[0]}",
                                 ),
                               )
                             ],
@@ -1033,7 +1033,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
-                  HomeLayoutCubit.get(context).deletePost(token: userToken ?? "", postId: postDetails!.id);
+                  HomeLayoutCubit.get(context).deletePost(token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "", postId: postDetails!.id);
                 },
               ),
             ],

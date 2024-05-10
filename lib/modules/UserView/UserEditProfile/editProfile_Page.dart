@@ -29,16 +29,16 @@ class UserEditProfile extends StatelessWidget {
       listener: (context, state) {
         if (state is UpdateLoggedInUserSuccessState) {
           // Save User Token
-          CacheHelper.saveData(
-            key: "token",
-            value: userToken ?? "",
-          ).then((value) {
-            navigateAndFinish(context, const ProfilePage());
-          });
-          showToast(
-            text: "Profile Updated Successfully",
-            state: ToastStates.SUCCESS,
-          );
+          // CacheHelper.saveData(
+          //   key: "token",
+          //   value: userToken ?? "",
+          // ).then((value) {
+          //   navigateAndFinish(context, const ProfilePage());
+          // });
+          // showToast(
+          //   text: "Profile Updated Successfully",
+          //   state: ToastStates.SUCCESS,
+          // );
         }
         if (state is UpdateLoggedInUserErrorState) {
           showToast(
@@ -53,7 +53,7 @@ class UserEditProfile extends StatelessWidget {
           "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
           "userName": UserLoginCubit.get(context).loggedInUser!.userName,
           "phone": UserLoginCubit.get(context).loggedInUser!.phone,
-          "address": UserLoginCubit.get(context).loggedInUser!.address,
+          "address": UserLoginCubit.get(context).loggedInUser!.locations[0],
         };
 
         print("Old data: $oldData");
@@ -226,7 +226,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser!.address,
+                              UserLoginCubit.get(context).loggedInUser!.locations[0],
                         ),
                         SizedBox(height: screenHeight / 15),
                         defaultButton(
@@ -261,11 +261,11 @@ class UserEditProfile extends StatelessWidget {
                                       ? addressController.text
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
-                                          .address;
+                                          .locations[0];
 
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(
-                                token: userToken ?? "",
+                                token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
                                 firstName: oldData["firstName"],
                                 lastName: oldData["lastName"],
                                 userName: oldData["userName"],

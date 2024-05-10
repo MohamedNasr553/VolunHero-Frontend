@@ -16,12 +16,12 @@ class OnBoarding extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     void submit(){
-      CacheHelper.saveData(
-        key: 'onBoarding',
-        value: true,
-      ).then((value){
-        navigateAndFinish(context, LoginPage());
-      });
+      // CacheHelper.saveData(
+      //   key: 'onBoarding',
+      //   value: true,
+      // ).then((value){
+      //   navigateAndFinish(context, LoginPage());
+      // });
     }
 
     return Scaffold(
@@ -77,7 +77,7 @@ class OnBoarding extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              submit();
+              navigateToPage(context, LoginPage());
             },
             text: 'Login',
             isUpperCase: false,
