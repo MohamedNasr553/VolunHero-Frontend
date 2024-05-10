@@ -131,15 +131,9 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 TextFormField(
                                   obscureText:
-<<<<<<< HEAD
                                   (UserLoginCubit.get(context).isPassword)
                                       ? true
                                       : false,
-=======
-                                      (UserLoginCubit.get(context).isPassword)
-                                          ? true
-                                          : false,
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                                   controller: passwordController,
                                   validator: (value) {
                                     if (value!.isEmpty) {
@@ -223,7 +217,6 @@ class LoginPage extends StatelessWidget {
                                 SizedBox(height: screenHeight / 5.0),
                                 (state is! UserLoginLoadingState)
                                     ? defaultButton(
-<<<<<<< HEAD
                                   function: () {
                                     if (formKey.currentState!
                                         .validate()) {
@@ -261,45 +254,6 @@ class LoginPage extends StatelessWidget {
                                     color: defaultColor,
                                   ),
                                 ),
-=======
-                                        function: () {
-                                          if (formKey.currentState!
-                                              .validate()) {
-                                            UserLoginCubit.get(context)
-                                                .loginUser(
-                                              email:
-                                                  emailAddressController.text,
-                                              password: passwordController.text,
-                                            )
-                                                .then((value) {
-                                              UserLoginCubit.get(context)
-                                                  .getLoggedInUserData(
-                                                      token: UserLoginCubit.get(
-                                                              context)
-                                                          .loginModel!
-                                                          .refresh_token)
-                                                  .then((value) {
-                                                if (UserLoginCubit.get(context)
-                                                        .loggedInUser !=
-                                                    null) {
-                                                  navigateAndFinish(context,
-                                                      VolunHeroUserLayout());
-                                                }
-                                              });
-                                            });
-                                          }
-                                        },
-                                        text: "Login",
-                                        isUpperCase: false,
-                                        fontWeight: FontWeight.w300,
-                                        width: screenWidth / 1.1,
-                                      )
-                                    : const Center(
-                                        child: CircularProgressIndicator(
-                                          color: defaultColor,
-                                        ),
-                                      ),
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                                 SizedBox(height: screenHeight / 70),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

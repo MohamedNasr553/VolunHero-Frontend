@@ -344,17 +344,10 @@ class _HomePageState extends State<HomePage> {
                       } else {
                         HomeLayoutCubit.get(context)
                             .getAnotherUserData(
-<<<<<<< HEAD
                             token: UserLoginCubit.get(context)
                                 .loginModel!
                                 .refresh_token,
                             id: postDetails.createdBy.id)
-=======
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token,
-                                id: postDetails.createdBy.id)
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                             .then((value) {
                           UserLoginCubit.get(context).anotherUser =
                               HomeLayoutCubit.get(context).anotherUser;
@@ -365,11 +358,7 @@ class _HomePageState extends State<HomePage> {
                     child: CircleAvatar(
                       radius: 20.0,
                       backgroundImage: (postDetails.createdBy.profilePic !=
-<<<<<<< HEAD
                           null)
-=======
-                              null)
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                           ? AssetImage(postDetails.createdBy.profilePic!)
                           : const AssetImage("assets/images/nullProfile.png"),
                     ),
@@ -386,17 +375,10 @@ class _HomePageState extends State<HomePage> {
                           } else {
                             HomeLayoutCubit.get(context)
                                 .getAnotherUserData(
-<<<<<<< HEAD
                                 token: UserLoginCubit.get(context)
                                     .loginModel!
                                     .refresh_token,
                                 id: postDetails.createdBy.id)
-=======
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token,
-                                    id: postDetails.createdBy.id)
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
@@ -611,7 +593,6 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       (postDetails.likesCount > 0)
                           ? postSubComponent(
-<<<<<<< HEAD
                         "assets/images/NewLikeColor.svg",
                         " Like",
                         color: HexColor("4267B2"),
@@ -637,33 +618,6 @@ class _HomePageState extends State<HomePage> {
                                   "");
                         },
                       ),
-=======
-                              "assets/images/NewLikeColor.svg",
-                              " Like",
-                              color: HexColor("4267B2"),
-                              fontWeight: FontWeight.w600,
-                              onTap: () {
-                                HomeLayoutCubit.get(context).likePost(
-                                    postId: postDetails.id,
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token ??
-                                        "");
-                              },
-                            )
-                          : postSubComponent(
-                              "assets/images/like.svg",
-                              "Like",
-                              onTap: () {
-                                HomeLayoutCubit.get(context).likePost(
-                                    postId: postDetails.id,
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token ??
-                                        "");
-                              },
-                            ),
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
                       const Spacer(),
                       postSubComponent(
                         "assets/images/comment.svg",
@@ -687,13 +641,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-<<<<<<< HEAD
         Color color = const Color(0xFF575757),
         FontWeight fontWeight = FontWeight.w300}) {
-=======
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
->>>>>>> ad5f46886905c7750a5e53bec11277db08c7b384
     return InkWell(
       onTap: onTap,
       child: Row(
