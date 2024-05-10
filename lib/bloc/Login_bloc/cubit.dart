@@ -5,7 +5,6 @@ import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../models/ChatsModel.dart';
 import '../../shared/network/endpoints.dart';
 import '../../shared/network/remote/dio_helper.dart';
@@ -14,7 +13,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   UserLoginCubit() : super(UserLoginInitialState());
 
   static UserLoginCubit get(context) => BlocProvider.of(context);
-  AnotherUser? anotherUser;
+
+  // -------------------- Password Visibility ---------------------
   bool isPassword = true;
   IconData suffix = Icons.visibility;
 
@@ -25,13 +25,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangePasswordState());
   }
 
-  bool follow = false;
-
-  void changeFollow() {
-    follow = !follow;
-    emit(LoginChangeFollowState());
-  }
-
+  // ----------------------------- Login ---------------------------
   DecodedToken? decodedToken;
   LoginModel? loginModel;
 
@@ -55,48 +49,19 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       loginModel = LoginModel.fromJson(value.data);
 
       print(loginModel?.refresh_token);
-      String? accessToken = loginModel?.access_token;
       emit(UserLoginSuccessState());
+      showToast(text: "Logged In Successfully", state: ToastStates.SUCCESS);
       return "Logged In Successfully";
-      // token validation
-      if (accessToken != null && accessToken.isNotEmpty) {
-        // Decode the token and check expiry
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        int? expiryTimeInSeconds = decodedToken['exp'];
-        if (expiryTimeInSeconds != null) {
-          DateTime expiryDateTime =
-          DateTime.fromMillisecondsSinceEpoch(expiryTimeInSeconds * 1000);
-          if (expiryDateTime.isAfter(DateTime.now())) {
-            // Token is valid, proceed with getting user data
-            emit(UserLoginSuccessState());
-            showToast(text: "Logged in Successfully", state: ToastStates.SUCCESS);
-            getLoggedInUserData(token: loginModel!.refresh_token!);
-           // return "Logged in Successfully";
-          } else {
-            // Token has expired
-            emit(UserLoginErrorState("Token has expired"));
-            showToast(text: "Token has expired", state: ToastStates.ERROR);
-           // return "Token has expired";
-          }
-        } else {
-          // Invalid token format
-          emit(UserLoginErrorState("Invalid token format"));
-          showToast(text: "Invalid token format", state: ToastStates.ERROR);
-        //  return "Invalid token format";
-        }
-      } else {
-        // Token is null or empty
-        emit(UserLoginErrorState("Token is null or empty"));
-        showToast(text: "Token is null or empty", state: ToastStates.ERROR);
-       // return "Token is null or empty";
-      }
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));
-      showToast(text: "Something went Wrong!", state: ToastStates.ERROR);
+      showToast(
+          text: "Email Address or Password is not correct!",
+          state: ToastStates.ERROR);
       return "Something went Wrong!";
     }
   }
 
+  // ------------------------- Get User Data -----------------------
   LoggedInUserModel? loggedInUserModel;
   LoggedInUserData? loggedInUserData;
   LoggedInUser? loggedInUser;
@@ -105,21 +70,18 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     try {
       if (token == null) {
         emit(GetLoggedInUserErrorState("Token is null"));
-
         return;
       }
 
       emit(GetLoggedInUserLoadingState());
-
       var value = await DioHelper.getData(
         url: GET_USER,
         token: token,
       );
       print(value);
-
       loggedInUserModel = LoggedInUserModel.fromJson(value.data);
-      loggedInUserData = loggedInUserModel?.data;
-      loggedInUser = loggedInUserData?.doc;
+      loggedInUserData = loggedInUserModel!.data;
+      loggedInUser = loggedInUserData!.doc;
 
       emit(GetLoggedInUserSuccessState());
     } catch (error) {
@@ -128,7 +90,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(GetLoggedInUserErrorState(error.toString()));
     }
   }
-  
+
+  // ------------------------ Update User Data ---------------------
   Future<void> updateLoggedInUserData({
     required String token,
     required String firstName,
@@ -142,8 +105,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       Map<String, dynamic> requestData = {
         'firstName': firstName,
         'lastName': lastName,
-        'userName':userName,
-        'phone':phone,
+        'userName': userName,
+        'phone': phone,
         'address': address,
       };
       print(requestData.toString());
@@ -162,8 +125,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
+  // ------------------------- Get All Chats ------------------------
   ChatResponse? chatResponse;
   List<Chat> chats = [];
+
   Future<String> getLoggedInChats() async {
     try {
       emit(GetLoggedInUserChatsLoadingState());
@@ -174,8 +139,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       emit(GetLoggedInUserChatsSuccessState());
       chatResponse = ChatResponse.fromJson(value.data);
-      for (int i =0;i<chatResponse!.chats.length;i++){
-          chats.add(chatResponse!.chats[i]);
+      for (int i = 0; i < chatResponse!.chats.length; i++) {
+        chats.add(chatResponse!.chats[i]);
       }
       print("Chat Response => ");
       print(chatResponse);
@@ -188,11 +153,13 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     return "";
   }
 
-  /// --------------------------> make follow using endpoints <------------------
-  bool inFollowing({required String? followId}){
+  // --------------------------> Make follow using endpoints <------------------
+  AnotherUser? anotherUser;
+
+  bool inFollowing({required String? followId}) {
     // id bat3 elanother
-    for(int i=0;i<loggedInUser!.following.length;i++){
-      if(loggedInUser!.following[i]["userId"] == followId){
+    for (int i = 0; i < loggedInUser!.following.length; i++) {
+      if (loggedInUser!.following[i]["userId"] == followId) {
         print("3amelo follow y3m");
         return true;
       }
@@ -200,19 +167,19 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     return false;
   }
 
-  Future<void> handleFollow({required String? token , required String? followId}) async {
-
+  Future<void> handleFollow(
+      {required String? token, required String? followId}) async {
     try {
       emit(FollowLoadingState());
       var value;
 
-      if(inFollowing(followId: followId) == false){
-         value = await DioHelper.patchData(
+      if (inFollowing(followId: followId) == false) {
+        value = await DioHelper.patchData(
           url: "/users/${followId}/makefollow",
           token: token,
         );
-         emit(FollowSuccessState());
-      }else{
+        emit(FollowSuccessState());
+      } else {
         value = await DioHelper.patchData(
           url: "/users/${followId}/makeunfollow",
           token: token,
@@ -229,9 +196,15 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-  int getAnotherUserFollowers(){
+  int getAnotherUserFollowers() {
     emit(GetAnotherUserFollowersState(anotherUser!.followers.length));
     return (anotherUser!.followers.length);
   }
 
+  bool follow = false;
+
+  void changeFollow() {
+    follow = !follow;
+    emit(LoginChangeFollowState());
+  }
 }

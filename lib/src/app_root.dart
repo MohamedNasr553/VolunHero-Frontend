@@ -23,8 +23,9 @@ class AppRoot extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (BuildContext context) =>
-                HomeLayoutCubit()..initializeBottomItems()..getAllPosts(token: userToken ?? "")),
+            create: (BuildContext context) => HomeLayoutCubit()
+              ..initializeBottomItems()
+              ..getAllPosts(token: userToken ?? "")),
         BlocProvider(
             create: (BuildContext context) =>
                 OrganizationLayoutCubit()..initializeBottomItems()),

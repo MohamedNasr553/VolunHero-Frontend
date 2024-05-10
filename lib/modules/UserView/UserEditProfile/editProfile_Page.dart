@@ -49,11 +49,11 @@ class UserEditProfile extends StatelessWidget {
       },
       builder: (context, state) {
         Map<String, dynamic> oldData = {
-          "firstName": UserLoginCubit.get(context).loggedInUser!.firstName,
-          "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
-          "userName": UserLoginCubit.get(context).loggedInUser!.userName,
-          "phone": UserLoginCubit.get(context).loggedInUser!.phone,
-          "address": UserLoginCubit.get(context).loggedInUser!.address,
+          "firstName": UserLoginCubit.get(context).loggedInUser?.firstName ?? '',
+          "lastName": UserLoginCubit.get(context).loggedInUser?.lastName ?? '',
+          "userName": UserLoginCubit.get(context).loggedInUser?.userName ?? '',
+          "phone": UserLoginCubit.get(context).loggedInUser?.phone ?? '',
+          "address": UserLoginCubit.get(context).loggedInUser?.address ?? '',
         };
 
         print("Old data: $oldData");
@@ -136,9 +136,7 @@ class UserEditProfile extends StatelessWidget {
                           },
                           controller: firstNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context)
-                              .loggedInUser!
-                              .firstName,
+                          hintText: UserLoginCubit.get(context).loggedInUser?.firstName ?? '',
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -155,9 +153,7 @@ class UserEditProfile extends StatelessWidget {
                           },
                           controller: lastNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context)
-                              .loggedInUser!
-                              .lastName,
+                          hintText: UserLoginCubit.get(context).loggedInUser?.lastName ?? '',
                         ),
                         SizedBox(height: screenHeight / 30),
                         Row(
@@ -188,9 +184,7 @@ class UserEditProfile extends StatelessWidget {
                           readonly: true,
                           controller: userNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context)
-                              .loggedInUser!
-                              .userName,
+                          hintText: UserLoginCubit.get(context).loggedInUser?.userName ?? '',
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -208,7 +202,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: phoneController,
                           type: TextInputType.phone,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser!.phone,
+                              UserLoginCubit.get(context).loggedInUser?.phone ?? '',
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -226,7 +220,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser!.address,
+                              UserLoginCubit.get(context).loggedInUser?.address ?? '',
                         ),
                         SizedBox(height: screenHeight / 15),
                         defaultButton(

@@ -1,8 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/AnotherUser_bloc/cubit.dart';
-import 'package:flutter_code/bloc/AnotherUser_bloc/states.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
@@ -24,7 +22,6 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
-
 
 class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
@@ -51,111 +48,109 @@ class _HomePageState extends State<HomePage> {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            leading: Builder(builder: (context) {
-              return Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 40,
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.transparent,
-                    child: ClipOval(
-                      child: Image.asset('assets/images/logo.png'),
-                      // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
-                      //  Image.asset('assets/images/nullProfile.png'):
-                      // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
-                    ),
+            appBar: AppBar(
+              leading: Builder(builder: (context) {
+                return Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 40,
                   ),
-                ),
-              );
-            }),
-            actions: [
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                ),
-                child: SizedBox(
-                  width: screenWidth / 1.42,
-                  height: screenHeight / 25,
-                  child: TextFormField(
-                    controller: searchController,
-                    validator: (value) {
-                      return null;
+                  child: GestureDetector(
+                    onTap: () {
+                      Scaffold.of(context).openDrawer();
                     },
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey.shade500,
-                      ),
-                      fillColor: Colors.white,
-                      filled: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16.0, horizontal: 20.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 0.5,
-                        ),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset('assets/images/logo.png'),
+                        // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
+                        //  Image.asset('assets/images/nullProfile.png'):
+                        // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
                       ),
                     ),
                   ),
+                );
+              }),
+              actions: [
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 300,
+                  ),
+                  child: SizedBox(
+                    width: screenWidth / 1.42,
+                    height: screenHeight / 25,
+                    child: TextFormField(
+                      controller: searchController,
+                      validator: (value) {
+                        return null;
+                      },
+                      style: const TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        hintText: 'Search...',
+                        hintStyle: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.grey.shade500,
+                        ),
+                        fillColor: Colors.white,
+                        filled: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 20.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 300,
-                  start: screenWidth / 80,
-                  end: screenWidth / 60,
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 300,
+                    start: screenWidth / 80,
+                    end: screenWidth / 60,
+                  ),
+                  child: IconButton(
+                      onPressed: () {
+                        UserLoginCubit.get(context)
+                            .getLoggedInChats()
+                            .then((value) {
+                          navigateToPage(context, const ChatsPage());
+                        });
+                      },
+                      icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
                 ),
-                child: IconButton(
-                    onPressed: () {
-                      UserLoginCubit.get(context)
-                          .getLoggedInChats()
-                          .then((value) {
-                        navigateToPage(context, const ChatsPage());
-                      });
-                    },
-                    icon:
-                    SvgPicture.asset("assets/images/messagesIcon.svg")),
-              ),
-            ],
-          ),
-          drawer: const UserSidePage(),
-          body: (state is! HomePagePostsLoadingState)?
-          buildPostsList(context): buildLoadingWidget(context)
-      );
+              ],
+            ),
+            drawer: const UserSidePage(),
+            body: (state is! HomePagePostsLoadingState)
+                ? buildPostsList(context)
+                : buildLoadingWidget(context));
       },
     );
-
   }
 
   Widget buildLoadingWidget(context) {
@@ -257,14 +252,15 @@ class _HomePageState extends State<HomePage> {
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
                             return buildPostItem(
-                                homePagePostsModel.modifiedPosts[index], context);
+                                homePagePostsModel.modifiedPosts[index],
+                                context);
                           }
                         }
                         return const Text("No Posts Available");
                       },
                       separatorBuilder: (context, index) => Padding(
-                        padding:
-                            const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                        padding: const EdgeInsetsDirectional.symmetric(
+                            horizontal: 16),
                         child: Container(
                           width: double.infinity,
                           color: Colors.white,
@@ -339,22 +335,25 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: (){
-                      if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
-                        navigateToPage(context, ProfilePage());
-                      }else{
-                         HomeLayoutCubit.get(context).getAnotherUserData(
-                             token:userToken,
-                             id: postDetails.createdBy.id
-                         ).then((value) {
-                           UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                           navigateToPage(context,AnotherUserProfile());
-                         });
+                    onTap: () {
+                      if (postDetails.createdBy.id ==
+                          UserLoginCubit.get(context).loggedInUser!.id) {
+                        navigateToPage(context, const ProfilePage());
+                      } else {
+                        HomeLayoutCubit.get(context)
+                            .getAnotherUserData(
+                                token: userToken, id: postDetails.createdBy.id)
+                            .then((value) {
+                          UserLoginCubit.get(context).anotherUser =
+                              HomeLayoutCubit.get(context).anotherUser;
+                          navigateToPage(context, const AnotherUserProfile());
+                        });
                       }
                     },
                     child: CircleAvatar(
                       radius: 20.0,
-                      backgroundImage: (postDetails.createdBy.profilePic != null)
+                      backgroundImage: (postDetails.createdBy.profilePic !=
+                              null)
                           ? AssetImage(postDetails.createdBy.profilePic!)
                           : const AssetImage("assets/images/nullProfile.png"),
                     ),
@@ -364,16 +363,19 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       InkWell(
-                        onTap: (){
-                          if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
-                            navigateToPage(context, ProfilePage());
-                          }else{
-                            HomeLayoutCubit.get(context).getAnotherUserData(
-                                token:userToken,
-                                id: postDetails.createdBy.id
-                            ).then((value) {
-                              UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(context,AnotherUserProfile());
+                        onTap: () {
+                          if (postDetails.createdBy.id ==
+                              UserLoginCubit.get(context).loggedInUser!.id) {
+                            navigateToPage(context, const ProfilePage());
+                          } else {
+                            HomeLayoutCubit.get(context)
+                                .getAnotherUserData(
+                                    token: userToken,
+                                    id: postDetails.createdBy.id)
+                                .then((value) {
+                              UserLoginCubit.get(context).anotherUser =
+                                  HomeLayoutCubit.get(context).anotherUser;
+                              navigateToPage(context, const AnotherUserProfile());
                             });
                           }
                         },
@@ -584,21 +586,25 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       (postDetails.likesCount > 0)
                           ? postSubComponent(
-                        "assets/images/NewLikeColor.svg",
-                        " Like",
-                        color: HexColor("4267B2"),
-                        fontWeight: FontWeight.w600,
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
-                        },
-                      )
+                              "assets/images/NewLikeColor.svg",
+                              " Like",
+                              color: HexColor("4267B2"),
+                              fontWeight: FontWeight.w600,
+                              onTap: () {
+                                HomeLayoutCubit.get(context).likePost(
+                                    postId: postDetails.id,
+                                    token: userToken ?? "");
+                              },
+                            )
                           : postSubComponent(
-                        "assets/images/like.svg",
-                        "Like",
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
-                        },
-                      ),
+                              "assets/images/like.svg",
+                              "Like",
+                              onTap: () {
+                                HomeLayoutCubit.get(context).likePost(
+                                    postId: postDetails.id,
+                                    token: userToken ?? "");
+                              },
+                            ),
                       const Spacer(),
                       postSubComponent(
                         "assets/images/comment.svg",
@@ -620,7 +626,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action, {GestureTapCallback? onTap,
+  Widget postSubComponent(String assetIcon, String action,
+      {GestureTapCallback? onTap,
       Color color = const Color(0xFF575757),
       FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
@@ -658,13 +665,16 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ListTile(
-                leading: const Icon(Icons.save, size: 25,),
+                leading: const Icon(
+                  Icons.save,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                        'Save Post',
+                      'Save Post',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
@@ -687,7 +697,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.close, size: 25,),
+                leading: const Icon(
+                  Icons.close,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,7 +729,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.copy, size: 25,),
+                leading: const Icon(
+                  Icons.copy,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

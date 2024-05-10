@@ -32,8 +32,8 @@ class LoginPage extends StatelessWidget {
           // Save User Token
           CacheHelper.saveData(
             key: "token",
-            value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-            // value: userToken ?? "",
+            // value: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+            value: userToken ?? "",
           ).then((value) {
             navigateAndFinish(context, const VolunHeroUserLayout());
           });
@@ -240,18 +240,25 @@ class LoginPage extends StatelessWidget {
                                 ? defaultButton(
                                     function: () {
                                       if (formKey.currentState!.validate()) {
-                                        UserLoginCubit.get(context).loginUser(
+                                        UserLoginCubit.get(context)
+                                            .loginUser(
                                           email: emailAddressController.text,
                                           password: passwordController.text,
-                                        ).then((value) async {
-                                          userToken = UserLoginCubit.get(context).loginModel!.refresh_token;
-                                          print("USER TOKEN1 $userToken");
-                                          print("USER TOKEN2 ${UserLoginCubit.get(context).loginModel!.refresh_token}");
+                                        )
+                                            .then((value) async {
+                                          userToken =
+                                              UserLoginCubit.get(context)
+                                                  .loginModel!
+                                                  .refresh_token;
+                                          // print("USER TOKEN1 $userToken");
+                                          // print("USER TOKEN2 ${UserLoginCubit.get(context).loginModel!.refresh_token}");
                                           UserLoginCubit.get(context)
                                               .getLoggedInUserData(
-                                              token:userToken)
-                                              .then((value) async{
-                                            navigateAndFinish(context, VolunHeroUserLayout());});
+                                                  token: userToken)
+                                              .then((value) async {
+                                            // navigateAndFinish(context,
+                                            //     const VolunHeroUserLayout());
+                                          });
                                         });
                                       }
                                     },

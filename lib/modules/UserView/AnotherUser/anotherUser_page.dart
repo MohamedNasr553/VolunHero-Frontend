@@ -82,7 +82,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           const CircleAvatar(
                             radius: 45.0,
                             backgroundImage:
-                                AssetImage('assets/images/man_photo.png'),
+                            AssetImage('assets/images/man_photo.png'),
                           ),
                         ],
                       ),
@@ -127,15 +127,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                               SizedBox(width: screenWidth / 60),
                               (UserLoginCubit.get(context)
-                                              .anotherUser!
-                                              .specification ==
-                                          'Medical' ||
-                                      UserLoginCubit.get(context)
-                                              .anotherUser!
-                                              .specification ==
-                                          'Educational')
+                                  .anotherUser!
+                                  .specification ==
+                                  'Medical' ||
+                                  UserLoginCubit.get(context)
+                                      .anotherUser!
+                                      .specification ==
+                                      'Educational')
                                   ? const Icon(Icons.verified,
-                                      color: Colors.blue)
+                                  color: Colors.blue)
                                   : Container(),
                             ],
                           ),
@@ -166,21 +166,21 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     children: [
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                            UserLoginCubit.get(context).handleFollow(
-                                token: userToken,
-                                followId:  UserLoginCubit.get(context).anotherUser!.id
-                            ).then((value) {
-                              UserLoginCubit.get(context).getLoggedInUserData(token: userToken);
-                              HomeLayoutCubit.get(context).getAnotherUserData(token: userToken, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
-                                UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                                UserLoginCubit.get(context).getAnotherUserFollowers();
-                              });
-                            });
-                            showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
-                        },
-                        child: (UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) == false)
-                            ? Container(
+                              onTap: () {
+                                UserLoginCubit.get(context).handleFollow(
+                                    token: userToken,
+                                    followId:  UserLoginCubit.get(context).anotherUser!.id
+                                ).then((value) {
+                                  UserLoginCubit.get(context).getLoggedInUserData(token: userToken);
+                                  HomeLayoutCubit.get(context).getAnotherUserData(token: userToken, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
+                                    UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
+                                    UserLoginCubit.get(context).getAnotherUserFollowers();
+                                  });
+                                });
+                                showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
+                              },
+                              child: (UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) == false)
+                                  ? Container(
                                 decoration: BoxDecoration(
                                     color: defaultColor,
                                     borderRadius: BorderRadius.circular(4)),
@@ -205,54 +205,54 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   ),
                                 ),
                               )
-                            : Container(
+                                  : Container(
                                 decoration: BoxDecoration(
                                     color: Colors.black.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(4)),
                                 child: Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: Center(
-                                    child:(state is! FollowLoadingState)? (
-                                        Text(
-                                      "Following",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )): Center(
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                      child:(state is! FollowLoadingState)? (
+                                          Text(
+                                            "Following",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )): Center(
+                                        child: Container(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                    )
+                                      )
+                                  ),
                                 ),
-                              ),
-                      ))),
+                              ))),
                       SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black38.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Center(
-                              child: (Text(
-                                "message",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
+                            onTap: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black38.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: Center(
+                                  child: (Text(
+                                    "message",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )),
                                 ),
-                              )),
+                              ),
                             ),
-                          ),
-                        ),
-                      )),
+                          )),
                     ],
                   ),
                 ),
@@ -553,9 +553,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
     return ListView.builder(
       itemCount: HomeLayoutCubit.get(context)
-              .homePagePostsModel
-              ?.modifiedPosts
-              .length ??
+          .homePagePostsModel
+          ?.modifiedPosts
+          .length ??
           0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
@@ -648,7 +648,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                 },
                 separatorBuilder: (context, index) => Padding(
                   padding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  const EdgeInsetsDirectional.symmetric(horizontal: 16),
                   child: Container(
                     width: double.infinity,
                     color: Colors.white,
@@ -786,22 +786,22 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                            postDetails.content,
-                            maxLines:
-                                (postDetails.attachments) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
-                            ),
-                          )
+                      postDetails.content,
+                      maxLines:
+                      (postDetails.attachments) != null ? 6 : 10,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: "Robot",
+                        fontSize: 13.0,
+                      ),
+                    )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
                     if (postDetails.attachments.isNotEmpty)
-                      // check if there's more than one
+                    // check if there's more than one
                       if (postDetails.attachments.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -835,7 +835,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
-                          postDetails.attachments.asMap().entries.map((entry) {
+                      postDetails.attachments.asMap().entries.map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -869,24 +869,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            icon: SvgPicture.asset(
-                              'assets/images/Blue_Like.svg',
-                              width: 22.0,
-                              height: 22.0,
-                            ),
-                          )
+                      padding: EdgeInsets.zero,
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/images/Blue_Like.svg',
+                        width: 22.0,
+                        height: 22.0,
+                      ),
+                    )
                         : Container(),
                     (postDetails.likesCount > 0)
                         ? Text(
-                            '${postDetails.likesCount}',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          )
+                      '${postDetails.likesCount}',
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 12,
+                        color: HexColor("575757"),
+                      ),
+                    )
                         : Container(),
                     const Spacer(),
 
