@@ -53,7 +53,7 @@ class UserEditProfile extends StatelessWidget {
           "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
           "userName": UserLoginCubit.get(context).loggedInUser!.userName,
           "phone": UserLoginCubit.get(context).loggedInUser!.phone,
-          "address": UserLoginCubit.get(context).loggedInUser!.locations[0],
+          "address": UserLoginCubit.get(context).loggedInUser!.address,
         };
 
         print("Old data: $oldData");
@@ -226,7 +226,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser!.locations[0],
+                              UserLoginCubit.get(context).loggedInUser!.address,
                         ),
                         SizedBox(height: screenHeight / 15),
                         defaultButton(
@@ -261,7 +261,7 @@ class UserEditProfile extends StatelessWidget {
                                       ? addressController.text
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
-                                          .locations[0];
+                                          .address;
 
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(

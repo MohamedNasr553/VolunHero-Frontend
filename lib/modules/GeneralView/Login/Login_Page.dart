@@ -238,7 +238,7 @@ class LoginPage extends StatelessWidget {
                                               .loggedInUser !=
                                               null) {
                                             navigateAndFinish(context,
-                                                VolunHeroUserLayout());
+                                                const VolunHeroUserLayout());
                                           }
                                         });
                                       });

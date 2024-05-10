@@ -36,10 +36,11 @@ class LoggedInUser {
   final String? profilePic;
   final String? coverPic;
   final List<String> images;
+  final String address;
   final String gender;
-  final String headquarters;
-  final String specialties;
-  final List<String> locations;
+  final String? headquarters;
+  final String? specialties;
+  final List<String>? locations;
   final String specification;
   final List<dynamic> attachments;
   final List<dynamic> following;
@@ -59,10 +60,11 @@ class LoggedInUser {
     this.profilePic,
     this.coverPic,
     required this.images,
+    required this.address,
     required this.gender,
     required this.headquarters,
-    required this.specialties,
-    required this.locations,
+    this.specialties,
+    this.locations,
     required this.specification,
     required this.attachments,
     required this.following,
@@ -84,6 +86,7 @@ class LoggedInUser {
       profilePic: json['profilePic'],
       coverPic: json['coverPic'],
       images: List<String>.from(json['images']),
+      address: json['address'],
       gender: json['gender'],
       headquarters: json['headquarters'],
       specialties: json['specialties'],

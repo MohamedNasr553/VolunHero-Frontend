@@ -408,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.locations[0]}",
+                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
                                 ),
                               )
                             ],
@@ -775,12 +775,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
-                    if (postDetails.attachments.isNotEmpty)
+                    if (postDetails.attachments!.isNotEmpty)
                     // check if there's more than one
-                      if (postDetails.attachments.length > 1)
+                      if (postDetails.attachments!.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
-                          items: postDetails.attachments.map((attachment) {
+                          items: postDetails.attachments!.map((attachment) {
                             return Image(
                               image: NetworkImage(attachment.secure_url),
                               width: double.infinity,
@@ -802,13 +802,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       else
                         Image(
-                          image: NetworkImage(postDetails.attachments[0].secure_url),
+                          image: NetworkImage(postDetails.attachments![0].secure_url),
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: postDetails.attachments.asMap().entries.map((entry) {
+                      children: postDetails.attachments!.asMap().entries.map((entry) {
                         return GestureDetector(
                           onTap: () => carouselController.animateToPage(entry.key),
                           child: Container(

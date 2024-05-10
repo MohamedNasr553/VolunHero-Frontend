@@ -29,25 +29,28 @@ class ModifiedPost {
   String id;
   String content;
   String specification;
-  List<Attachments> attachments;
+  List<Attachments>? attachments;
   CreatedBy createdBy;
+  String? customId;
   int likesCount;
   int shareCount;
   DateTime createdAt;
   DateTime updatedAt;
-  bool liked = false;
+  bool liked;
   int v;
 
   ModifiedPost({
     required this.id,
     required this.content,
     required this.specification,
-    required this.attachments,
+    this.attachments,
     required this.createdBy,
+    this.customId,
     required this.likesCount,
     required this.shareCount,
     required this.createdAt,
     required this.updatedAt,
+    required this.liked,
     required this.v,
   });
 
@@ -67,14 +70,15 @@ class ModifiedPost {
       specification: json['specification'],
       attachments: attachments,
       createdBy: CreatedBy.fromJson(json['createdBy']),
+      customId: json['customId'],
       likesCount: json['likesCount'],
       shareCount: json['shareCount'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
+      liked: false,
       v: json['__v'],
     );
   }
-
 }
 
 class Attachments {
@@ -99,14 +103,12 @@ class CreatedBy {
   String userName;
   String role;
   String? profilePic;
-  String? coverPic;
 
   CreatedBy({
     required this.id,
     required this.userName,
     required this.role,
     this.profilePic,
-    this.coverPic,
   });
 
   factory CreatedBy.fromJson(Map<String, dynamic> json) {
@@ -115,7 +117,6 @@ class CreatedBy {
       userName: json['userName'],
       role: json['role'],
       profilePic: json['profilePic'],
-      coverPic: json['coverPic'],
     );
   }
 }
