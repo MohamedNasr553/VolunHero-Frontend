@@ -143,8 +143,8 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   /// ----------------------- Like Post API ------------------------
 
   void likePostUI(ModifiedPost post){
-    post.liked = !post.liked;
-    emit(ChangeLikePostState());
+     post.liked = !post.liked;
+     emit(ChangeLikePostState());
   }
 
   void likePost({required String token, required String postId}) {

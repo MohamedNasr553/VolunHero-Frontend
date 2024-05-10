@@ -13,10 +13,9 @@ class VolunHeroUserLayout extends StatelessWidget {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var userLayoutBloc = BlocProvider.of<HomeLayoutCubit>(context);
 
         return Scaffold(
-          body: userLayoutBloc.layoutScreens[userLayoutBloc.currentIndex],
+          body:  HomeLayoutCubit.get(context).layoutScreens[ HomeLayoutCubit.get(context).currentIndex],
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
@@ -31,10 +30,10 @@ class VolunHeroUserLayout extends StatelessWidget {
             ),
             selectedItemColor: defaultColor,
             unselectedItemColor: Colors.black54,
-            currentIndex: userLayoutBloc.currentIndex,
-            items: userLayoutBloc.bottomItems,
+            currentIndex:  HomeLayoutCubit.get(context).currentIndex,
+            items:  HomeLayoutCubit.get(context).bottomItems,
             onTap: (index) {
-              userLayoutBloc.changeBottomNavBar(index);
+              HomeLayoutCubit.get(context).changeBottomNavBar(index);
             },
           ),
         );

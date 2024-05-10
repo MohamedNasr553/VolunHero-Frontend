@@ -29,16 +29,16 @@ class UserEditProfile extends StatelessWidget {
       listener: (context, state) {
         if (state is UpdateLoggedInUserSuccessState) {
           // Save User Token
-          CacheHelper.saveData(
-            key: "token",
-            value: userToken ?? "",
-          ).then((value) {
-            navigateAndFinish(context, const ProfilePage());
-          });
-          showToast(
-            text: "Profile Updated Successfully",
-            state: ToastStates.SUCCESS,
-          );
+          // CacheHelper.saveData(
+          //   key: "token",
+          //   value: userToken ?? "",
+          // ).then((value) {
+          //   navigateAndFinish(context, const ProfilePage());
+          // });
+          // showToast(
+          //   text: "Profile Updated Successfully",
+          //   state: ToastStates.SUCCESS,
+          // );
         }
         if (state is UpdateLoggedInUserErrorState) {
           showToast(
@@ -49,11 +49,11 @@ class UserEditProfile extends StatelessWidget {
       },
       builder: (context, state) {
         Map<String, dynamic> oldData = {
-          "firstName": UserLoginCubit.get(context).loggedInUser?.firstName ?? '',
-          "lastName": UserLoginCubit.get(context).loggedInUser?.lastName ?? '',
-          "userName": UserLoginCubit.get(context).loggedInUser?.userName ?? '',
-          "phone": UserLoginCubit.get(context).loggedInUser?.phone ?? '',
-          "address": UserLoginCubit.get(context).loggedInUser?.address ?? '',
+          "firstName": UserLoginCubit.get(context).loggedInUser!.firstName,
+          "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
+          "userName": UserLoginCubit.get(context).loggedInUser!.userName,
+          "phone": UserLoginCubit.get(context).loggedInUser!.phone,
+          "address": UserLoginCubit.get(context).loggedInUser!.locations[0],
         };
 
         print("Old data: $oldData");
@@ -136,7 +136,9 @@ class UserEditProfile extends StatelessWidget {
                           },
                           controller: firstNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context).loggedInUser?.firstName ?? '',
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .firstName,
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -153,7 +155,9 @@ class UserEditProfile extends StatelessWidget {
                           },
                           controller: lastNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context).loggedInUser?.lastName ?? '',
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .lastName,
                         ),
                         SizedBox(height: screenHeight / 30),
                         Row(
@@ -184,7 +188,9 @@ class UserEditProfile extends StatelessWidget {
                           readonly: true,
                           controller: userNameController,
                           type: TextInputType.text,
-                          hintText: UserLoginCubit.get(context).loggedInUser?.userName ?? '',
+                          hintText: UserLoginCubit.get(context)
+                              .loggedInUser!
+                              .userName,
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -202,7 +208,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: phoneController,
                           type: TextInputType.phone,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser?.phone ?? '',
+                              UserLoginCubit.get(context).loggedInUser!.phone,
                         ),
                         SizedBox(height: screenHeight / 30),
                         const Text(
@@ -220,7 +226,7 @@ class UserEditProfile extends StatelessWidget {
                           controller: addressController,
                           type: TextInputType.streetAddress,
                           hintText:
-                              UserLoginCubit.get(context).loggedInUser?.address ?? '',
+                              UserLoginCubit.get(context).loggedInUser!.locations[0],
                         ),
                         SizedBox(height: screenHeight / 15),
                         defaultButton(
@@ -255,11 +261,11 @@ class UserEditProfile extends StatelessWidget {
                                       ? addressController.text
                                       : UserLoginCubit.get(context)
                                           .loggedInUser!
-                                          .address;
+                                          .locations[0];
 
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(
-                                token: userToken ?? "",
+                                token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
                                 firstName: oldData["firstName"],
                                 lastName: oldData["lastName"],
                                 userName: oldData["userName"],
@@ -267,6 +273,11 @@ class UserEditProfile extends StatelessWidget {
                                 address: oldData["address"],
                               )
                                   .then((value) {
+                                navigateAndFinish(context, const ProfilePage());
+                                showToast(
+                                  text: "Profile Updated Successfully",
+                                  state: ToastStates.SUCCESS,
+                                );
                                 print('Updated Data: $oldData');
                               });
                             }

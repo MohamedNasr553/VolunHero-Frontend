@@ -68,12 +68,12 @@ class OnBoarding2 extends StatelessWidget {
           ),
           defaultButton(
             function: () {
-              CacheHelper.saveData(
-                key: 'onBoarding',
-                value: true,
-              ).then((value){
-                navigateAndFinish(context, const UserSignupPage());
-              });
+              // CacheHelper.saveData(
+              //   key: 'onBoarding',
+              //   value: true,
+              // ).then((value){
+              //   navigateAndFinish(context, const UserSignupPage());
+              // });
             },
             text: 'Sign up as a user',
             isUpperCase: false,
@@ -84,12 +84,13 @@ class OnBoarding2 extends StatelessWidget {
           const SizedBox(height: 15.0),
           defaultButton(
             function: () {
-              CacheHelper.saveData(
-                key: 'onBoarding',
-                value: true,
-              ).then((value){
-                navigateAndFinish(context, const OrganizationSignUp());
-              });
+              // CacheHelper.saveData(
+              //   key: 'onBoarding',
+              //   value: true,
+              // ).then((value){
+              //   navigateAndFinish(context, const OrganizationSignUp());
+              // });
+              navigateAndFinish(context, const OrganizationSignUp());
             },
             fontWeight: FontWeight.w100,
             fontSize: 17.0,

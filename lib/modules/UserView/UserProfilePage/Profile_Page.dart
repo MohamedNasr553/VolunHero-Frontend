@@ -7,7 +7,6 @@ import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/components/constants.dart';
@@ -31,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
   }
 
   @override
@@ -137,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Row(
                             children: [
                               Text(
-                               UserLoginCubit.get(context).loggedInUser?.firstName ?? '',
+                               UserLoginCubit.get(context).loggedInUser!.firstName,
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -147,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               SizedBox(width: screenWidth / 90),
                               Text(
-                                UserLoginCubit.get(context).loggedInUser?.lastName ?? '',
+                                UserLoginCubit.get(context).loggedInUser!.lastName,
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -156,8 +155,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               SizedBox(width: screenWidth / 60),
-                              (UserLoginCubit.get(context).loggedInUser?.specification == 'Medical' ||
-                                  UserLoginCubit.get(context).loggedInUser?.specification == 'Educational')
+                              (UserLoginCubit.get(context).loggedInUser!.specification == 'Medical' ||
+                                  UserLoginCubit.get(context).loggedInUser!.specification == 'Educational')
                                   ? const Icon(Icons.verified, color: Colors.blue)
                                   : Container(),
                             ],
@@ -166,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             height: 1.0,
                           ),
                           Text(
-                              UserLoginCubit.get(context).loggedInUser?.email ?? '',
+                              UserLoginCubit.get(context).loggedInUser!.email,
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.black.withOpacity(0.5),
@@ -175,6 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       ),
+                      const Spacer(),
                     ],
                   ),
                 ),
@@ -244,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser != null && UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1)?UserLoginCubit.get(context).loggedInUser!.followers.length:0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -267,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser != null && UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1)?UserLoginCubit.get(context).loggedInUser!.following.length:0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -388,7 +388,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ),
                                     Text(
-                                      UserLoginCubit.get(context).loggedInUser?.specification ?? '',
+                                      UserLoginCubit.get(context).loggedInUser!.specification,
                                       style: const TextStyle(
                                         fontSize: 12.0,
                                         color: defaultColor,
@@ -408,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser?.address ?? ''}",
+                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.locations[0]}",
                                 ),
                               )
                             ],
@@ -431,7 +431,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  UserLoginCubit.get(context).loggedInUser?.phone ?? '',
+                                  UserLoginCubit.get(context).loggedInUser!.phone,
                                 ),
                               )
                             ],
@@ -478,7 +478,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 GestureDetector(
                                   onTap: (){
-                                    navigateToPage(context, const CreatePost());
+                                    navigateToPage(context, CreatePost());
                                   },
                                   child: Container(
                                     width: screenWidth / 1.5,
@@ -498,7 +498,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 const Spacer(),
                                 IconButton(
-                                  onPressed: () => navigateToPage(context, const CreatePost()),
+                                  // Upload photo from device Gallery
+                                  onPressed: _uploadPhoto,
                                   icon: Image.asset(
                                     'assets/images/Img_box_duotone_line.png',
                                     width: 25.0,
@@ -522,16 +523,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildLoadingWidget(context) {
+  Widget buildLoadingWidget(context){
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context)
-          .homePagePostsModel
-          ?.modifiedPosts
-          .length ??
-          0,
+      itemCount: HomeLayoutCubit.get(context).homePagePostsModel?.modifiedPosts.length ?? 0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           period: const Duration(milliseconds: 1000),
@@ -559,7 +556,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10)),
+                                borderRadius:
+                                BorderRadius.circular(10)),
                           ),
                         ),
                         const SizedBox(
@@ -571,7 +569,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius:
+                              BorderRadius.circular(10),
                             ),
                           ),
                         )
@@ -608,44 +607,36 @@ class _ProfilePageState extends State<ProfilePage> {
       if (cubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
         return Column(
           children: [
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListView.separated(
-                      reverse: true,
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final homePagePostsModel = cubit.homePagePostsModel;
-                        if (homePagePostsModel != null) {
-                          if (index < homePagePostsModel.modifiedPosts.length) {
-                            return buildPostItem(
-                                homePagePostsModel.modifiedPosts[index], context);
-                          }
-                        }
-                        return const Text("No Posts Available");
-                      },
-                      separatorBuilder: (context, index) => Padding(
-                        padding:
-                        const EdgeInsetsDirectional.symmetric(horizontal: 16),
-                        child: Container(
-                          width: double.infinity,
-                          color: Colors.white,
-                        ),
-                      ),
-                      itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
-                    ),
-                  ],
+            Expanded(
+              child: ListView.separated(
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final homePagePostsModel = cubit.homePagePostsModel;
+                  if (homePagePostsModel != null) {
+                    if (index < homePagePostsModel.modifiedPosts.length) {
+                      return buildPostItem(homePagePostsModel.modifiedPosts[index], context);
+                    }
+                  }
+                  return const Text("No Posts Available");
+                },
+                separatorBuilder: (context, index) => Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
                 ),
+                itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
               ),
             ),
           ],
         );
-      } else {
+      }
+      else {
         return const Center(child: Text('No posts available'));
       }
-    } else {
+    }
+    else {
       return buildLoadingWidget(context);
     }
   }
@@ -668,13 +659,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
-    } else if (difference.inMinutes < 1) {
+    }
+    else if(difference.inMinutes < 1){
       durationText = '${difference.inSeconds}s .';
-    } else {
+    }
+    else {
       durationText = '${difference.inMinutes.remainder(60)}m .';
     }
     // In Days
-    if (difference.inHours >= 24) {
+    if(difference.inHours >= 24){
       durationText = '${difference.inDays}d .';
     }
 
@@ -702,55 +695,23 @@ class _ProfilePageState extends State<ProfilePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  /// Username
-                  InkWell(
-                    onTap: (){
-                      if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
-                        navigateToPage(context, const ProfilePage());
-                      }
-                      else{
-                        HomeLayoutCubit.get(context).getAnotherUserData(
-                            token:userToken,
-                            id: postDetails.createdBy.id
-                        ).then((value) {
-                          UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                          navigateToPage(context, const AnotherUserProfile());
-                        });
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 20.0,
-                      backgroundImage: (postDetails.createdBy.profilePic != null)
-                          ? AssetImage(postDetails.createdBy.profilePic!)
-                          : const AssetImage("assets/images/nullProfile.png"),
-                    ),
+                  CircleAvatar(
+                    radius: 20.0,
+                    backgroundImage: postDetails.createdBy.profilePic != null
+                        ? AssetImage(postDetails.createdBy.profilePic!)
+                        : null,
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
-                        onTap: (){
-                          if(postDetails.createdBy.id == UserLoginCubit.get(context).loggedInUser!.id){
-                            navigateToPage(context, const ProfilePage());
-                          }else{
-                            HomeLayoutCubit.get(context).getAnotherUserData(
-                                token:userToken,
-                                id: postDetails.createdBy.id
-                            ).then((value) {
-                              UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(context, const AnotherUserProfile());
-                            });
-                          }
-                        },
-                        child: Text(
-                          postDetails.createdBy.userName,
-                          style: const TextStyle(
-                            fontFamily: "Roboto",
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
+                      Text(
+                        postDetails.createdBy.userName,
+                        style: const TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
                       const SizedBox(height: 0.5),
@@ -802,8 +763,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     postDetails.content != null
                         ? Text(
                       postDetails.content,
-                      maxLines:
-                      (postDetails.attachments) != null ? 6 : 10,
+                      maxLines: (postDetails.attachments) != null ? 6 : 10,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontFamily: "Robot",
@@ -842,19 +802,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       else
                         Image(
-                          image: NetworkImage(
-                            postDetails.attachments[0].secure_url,
-                          ),
+                          image: NetworkImage(postDetails.attachments[0].secure_url),
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                      postDetails.attachments.asMap().entries.map((entry) {
+                      children: postDetails.attachments.asMap().entries.map((entry) {
                         return GestureDetector(
-                          onTap: () =>
-                              carouselController.animateToPage(entry.key),
+                          onTap: () => carouselController.animateToPage(entry.key),
                           child: Container(
                             width: 7.0,
                             height: 7.0,
@@ -864,9 +820,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key
-                                  ? defaultColor
-                                  : Colors.grey,
+                              color: _currentImageIndex == entry.key ? defaultColor : Colors.grey,
                             ),
                           ),
                         );
@@ -888,37 +842,35 @@ class _ProfilePageState extends State<ProfilePage> {
                       padding: EdgeInsets.zero,
                       onPressed: () {},
                       icon: SvgPicture.asset(
-                        'assets/images/NewLikeColor.svg',
+                        'assets/images/Blue_Like.svg',
                         width: 22.0,
                         height: 22.0,
                       ),
                     )
                         : Container(),
-                    (postDetails.likesCount > 0)
-                        ? Text(
+                    (postDetails.likesCount > 0) ?
+                    Text(
                       '${postDetails.likesCount}',
                       style: TextStyle(
                         fontFamily: "Roboto",
                         fontSize: 12,
                         color: HexColor("575757"),
                       ),
-                    )
-                        : Container(),
+                    ): Container(),
                     const Spacer(),
-
                     /// Post Comments
-                    // postDetails.commentsCount > 0
+                    // postDetails.likesCount > 0
                     //     ? IconButton(
                     //   padding: EdgeInsets.zero,
                     //   onPressed: () {},
                     //   icon: SvgPicture.asset(
-                    //     'assets/images/comment.svg',
+                    //     'assets/images/like.svg',
                     //   ),
                     // )
                     //     : Container(),
-                    // (postDetails.commentsCount > 0) ?
+                    // (postDetails.likesCount > 0) ?
                     // Text(
-                    //   '${postDetails.commentsCount}',
+                    //   '${postDetails.likesCount}',
                     //   style: TextStyle(
                     //     fontFamily: "Roboto",
                     //     fontSize: 12,
@@ -948,33 +900,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      (postDetails.likesCount > 0)
-                          ? postSubComponent(
-                        "assets/images/NewLikeColor.svg",
-                        " Like",
-                        color: HexColor("4267B2"),
-                        fontWeight: FontWeight.w600,
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
-                        },
-                      )
-                          : postSubComponent(
-                        "assets/images/like.svg",
-                        "Like",
-                        onTap: (){
-                          HomeLayoutCubit.get(context).likePost(postId: postDetails.id, token: userToken ?? "");
-                        },
-                      ),
+                      postSubComponent("assets/images/like.svg", "Like"),
                       const Spacer(),
-                      postSubComponent(
-                        "assets/images/comment.svg",
-                        "Comment",
-                      ),
+                      postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
-                      postSubComponent(
-                        "assets/images/share.svg",
-                        "Share",
-                      ),
+                      postSubComponent("assets/images/share.svg", "Share"),
                     ],
                   ),
                 ),
@@ -986,26 +916,21 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action, {GestureTapCallback? onTap,
-    Color color = const Color(0xFF575757),
-    FontWeight fontWeight = FontWeight.w300}) {
+  Widget postSubComponent(String assetIcon, String action) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        showToast(text: action, state: ToastStates.SUCCESS);
+      },
       child: Row(
         children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
+          SvgPicture.asset(assetIcon),
+          const SizedBox(
+            width: 1,
           ),
-          const SizedBox(width: 1),
           Text(
             action,
             style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
+                fontSize: 12, fontFamily: "Roboto", color: HexColor("575757")),
           )
         ],
       ),
@@ -1108,7 +1033,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
-                  HomeLayoutCubit.get(context).deletePost(token: userToken ?? "", postId: postDetails!.id);
+                  HomeLayoutCubit.get(context).deletePost(token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "", postId: postDetails!.id);
                 },
               ),
             ],

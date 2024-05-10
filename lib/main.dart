@@ -14,26 +14,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
-  await CacheHelper.init();
 
   Widget widget;
-  bool onBoarding = CacheHelper.get(key: 'onBoarding') ?? false;
+  // bool onBoarding = CacheHelper.get(key: 'onBoarding') ?? false;
 
-  userToken = await getUserToken();
-  print('User Token: ${userToken}');
+  // userToken = await getUserToken();
+  // print(userToken);
 
-  if (onBoarding) {
-    if (userToken != null) {
-      widget = const VolunHeroUserLayout();
-    } else {
-      widget = LoginPage();
-    }
-  } else {
-    widget = const OnBoarding();
-  }
+  // if (onBoarding) {
+  //   if (userToken != null) {
+  //     widget = const VolunHeroUserLayout();
+  //   } else {
+  //     widget = LoginPage();
+  //   }
+  // } else {
+  //   widget = const OnBoarding();
+  // }
 
   runApp(AppRoot(
-    onBoarding: onBoarding,
-    startWidget: widget,
+    // onBoarding: onBoarding,
+    startWidget: LoginPage(),
   ));
 }

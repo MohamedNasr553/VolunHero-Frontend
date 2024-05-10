@@ -14,7 +14,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   static UserLoginCubit get(context) => BlocProvider.of(context);
 
-  // -------------------- Password Visibility ---------------------
+  // ------------------------- Password Visibility ----------------------------
   bool isPassword = true;
   IconData suffix = Icons.visibility;
 
@@ -25,7 +25,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangePasswordState());
   }
 
-  // ----------------------------- Login ---------------------------
+  // --------------------------------- Login ----------------------------------
   DecodedToken? decodedToken;
   LoginModel? loginModel;
 
@@ -44,45 +44,44 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: LOGIN,
         data: requestData,
       );
-      print(value.toString());
+      // print(value.toString());
 
       loginModel = LoginModel.fromJson(value.data);
 
-      print(loginModel?.refresh_token);
+      // print(loginModel?.refresh_token);
       emit(UserLoginSuccessState());
       showToast(text: "Logged In Successfully", state: ToastStates.SUCCESS);
       return "Logged In Successfully";
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));
-      showToast(
-          text: "Email Address or Password is not correct!",
-          state: ToastStates.ERROR);
+      showToast(text: "Email Address or Password is not correct", state: ToastStates.ERROR);
       return "Something went Wrong!";
     }
   }
 
-  // ------------------------- Get User Data -----------------------
+  // -------------------------------- Get User --------------------------------
   LoggedInUserModel? loggedInUserModel;
   LoggedInUserData? loggedInUserData;
   LoggedInUser? loggedInUser;
 
   Future<void> getLoggedInUserData({required String? token}) async {
     try {
-      if (token == null) {
-        emit(GetLoggedInUserErrorState("Token is null"));
-        return;
-      }
-
+      print("token in get logged in user: ");
+      print(token);
+      print("token in get logged in user: ");
       emit(GetLoggedInUserLoadingState());
+
       var value = await DioHelper.getData(
         url: GET_USER,
         token: token,
       );
       print(value);
-      loggedInUserModel = LoggedInUserModel.fromJson(value.data);
-      loggedInUserData = loggedInUserModel!.data;
-      loggedInUser = loggedInUserData!.doc;
 
+      loggedInUserModel = LoggedInUserModel.fromJson(value.data);
+      loggedInUserData = loggedInUserModel?.data;
+      loggedInUser = loggedInUserData?.doc;
+
+      print(loggedInUser.toString());
       emit(GetLoggedInUserSuccessState());
     } catch (error) {
       print('Error: $error');
@@ -91,7 +90,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-  // ------------------------ Update User Data ---------------------
+  // ------------------------------ Update User -------------------------------
   Future<void> updateLoggedInUserData({
     required String token,
     required String firstName,
@@ -125,7 +124,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-  // ------------------------- Get All Chats ------------------------
+  // --------------------------------- Chats ----------------------------------
   ChatResponse? chatResponse;
   List<Chat> chats = [];
 
@@ -153,9 +152,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     return "";
   }
 
-  // --------------------------> Make follow using endpoints <------------------
+  // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
-
   bool inFollowing({required String? followId}) {
     // id bat3 elanother
     for (int i = 0; i < loggedInUser!.following.length; i++) {

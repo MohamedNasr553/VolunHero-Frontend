@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/AnotherUser_bloc/cubit.dart';
+import 'package:flutter_code/bloc/AnotherUser_bloc/states.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
@@ -32,10 +34,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    if (userToken != null && userToken!.isNotEmpty) {
-      print("Token is not null and not empty: $userToken");
-      UserLoginCubit.get(context).getLoggedInUserData(token: userToken ?? "");
-      HomeLayoutCubit.get(context).getAllPosts(token: userToken ?? "");
+    if (UserLoginCubit.get(context).loginModel!.refresh_token != null &&
+        UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
+      HomeLayoutCubit.get(context).getAllPosts(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     }
   }
 
@@ -338,15 +340,18 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       if (postDetails.createdBy.id ==
                           UserLoginCubit.get(context).loggedInUser!.id) {
-                        navigateToPage(context, const ProfilePage());
+                        navigateToPage(context, ProfilePage());
                       } else {
                         HomeLayoutCubit.get(context)
                             .getAnotherUserData(
-                                token: userToken, id: postDetails.createdBy.id)
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                                id: postDetails.createdBy.id)
                             .then((value) {
                           UserLoginCubit.get(context).anotherUser =
                               HomeLayoutCubit.get(context).anotherUser;
-                          navigateToPage(context, const AnotherUserProfile());
+                          navigateToPage(context, AnotherUserProfile());
                         });
                       }
                     },
@@ -366,16 +371,18 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           if (postDetails.createdBy.id ==
                               UserLoginCubit.get(context).loggedInUser!.id) {
-                            navigateToPage(context, const ProfilePage());
+                            navigateToPage(context, ProfilePage());
                           } else {
                             HomeLayoutCubit.get(context)
                                 .getAnotherUserData(
-                                    token: userToken,
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
                                     id: postDetails.createdBy.id)
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(context, const AnotherUserProfile());
+                              navigateToPage(context, AnotherUserProfile());
                             });
                           }
                         },
@@ -593,7 +600,10 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 HomeLayoutCubit.get(context).likePost(
                                     postId: postDetails.id,
-                                    token: userToken ?? "");
+                                    token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token ??
+                                        "");
                               },
                             )
                           : postSubComponent(
@@ -602,7 +612,10 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 HomeLayoutCubit.get(context).likePost(
                                     postId: postDetails.id,
-                                    token: userToken ?? "");
+                                    token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token ??
+                                        "");
                               },
                             ),
                       const Spacer(),
