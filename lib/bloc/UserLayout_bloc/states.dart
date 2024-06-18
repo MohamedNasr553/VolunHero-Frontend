@@ -29,7 +29,19 @@ class DeletePostLoadingState extends LayoutStates{}
 class DeletePostSuccessState extends LayoutStates{}
 
 class DeletePostErrorState extends LayoutStates{}
-//// Another User States
+
+/// Posts of owner
+class OwnerPostsInitialState extends LayoutStates {}
+
+class OwnerPostsLoadingState extends LayoutStates {}
+
+class OwnerPostsSuccessState extends LayoutStates{}
+
+class OwnerPostsErrorState extends LayoutStates {}
+
+/// Another User States
 class GetAnotherUserDataLoadingState extends LayoutStates{}
+
 class GetAnotherUserDataErrorState extends LayoutStates{}
+
 class GetAnotherUserDataSuccessState extends LayoutStates{}

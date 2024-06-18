@@ -5,16 +5,15 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 class AppRoot extends StatelessWidget {
-//  final bool onBoarding;
+  //  final bool onBoarding;
   final Widget startWidget;
 
   const AppRoot({
     super.key,
-  //  required this.onBoarding,
+    //  required this.onBoarding,
     required this.startWidget,
   });
 
@@ -29,8 +28,12 @@ class AppRoot extends StatelessWidget {
           create: (BuildContext context) => UserLoginCubit(),
         ),
         BlocProvider(
-            create: (BuildContext context) =>
-                HomeLayoutCubit()..initializeBottomItems()..getAllPosts(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "")),
+            create: (BuildContext context) => HomeLayoutCubit()
+              ..initializeBottomItems()
+              ..getAllPosts(
+                  token:
+                      UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          "")),
         BlocProvider(
             create: (BuildContext context) =>
                 OrganizationLayoutCubit()..initializeBottomItems()),

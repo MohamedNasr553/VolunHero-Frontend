@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/LoggedInUserModel.dart';
+import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -30,7 +31,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    HomeLayoutCubit.get(context).getOwnerPosts(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
   }
 
   @override
@@ -39,609 +43,591 @@ class _ProfilePageState extends State<ProfilePage> {
     var screenWidth = MediaQuery.of(context).size.width;
     var postController = TextEditingController();
 
-    return BlocConsumer<UserLoginCubit,UserLoginStates>(
-      listener: (context,state){},
-      builder: (context,state){
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: defaultColor,
-            leading: IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/arrow_left_white.svg',
+    return BlocConsumer<UserLoginCubit, UserLoginStates>(
+      listener: (context, state){ },
+      builder: (context, state) {
+        return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+          listener: (context, state) { },
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: defaultColor,
+                leading: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/images/arrow_left_white.svg',
+                  ),
+                  onPressed: () {
+                    navigateAndFinish(context, const VolunHeroUserLayout());
+                  },
+                ),
               ),
-              onPressed: () {
-                navigateAndFinish(context, const VolunHeroUserLayout());
-              },
-            ),
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // Profile and Cover photo
-                Stack(
+              body: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Cover Photo
-                    Container(
-                      height: screenHeight / 7.5,
-                      width: double.infinity,
-                      color: defaultColor,
-                    ),
-                    // Upload Cover Photo Icon
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 1.14,
-                        top: screenHeight / 12.5,
-                      ),
-                      child: IconButton(
-                        // Upload Cover Photo from mobile Gallery
-                        onPressed: _uploadPhoto,
-                        icon: CircleAvatar(
-                          radius: 15.0,
-                          backgroundColor: Colors.grey[400],
-                          child: const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 20.0,
-                            color: Colors.black,
-                          ),
+                    // Profile and Cover photo
+                    Stack(
+                      children: [
+                        // Cover Photo
+                        Container(
+                          height: screenHeight / 7.5,
+                          width: double.infinity,
+                          color: defaultColor,
                         ),
-                      ),
-                    ),
-                    // Profile Photo
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 25,
-                        top: screenHeight / 13.5,
-                      ),
-                      child: Stack(
-                        alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          const CircleAvatar(
-                            radius: 45.0,
-                            backgroundImage: AssetImage('assets/images/man_photo.png'),
+                        // Upload Cover Photo Icon
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 1.14,
+                            top: screenHeight / 12.5,
                           ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              width: 25,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade400,
-                              ),
+                          child: IconButton(
+                            // Upload Cover Photo from mobile Gallery
+                            onPressed: _uploadPhoto,
+                            icon: CircleAvatar(
+                              radius: 15.0,
+                              backgroundColor: Colors.grey[400],
                               child: const Icon(
                                 Icons.camera_alt_outlined,
-                                size: 18,
+                                size: 20.0,
                                 color: Colors.black,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                // Username & UserEmail
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 30,
-                    top: screenHeight / 70,
-                  ),
-                  child: Row(
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start ,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                               UserLoginCubit.get(context).loggedInUser!.firstName,
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black38.withOpacity(0.7),
-                                  fontWeight: FontWeight.w800,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                              SizedBox(width: screenWidth / 90),
-                              Text(
-                                UserLoginCubit.get(context).loggedInUser!.lastName,
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black38.withOpacity(0.7),
-                                  fontWeight: FontWeight.w800,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                              SizedBox(width: screenWidth / 60),
-                              (UserLoginCubit.get(context).loggedInUser!.specification == 'Medical' ||
-                                  UserLoginCubit.get(context).loggedInUser!.specification == 'Educational')
-                                  ? const Icon(Icons.verified, color: Colors.blue)
-                                  : Container(),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 1.0,
-                          ),
-                          Text(
-                              UserLoginCubit.get(context).loggedInUser!.email,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.black.withOpacity(0.5),
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: screenHeight / 90),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 10.0,
-                          spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
                         ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Row(
-                            children: [
-                              Text(
-                                "Account Info",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                        // Profile Photo
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 25,
+                            top: screenHeight / 13.5,
                           ),
-                          SizedBox(height: screenHeight/100,),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "0",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Posts",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1)?UserLoginCubit.get(context).loggedInUser!.followers.length:0}",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Followers",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1)?UserLoginCubit.get(context).loggedInUser!.following.length:0}",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
-
-                              ],
-                            ),
-                          )
-
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                // Personal Details
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 10.0,
-                          spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                          child: Stack(
+                            alignment: AlignmentDirectional.bottomEnd,
                             children: [
-                              const Text(
-                                "Personal Details",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Poppins",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              const CircleAvatar(
+                                radius: 45.0,
+                                backgroundImage:
+                                AssetImage('assets/images/man_photo.png'),
                               ),
-                              const Spacer(),
-                              InkWell(
-                                onTap: () {
-                                  navigateToPage(context, UserEditProfile());
-                                },
+                              GestureDetector(
+                                onTap: () {},
                                 child: Container(
+                                  width: 25,
+                                  height: 25,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(
-                                      color: HexColor("027E81"),
-                                    ),
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.shade400,
                                   ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 8.0,
-                                      right: 8.0,
-                                      bottom: 4.0,
-                                      top: 4.0,
-                                    ),
-                                    child: Text(
-                                      "Edit Profile",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: "Poppins",
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                  child: const Icon(
+                                    Icons.camera_alt_outlined,
+                                    size: 18,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
-                          SizedBox(height: screenHeight / 80),
-                          Row(
+                        ),
+                      ],
+                    ),
+                    // Username & UserEmail
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 30,
+                        top: screenHeight / 70,
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    UserLoginCubit.get(context)
+                                        .loggedInUser!
+                                        .firstName,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.black38.withOpacity(0.7),
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth / 90),
+                                  Text(
+                                    UserLoginCubit.get(context)
+                                        .loggedInUser!
+                                        .lastName,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.black38.withOpacity(0.7),
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth / 60),
+                                  (UserLoginCubit.get(context)
+                                      .loggedInUser!
+                                      .specification ==
+                                      'Medical' ||
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .specification ==
+                                          'Educational')
+                                      ? const Icon(Icons.verified,
+                                      color: Colors.blue)
+                                      : Container(),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 1.0,
+                              ),
+                              Text(
+                                UserLoginCubit.get(context).loggedInUser!.email,
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.black.withOpacity(0.5),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 90),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 10.0,
+                              spreadRadius: -5.0,
+                              offset: const Offset(
+                                  10.0, 10.0), // Right and bottom shadow
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                    "Account Info",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: screenHeight / 100,
+                              ),
                               Padding(
-                                padding: EdgeInsetsDirectional.only(
-                                  start: screenWidth / 180,
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/images/Specification.svg',
-                                ),
-                              ),
-                              SizedBox(
-                                width: screenWidth / 30,
-                              ),
-                              SizedBox(
-                                width: screenWidth / 1.5,
+                                padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
-                                    Text(
-                                      "Specification: ",
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.black.withOpacity(0.7),
-                                        fontWeight: FontWeight.bold,
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "0",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Posts",
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      UserLoginCubit.get(context).loggedInUser!.specification,
-                                      style: const TextStyle(
-                                        fontSize: 12.0,
-                                        color: defaultColor,
-                                        fontWeight: FontWeight.bold,
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Followers",
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                            style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Following",
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
-                                )
-                              )
-                            ],
-                          ),
-                          SizedBox(height: screenHeight / 60),
-                          Row(
-                            children: [
-                              const Icon(Icons.location_on_outlined),
-                              SizedBox(width: screenWidth / 30),
-                              SizedBox(
-                                width: screenWidth / 1.5,
-                                child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
                                 ),
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: screenHeight / 70,
-                          ),
-                          const Text(
-                            "Contact Info",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight / 80),
-                          Row(
-                            children: [
-                              const Icon(Icons.phone),
-                              SizedBox(width: screenWidth / 30),
-                              SizedBox(
-                                width: screenWidth / 1.5,
-                                child: Text(
-                                  UserLoginCubit.get(context).loggedInUser!.phone,
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                // Create post
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 10.0,
-                          spreadRadius: -5.0,
-                          offset: const Offset(10.0, 10.0), // Right and bottom shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
+                    // Personal Details
+                    Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Your Posts",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          SizedBox(height: screenHeight / 100),
-                          Container(
-                            height: 1,
-                            color: Colors.grey.shade300,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: screenWidth / 20),
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: (){
-                                    navigateToPage(context, CreatePost());
-                                  },
-                                  child: Container(
-                                    width: screenWidth / 1.5,
-                                    child: TextFormField(
-                                      controller: postController,
-                                      decoration: const InputDecoration(
-                                        hintText: "What's on your mind ?",
-                                        hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14.0,
-                                        ),
-                                        border: InputBorder.none, // Hide the border line
-                                      ),
-                                      maxLines: null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 10.0,
+                              spreadRadius: -5.0,
+                              offset: const Offset(
+                                  10.0, 10.0), // Right and bottom shadow
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  const Text(
+                                    "Personal Details",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ),
-                                const Spacer(),
-                                IconButton(
-                                  // Upload photo from device Gallery
-                                  onPressed: _uploadPhoto,
-                                  icon: Image.asset(
-                                    'assets/images/Img_box_duotone_line.png',
-                                    width: 25.0,
-                                    height: 25.0,
+                                  const Spacer(),
+                                  InkWell(
+                                    onTap: () {
+                                      navigateToPage(context, UserEditProfile());
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: HexColor("027E81"),
+                                        ),
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.only(
+                                          left: 8.0,
+                                          right: 8.0,
+                                          bottom: 4.0,
+                                          top: 4.0,
+                                        ),
+                                        child: Text(
+                                          "Edit Profile",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: "Poppins",
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: screenHeight / 80),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.only(
+                                      start: screenWidth / 180,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/images/Specification.svg',
+                                    ),
                                   ),
+                                  SizedBox(
+                                    width: screenWidth / 30,
+                                  ),
+                                  SizedBox(
+                                      width: screenWidth / 1.5,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "Specification: ",
+                                            style: TextStyle(
+                                              fontSize: 12.0,
+                                              color: Colors.black.withOpacity(0.7),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            UserLoginCubit.get(context)
+                                                .loggedInUser!
+                                                .specification,
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: defaultColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                              SizedBox(height: screenHeight / 60),
+                              Row(
+                                children: [
+                                  const Icon(Icons.location_on_outlined),
+                                  SizedBox(width: screenWidth / 30),
+                                  SizedBox(
+                                    width: screenWidth / 1.5,
+                                    child: Text(
+                                      "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: screenHeight / 70,
+                              ),
+                              const Text(
+                                "Contact Info",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
                                 ),
-                              ],
-                            ),
+                              ),
+                              SizedBox(height: screenHeight / 80),
+                              Row(
+                                children: [
+                                  const Icon(Icons.phone),
+                                  SizedBox(width: screenWidth / 30),
+                                  SizedBox(
+                                    width: screenWidth / 1.5,
+                                    child: Text(
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .phone,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    // Create post
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              blurRadius: 10.0,
+                              spreadRadius: -5.0,
+                              offset: const Offset(
+                                  10.0, 10.0), // Right and bottom shadow
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Your Posts",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                              SizedBox(height: screenHeight / 100),
+                              Container(
+                                height: 1,
+                                color: Colors.grey.shade300,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: screenWidth / 20),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        navigateToPage(context, CreatePost());
+                                      },
+                                      child: Container(
+                                        width: screenWidth / 1.5,
+                                        child: TextFormField(
+                                          controller: postController,
+                                          decoration: const InputDecoration(
+                                            hintText: "What's on your mind ?",
+                                            hintStyle: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14.0,
+                                            ),
+                                            border: InputBorder
+                                                .none, // Hide the border line
+                                          ),
+                                          maxLines: null,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      // Upload photo from device Gallery
+                                      onPressed: _uploadPhoto,
+                                      icon: Image.asset(
+                                        'assets/images/Img_box_duotone_line.png',
+                                        width: 25.0,
+                                        height: 25.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Posts
+                    (state is! OwnerPostsLoadingState)
+                        ? SizedBox(
+                      height: screenHeight,
+                      child: buildPostsList(context),
+                    )
+                        : buildLoadingWidget(context),
+                  ],
                 ),
-                // Posts
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget buildLoadingWidget(context){
+  Widget buildLoadingWidget(context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context).homePagePostsModel?.modifiedPosts.length ?? 0,
-      itemBuilder: (BuildContext context, int index) {
-        return Shimmer.fromColors(
-          period: const Duration(milliseconds: 1000),
-          baseColor: Colors.grey,
-          highlightColor: Colors.white30,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 20,
-                    ),
-                    SizedBox(
-                      width: screenWidth / 40,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius:
-                                BorderRadius.circular(10)),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius:
-                              BorderRadius.circular(10),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight / 100,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: screenHeight / 4,
-                    width: screenWidth,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-              ],
+    return Container( // Wrap with Container
+      height: screenHeight, // Adjust height as needed
+      child: ListView.builder(
+        itemCount: HomeLayoutCubit.get(context)
+            .ownerPostsModel
+            ?.newPosts
+            .length ??
+            0,
+        itemBuilder: (BuildContext context, int index) {
+          return Shimmer.fromColors(
+            period: const Duration(milliseconds: 1000),
+            baseColor: Colors.grey,
+            highlightColor: Colors.white30,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Shimmer content
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
   Widget buildPostsList(context) {
-    var cubit = HomeLayoutCubit.get(context);
+    var ownerPostsCubit = HomeLayoutCubit.get(context);
+    var loginCubit = UserLoginCubit.get(context);
 
-    if (cubit.homePagePostsModel != null) {
-      if (cubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
+    if (ownerPostsCubit.ownerPostsModel != null) {
+      if (ownerPostsCubit.ownerPostsModel!.newPosts.isNotEmpty) {
         return Column(
           children: [
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  final homePagePostsModel = cubit.homePagePostsModel;
-                  if (homePagePostsModel != null) {
-                    if (index < homePagePostsModel.modifiedPosts.length) {
-                      return buildPostItem(homePagePostsModel.modifiedPosts[index], context);
+                  final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
+                  if (ownerPostsModel != null) {
+                    if (index < ownerPostsModel.newPosts.length) {
+                      return buildPostItem(ownerPostsModel.newPosts[index], loginCubit.loggedInUserModel!, context);
                     }
                   }
-                  return const Text("No Posts Available");
+                  return const SizedBox(); // Return an empty SizedBox if no post is available
                 },
                 separatorBuilder: (context, index) => Padding(
-                  padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     width: double.infinity,
                     color: Colors.white,
                   ),
                 ),
-                itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
+                itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
               ),
             ),
           ],
         );
-      }
-      else {
+      } else {
         return const Center(child: Text('No posts available'));
       }
-    }
-    else {
+    } else {
       return buildLoadingWidget(context);
     }
   }
 
-  Widget buildPostItem(ModifiedPost? postDetails, BuildContext context) {
+  Widget buildPostItem(Posts? postDetails, LoggedInUserModel? loggedInUserDetails, context) {
     if (postDetails == null) {
       return const SizedBox();
     }
@@ -659,15 +645,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
-    }
-    else if(difference.inMinutes < 1){
+    } else if (difference.inMinutes < 1) {
       durationText = '${difference.inSeconds}s .';
-    }
-    else {
+    } else {
       durationText = '${difference.inMinutes.remainder(60)}m .';
     }
     // In Days
-    if(difference.inHours >= 24){
+    if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d .';
     }
 
@@ -697,8 +681,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   CircleAvatar(
                     radius: 20.0,
-                    backgroundImage: postDetails.createdBy.profilePic != null
-                        ? AssetImage(postDetails.createdBy.profilePic!)
+                    backgroundImage: loggedInUserDetails!.data.doc.profilePic != null
+                        ? AssetImage(loggedInUserDetails.data.doc.profilePic!)
                         : null,
                   ),
                   SizedBox(width: screenWidth / 50),
@@ -706,7 +690,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        postDetails.createdBy.userName,
+                        loggedInUserDetails.data.doc.userName,
                         style: const TextStyle(
                           fontFamily: "Roboto",
                           fontSize: 14,
@@ -762,21 +746,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                      postDetails.content,
-                      maxLines: (postDetails.attachments) != null ? 6 : 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: "Robot",
-                        fontSize: 13.0,
-                      ),
-                    )
+                            postDetails.content,
+                            maxLines:
+                                (postDetails.attachments) != null ? 6 : 10,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: "Robot",
+                              fontSize: 13.0,
+                            ),
+                          )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
                     if (postDetails.attachments!.isNotEmpty)
-                    // check if there's more than one
+                      // check if there's more than one
                       if (postDetails.attachments!.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -802,15 +787,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       else
                         Image(
-                          image: NetworkImage(postDetails.attachments![0].secure_url),
+                          image: NetworkImage(
+                              postDetails.attachments![0].secure_url),
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: postDetails.attachments!.asMap().entries.map((entry) {
+                      children:
+                          postDetails.attachments!.asMap().entries.map((entry) {
                         return GestureDetector(
-                          onTap: () => carouselController.animateToPage(entry.key),
+                          onTap: () =>
+                              carouselController.animateToPage(entry.key),
                           child: Container(
                             width: 7.0,
                             height: 7.0,
@@ -820,7 +808,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key ? defaultColor : Colors.grey,
+                              color: _currentImageIndex == entry.key
+                                  ? defaultColor
+                                  : Colors.grey,
                             ),
                           ),
                         );
@@ -839,25 +829,27 @@ class _ProfilePageState extends State<ProfilePage> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/Blue_Like.svg',
-                        width: 22.0,
-                        height: 22.0,
-                      ),
-                    )
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/NewLikeColor.svg',
+                              width: 22.0,
+                              height: 22.0,
+                            ),
+                          )
                         : Container(),
-                    (postDetails.likesCount > 0) ?
-                    Text(
-                      '${postDetails.likesCount}',
-                      style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 12,
-                        color: HexColor("575757"),
-                      ),
-                    ): Container(),
+                    (postDetails.likesCount > 0)
+                        ? Text(
+                            '${postDetails.likesCount}',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          )
+                        : Container(),
                     const Spacer(),
+
                     /// Post Comments
                     // postDetails.likesCount > 0
                     //     ? IconButton(
@@ -900,7 +892,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      postSubComponent("assets/images/like.svg", "Like"),
+                      postSubComponent("assets/images/like.svg", "Like", onTap: () {
+                        HomeLayoutCubit.get(context).likePost(
+                            postId: postDetails.id,
+                            token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                                "");
+                      },),
                       const Spacer(),
                       postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
@@ -916,28 +915,34 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action) {
+  Widget postSubComponent(String assetIcon, String action,
+      {GestureTapCallback? onTap,
+        Color color = const Color(0xFF575757),
+        FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
-      onTap: () {
-        showToast(text: action, state: ToastStates.SUCCESS);
-      },
+      onTap: onTap,
       child: Row(
         children: [
-          SvgPicture.asset(assetIcon),
-          const SizedBox(
-            width: 1,
+          SvgPicture.asset(
+            assetIcon,
+            color: color,
           ),
+          const SizedBox(width: 1),
           Text(
             action,
             style: TextStyle(
-                fontSize: 12, fontFamily: "Roboto", color: HexColor("575757")),
+              fontSize: 12,
+              fontFamily: "Roboto",
+              color: color,
+              fontWeight: fontWeight,
+            ),
           )
         ],
       ),
     );
   }
 
-  void _showProfilePageBottomSheet(ModifiedPost? postDetails) {
+  void _showProfilePageBottomSheet(Posts? postDetails) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -949,7 +954,10 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ListTile(
-                leading: const Icon(Icons.save, size: 25,),
+                leading: const Icon(
+                  Icons.save,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -978,7 +986,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.edit, size: 25,),
+                leading: const Icon(
+                  Icons.edit,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1007,7 +1018,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.delete_forever, size: 25,),
+                leading: const Icon(
+                  Icons.delete_forever,
+                  size: 25,
+                ),
                 title: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1033,7 +1047,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
-                  HomeLayoutCubit.get(context).deletePost(token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "", postId: postDetails!.id);
+                  HomeLayoutCubit.get(context).deletePost(
+                      token: UserLoginCubit.get(context)
+                              .loginModel!
+                              .refresh_token ??
+                          "",
+                      postId: postDetails!.id);
                 },
               ),
             ],

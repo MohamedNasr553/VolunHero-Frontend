@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
@@ -182,6 +183,28 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(DeletePostErrorState());
     });
   }
+
+  /// ----------------------- Owner Posts API ------------------------
+  OwnerPostsResponse? ownerPostsModel;
+  Posts? newPost;
+
+  void getOwnerPosts({required String token}) async {
+
+    DioHelper.getData(
+      url: GET_OWNER_POSTS,
+      token: token,
+    ).then((value) {
+      emit(OwnerPostsLoadingState());
+      ownerPostsModel = OwnerPostsResponse.fromJson(value.data);
+
+      print('Parsed OwnerPostsModel: $ownerPostsModel'.toString());
+      emit(OwnerPostsSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(OwnerPostsErrorState());
+    });
+  }
+
   /// ---------------------------Another User ------------------
 
   AnotherUser? anotherUser;
