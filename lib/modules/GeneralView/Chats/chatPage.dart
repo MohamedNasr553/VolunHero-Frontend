@@ -77,6 +77,7 @@ class _ChatsPageState extends State<ChatsPage> {
         return '';
     }
   }
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -84,11 +85,8 @@ class _ChatsPageState extends State<ChatsPage> {
     chats = UserLoginCubit.get(context).chats;
 
     return BlocConsumer<UserLoginCubit,UserLoginStates>(
-      listener: (BuildContext context,  state) {
-
-      },
+      listener: (BuildContext context,  state) { },
       builder: (BuildContext context,  state) {
-
         return Scaffold(
           body: Stack(
             children: [

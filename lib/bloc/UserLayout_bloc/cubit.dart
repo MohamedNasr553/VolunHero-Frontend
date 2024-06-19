@@ -158,6 +158,8 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(LikePostSuccessState());
 
       getAllPosts(token: token);
+      getOwnerPosts(token: token);
+      getAnotherUserData(token: token, id: postId);
     }).catchError((error) {
       print(error.toString());
 
@@ -177,6 +179,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(DeletePostSuccessState());
 
       getAllPosts(token: token);
+      getOwnerPosts(token: token);
     }).catchError((error) {
       print(error.toString());
 
@@ -209,7 +212,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
   AnotherUser? anotherUser;
 
-  Future<void> getAnotherUserData({required String? token,required String? id}) async {
+  Future<void> getAnotherUserData({required String? token, required String? id}) async {
 
     try {
       emit(GetAnotherUserDataLoadingState());

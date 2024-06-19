@@ -34,7 +34,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    HomeLayoutCubit.get(context).getAnotherUserData(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "", id: '');
   }
 
   @override
@@ -66,13 +68,32 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                 Stack(
                   children: [
                     // Cover Photo
+                    // Cover Photo
                     Container(
                       height: screenHeight / 7.5,
                       width: double.infinity,
                       color: defaultColor,
                     ),
                     // Upload Cover Photo Icon
-
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 1.14,
+                        top: screenHeight / 12.5,
+                      ),
+                      child: IconButton(
+                        // Upload Cover Photo from mobile Gallery
+                        onPressed: _uploadPhoto,
+                        icon: CircleAvatar(
+                          radius: 15.0,
+                          backgroundColor: Colors.grey[400],
+                          child: const Icon(
+                            Icons.camera_alt_outlined,
+                            size: 20.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
                     // Profile Photo
                     Padding(
                       padding: EdgeInsetsDirectional.only(
@@ -82,10 +103,33 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       child: Stack(
                         alignment: AlignmentDirectional.bottomEnd,
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             radius: 45.0,
-                            backgroundImage:
-                                AssetImage('assets/images/man_photo.png'),
+                            backgroundImage: (HomeLayoutCubit.get(context)
+                                .modifiedPost
+                                ?.createdBy
+                                ?.profilePic ==
+                                null)
+                                ? AssetImage(
+                                'assets/images/nullProfile.png')
+                                : AssetImage(
+                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic}'),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              width: 25,
+                              height: 25,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade400,
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 18,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -538,10 +582,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   height: screenHeight,
                   child: buildAnotherUserPostsList(context),
                 )
-                    :  const Center(
-                  child: CircularProgressIndicator(
-                    color: defaultColor,
-                  )),
+                    :  buildLoadingWidget(context),
               ],
             ),
           ),
@@ -625,13 +666,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     );
   }
 
-
   Widget buildAnotherUserPostsList(context) {
     var cubit = UserLoginCubit.get(context);
-    print("888888888888888888888888888888888888");
-    print("888888888888888888888888888888888888");
-    print("888888888888888888888888888888888888");
-    print("888888888888888888888888888888888888");
     print(cubit.anotherUserPostsResponse);
 
     if (cubit.anotherUserPostsResponse != null) {
@@ -689,7 +725,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     }
   }
 
-  Widget buildPostItem(ModifiedPost? postDetails, BuildContext context) {
+  Widget buildPostItem(ModifiedPost? postDetails, context) {
     if (postDetails == null) {
       return const SizedBox();
     }
@@ -745,7 +781,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     radius: 20.0,
                     backgroundImage: postDetails.createdBy.profilePic != null
                         ? AssetImage(postDetails.createdBy.profilePic!)
-                        : null,
+                        : const AssetImage('assets/images/nullProfile.png'),
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
@@ -782,7 +818,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   ),
                   const Spacer(),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => _showProfilePageBottomSheet(postDetails),
                     icon: SvgPicture.asset(
                       'assets/images/postSettings.svg',
                     ),
@@ -808,22 +844,22 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                            postDetails.content,
-                            maxLines:
-                                (postDetails.attachments) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
-                            ),
-                          )
+                      postDetails.content,
+                      maxLines:
+                      (postDetails.attachments) != null ? 6 : 10,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: "Robot",
+                        fontSize: 13.0,
+                      ),
+                    )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
-                    if (postDetails.attachments!.isNotEmpty)
-                      // check if there's more than one
+                    if (postDetails.attachments != null && postDetails.attachments!.isNotEmpty)
+                    // check if there's more than one
                       if (postDetails.attachments!.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -857,7 +893,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
-                          postDetails.attachments!.asMap().entries.map((entry) {
+                      (postDetails.attachments ?? []).asMap().entries.map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -891,24 +927,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            icon: SvgPicture.asset(
-                              'assets/images/Blue_Like.svg',
-                              width: 22.0,
-                              height: 22.0,
-                            ),
-                          )
+                      padding: EdgeInsets.zero,
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/images/NewLikeColor.svg',
+                        width: 22.0,
+                        height: 22.0,
+                      ),
+                    )
                         : Container(),
                     (postDetails.likesCount > 0)
                         ? Text(
-                            '${postDetails.likesCount}',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          )
+                      '${postDetails.likesCount}',
+                      style: TextStyle(
+                        fontFamily: "Roboto",
+                        fontSize: 12,
+                        color: HexColor("575757"),
+                      ),
+                    )
                         : Container(),
                     const Spacer(),
 
@@ -954,7 +990,14 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      postSubComponent("assets/images/like.svg", "Like"),
+                      postSubComponent("assets/images/like.svg", "Like", onTap: () {
+                        HomeLayoutCubit.get(context).likePost(
+                            postId: postDetails.id,
+                            token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                                "");
+                      },),
                       const Spacer(),
                       postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
@@ -970,24 +1013,150 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action) {
+  Widget postSubComponent(String assetIcon, String action,
+      {GestureTapCallback? onTap,
+        Color color = const Color(0xFF575757),
+        FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
-      onTap: () {
-        showToast(text: action, state: ToastStates.SUCCESS);
-      },
+      onTap: onTap,
       child: Row(
         children: [
-          SvgPicture.asset(assetIcon),
-          const SizedBox(
-            width: 1,
+          SvgPicture.asset(
+            assetIcon,
+            color: color,
           ),
+          const SizedBox(width: 1),
           Text(
             action,
             style: TextStyle(
-                fontSize: 12, fontFamily: "Roboto", color: HexColor("575757")),
+              fontSize: 12,
+              fontFamily: "Roboto",
+              color: color,
+              fontWeight: fontWeight,
+            ),
           )
         ],
       ),
+    );
+  }
+
+  void _showProfilePageBottomSheet(ModifiedPost? postDetails) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Container(
+          height: screenHeight / 3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.save,
+                  size: 25,
+                ),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Save Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Add this to your saved items.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.edit,
+                  size: 25,
+                ),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Edit Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Edit your post.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                },
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.delete_forever,
+                  size: 25,
+                ),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Delete Post',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 130),
+                    const Text(
+                      'Delete this post from your profile.',
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  // Logic to save the post
+                  HomeLayoutCubit.get(context).deletePost(
+                      token: UserLoginCubit.get(context)
+                          .loginModel!
+                          .refresh_token ??
+                          "",
+                      postId: postDetails!.id);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

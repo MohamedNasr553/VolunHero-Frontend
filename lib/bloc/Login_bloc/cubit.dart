@@ -224,7 +224,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
 
 
-//---------------- another user posts endpoints----------------------------
+  //---------------- another user posts endpoints----------------------------
   AnotherUserPostsResponse? anotherUserPostsResponse;
 
   Future<void> getAnotherUserPosts({required String? token,required String userName,required String id}) async {

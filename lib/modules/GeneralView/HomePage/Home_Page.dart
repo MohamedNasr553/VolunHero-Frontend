@@ -7,6 +7,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserDrawer/drawer.dart';
@@ -64,10 +65,10 @@ class _HomePageState extends State<HomePage> {
                       radius: 30,
                       backgroundColor: Colors.transparent,
                       child: ClipOval(
-                        child: Image.asset('assets/images/logo.png'),
-                        // child: (HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic == null)?
-                        //  Image.asset('assets/images/nullProfile.png'):
-                        // Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
+                        // child: Image.asset('assets/images/logo.png'),
+                        child: (HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic == null) ?
+                        Image.asset('assets/images/nullProfile.png'):
+                        Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}'),
                       ),
                     ),
                   ),
@@ -236,10 +237,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildPostsList(context) {
-    var cubit = HomeLayoutCubit.get(context);
+    var homeCubit = HomeLayoutCubit.get(context);
+    var loggedInUserCubit = UserLoginCubit.get(context);
 
-    if (cubit.homePagePostsModel != null) {
-      if (cubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
+    if (homeCubit.homePagePostsModel != null) {
+      if (homeCubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
         return Column(
           children: [
             Flexible(
@@ -251,12 +253,14 @@ class _HomePageState extends State<HomePage> {
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        final homePagePostsModel = cubit.homePagePostsModel;
+                        final homePagePostsModel = homeCubit.homePagePostsModel;
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
                             return buildPostItem(
                                 homePagePostsModel.modifiedPosts[index],
-                                context);
+                                loggedInUserCubit.loggedInUserData!.doc,
+                                context,
+                            );
                           }
                         }
                         return const Text("No Posts Available");
@@ -269,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                       ),
-                      itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
+                      itemCount: homeCubit.homePagePostsModel!.modifiedPosts.length,
                     ),
                   ],
                 ),
@@ -285,7 +289,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget buildPostItem(ModifiedPost? postDetails, BuildContext context) {
+  Widget buildPostItem(ModifiedPost? postDetails, LoggedInUser loggedInUser, BuildContext context) {
     if (postDetails == null) {
       return const SizedBox();
     }
@@ -604,12 +608,10 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      (postDetails.likesCount > 0)
-                          ? postSubComponent(
+                      if (postDetails.likesCount > 0 && loggedInUser.id != postDetails.createdBy.id) postSubComponent(
                         "assets/images/NewLikeColor.svg",
                         " Like",
                         color: HexColor("4267B2"),
-                        fontWeight: FontWeight.w600,
                         onTap: () {
                           HomeLayoutCubit.get(context).likePost(
                               postId: postDetails.id,
@@ -619,7 +621,21 @@ class _HomePageState extends State<HomePage> {
                                   "");
                         },
                       )
-                          : postSubComponent(
+                      else if (postDetails.likesCount > 0 && loggedInUser.id == postDetails.createdBy.id)
+                          postSubComponent(
+                            "assets/images/NewLikeColor.svg",
+                            " Like",
+                            color: HexColor("4267B2"),
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                      "");
+                            },
+                          )
+                      else postSubComponent(
                         "assets/images/like.svg",
                         "Like",
                         onTap: () {

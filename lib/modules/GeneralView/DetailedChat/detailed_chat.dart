@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,7 +47,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            navigateToPage(context, HomePage());
+                            navigateToPage(context, const HomePage());
                           },
                           icon: const Icon(
                             Icons.arrow_back_outlined,
@@ -73,7 +72,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                           width: screenWidth / 2,
                           child:  Text(
                             UserLoginCubit.get(context).selectedChat!.members[1].userId.userName,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 25.0,
                               color: Colors.white,

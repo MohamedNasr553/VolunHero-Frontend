@@ -43,11 +43,11 @@ class _ProfilePageState extends State<ProfilePage> {
     var screenWidth = MediaQuery.of(context).size.width;
     var postController = TextEditingController();
 
-    return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (context, state){ },
+    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+      listener: (context, state) {},
       builder: (context, state) {
         return BlocConsumer<HomeLayoutCubit, LayoutStates>(
-          listener: (context, state) { },
+          listener: (context, state) {},
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(
@@ -104,10 +104,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Stack(
                             alignment: AlignmentDirectional.bottomEnd,
                             children: [
-                              const CircleAvatar(
+                              CircleAvatar(
                                 radius: 45.0,
-                                backgroundImage:
-                                AssetImage('assets/images/man_photo.png'),
+                                backgroundImage: (HomeLayoutCubit.get(context)
+                                    .modifiedPost
+                                    ?.createdBy
+                                    ?.profilePic ==
+                                    null)
+                                    ? AssetImage(
+                                    'assets/images/nullProfile.png')
+                                    : AssetImage(
+                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic}'),
                               ),
                               GestureDetector(
                                 onTap: () {},
@@ -168,15 +175,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   SizedBox(width: screenWidth / 60),
                                   (UserLoginCubit.get(context)
-                                      .loggedInUser!
-                                      .specification ==
-                                      'Medical' ||
-                                      UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .specification ==
-                                          'Educational')
+                                                  .loggedInUser!
+                                                  .specification ==
+                                              'Medical' ||
+                                          UserLoginCubit.get(context)
+                                                  .loggedInUser!
+                                                  .specification ==
+                                              'Educational')
                                       ? const Icon(Icons.verified,
-                                      color: Colors.blue)
+                                          color: Colors.blue)
                                       : Container(),
                                 ],
                               ),
@@ -246,7 +253,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "0",
                                             style: TextStyle(
                                               fontSize: 16.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -254,7 +262,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "Posts",
                                             style: TextStyle(
                                               fontSize: 14.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -268,7 +277,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
                                             style: TextStyle(
                                               fontSize: 16.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -276,7 +286,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "Followers",
                                             style: TextStyle(
                                               fontSize: 14.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -290,7 +301,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
                                             style: TextStyle(
                                               fontSize: 16.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -298,7 +310,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "Following",
                                             style: TextStyle(
                                               fontSize: 14.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -349,7 +362,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   const Spacer(),
                                   InkWell(
                                     onTap: () {
-                                      navigateToPage(context, UserEditProfile());
+                                      navigateToPage(
+                                          context, UserEditProfile());
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -401,7 +415,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             "Specification: ",
                                             style: TextStyle(
                                               fontSize: 12.0,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -495,7 +510,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 color: Colors.grey.shade300,
                               ),
                               Padding(
-                                padding: EdgeInsets.only(left: screenWidth / 20),
+                                padding:
+                                    EdgeInsets.only(left: screenWidth / 20),
                                 child: Row(
                                   children: [
                                     GestureDetector(
@@ -540,9 +556,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Posts
                     (state is! OwnerPostsLoadingState)
                         ? SizedBox(
-                      height: screenHeight,
-                      child: buildPostsList(context),
-                    )
+                            height: screenHeight,
+                            child: buildPostsList(context),
+                          )
                         : buildLoadingWidget(context),
                   ],
                 ),
@@ -558,31 +574,74 @@ class _ProfilePageState extends State<ProfilePage> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return Container( // Wrap with Container
-      height: screenHeight, // Adjust height as needed
-      child: ListView.builder(
-        itemCount: HomeLayoutCubit.get(context)
-            .ownerPostsModel
-            ?.newPosts
-            .length ??
-            0,
-        itemBuilder: (BuildContext context, int index) {
-          return Shimmer.fromColors(
-            period: const Duration(milliseconds: 1000),
-            baseColor: Colors.grey,
-            highlightColor: Colors.white30,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Shimmer content
-                ],
-              ),
+    return ListView.builder(
+      itemCount: 3,
+      itemBuilder: (BuildContext context, int index) {
+        return Shimmer.fromColors(
+          period: const Duration(milliseconds: 1000),
+          baseColor: Colors.grey,
+          highlightColor: Colors.white30,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 20,
+                    ),
+                    SizedBox(
+                      width: screenWidth / 40,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: screenHeight / 75,
+                          width: screenWidth / 4,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        SizedBox(
+                          height: screenHeight / 75,
+                          width: screenWidth / 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: screenHeight / 100,
+                ),
+                Center(
+                  child: SizedBox(
+                    height: screenHeight / 4,
+                    width: screenWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -602,7 +661,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
                   if (ownerPostsModel != null) {
                     if (index < ownerPostsModel.newPosts.length) {
-                      return buildPostItem(ownerPostsModel.newPosts[index], loginCubit.loggedInUserModel!, context);
+                      return buildPostItem(ownerPostsModel.newPosts[index],
+                          loginCubit.loggedInUserData!.doc, context);
                     }
                   }
                   return const SizedBox(); // Return an empty SizedBox if no post is available
@@ -627,7 +687,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Widget buildPostItem(Posts? postDetails, LoggedInUserModel? loggedInUserDetails, context) {
+  Widget buildPostItem(Posts? postDetails, LoggedInUser loggedInUser, context) {
     if (postDetails == null) {
       return const SizedBox();
     }
@@ -676,21 +736,47 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              (postDetails.createdBy.userName != loggedInUser.userName) ?
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 70,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.turn_right_outlined,
+                          color: Colors.grey,
+                          size: 18.0,
+                        ),
+                        SizedBox(width: screenWidth / 50),
+                        const Text(
+                          "reposted this",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) : const SizedBox(height: 1),
+              SizedBox(height: screenHeight / 80),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CircleAvatar(
                     radius: 20.0,
-                    backgroundImage: loggedInUserDetails!.data.doc.profilePic != null
-                        ? AssetImage(loggedInUserDetails.data.doc.profilePic!)
-                        : null,
+                    backgroundImage: postDetails.createdBy.profilePic != null
+                        ? AssetImage(postDetails.createdBy.profilePic!)
+                        : const AssetImage('assets/images/nullProfile.png'),
                   ),
                   SizedBox(width: screenWidth / 50),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        loggedInUserDetails.data.doc.userName,
+                        postDetails.createdBy.userName,
                         style: const TextStyle(
                           fontFamily: "Roboto",
                           fontSize: 14,
@@ -760,7 +846,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
-                    if (postDetails.attachments!.isNotEmpty)
+                    if (postDetails.attachments != null &&
+                        postDetails.attachments!.isNotEmpty)
                       // check if there's more than one
                       if (postDetails.attachments!.length > 1)
                         CarouselSlider(
@@ -794,8 +881,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                          postDetails.attachments!.asMap().entries.map((entry) {
+                      children: (postDetails.attachments ?? [])
+                          .asMap()
+                          .entries
+                          .map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -892,18 +981,53 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      postSubComponent("assets/images/like.svg", "Like", onTap: () {
-                        HomeLayoutCubit.get(context).likePost(
-                            postId: postDetails.id,
-                            token: UserLoginCubit.get(context)
-                                .loginModel!
-                                .refresh_token ??
-                                "");
-                      },),
+                      if (postDetails.likesCount > 0 &&
+                          loggedInUser.id != postDetails.createdBy.id)
+                        postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          " Like",
+                          color: HexColor("4267B2"),
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                          loggedInUser.id == postDetails.createdBy.id)
+                        postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          " Like",
+                          color: HexColor("4267B2"),
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        )
+                      else
+                        postSubComponent(
+                          "assets/images/like.svg",
+                          "Like",
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        ),
                       const Spacer(),
                       postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
-                      postSubComponent("assets/images/share.svg", "Share"),
+                      postSubComponent("assets/images/share.svg", "Repost"),
                     ],
                   ),
                 ),
@@ -917,8 +1041,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(

@@ -81,7 +81,24 @@ class UserSidePage extends StatelessWidget {
                     ),
                     currentAccountPicture: CircleAvatar(
                       child: ClipOval(
-                          child: Image.asset("assets/images/logo.png")),
+                        child: (HomeLayoutCubit.get(context)
+                                    .modifiedPost
+                                    ?.createdBy
+                                    ?.profilePic ==
+                                null)
+                            ? Image.asset(
+                                'assets/images/nullProfile.png',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
                     ),
                     decoration: const BoxDecoration(
                       color: defaultColor,
@@ -251,6 +268,7 @@ class UserSidePage extends StatelessWidget {
                     onTap: () {
                       // Remove token
                       navigateToPage(context, LoginPage());
+
                       ///signOut(context);
                     },
                   ),
