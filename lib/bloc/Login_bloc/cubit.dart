@@ -129,23 +129,22 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   ChatResponse? chatResponse;
   List<Chat> chats = [];
 
-  Future<String> getLoggedInChats() async {
+  Future<String> getLoggedInChats({required String? token}) async {
     try {
       emit(GetLoggedInUserChatsLoadingState());
-
-      var value = await DioHelper.getData(
+      DioHelper.getData(
         url: GET_CHATS,
-      );
+        token: token,
+      ).then((value) {
+        emit(GetLoggedInUserChatsSuccessState());
+        print(value.data);
+        chatResponse = ChatResponse.fromJson(value.data);
+        chats = chatResponse!.chats;
+      }).catchError((error) {
+        print(error.toString());
+        emit(GetAnotherUserPostsErrorState(error));
+      });
 
-      emit(GetLoggedInUserChatsSuccessState());
-      chatResponse = ChatResponse.fromJson(value.data);
-      for (int i = 0; i < chatResponse!.chats.length; i++) {
-        chats.add(chatResponse!.chats[i]);
-      }
-      print("Chat Response => ");
-      print(chatResponse);
-      print("Chats: ");
-      print(chats);
     } catch (error) {
       emit(GetLoggedInUserChatsErrorState(error.toString()));
       print(error.toString());

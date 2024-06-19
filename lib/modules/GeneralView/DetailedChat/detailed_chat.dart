@@ -114,7 +114,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                           color: HexColor("F3F3F3"),
                         ),
                       ),
-                      itemCount:  ,
+                      itemCount:  0,
                       duration: const Duration(milliseconds: 50),
                     ),
                   ),
@@ -144,7 +144,7 @@ class _DetailedChatsState extends State<DetailedChats> {
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(),
+                  child: Text("kajsdhfkljads"),
                 ),
                 decoration: BoxDecoration(
                     color: HexColor("c0e1e2"),
@@ -158,7 +158,7 @@ class _DetailedChatsState extends State<DetailedChats> {
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(),
+                  child: Text("skldjflksdjf"),
                 ),
                 decoration: BoxDecoration(
                     color: HexColor("51bbbd"),

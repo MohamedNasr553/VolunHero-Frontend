@@ -138,9 +138,9 @@ class _HomePageState extends State<HomePage> {
                   child: IconButton(
                       onPressed: () {
                         UserLoginCubit.get(context)
-                            .getLoggedInChats()
+                            .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token)
                             .then((value) {
-                          navigateToPage(context, const ChatsPage());
+                          navigateToPage(context,  ChatsPage());
                         });
                       },
                       icon: SvgPicture.asset("assets/images/messagesIcon.svg")),

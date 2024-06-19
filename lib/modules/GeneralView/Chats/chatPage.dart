@@ -18,8 +18,10 @@ class ChatsPage extends StatefulWidget {
 }
 
 class _ChatsPageState extends State<ChatsPage> {
-  List<Chat>? chats;
+
   bool _showWidget = false;
+
+  List<Chat> chats=[];
 
   @override
   void initState() {
@@ -78,16 +80,14 @@ class _ChatsPageState extends State<ChatsPage> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-
+    chats = UserLoginCubit.get(context).chats;
 
     return BlocConsumer<UserLoginCubit,UserLoginStates>(
       listener: (BuildContext context,  state) {
 
       },
       builder: (BuildContext context,  state) {
-        if(chats!.length>=1){
-          chats = UserLoginCubit.get(context).chats;
-        }
+
         return Scaffold(
           body: Stack(
             children: [
@@ -176,7 +176,7 @@ class _ChatsPageState extends State<ChatsPage> {
                                   color: Colors.white,
                                 ),
                               ),
-                              itemCount: chats!.length,
+                              itemCount:2,
                             ),
                           ),
                         ],
@@ -265,7 +265,7 @@ class _ChatsPageState extends State<ChatsPage> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
-          color: (chats!.length==1) ? transparentColor : Colors.white,
+          color: (true) ? transparentColor : Colors.white,
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -284,7 +284,7 @@ class _ChatsPageState extends State<ChatsPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        chats![index].members[0],
+                        "${chats[index].members[1].id}",
                         maxLines: 2,
                         style: const TextStyle(
                           color: Colors.black,
@@ -314,7 +314,7 @@ class _ChatsPageState extends State<ChatsPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "dasdasdasdasdadasdasdsdasd",
+                        "",
                         maxLines: 2,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -353,3 +353,5 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 }
+
+

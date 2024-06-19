@@ -22,7 +22,7 @@ class ChatResponse {
 
 class Chat {
   String id;
-  List<String> members;
+  List<Member> members;
   DateTime createdAt;
   DateTime updatedAt;
   int v;
@@ -38,7 +38,7 @@ class Chat {
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
       id: json['_id'],
-      members: List<String>.from(json['members'].map((x) => x)),
+      members: List<Member>.from(json['members'].map((x) => Member.fromJson(x))),
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'],
@@ -48,5 +48,27 @@ class Chat {
   @override
   String toString() {
     return 'Chat(id: $id, members: $members, createdAt: $createdAt, updatedAt: $updatedAt, v: $v)';
+  }
+}
+
+class Member {
+  String? userId;
+  String id;
+
+  Member({
+    required this.userId,
+    required this.id,
+  });
+
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return Member(
+      userId: json['userId'],
+      id: json['_id'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Member(userId: $userId, id: $id)';
   }
 }
