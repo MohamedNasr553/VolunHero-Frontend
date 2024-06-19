@@ -137,11 +137,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: IconButton(
                       onPressed: () {
-                        UserLoginCubit.get(context)
-                            .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token)
-                            .then((value) {
-                          navigateToPage(context,  ChatsPage());
-                        });
+                        navigateToPage(context,  ChatsPage());
+                        // UserLoginCubit.get(context)
+                        //     .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token)
+                        //     .then((value) {
+                        //   navigateToPage(context,  ChatsPage());
+                        // });
                       },
                       icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
                 ),

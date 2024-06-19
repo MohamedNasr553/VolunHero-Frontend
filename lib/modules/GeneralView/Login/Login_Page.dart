@@ -234,6 +234,8 @@ class LoginPage extends StatelessWidget {
                                                 .loginModel!
                                                 .refresh_token)
                                             .then((value) {
+                                          UserLoginCubit.get(context)
+                                              .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token);
                                           if (UserLoginCubit.get(context)
                                               .loggedInUser !=
                                               null) {

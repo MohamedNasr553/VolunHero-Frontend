@@ -10,23 +10,24 @@ import 'package:smooth_list_view/smooth_list_view.dart';
 
 import '../../../bloc/Login_bloc/cubit.dart';
 import '../../../bloc/Login_bloc/states.dart';
+import '../../../models/ChatsModel.dart';
 import '../Chats/chatPage.dart';
 
 class DetailedChats extends StatefulWidget {
-  const DetailedChats({super.key});
+  DetailedChats({super.key});
 
   @override
   _DetailedChatsState createState() => _DetailedChatsState();
 }
 
 class _DetailedChatsState extends State<DetailedChats> {
-
+  Chat? chat;
 
   TextEditingController _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
+    chat = UserLoginCubit.get(context).selectedChat;
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
@@ -63,15 +64,15 @@ class _DetailedChatsState extends State<DetailedChats> {
                             radius: 25,
                             backgroundColor: Colors.transparent,
                             child: ClipOval(
-                                child: Image.asset("assets/images/logo.png")),
+                                child: Image.asset("${UserLoginCubit.get(context).selectedChat!.members[1].userId.profilePic}" ?? "assets/images/nullProfile.png")),
                           ),
                         ),
                         SizedBox(width: screenWidth / 30),
                         // Chat name
                         Container(
                           width: screenWidth / 2,
-                          child: const Text(
-                            'Nasr',
+                          child:  Text(
+                            UserLoginCubit.get(context).selectedChat!.members[1].userId.userName,
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 25.0,
@@ -114,7 +115,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                           color: HexColor("F3F3F3"),
                         ),
                       ),
-                      itemCount:  0,
+                      itemCount:  UserLoginCubit.get(context).selectedChat!.messages.length,
                       duration: const Duration(milliseconds: 50),
                     ),
                   ),
@@ -130,7 +131,24 @@ class _DetailedChatsState extends State<DetailedChats> {
   Widget buildMessageItem(index, context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return (index % 2 == 0)
+    DateTime? createdAt = UserLoginCubit.get(context).selectedChat!.messages[index].createdAt;
+    String? durationText;
+    DateTime createdTime = createdAt;
+    DateTime timeNow = DateTime.now();
+    Duration difference = timeNow.difference(createdTime);
+
+    if (difference.inMinutes > 59) {
+      durationText = '${difference.inHours}h ';
+    } else if (difference.inMinutes < 1) {
+      durationText = '${difference.inSeconds}s ';
+    } else {
+      durationText = '${difference.inMinutes.remainder(60)}m ';
+    }
+    // In Days
+    if (difference.inHours >= 24) {
+      durationText = '${difference.inDays}d ';
+    }
+    return ( UserLoginCubit.get(context).selectedChat!.messages[index].senderId != UserLoginCubit.get(context).loggedInUser!.id)
         ? Row(
             children: [
               CircleAvatar(
@@ -144,7 +162,7 @@ class _DetailedChatsState extends State<DetailedChats> {
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("kajsdhfkljads"),
+                  child: Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}"),
                 ),
                 decoration: BoxDecoration(
                     color: HexColor("c0e1e2"),
@@ -158,12 +176,26 @@ class _DetailedChatsState extends State<DetailedChats> {
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("skldjflksdjf"),
+                  child: Row(
+                    children: [
+                      Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}",
+                       style: TextStyle(
+                         fontSize: 16
+                       ),
+                      ),
+                      SizedBox(width: screenWidth/100,),
+                      Text("${durationText}",style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[700]
+                      ),)
+                    ],
+                  ),
                 ),
                 decoration: BoxDecoration(
                     color: HexColor("51bbbd"),
                     borderRadius: BorderRadius.circular(20)),
               ),
+              
             ],
           );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -157,14 +158,14 @@ class _ChatsPageState extends State<ChatsPage> {
                         borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(40.0)),
                         color: HexColor("F3F3F3")),
-                    child: _showWidget
+                    child: (true)
                         ? Padding(
                       padding:
                       EdgeInsets.symmetric(horizontal: screenWidth / 35),
                       child: Column(
                         children: [
                           Expanded(
-                            child: ListView.separated(
+                            child: (chats.length>0)?ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) =>
                                   buildChatItem(index, context),
@@ -176,7 +177,14 @@ class _ChatsPageState extends State<ChatsPage> {
                                   color: Colors.white,
                                 ),
                               ),
-                              itemCount:2,
+                              itemCount:chats.length,
+                            ):Center(child: Text(
+                                "No Chats Yet",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey
+                              ),
+                            )
                             ),
                           ),
                         ],
@@ -260,93 +268,87 @@ class _ChatsPageState extends State<ChatsPage> {
     Color hexColor = HexColor("0BA3A6");
     Color transparentColor = hexColor.withOpacity(0.5);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: (true) ? transparentColor : Colors.white,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 25,
-                child: Image.asset("assets/images/logo.png"),
-              ),
-              SizedBox(
-                width: screenWidth / 50,
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${chats[index].members[1].id}",
-                        maxLines: 2,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: "Roboto",
-                          fontSize: 10,
+    return InkWell(
+      onTap: (){
+        UserLoginCubit.get(context).selectedChat = chats[index];
+        print( UserLoginCubit.get(context).selectedChat);
+        navigateAndFinish(context, DetailedChats());
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: (true) ? transparentColor : Colors.white,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  child: Image.asset("${chats[index].members[1].userId.profilePic?? "assets/images/nullProfile.png"}"),
+                ),
+                SizedBox(
+                  width: screenWidth / 50,
+                ),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "${chats[index].members[1].userId.userName}",
+                          maxLines: 2,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: "Roboto",
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: screenWidth/5,height: 1,),
-                      Text(
-                        parseCreatedAt(chats![index].createdAt.toString()),
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          fontFamily: "Roboto",
-                          color:(chats!.length==1)
-                              ? HexColor("0BA3B9")
-                              : HexColor("888383"),
-                          fontWeight: (chats!.length==1)
-                              ? FontWeight.bold
-                              : FontWeight.w400,
+                        SizedBox(width: screenWidth/2,height: 1,),
+                        Text(
+                          "2024",
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontFamily: "Roboto",
+                            color:(chats!.length==1)
+                                ? HexColor("0BA3B9")
+                                : HexColor("888383"),
+                            fontWeight: (chats!.length==1)
+                                ? FontWeight.bold
+                                : FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+ //                     mainAxisAlignment: MainAxisAlignment.start,
+
+                      children: [
+                        Text(
+                           ( chats[index].messages[chats[index].messages.length-1].text ),
+                          maxLines: 2,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: (chats!.length==1)
+                                ? FontWeight.bold
+                                : FontWeight.w400,
+                            fontFamily: "Roboto",
+                            color: HexColor("888383"),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "",
-                        maxLines: 2,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: (chats!.length==1)
-                              ? FontWeight.bold
-                              : FontWeight.w400,
-                          fontFamily: "Roboto",
-                          color: HexColor("888383"),
-                        ),
-                      ),
-                      SizedBox(width: screenWidth/5,height: 1,),
-                      (chats!.length==1)
-                          ? CircleAvatar(
-                              radius: 10,
-                              backgroundColor: HexColor("0BA3A6"),
-                              child: const Center(
-                                child: Text(
-                                  "2",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : const SizedBox()
-                    ],
-                  )
-                ],
-              )
-            ],
+                        SizedBox(width: screenWidth/5,height: 1,),
+                         const SizedBox()
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
