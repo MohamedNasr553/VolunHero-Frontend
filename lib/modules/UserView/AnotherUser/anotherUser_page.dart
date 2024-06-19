@@ -8,6 +8,7 @@ import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
+import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/components/constants.dart';
@@ -16,6 +17,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../GeneralView/Chats/chatPage.dart';
 
 class AnotherUserProfile extends StatefulWidget {
   const AnotherUserProfile({super.key});
@@ -177,7 +180,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 UserLoginCubit.get(context).getAnotherUserFollowers();
                               });
                             });
-                            showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
+                         //   showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
                         },
                         child: (UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) == false)
                             ? Container(
@@ -234,7 +237,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          navigateToPage(context, DetailedChats());
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                               color: Colors.black38.withOpacity(0.5),
@@ -520,25 +525,23 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             height: 1,
                             color: Colors.grey.shade300,
                           ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "No Posts Yet",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black.withOpacity(0.5),
-                                ),
-                              ),
-                            ),
-                          )
+
                         ],
                       ),
                     ),
+
                   ),
                 ),
                 // Posts
+                (state is! GetAnotherUserPostsLoadingState)
+                    ? SizedBox(
+                  height: screenHeight,
+                  child: buildAnotherUserPostsList(context),
+                )
+                    :  const Center(
+                  child: CircularProgressIndicator(
+                    color: defaultColor,
+                  )),
               ],
             ),
           ),
@@ -552,11 +555,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context)
-              .homePagePostsModel
-              ?.modifiedPosts
-              .length ??
-          0,
+      itemCount:3,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           period: const Duration(milliseconds: 1000),
@@ -626,22 +625,45 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     );
   }
 
-  Widget buildPostsList(context) {
-    var cubit = HomeLayoutCubit.get(context);
 
-    if (cubit.homePagePostsModel != null) {
-      if (cubit.homePagePostsModel!.modifiedPosts.isNotEmpty) {
+  Widget buildAnotherUserPostsList(context) {
+    var cubit = UserLoginCubit.get(context);
+    print("888888888888888888888888888888888888");
+    print("888888888888888888888888888888888888");
+    print("888888888888888888888888888888888888");
+    print("888888888888888888888888888888888888");
+    print(cubit.anotherUserPostsResponse);
+
+    if (cubit.anotherUserPostsResponse != null) {
+      if (cubit.anotherUserPostsResponse!.posts.isNotEmpty) {
         return Column(
           children: [
             Expanded(
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final homePagePostsModel = cubit.homePagePostsModel;
-                  if (homePagePostsModel != null) {
-                    if (index < homePagePostsModel.modifiedPosts.length) {
-                      return buildPostItem(
-                          homePagePostsModel.modifiedPosts[index], context);
+                //  final anotherUserPostsModel = cubit.anotherUserPostsResponse;
+                  if (cubit.anotherUserPostsResponse != null) {
+                    if (index < cubit.anotherUserPostsResponse!.posts.length && cubit.anotherUserPostsResponse!.posts[index]!=null) {
+                      CreatedBy createdBy = CreatedBy(
+                          id: cubit.anotherUser!.id,
+                          userName: cubit.anotherUserPostsResponse!.posts[index].userId.userName,
+                          role: cubit.anotherUserPostsResponse!.posts[index].userId.role
+                      );
+                      ModifiedPost modifiedPost = ModifiedPost(
+                          id: cubit.anotherUserPostsResponse!.posts[index].post!.id,
+                          content: cubit.anotherUserPostsResponse!.posts[index].post!.content,
+                          specification: cubit.anotherUserPostsResponse!.posts[index].post!.specification,
+                          createdBy: createdBy,
+                          likesCount:cubit.anotherUserPostsResponse!.posts[index].post!.likes.length,
+                          shareCount: cubit.anotherUserPostsResponse!.posts[index].post!.shareCount,
+                          createdAt: cubit.anotherUserPostsResponse!.posts[index].post!.createdAt,
+                          updatedAt: cubit.anotherUserPostsResponse!.posts[index].post!.updatedAt,
+                          liked: false,
+                          v: cubit.anotherUserPostsResponse!.posts[index].post!.v,
+                          attachments: []
+                      );
+                      return buildPostItem(modifiedPost, context);
                     }
                   }
                   return const Text("No Posts Available");
@@ -654,7 +676,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     color: Colors.white,
                   ),
                 ),
-                itemCount: cubit.homePagePostsModel!.modifiedPosts.length,
+                itemCount: cubit.anotherUserPostsResponse!.posts.length,
               ),
             ),
           ],

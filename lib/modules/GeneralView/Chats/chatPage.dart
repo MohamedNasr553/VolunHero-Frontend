@@ -85,7 +85,6 @@ class _ChatsPageState extends State<ChatsPage> {
 
       },
       builder: (BuildContext context,  state) {
-
         if(chats!.length>=1){
           chats = UserLoginCubit.get(context).chats;
         }

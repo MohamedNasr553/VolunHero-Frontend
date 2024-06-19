@@ -9,8 +9,4 @@ class AnotherUserCubit extends Cubit<AnotherUserStates> {
   AnotherUserCubit() : super(AnotherUserInitialState());
   static AnotherUserCubit get(context) => BlocProvider.of(context);
 
-
-
-
-
 }

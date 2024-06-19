@@ -5,6 +5,7 @@ import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import '../../models/AnotherUserPostsModel.dart';
 import '../../models/ChatsModel.dart';
 import '../../shared/network/endpoints.dart';
 import '../../shared/network/remote/dio_helper.dart';
@@ -205,4 +206,45 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     follow = !follow;
     emit(LoginChangeFollowState());
   }
+
+
+
+//---------------- another user posts endpoints----------------------------
+  AnotherUserPostsResponse? anotherUserPostsResponse;
+
+  Future<void> getAnotherUserPosts({required String? token,required String userName,required String id}) async {
+
+    DioHelper.getData(
+      url: "/users/${userName}/${id}/post",
+      token: token,
+    ).then((value) {
+      emit(GetAnotherUserPostsLoadingState());
+
+      anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(value.data);
+      print("inside the endpoint function");
+      print(anotherUserPostsResponse);
+     }).catchError((error) {
+      print(error.toString());
+      emit(GetAnotherUserPostsErrorState(error));
+    });
+  }
+
+  // --------------------- Get messages--------------------------
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

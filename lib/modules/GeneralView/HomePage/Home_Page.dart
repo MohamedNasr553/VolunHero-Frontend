@@ -338,10 +338,16 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   InkWell(
                     onTap: () {
+
+
                       if (postDetails.createdBy.id ==
                           UserLoginCubit.get(context).loggedInUser!.id) {
                         navigateToPage(context, ProfilePage());
                       } else {
+
+                        print("3333333333333333333333333333");
+                        print(postDetails.createdBy.id);
+                        print("3333333333333333333333333333");
                         HomeLayoutCubit.get(context)
                             .getAnotherUserData(
                             token: UserLoginCubit.get(context)
@@ -349,9 +355,15 @@ class _HomePageState extends State<HomePage> {
                                 .refresh_token,
                             id: postDetails.createdBy.id)
                             .then((value) {
-                          UserLoginCubit.get(context).anotherUser =
-                              HomeLayoutCubit.get(context).anotherUser;
-                          navigateToPage(context, AnotherUserProfile());
+                              UserLoginCubit.get(context).getAnotherUserPosts(
+                                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                                  id: postDetails.createdBy.id,
+                                  userName: postDetails.createdBy.userName
+                              ).then((value){
+                                UserLoginCubit.get(context).anotherUser =
+                                    HomeLayoutCubit.get(context).anotherUser;
+                                navigateToPage(context, AnotherUserProfile());
+                              });
                         });
                       }
                     },

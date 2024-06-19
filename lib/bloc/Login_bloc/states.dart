@@ -59,4 +59,13 @@ class GetAnotherUserFollowersState extends UserLoginStates{
   final int followersLen;
   GetAnotherUserFollowersState(this.followersLen);
 }
+// Another User Posts States
+class GetAnotherUserPostsSuccessState extends UserLoginStates{}
+class GetAnotherUserPostsLoadingState extends UserLoginStates{}
+class GetAnotherUserPostsErrorState extends UserLoginStates{
+  final String error;
+  GetAnotherUserPostsErrorState(this.error);
+}
+
+
 
