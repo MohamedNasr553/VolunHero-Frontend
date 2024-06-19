@@ -1027,7 +1027,29 @@ class _ProfilePageState extends State<ProfilePage> {
                       const Spacer(),
                       postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
-                      postSubComponent("assets/images/share.svg", "Repost"),
+                      postSubComponent(
+                        "assets/images/share.svg",
+                        "Share",
+                        onTap: () {
+                          HomeLayoutCubit.get(context).sharePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: defaultColor,
+                              content: Text(
+                                'Post is shared',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -1170,13 +1192,23 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 onTap: () {
-                  // Logic to save the post
+                  // Logic to delete the post
                   HomeLayoutCubit.get(context).deletePost(
                       token: UserLoginCubit.get(context)
                               .loginModel!
                               .refresh_token ??
                           "",
                       postId: postDetails!.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: defaultColor,
+                        content: Text(
+                          'Post is shared',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ));
                 },
               ),
             ],

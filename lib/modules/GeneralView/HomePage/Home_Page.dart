@@ -66,9 +66,14 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: Colors.transparent,
                       child: ClipOval(
                         // child: Image.asset('assets/images/logo.png'),
-                        child: (HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic == null) ?
-                        Image.asset('assets/images/nullProfile.png'):
-                        Image.asset('assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}'),
+                        child: (HomeLayoutCubit.get(context)
+                                    .modifiedPost
+                                    ?.createdBy
+                                    ?.profilePic ==
+                                null)
+                            ? Image.asset('assets/images/nullProfile.png')
+                            : Image.asset(
+                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}'),
                       ),
                     ),
                   ),
@@ -138,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: IconButton(
                       onPressed: () {
-                        navigateToPage(context,  ChatsPage());
+                        navigateToPage(context, ChatsPage());
                         // UserLoginCubit.get(context)
                         //     .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token)
                         //     .then((value) {
@@ -163,9 +168,9 @@ class _HomePageState extends State<HomePage> {
 
     return ListView.builder(
       itemCount: HomeLayoutCubit.get(context)
-          .homePagePostsModel
-          ?.modifiedPosts
-          .length ??
+              .homePagePostsModel
+              ?.modifiedPosts
+              .length ??
           0,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
@@ -257,9 +262,9 @@ class _HomePageState extends State<HomePage> {
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
                             return buildPostItem(
-                                homePagePostsModel.modifiedPosts[index],
-                                loggedInUserCubit.loggedInUserData!.doc,
-                                context,
+                              homePagePostsModel.modifiedPosts[index],
+                              loggedInUserCubit.loggedInUserData!.doc,
+                              context,
                             );
                           }
                         }
@@ -273,7 +278,8 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white,
                         ),
                       ),
-                      itemCount: homeCubit.homePagePostsModel!.modifiedPosts.length,
+                      itemCount:
+                          homeCubit.homePagePostsModel!.modifiedPosts.length,
                     ),
                   ],
                 ),
@@ -289,7 +295,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget buildPostItem(ModifiedPost? postDetails, LoggedInUser loggedInUser, BuildContext context) {
+  Widget buildPostItem(ModifiedPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
     if (postDetails == null) {
       return const SizedBox();
     }
@@ -343,39 +350,39 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   InkWell(
                     onTap: () {
-
-
                       if (postDetails.createdBy.id ==
                           UserLoginCubit.get(context).loggedInUser!.id) {
                         navigateToPage(context, ProfilePage());
                       } else {
-
                         print("3333333333333333333333333333");
                         print(postDetails.createdBy.id);
                         print("3333333333333333333333333333");
                         HomeLayoutCubit.get(context)
                             .getAnotherUserData(
-                            token: UserLoginCubit.get(context)
-                                .loginModel!
-                                .refresh_token,
-                            id: postDetails.createdBy.id)
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                                id: postDetails.createdBy.id)
                             .then((value) {
-                              UserLoginCubit.get(context).getAnotherUserPosts(
-                                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                          UserLoginCubit.get(context)
+                              .getAnotherUserPosts(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
                                   id: postDetails.createdBy.id,
-                                  userName: postDetails.createdBy.userName
-                              ).then((value){
-                                UserLoginCubit.get(context).anotherUser =
-                                    HomeLayoutCubit.get(context).anotherUser;
-                                navigateToPage(context, AnotherUserProfile());
-                              });
+                                  userName: postDetails.createdBy.userName)
+                              .then((value) {
+                            UserLoginCubit.get(context).anotherUser =
+                                HomeLayoutCubit.get(context).anotherUser;
+                            navigateToPage(context, AnotherUserProfile());
+                          });
                         });
                       }
                     },
                     child: CircleAvatar(
                       radius: 20.0,
                       backgroundImage: (postDetails.createdBy.profilePic !=
-                          null)
+                              null)
                           ? AssetImage(postDetails.createdBy.profilePic!)
                           : const AssetImage("assets/images/nullProfile.png"),
                     ),
@@ -392,10 +399,10 @@ class _HomePageState extends State<HomePage> {
                           } else {
                             HomeLayoutCubit.get(context)
                                 .getAnotherUserData(
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token,
-                                id: postDetails.createdBy.id)
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
+                                    id: postDetails.createdBy.id)
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
@@ -461,22 +468,22 @@ class _HomePageState extends State<HomePage> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                      postDetails.content,
-                      maxLines:
-                      (postDetails.attachments) != null ? 6 : 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: "Robot",
-                        fontSize: 13.0,
-                      ),
-                    )
+                            postDetails.content,
+                            maxLines:
+                                (postDetails.attachments) != null ? 6 : 10,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: "Robot",
+                              fontSize: 13.0,
+                            ),
+                          )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
                     if (postDetails.attachments!.isNotEmpty)
-                    // check if there's more than one
+                      // check if there's more than one
                       if (postDetails.attachments!.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -511,7 +518,7 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
-                      postDetails.attachments!.asMap().entries.map((entry) {
+                          postDetails.attachments!.asMap().entries.map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -545,24 +552,24 @@ class _HomePageState extends State<HomePage> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/NewLikeColor.svg',
-                        width: 22.0,
-                        height: 22.0,
-                      ),
-                    )
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/NewLikeColor.svg',
+                              width: 22.0,
+                              height: 22.0,
+                            ),
+                          )
                         : Container(),
                     (postDetails.likesCount > 0)
                         ? Text(
-                      '${postDetails.likesCount}',
-                      style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 12,
-                        color: HexColor("575757"),
-                      ),
-                    )
+                            '${postDetails.likesCount}',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          )
                         : Container(),
                     const Spacer(),
 
@@ -608,54 +615,75 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (postDetails.likesCount > 0 && loggedInUser.id != postDetails.createdBy.id) postSubComponent(
-                        "assets/images/NewLikeColor.svg",
-                        " Like",
-                        color: HexColor("4267B2"),
-                        onTap: () {
-                          HomeLayoutCubit.get(context).likePost(
-                              postId: postDetails.id,
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "");
-                        },
-                      )
-                      else if (postDetails.likesCount > 0 && loggedInUser.id == postDetails.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
-                                      "");
-                            },
-                          )
-                      else postSubComponent(
-                        "assets/images/like.svg",
-                        "Like",
-                        onTap: () {
-                          HomeLayoutCubit.get(context).likePost(
-                              postId: postDetails.id,
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "");
-                        },
-                      ),
+                      if (postDetails.likesCount > 0 &&
+                          loggedInUser.id != postDetails.createdBy.id)
+                        postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          " Like",
+                          color: HexColor("4267B2"),
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                          loggedInUser.id == postDetails.createdBy.id)
+                        postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          " Like",
+                          color: HexColor("4267B2"),
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        )
+                      else
+                        postSubComponent(
+                          "assets/images/like.svg",
+                          "Like",
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "");
+                          },
+                        ),
                       const Spacer(),
-                      postSubComponent(
-                        "assets/images/comment.svg",
-                        "Comment",
-                      ),
+                      postSubComponent("assets/images/comment.svg", "Comment",
+                          onTap: () {}),
                       const Spacer(),
                       postSubComponent(
                         "assets/images/share.svg",
                         "Share",
+                        onTap: () {
+                          HomeLayoutCubit.get(context).sharePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                  "");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: defaultColor,
+                              content: Text(
+                                'Post is shared',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -670,8 +698,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(

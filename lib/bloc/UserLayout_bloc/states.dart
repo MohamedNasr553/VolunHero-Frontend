@@ -30,6 +30,12 @@ class DeletePostSuccessState extends LayoutStates{}
 
 class DeletePostErrorState extends LayoutStates{}
 
+class SharePostLoadingState extends LayoutStates{}
+
+class SharePostSuccessState extends LayoutStates{}
+
+class SharePostErrorState extends LayoutStates{}
+
 /// Posts of owner
 class OwnerPostsInitialState extends LayoutStates {}
 

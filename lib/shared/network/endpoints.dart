@@ -5,6 +5,7 @@ const LOGIN = "/auth/login";
 const GET_USER = "/users/me";
 
 const GET_CHATS = "/chat/mychats";
+
 const GET_CHAT_MSGS = "/message/";
 
 const UPDATE_USER = "/users/updateMe";
