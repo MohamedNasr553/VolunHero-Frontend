@@ -78,3 +78,11 @@ class CreateMessageErrorState extends UserLoginStates{
 class RefreshMessagesLoadingState extends UserLoginStates{}
 class RefreshMessagesSuccessState extends UserLoginStates{}
 
+class CreateChatSuccessState extends UserLoginStates{}
+class CreateChatLoadingState extends UserLoginStates{}
+class CreateChatErrorState extends UserLoginStates{
+  final String error;
+  CreateChatErrorState(this.error);
+}
+
+

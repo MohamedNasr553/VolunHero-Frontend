@@ -143,6 +143,37 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }
 
 
+  Future<String> createChat({
+
+    required String secondId,
+
+  }) async {
+    Map<String, dynamic> requestData = {
+
+      'secondId': secondId
+    };
+
+    try {
+      emit(CreateChatLoadingState());
+      var response = await DioHelper.postData(
+          url: CREATE_CHAT,
+          data: requestData,
+          token: loginModel!.refresh_token
+      ).then((value) async {
+      emit(CreateChatSuccessState());
+
+
+      });
+
+    } catch (error) {
+      emit(CreateChatErrorState(error.toString()));
+      return "Failed to create chat: $error";
+    }
+    return "function return";
+  }
+
+
+
   Future<String> sendMessage({
     required String chatId,
     required String senderId,

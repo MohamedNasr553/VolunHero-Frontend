@@ -281,8 +281,61 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                          navigateToPage(context, DetailedChats());
+                        onTap: ()async {
+
+                          bool newChat = true;
+                          UserLoginCubit.get(context).getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token).then((value) {
+                            for(int i=0;i<UserLoginCubit.get(context).chats.length;i++){
+                              // case 1
+                              if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
+                                  UserLoginCubit.get(context).loggedInUser!.id){
+                                if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
+                                    HomeLayoutCubit.get(context).anotherUser!.id){
+                                     newChat = false;
+                                     UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                }
+                              }
+                              // case 2
+                              if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
+                                  UserLoginCubit.get(context).loggedInUser!.id){
+                                if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
+                                    HomeLayoutCubit.get(context).anotherUser!.id){
+                                  newChat = false;
+                                  UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                }
+                              }
+                            }
+                            if(newChat==true){
+                              print( HomeLayoutCubit.get(context).anotherUser!.id);
+                              UserLoginCubit.get(context).createChat(
+                                  secondId: HomeLayoutCubit.get(context).anotherUser!.id.toString()
+                              );
+                            }
+                          }).then((value) {
+                            UserLoginCubit.get(context).getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token).then((value) {
+                              for(int i=0;i<UserLoginCubit.get(context).chats.length;i++){
+                                // case 1
+                                if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
+                                    UserLoginCubit.get(context).loggedInUser!.id){
+                                  if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
+                                      HomeLayoutCubit.get(context).anotherUser!.id){
+                                    UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                  }
+                                }
+                                // case 2
+                                if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
+                                    UserLoginCubit.get(context).loggedInUser!.id){
+                                  if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
+                                      HomeLayoutCubit.get(context).anotherUser!.id){
+                                    UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                  }
+                                }
+                              }
+                            }).then((value) {
+                              navigateToPage(context, DetailedChats());
+                            });
+                          });
+
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -291,13 +344,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: Center(
-                              child: (Text(
+                              child: (
+                                (state is! CreateChatLoadingState)?
+                                  Text(
                                 "message",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
-                              )),
+                              ): Center(
+                                  child: Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ),
                             ),
                           ),
                         ),

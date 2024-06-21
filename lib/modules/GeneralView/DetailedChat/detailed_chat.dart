@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +33,11 @@ class _DetailedChatsState extends State<DetailedChats> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is CreateMessageSuccessState){
+            UserLoginCubit.get(context).refreshChatPage(UserLoginCubit.get(context).selectedChat!.id);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
           backgroundColor: HexColor("027E81"),
@@ -68,12 +73,13 @@ class _DetailedChatsState extends State<DetailedChats> {
                         //         child: Image.asset("${UserLoginCubit.get(context).selectedChat!.members[1].userId.profilePic}" ?? "assets/images/nullProfile.png")),
                         //   ),
                         // ),
-                        SizedBox(width: screenWidth / 30),
                         // Chat name
                         Container(
                           width: screenWidth / 2,
                           child:  Text(
-                            UserLoginCubit.get(context).selectedChat!.members[1].userId.userName,
+                            (UserLoginCubit.get(context).selectedChat!.members[1].userId.id !=
+                                UserLoginCubit.get(context).loggedInUser!.id)?UserLoginCubit.get(context).selectedChat!.members[1].userId.userName:
+                            UserLoginCubit.get(context).selectedChat!.members[0].userId.userName,
                             style: const TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 25.0,
@@ -81,6 +87,16 @@ class _DetailedChatsState extends State<DetailedChats> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          visualDensity: VisualDensity.compact, // Reduce padding
+                          onPressed: () {
+                            UserLoginCubit.get(context).refreshChatPage(UserLoginCubit.get(context).selectedChat!.id);
+                          },
+                          icon:Icon(Icons.refresh),
+                          iconSize: 35,
+                          color: Colors.white,
                         ),
                       ],
                     ),
@@ -103,7 +119,8 @@ class _DetailedChatsState extends State<DetailedChats> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: SmoothListView.separated(
+                    child:( state is! GetLoggedInUserChatsLoadingState)?
+                        SmoothListView.separated(
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) =>
                           buildMessageItem(index, context),
@@ -118,8 +135,11 @@ class _DetailedChatsState extends State<DetailedChats> {
                       ),
                       itemCount:  UserLoginCubit.get(context).selectedChat!.messages.length,
                       duration: const Duration(milliseconds: 1),
-                    ),
-                  ),
+                    ):
+                      Center(
+                        child:  CircularProgressIndicator(color: defaultColor,),
+                      )
+                  )
                 ),
               ),
               _buildInputField(),
@@ -235,6 +255,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                 'assets/images/Camera.svg',
               ),
             ),
+
             Container(
               width: screenWidth / 1.57,
               height: screenHeight / 25,

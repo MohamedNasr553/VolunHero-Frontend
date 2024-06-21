@@ -161,7 +161,7 @@ class _ChatsPageState extends State<ChatsPage> {
                       child: Column(
                         children: [
                           Expanded(
-                            child: (chats.length>0)?ListView.separated(
+                            child: (state is! GetLoggedInUserChatsLoadingState)?ListView.separated(
                               physics: const BouncingScrollPhysics(),
                               itemBuilder: (context, index) =>
                                   buildChatItem(index, context),
@@ -309,7 +309,8 @@ class _ChatsPageState extends State<ChatsPage> {
                         ),
                         SizedBox(width: screenWidth/4,height: 1,),
                         Text(
-                         getFormatedTime( chats[index].messages[chats[index].messages.length-1].createdAt).toString(),
+                            (chats[index].messages.length>0)?
+                         getFormatedTime( chats[index].messages[chats[index].messages.length-1].createdAt).toString():"",
                           style: TextStyle(
                             fontSize: 12.0,
                             fontFamily: "Roboto",
@@ -328,7 +329,7 @@ class _ChatsPageState extends State<ChatsPage> {
 
                       children: [
                         Text(
-                           ( chats[index].messages[chats[index].messages.length-1].text ),
+                           ( (chats[index].messages.length<=0)?"Tap to message" :chats[index].messages[chats[index].messages.length-1].text),
                           maxLines: 2,
                           overflow: TextOverflow.clip,
                           style: TextStyle(

@@ -10,6 +10,8 @@ const GET_CHAT_MSGS = "/message/";
 
 const CREATE_MSG = "/message";
 
+const CREATE_CHAT = "/chat";
+
 const UPDATE_USER = "/users/updateMe";
 
 const GET_ALL_POSTS = "/post/allposts";
