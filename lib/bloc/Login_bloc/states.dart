@@ -67,5 +67,14 @@ class GetAnotherUserPostsErrorState extends UserLoginStates{
   GetAnotherUserPostsErrorState(this.error);
 }
 
+// Send message States
+class CreateMessageSuccessState extends UserLoginStates{}
+class CreateMessageLoadingState extends UserLoginStates{}
+class CreateMessageErrorState extends UserLoginStates{
+  final String error;
+  CreateMessageErrorState(this.error);
+}
 
+class RefreshMessagesLoadingState extends UserLoginStates{}
+class RefreshMessagesSuccessState extends UserLoginStates{}
 

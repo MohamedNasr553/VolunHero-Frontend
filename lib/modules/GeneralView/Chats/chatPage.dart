@@ -29,9 +29,7 @@ class _ChatsPageState extends State<ChatsPage> {
     super.initState();
     // After 3 seconds, set the _showWidget to true
     Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        _showWidget = true;
-      });
+
     });
   }
   String parseCreatedAt(String createdAt) {
@@ -268,9 +266,11 @@ class _ChatsPageState extends State<ChatsPage> {
 
     return InkWell(
       onTap: (){
-        UserLoginCubit.get(context).selectedChat = chats[index];
-        print( UserLoginCubit.get(context).selectedChat);
-        navigateAndFinish(context, DetailedChats());
+        UserLoginCubit.get(context).getLoggedInChats(token:UserLoginCubit.get(context).loginModel!.refresh_token).then((value) {
+          UserLoginCubit.get(context).selectedChat = chats[index];
+          print( UserLoginCubit.get(context).selectedChat);
+          navigateAndFinish(context, DetailedChats());
+        });
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -297,7 +297,8 @@ class _ChatsPageState extends State<ChatsPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "${chats[index].members[1].userId.userName}",
+                          (UserLoginCubit.get(context).loggedInUser!.id!=chats[index].members[1].userId.id)?
+                          "${chats[index].members[1].userId.userName}":"${chats[index].members[0].userId.userName}",
                           maxLines: 2,
                           style: const TextStyle(
                             color: Colors.black,
@@ -306,9 +307,9 @@ class _ChatsPageState extends State<ChatsPage> {
                             fontSize: 16,
                           ),
                         ),
-                        SizedBox(width: screenWidth/2,height: 1,),
+                        SizedBox(width: screenWidth/4,height: 1,),
                         Text(
-                          "2024",
+                         getFormatedTime( chats[index].messages[chats[index].messages.length-1].createdAt).toString(),
                           style: TextStyle(
                             fontSize: 12.0,
                             fontFamily: "Roboto",
@@ -351,6 +352,26 @@ class _ChatsPageState extends State<ChatsPage> {
         ),
       ),
     );
+  }
+  String? getFormatedTime(DateTime? CreatedAt){
+    DateTime? createdAt = CreatedAt;
+    String? durationText;
+    DateTime? createdTime = createdAt;
+    DateTime timeNow = DateTime.now();
+    Duration difference = timeNow.difference(createdTime!);
+
+    if (difference.inMinutes > 59) {
+      durationText = '${difference.inHours}h ';
+    } else if (difference.inMinutes < 1) {
+      durationText = '${difference.inSeconds}s ';
+    } else {
+      durationText = '${difference.inMinutes.remainder(60)}m ';
+    }
+    // In Days
+    if (difference.inHours >= 24) {
+      durationText = '${difference.inDays}d ';
+    }
+    return durationText;
   }
 }
 

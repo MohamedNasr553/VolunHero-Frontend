@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
@@ -57,15 +59,15 @@ class _DetailedChatsState extends State<DetailedChats> {
                         ),
                         SizedBox(width: screenWidth / 30),
                         // User Profile
-                        IconButton(
-                          onPressed: () {},
-                          icon: CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.transparent,
-                            child: ClipOval(
-                                child: Image.asset("${UserLoginCubit.get(context).selectedChat!.members[1].userId.profilePic}" ?? "assets/images/nullProfile.png")),
-                          ),
-                        ),
+                        // IconButton(
+                        //   onPressed: () {},
+                        //   icon: CircleAvatar(
+                        //     radius: 25,
+                        //     backgroundColor: Colors.transparent,
+                        //     child: ClipOval(
+                        //         child: Image.asset("${UserLoginCubit.get(context).selectedChat!.members[1].userId.profilePic}" ?? "assets/images/nullProfile.png")),
+                        //   ),
+                        // ),
                         SizedBox(width: screenWidth / 30),
                         // Chat name
                         Container(
@@ -115,7 +117,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                         ),
                       ),
                       itemCount:  UserLoginCubit.get(context).selectedChat!.messages.length,
-                      duration: const Duration(milliseconds: 50),
+                      duration: const Duration(milliseconds: 1),
                     ),
                   ),
                 ),
@@ -150,23 +152,30 @@ class _DetailedChatsState extends State<DetailedChats> {
     return ( UserLoginCubit.get(context).selectedChat!.messages[index].senderId != UserLoginCubit.get(context).loggedInUser!.id)
         ? Row(
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.transparent,
-                child: ClipOval(child: Image.asset("assets/images/logo.png")),
-              ),
+
               SizedBox(
                 width: screenWidth / 35,
               ),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}"),
+                  child: Row(
+                    children: [
+                      Text("${durationText}",style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey[700]
+                      ),),
+                      SizedBox(width: screenWidth/100,),
+                      Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}"),
+
+                    ],
+                  ),
                 ),
                 decoration: BoxDecoration(
                     color: HexColor("c0e1e2"),
                     borderRadius: BorderRadius.circular(20)),
-              )
+              ),
+
             ],
           )
         : Row(
@@ -259,7 +268,36 @@ class _DetailedChatsState extends State<DetailedChats> {
               ),
               child: IconButton(
                 visualDensity: VisualDensity.compact, // Reduce padding
-                onPressed: () {},
+                onPressed: ()async {
+             //     _handleSubmitted(_textController.text,UserLoginCubit.get(context).selectedChat!.id,UserLoginCubit.get(context).loggedInUser!.id,context);
+                  print("ddddd\n");
+                  print(chatMessage.text);
+                  String text = chatMessage.text.toString();
+                  String chatId = UserLoginCubit.get(context).selectedChat!.id;
+                  String senderId = UserLoginCubit.get(context).loggedInUser!.id;
+                  print(text);
+                  print('\n');
+                  print(chatId);
+                  print('\n');
+                  print(senderId);
+
+                  if (text.trimLeft().trimRight().isNotEmpty) {
+
+                    var x = await UserLoginCubit.get(context).sendMessage(
+                        chatId: chatId,
+                        senderId: senderId,
+                        text: text,
+                        token: UserLoginCubit.get(context).loginModel!.refresh_token.toString(),
+                        chat: UserLoginCubit.get(context).selectedChat
+                    ).then((value) {
+                    UserLoginCubit.get(context).refreshChatPage(chatId);
+
+                    });
+
+
+                  }
+
+                },
                 icon: SvgPicture.asset(
                   'assets/images/Send_Icon.svg',
                   width: 30.0,
@@ -285,11 +323,25 @@ class _DetailedChatsState extends State<DetailedChats> {
     }
   }
 
-  void _handleSubmitted(String text) {
-    if (text.isNotEmpty) {
-      setState(() {
-        _textController.clear();
-      });
-    }
+  void _handleSubmitted(String text,String chatId,String senderId,context) {
+    // if (text.trimLeft().trimRight().isNotEmpty) {
+    //   UserLoginCubit.get(context).sendMessage(
+    //       chatId: chatId,
+    //       senderId: senderId,
+    //       text: text,
+    //     token: UserLoginCubit.get(context).loginModel!.refresh_token.toString()
+    //   ).then((value){
+    //     UserLoginCubit.get(context).getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token)
+    //         .then((value){
+    //           List<Chat> userChats = UserLoginCubit.get(context).chats;
+    //       for(int i=0;i<userChats.length;i++){
+    //         if(userChats[i].id == chatId){
+    //           UserLoginCubit.get(context).selectedChat  = userChats[i];
+    //         }
+    //       }
+    //     });
+    //   });
+    //
+    // }
   }
 }

@@ -126,6 +126,64 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }
 
   // --------------------------------- Chats ----------------------------------
+
+  void refreshChatPage(String chatId)async{
+    emit(RefreshMessagesLoadingState());
+    getLoggedInChats(token: loginModel!.refresh_token).then((value) {
+      List<Chat> userChat = chats;
+      for(int i=0;i<userChat.length;i++){
+        if(userChat[i].id == chatId){
+          selectedChat = userChat[i];
+          getLoggedInChats(token: loginModel!.refresh_token);
+          print("assigned");
+          emit(RefreshMessagesSuccessState());
+        }
+      }
+    });
+  }
+
+
+  Future<String> sendMessage({
+    required String chatId,
+    required String senderId,
+    required String text,
+    required String token,
+    required Chat? chat
+  }) async {
+    Map<String, dynamic> requestData = {
+      'chatId': chatId,
+      'senderId': senderId,
+      'text': text,
+    };
+    print(text);
+    print(chatId);
+    print(senderId);
+
+    try {
+      emit(CreateMessageLoadingState());
+      var response = await DioHelper.postData(
+        url: CREATE_MSG,
+        data: requestData,
+        token: token
+      ).then((value) async {
+
+      });
+
+      // Assuming DioHelper.postData returns the response directly
+      print("this is response of msg");
+      print(response.data);
+      print("this is response of msg");
+      // After sending the message successfully, refresh the chat page
+
+      return "Message sent successfully";
+    } catch (error) {
+      emit(CreateMessageErrorState(error.toString()));
+      return "Failed to send message: $error";
+    }
+  }
+
+
+
   ChatResponse? chatResponse;
   List<Chat> chats = [];
   Chat? selectedChat;
@@ -137,7 +195,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         token: token,
       ).then((value) {
 
-        print(value.data);
+   //     print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
         for(int i=0;i<chats.length;i++){
@@ -145,12 +203,12 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
               url:GET_CHAT_MSGS+chats[i].id,
               token: token
           ).then((value) {
-            print(i);
-            print("   ");
-            print(value.data);
+            // print(i);
+            // print("   ");
+            // print(value.data);
              MessageResponse messageResponse = MessageResponse.fromJson(value.data);
              chats[i].messages = messageResponse!.messages;
-             print(chats[i].messages);
+             //print(chats[i].messages);
           }).catchError((error){
 
           });
