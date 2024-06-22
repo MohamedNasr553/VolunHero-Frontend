@@ -66,11 +66,11 @@ class _HomePageState extends State<HomePage> {
                         child: (HomeLayoutCubit.get(context)
                                     .modifiedPost
                                     ?.createdBy
-                                    ?.profilePic ==
+                                    .profilePic ==
                                 null)
                             ? Image.asset('assets/images/nullProfile.png')
                             : Image.asset(
-                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}'),
+                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
                       ),
                     ),
                   ),
@@ -335,10 +335,12 @@ class _HomePageState extends State<HomePage> {
               token: token,
               postId: postId,
             );
-            HomeLayoutCubit.get(context).getCommentById(
-              token: token,
-              postId: postId,
-            );
+            if (postDetails.commentsCount > 0){
+              HomeLayoutCubit.get(context).getCommentById(
+                token: token,
+                postId: postId,
+              );
+            }
           }
 
           navigateToPage(context, const DetailedPost());

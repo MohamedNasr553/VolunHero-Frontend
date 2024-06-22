@@ -63,6 +63,7 @@ class _DetailedPostState extends State<DetailedPost> {
       LoggedInUser loggedInUser, Comment? commentModel, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    var commentController = TextEditingController();
 
     // Handling Post Duration
     DateTime? createdAt = specificPost!.createdAt;
@@ -84,433 +85,495 @@ class _DetailedPostState extends State<DetailedPost> {
       durationText = '${difference.inDays}d .';
     }
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.only(
-              start: screenWidth / 35,
-              end: screenWidth / 35,
-              top: screenHeight / 100,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.4),
-                    blurRadius: 10.0,
-                    spreadRadius: -5.0,
-                    offset: const Offset(10.0, 10.0), // Right and bottom shadow
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsetsDirectional.all(screenHeight / 300),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        /// Profile Pic
-                        CircleAvatar(
-                          radius: 20.0,
-                          backgroundImage: (specificPost.createdBy.profilePic !=
-                                  null)
-                              ? AssetImage(specificPost.createdBy.profilePic!)
-                              : const AssetImage(
-                                  "assets/images/nullProfile.png"),
-                        ),
-                        SizedBox(width: screenWidth / 50),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// Username
-                            InkWell(
-                              onTap: () {
-                                if (specificPost.createdBy.id ==
-                                    UserLoginCubit.get(context)
-                                        .loggedInUser!
-                                        .id) {
-                                  navigateToPage(context, const ProfilePage());
-                                } else {
-                                  HomeLayoutCubit.get(context)
-                                      .getAnotherUserData(
-                                          token: UserLoginCubit.get(context)
-                                              .loginModel!
-                                              .refresh_token,
-                                          id: specificPost.createdBy.id)
-                                      .then((value) {
-                                    UserLoginCubit.get(context)
-                                        .getAnotherUserPosts(
-                                            token: UserLoginCubit.get(context)
-                                                .loginModel!
-                                                .refresh_token,
-                                            id: specificPost.createdBy.id,
-                                            userName:
-                                                specificPost.createdBy.userName)
-                                        .then((value) {
-                                      UserLoginCubit.get(context).anotherUser =
-                                          HomeLayoutCubit.get(context)
-                                              .anotherUser;
-                                      navigateToPage(
-                                          context, const AnotherUserProfile());
-                                    });
-                                  });
-                                }
-                              },
-                              child: Text(
-                                specificPost.createdBy.userName,
-                                style: const TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 0.5),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  durationText,
-                                  style: TextStyle(
-                                    color: HexColor("B8B9BA"),
-                                    fontSize: 10,
-                                  ),
-                                ),
-                                SizedBox(width: screenWidth / 70),
-                                SvgPicture.asset('assets/images/earthIcon.svg'),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-
-                        /// Post Settings
-                        IconButton(
-                          onPressed: () {
-                            _showHomePageBottomSheet(context);
-                          },
-                          icon: SvgPicture.asset(
-                            'assets/images/postSettings.svg',
-                          ),
-                        ),
-
-                        /// Hide Post
-                        IconButton(
-                          onPressed: () {},
-                          icon: SvgPicture.asset(
-                            'assets/images/closePost.svg',
-                          ),
-                        ),
-                      ],
+    return Stack(
+      children: [
+        ListView(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth / 35),
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: screenHeight / 100),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.4),
+                      blurRadius: 10.0,
+                      spreadRadius: -5.0,
+                      offset: const Offset(10.0, 10.0),
                     ),
-                    const SizedBox(height: 1),
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        top: screenHeight / 100,
-                        start: screenWidth / 50,
-                      ),
-                      child: Column(
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(screenHeight / 300),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// Post Content
-                          Text(
-                            specificPost.content!,
-                            maxLines:
-                                (specificPost.attachments!) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
+                          /// Profile Pic
+                          CircleAvatar(
+                            radius: 20.0,
+                            backgroundImage: (specificPost
+                                        .createdBy.profilePic !=
+                                    null)
+                                ? AssetImage(specificPost.createdBy.profilePic!)
+                                : const AssetImage(
+                                    "assets/images/nullProfile.png"),
+                          ),
+                          SizedBox(width: screenWidth / 50),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// Username
+                              InkWell(
+                                onTap: () {
+                                  if (specificPost.createdBy.id ==
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .id) {
+                                    navigateToPage(
+                                        context, const ProfilePage());
+                                  } else {
+                                    HomeLayoutCubit.get(context)
+                                        .getAnotherUserData(
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token,
+                                      id: specificPost.createdBy.id,
+                                    )
+                                        .then((value) {
+                                      UserLoginCubit.get(context)
+                                          .getAnotherUserPosts(
+                                        token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token,
+                                        id: specificPost.createdBy.id,
+                                        userName:
+                                            specificPost.createdBy.userName,
+                                      )
+                                          .then((value) {
+                                        UserLoginCubit.get(context)
+                                                .anotherUser =
+                                            HomeLayoutCubit.get(context)
+                                                .anotherUser;
+                                        navigateToPage(context,
+                                            const AnotherUserProfile());
+                                      });
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                  specificPost.createdBy.userName,
+                                  style: const TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 0.5),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    durationText,
+                                    style: TextStyle(
+                                      color: HexColor("B8B9BA"),
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth / 70),
+                                  SvgPicture.asset(
+                                      'assets/images/earthIcon.svg'),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+
+                          /// Post Settings
+                          IconButton(
+                            onPressed: () {
+                              _showHomePageBottomSheet(context);
+                            },
+                            icon: SvgPicture.asset(
+                              'assets/images/postSettings.svg',
                             ),
                           ),
-                          SizedBox(height: screenHeight / 100),
 
-                          /// Post Attachments
-                          if (specificPost.attachments!.isNotEmpty)
-                            // check if there's more than one
-                            if (specificPost.attachments!.length > 1)
-                              CarouselSlider(
-                                carouselController: carouselController,
-                                items:
-                                    specificPost.attachments!.map((attachment) {
-                                  return Image(
-                                    image: NetworkImage(attachment.secure_url),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  );
-                                }).toList(),
-                                options: CarouselOptions(
-                                  height: 200,
-                                  viewportFraction: 1.0,
-                                  enableInfiniteScroll: true,
-                                  autoPlayCurve: Curves.easeIn,
-                                  enlargeCenterPage: true,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      _currentImageIndex = index;
-                                    });
-                                  },
-                                ),
-                              )
-                            else
-                              Image(
-                                image: NetworkImage(
-                                  specificPost.attachments![0].secure_url,
-                                ),
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: specificPost.attachments!
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                              return GestureDetector(
-                                onTap: () =>
-                                    carouselController.animateToPage(entry.key),
-                                child: Container(
-                                  width: 7.0,
-                                  height: 7.0,
-                                  margin: EdgeInsets.symmetric(
-                                    vertical: screenHeight / 90,
-                                    horizontal: screenWidth / 100,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: _currentImageIndex == entry.key
-                                        ? defaultColor
-                                        : Colors.grey,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                          /// Hide Post
+                          IconButton(
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/closePost.svg',
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        top: screenHeight / 100,
-                        start: screenWidth / 500,
-                      ),
-                      child: Row(
-                        children: [
-                          /// Post Likes
-                          (specificPost.likesCount!) > 0
-                              ? IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {},
-                                  icon: SvgPicture.asset(
-                                    'assets/images/NewLikeColor.svg',
-                                    width: 22.0,
-                                    height: 22.0,
+                      const SizedBox(height: 1),
+                      Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          top: screenHeight / 100,
+                          start: screenWidth / 50,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// Post Content
+                            Text(
+                              specificPost.content!,
+                              maxLines:
+                                  (specificPost.attachments!) != null ? 6 : 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: "Robot",
+                                fontSize: 13.0,
+                              ),
+                            ),
+                            SizedBox(height: screenHeight / 100),
+
+                            /// Post Attachments
+                            if (specificPost.attachments!.isNotEmpty)
+                              // check if there's more than one
+                              if (specificPost.attachments!.length > 1)
+                                CarouselSlider(
+                                  carouselController: carouselController,
+                                  items: specificPost.attachments!
+                                      .map((attachment) {
+                                    return Image(
+                                      image:
+                                          NetworkImage(attachment.secure_url),
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    );
+                                  }).toList(),
+                                  options: CarouselOptions(
+                                    height: 200,
+                                    viewportFraction: 1.0,
+                                    enableInfiniteScroll: true,
+                                    autoPlayCurve: Curves.easeIn,
+                                    enlargeCenterPage: true,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        _currentImageIndex = index;
+                                      });
+                                    },
                                   ),
                                 )
-                              : Container(),
-                          (specificPost.likesCount! > 0)
-                              ? Text(
-                                  '${specificPost.likesCount!}',
+                              else
+                                Image(
+                                  image: NetworkImage(
+                                    specificPost.attachments![0].secure_url,
+                                  ),
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: specificPost.attachments!
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                return GestureDetector(
+                                  onTap: () => carouselController
+                                      .animateToPage(entry.key),
+                                  child: Container(
+                                    width: 7.0,
+                                    height: 7.0,
+                                    margin: EdgeInsets.symmetric(
+                                      vertical: screenHeight / 90,
+                                      horizontal: screenWidth / 100,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _currentImageIndex == entry.key
+                                          ? defaultColor
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          top: screenHeight / 100,
+                          start: screenWidth / 500,
+                        ),
+                        child: Row(
+                          children: [
+                            /// Post Likes
+                            (specificPost.likesCount!) > 0
+                                ? IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      'assets/images/NewLikeColor.svg',
+                                      width: 22.0,
+                                      height: 22.0,
+                                    ),
+                                  )
+                                : Container(),
+                            (specificPost.likesCount! > 0)
+                                ? Text(
+                                    '${specificPost.likesCount!}',
+                                    style: TextStyle(
+                                      fontFamily: "Roboto",
+                                      fontSize: 12,
+                                      color: HexColor("575757"),
+                                    ),
+                                  )
+                                : Container(),
+                            const Spacer(),
+
+                            /// Post Comments
+                            if (specificPost.commentsCount == 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                  bottom: screenHeight / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comment',
                                   style: TextStyle(
                                     fontFamily: "Roboto",
                                     fontSize: 12,
                                     color: HexColor("575757"),
                                   ),
-                                )
-                              : Container(),
-                          const Spacer(),
-
-                          /// Post Comments
-                          if (specificPost.commentsCount == 1)
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                                bottom: screenHeight / 50,
-                              ),
-                              child: Text(
-                                '${specificPost.commentsCount} Comment',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
                                 ),
-                              ),
-                            )
-                          else if (specificPost.likesCount! > 0 &&
-                              specificPost.commentsCount == 1)
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                              ),
-                              child: Text(
-                                '${specificPost.commentsCount} Comment',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
+                              )
+                            else if (specificPost.likesCount! > 0 &&
+                                specificPost.commentsCount == 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
                                 ),
-                              ),
-                            )
-                          else if (specificPost.likesCount! > 0 &&
-                              specificPost.commentsCount! > 1)
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                              ),
-                              child: Text(
-                                '${specificPost.commentsCount} Comments',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
-                                ),
-                              ),
-                            )
-                          else if (specificPost.commentsCount == 0)
-                            Container()
-                          else
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                                bottom: screenHeight / 50,
-                              ),
-                              child: Text(
-                                '${specificPost.commentsCount} Comments',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 100,
-                        end: screenWidth / 100,
-                      ),
-                      child: Container(
-                        height: 1.0,
-                        color: Colors.grey[300],
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          start: screenWidth / 30,
-                          end: screenWidth / 30,
-                          top: screenHeight / 200,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            postSubComponent(
-                              "assets/images/like.svg",
-                              "Like",
-                              onTap: () {
-                                HomeLayoutCubit.get(context).likePost(
-                                    postId: specificPost.id!,
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token ??
-                                        "");
-                              },
-                            ),
-                            const Spacer(),
-                            postSubComponent(
-                                "assets/images/comment.svg", "Comment",
-                                onTap: () {}),
-                            const Spacer(),
-                            postSubComponent(
-                              "assets/images/share.svg",
-                              "Share",
-                              onTap: () {
-                                HomeLayoutCubit.get(context).sharePost(
-                                    postId: specificPost.id!,
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token ??
-                                        "");
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    backgroundColor: defaultColor,
-                                    content: Text(
-                                      'Post is shared',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comment',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
                                   ),
-                                );
-                              },
-                            ),
+                                ),
+                              )
+                            else if (specificPost.likesCount! > 0 &&
+                                specificPost.commentsCount! > 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comments',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              )
+                            else if (specificPost.commentsCount == 0)
+                              Container()
+                            else
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                  bottom: screenHeight / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comments',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: screenWidth / 100,
+                          end: screenWidth / 100,
+                        ),
+                        child: Container(
+                          height: 1.0,
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 30,
+                            end: screenWidth / 30,
+                            top: screenHeight / 200,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              postSubComponent(
+                                "assets/images/like.svg",
+                                "Like",
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).likePost(
+                                      postId: specificPost.id!,
+                                      token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token ??
+                                          "");
+                                },
+                              ),
+                              const Spacer(),
+                              postSubComponent(
+                                  "assets/images/comment.svg", "Comment",
+                                  onTap: () {}),
+                              const Spacer(),
+                              postSubComponent(
+                                "assets/images/share.svg",
+                                "Share",
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).sharePost(
+                                      postId: specificPost.id!,
+                                      token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token ??
+                                          "");
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: defaultColor,
+                                      content: Text(
+                                        'Post is shared',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: screenHeight / 40),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth / 35),
-            child: Container(
+            SizedBox(height: screenHeight / 40),
+            Container(
               height: 1,
               color: Colors.grey.shade300,
             ),
-          ),
-          SizedBox(height: screenHeight / 100),
-          Padding(
-            padding: EdgeInsetsDirectional.only(
-              top: screenHeight / 80,
-            ),
-            child: ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                var comments =
-                    HomeLayoutCubit.get(context).getCommentsResponse?.comments;
-                if (comments == null || comments.isEmpty) {
-                  return Container();
-                }
-                return buildCommentItem(comments[index], specificPost, context);
-              },
-              separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsetsDirectional.symmetric(
-                    vertical: screenHeight / 80),
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.white,
-                ),
+            SizedBox(height: screenHeight / 100),
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                top: screenHeight / 80,
+                bottom: screenHeight / 40, // Adjust spacing from the bottom
               ),
-              itemCount: HomeLayoutCubit.get(context)
+              child: ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var comments = HomeLayoutCubit.get(context)
                       .getCommentsResponse
-                      ?.comments
-                      .length ??
-                  0,
+                      ?.comments;
+                  if (comments == null || comments.isEmpty) {
+                    return Container();
+                  }
+                  return buildCommentItem(
+                      comments[index], specificPost, context);
+                },
+                separatorBuilder: (context, index) => Padding(
+                  padding: EdgeInsetsDirectional.symmetric(
+                      vertical: screenHeight / 80),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
+                ),
+                itemCount: HomeLayoutCubit.get(context)
+                        .getCommentsResponse
+                        ?.comments
+                        .length ??
+                    0,
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: screenHeight / 80,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth / 40),
+            child: Container(
+              height: screenHeight / 19,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              padding: EdgeInsetsDirectional.only(
+                start: screenWidth / 30,
+                end: screenWidth / 30,
+              ),
+              child: Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(start: screenWidth / 60),
+                    child: TextField(
+                      controller: commentController,
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: 'Write a comment...',
+                        hintStyle: TextStyle(fontSize: 12.0),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      HomeLayoutCubit.get(context).createComment(
+                        content: commentController.text,
+                        token: UserLoginCubit.get(context)
+                            .loginModel!
+                            .refresh_token ??
+                            "",
+                        postId: specificPost.id!,
+                      );
+                    },
+                    child: const Icon(
+                      Icons.send,
+                      size: 20,
+                      color: defaultColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget buildCommentItem(
-      Comment? commentModel, SpecificPost? specificPost, context) {
+  Widget buildCommentItem(Comment? commentModel, SpecificPost? specificPost, context) {
     if (commentModel == null) {
       return Container();
     }
@@ -538,25 +601,21 @@ class _DetailedPostState extends State<DetailedPost> {
       durationText = '${difference.inDays}d';
     }
 
-    return Padding(
-      padding: EdgeInsetsDirectional.only(
-        start: screenWidth / 30,
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Profile Pic
-              CircleAvatar(
-                radius: 20.0,
-                backgroundImage: (commentModel.createdBy.profilePic != null)
-                    ? AssetImage(commentModel.createdBy.profilePic!)
-                    : const AssetImage("assets/images/nullProfile.png"),
-              ),
-              SizedBox(width: screenWidth / 40),
-              Container(
-                width: screenWidth / 1.23,
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Profile Pic
+            CircleAvatar(
+              radius: 20.0,
+              backgroundImage: (commentModel.createdBy.profilePic != null)
+                  ? AssetImage(commentModel.createdBy.profilePic!)
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 40),
+            Expanded(
+              child: Container(
                 height: screenHeight / 14.5,
                 decoration: BoxDecoration(
                   color: Colors.white70.withOpacity(0.9),
@@ -592,39 +651,33 @@ class _DetailedPostState extends State<DetailedPost> {
                             ),
                           ),
                           (commentModel.createdBy.id ==
-                                  specificPost!.createdBy.id)
+                              specificPost!.createdBy.id)
                               ? const Spacer()
                               : const Spacer(),
-                          (commentModel.createdBy.id ==
-                                  specificPost.createdBy.id)
+                          (commentModel.createdBy.id == specificPost.createdBy.id)
                               ? Container(
-                                  decoration: BoxDecoration(
-                                    color: defaultColor.withOpacity(0.4),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.only(
-                                      start: screenWidth / 60,
-                                      end: screenWidth / 60,
-                                      top: screenHeight / 500,
-                                      bottom: screenHeight / 500,
-                                    ),
-                                    child: const Text(
-                                      "Author",
-                                      style: TextStyle(
-                                        fontSize: 9.5,
-                                        fontFamily: "Roboto",
-                                      ),
-                                    ),
-                                  ),
-                                )
+                            decoration: BoxDecoration(
+                              color: defaultColor.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: screenWidth / 60,
+                                end: screenWidth / 60,
+                                top: screenHeight / 500,
+                                bottom: screenHeight / 500,
+                              ),
+                              child: const Text(
+                                "Author",
+                                style: TextStyle(
+                                  fontSize: 9.5,
+                                  fontFamily: "Roboto",
+                                ),
+                              ),
+                            ),
+                          )
                               : Container(),
-                          (commentModel.createdBy.id ==
-                                  specificPost.createdBy.id)
-                              ? SizedBox(width: screenHeight / 80)
-                              : SizedBox(width: screenHeight / 3.7),
-
-                          /// Comment Settings
+                          SizedBox(width: screenWidth / 30),
                           GestureDetector(
                             onTap: () {
                               _showCommentBottomSheet(context);
@@ -641,7 +694,6 @@ class _DetailedPostState extends State<DetailedPost> {
                         ],
                       ),
                       SizedBox(height: screenHeight / 300),
-
                       /// Comment Content
                       Text(
                         commentModel.content,
@@ -656,58 +708,49 @@ class _DetailedPostState extends State<DetailedPost> {
                   ),
                 ),
               ),
-            ],
-          ),
-          SizedBox(width: screenWidth / 50),
-          Padding(
-            padding: EdgeInsetsDirectional.only(
-              start: screenWidth / 7,
-              top: screenHeight / 200,
             ),
-            child: Row(
-              children: [
-                // CreatedAt
-                Text(
-                  durationText,
-                  style: const TextStyle(
+          ],
+        ),
+        SizedBox(height: screenHeight / 200),
+        Padding(
+          padding: EdgeInsetsDirectional.only(
+            start: screenWidth / 7,
+            top: screenHeight / 200,
+          ),
+          child: Row(
+            children: [
+              // CreatedAt
+              Text(
+                durationText,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontFamily: "Roboto",
+                ),
+              ),
+              SizedBox(width: screenWidth / 13),
+              // Like
+              InkWell(
+                onTap: () {
+                  HomeLayoutCubit.get(context).likePost(
+                      postId: specificPost!.id!,
+                      token: UserLoginCubit.get(context)
+                          .loginModel!
+                          .refresh_token ??
+                          "");
+                },
+                child: const Text(
+                  "Like",
+                  style: TextStyle(
                     fontSize: 11,
+                    color: Colors.black,
                     fontFamily: "Roboto",
                   ),
                 ),
-                SizedBox(width: screenWidth / 13),
-                // Like
-                InkWell(
-                  onTap: () {
-                    HomeLayoutCubit.get(context).likePost(
-                        postId: specificPost.id!,
-                        token: UserLoginCubit.get(context)
-                                .loginModel!
-                                .refresh_token ??
-                            "");
-                  },
-                  child: const Text(
-                    "Like",
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.black,
-                      fontFamily: "Roboto",
-                    ),
-                  ),
-                ),
-                SizedBox(width: screenWidth / 5),
-                // (commentModel.likesCount > 0) ?
-                //   CircleAvatar(
-                //     radius: 15,
-                //     backgroundColor: Colors.transparent,
-                //     child: ClipOval(
-                //       child: Image.asset('assets/images/NewLikeColor.png'),
-                //     ),
-                //   ) : Container(),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -744,7 +787,7 @@ class _DetailedPostState extends State<DetailedPost> {
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return Container(
+        return SizedBox(
           height: screenHeight / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -858,7 +901,7 @@ class _DetailedPostState extends State<DetailedPost> {
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return Container(
+        return SizedBox(
           height: screenHeight / 8,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

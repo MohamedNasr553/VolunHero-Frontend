@@ -32,6 +32,13 @@ class GetCommentSuccessState extends LayoutStates{}
 
 class GetCommentErrorState extends LayoutStates{}
 
+/// Get Comment By Post ID
+class AddCommentLoadingState extends LayoutStates{}
+
+class AddCommentSuccessState extends LayoutStates{}
+
+class AddCommentErrorState extends LayoutStates{}
+
 /// Like Post
 class LikePostLoadingState extends LayoutStates{}
 

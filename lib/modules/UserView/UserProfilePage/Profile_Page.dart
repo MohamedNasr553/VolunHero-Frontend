@@ -9,6 +9,7 @@ import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
+import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -717,344 +718,367 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Padding(
       padding: EdgeInsets.all(screenWidth / 50),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 10.0,
-              spreadRadius: -5.0,
-              offset: const Offset(10.0, 10.0), // Right and bottom shadow
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth / 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              (postDetails.createdBy.userName != loggedInUser.userName) ?
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 70,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.turn_right_outlined,
-                          color: Colors.grey,
-                          size: 18.0,
-                        ),
-                        SizedBox(width: screenWidth / 50),
-                        const Text(
-                          "reposted this",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ) : const SizedBox(height: 1),
-              SizedBox(height: screenHeight / 80),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: postDetails.createdBy.profilePic != null
-                        ? AssetImage(postDetails.createdBy.profilePic!)
-                        : const AssetImage('assets/images/nullProfile.png'),
-                  ),
-                  SizedBox(width: screenWidth / 50),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        postDetails.createdBy.userName,
-                        style: const TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
+      child: GestureDetector(
+        onTap: () {
+          final token = UserLoginCubit.get(context).loginModel?.refresh_token;
+          final postId = postDetails.id;
+          if (token != null) {
+            HomeLayoutCubit.get(context).getPostId(
+              token: token,
+              postId: postId,
+            );
+            if (postDetails.commentsCount > 0){
+              HomeLayoutCubit.get(context).getCommentById(
+                token: token,
+                postId: postId,
+              );
+            }
+          }
+
+          navigateToPage(context, const DetailedPost());
+          // (HomeLayoutCubit.get(context).getPostById is GetPostByIdSuccessState)
+          //     ? navigateToPage(context, const DetailedPost())
+          //     : const SizedBox();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 10.0,
+                spreadRadius: -5.0,
+                offset: const Offset(10.0, 10.0), // Right and bottom shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth / 80),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (postDetails.createdBy.userName != loggedInUser.userName) ?
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 70,
                       ),
-                      const SizedBox(height: 0.5),
-                      Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            durationText,
-                            style: TextStyle(
-                              color: HexColor("B8B9BA"),
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          const Icon(
+                            Icons.turn_right_outlined,
+                            color: Colors.grey,
+                            size: 18.0,
                           ),
-                          const SizedBox(width: 2),
-                          SvgPicture.asset(
-                            'assets/images/earthIcon.svg',
+                          SizedBox(width: screenWidth / 50),
+                          const Text(
+                            "reposted this",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
-                      )
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () => _showProfilePageBottomSheet(postDetails),
-                    icon: SvgPicture.asset(
-                      'assets/images/postSettings.svg',
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/images/closePost.svg',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 1.0),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 100,
-                  start: screenWidth / 50,
-                ),
-                child: Column(
+                      ),
+                    ) : const SizedBox(height: 1),
+                SizedBox(height: screenHeight / 80),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /// Post Content
-                    postDetails.content != null
-                        ? Text(
-                            postDetails.content,
-                            maxLines:
-                                (postDetails.attachments) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
-                            ),
-                          )
-                        : const SizedBox(height: 0),
-
-                    SizedBox(height: screenHeight / 100),
-
-                    /// Post Attachments
-                    if (postDetails.attachments != null &&
-                        postDetails.attachments!.isNotEmpty)
-                      // check if there's more than one
-                      if (postDetails.attachments!.length > 1)
-                        CarouselSlider(
-                          carouselController: carouselController,
-                          items: postDetails.attachments!.map((attachment) {
-                            return Image(
-                              image: NetworkImage(attachment.secure_url),
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            height: 200,
-                            viewportFraction: 1.0,
-                            enableInfiniteScroll: true,
-                            autoPlayCurve: Curves.easeIn,
-                            enlargeCenterPage: true,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _currentImageIndex = index;
-                              });
-                            },
+                    CircleAvatar(
+                      radius: 20.0,
+                      backgroundImage: postDetails.createdBy.profilePic != null
+                          ? AssetImage(postDetails.createdBy.profilePic!)
+                          : const AssetImage('assets/images/nullProfile.png'),
+                    ),
+                    SizedBox(width: screenWidth / 50),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          postDetails.createdBy.userName,
+                          style: const TextStyle(
+                            fontFamily: "Roboto",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
-                        )
-                      else
-                        Image(
-                          image: NetworkImage(
-                              postDetails.attachments![0].secure_url),
-                          width: double.infinity,
-                          fit: BoxFit.cover,
                         ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: (postDetails.attachments ?? [])
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        return GestureDetector(
-                          onTap: () =>
-                              carouselController.animateToPage(entry.key),
-                          child: Container(
-                            width: 7.0,
-                            height: 7.0,
-                            margin: EdgeInsets.symmetric(
-                              vertical: screenHeight / 90,
-                              horizontal: screenWidth / 100,
+                        const SizedBox(height: 0.5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              durationText,
+                              style: TextStyle(
+                                color: HexColor("B8B9BA"),
+                                fontSize: 10.0,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key
-                                  ? defaultColor
-                                  : Colors.grey,
+                            const SizedBox(width: 2),
+                            SvgPicture.asset(
+                              'assets/images/earthIcon.svg',
                             ),
-                          ),
-                        );
-                      }).toList(),
+                          ],
+                        )
+                      ],
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => _showProfilePageBottomSheet(postDetails),
+                      icon: SvgPicture.asset(
+                        'assets/images/postSettings.svg',
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/images/closePost.svg',
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 100,
-                  start: screenWidth / 500,
-                ),
-                child: Row(
-                  children: [
-                    /// Post Likes
-                    (postDetails.likesCount) > 0
-                        ? IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            icon: SvgPicture.asset(
-                              'assets/images/NewLikeColor.svg',
-                              width: 22.0,
-                              height: 22.0,
-                            ),
-                          )
-                        : Container(),
-                    (postDetails.likesCount > 0)
-                        ? Text(
-                            '${postDetails.likesCount}',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          )
-                        : Container(),
-                    const Spacer(),
-
-                    /// Post Comments
-                    // postDetails.likesCount > 0
-                    //     ? IconButton(
-                    //   padding: EdgeInsets.zero,
-                    //   onPressed: () {},
-                    //   icon: SvgPicture.asset(
-                    //     'assets/images/like.svg',
-                    //   ),
-                    // )
-                    //     : Container(),
-                    // (postDetails.likesCount > 0) ?
-                    // Text(
-                    //   '${postDetails.likesCount}',
-                    //   style: TextStyle(
-                    //     fontFamily: "Roboto",
-                    //     fontSize: 12,
-                    //     color: HexColor("575757"),
-                    //   ),
-                    // ): Container(),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 100,
-                  end: screenWidth / 100,
-                ),
-                child: Container(
-                  height: 1.0,
-                  color: Colors.grey[300],
-                ),
-              ),
-              Center(
-                child: Padding(
+                const SizedBox(height: 1.0),
+                Padding(
                   padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 30,
-                    end: screenWidth / 30,
-                    top: screenHeight / 200,
+                    top: screenHeight / 100,
+                    start: screenWidth / 50,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (postDetails.likesCount > 0 &&
-                          loggedInUser.id != postDetails.createdBy.id)
-                        postSubComponent(
-                          "assets/images/NewLikeColor.svg",
-                          " Like",
-                          color: HexColor("4267B2"),
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                          },
-                        )
-                      else if (postDetails.likesCount > 0 &&
-                          loggedInUser.id == postDetails.createdBy.id)
-                        postSubComponent(
-                          "assets/images/NewLikeColor.svg",
-                          " Like",
-                          color: HexColor("4267B2"),
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                          },
-                        )
-                      else
-                        postSubComponent(
-                          "assets/images/like.svg",
-                          "Like",
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                          },
-                        ),
-                      const Spacer(),
-                      postSubComponent("assets/images/comment.svg", "Comment"),
-                      const Spacer(),
-                      postSubComponent(
-                        "assets/images/share.svg",
-                        "Share",
-                        onTap: () {
-                          HomeLayoutCubit.get(context).sharePost(
-                              postId: postDetails.id,
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: defaultColor,
-                              content: Text(
-                                'Post is shared',
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                ),
+                      /// Post Content
+                      postDetails.content != null
+                          ? Text(
+                              postDetails.content,
+                              maxLines:
+                                  (postDetails.attachments) != null ? 6 : 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: "Robot",
+                                fontSize: 13.0,
+                              ),
+                            )
+                          : const SizedBox(height: 0),
+
+                      SizedBox(height: screenHeight / 100),
+
+                      /// Post Attachments
+                      if (postDetails.attachments != null &&
+                          postDetails.attachments!.isNotEmpty)
+                        // check if there's more than one
+                        if (postDetails.attachments!.length > 1)
+                          CarouselSlider(
+                            carouselController: carouselController,
+                            items: postDetails.attachments!.map((attachment) {
+                              return Image(
+                                image: NetworkImage(attachment.secure_url),
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              );
+                            }).toList(),
+                            options: CarouselOptions(
+                              height: 200,
+                              viewportFraction: 1.0,
+                              enableInfiniteScroll: true,
+                              autoPlayCurve: Curves.easeIn,
+                              enlargeCenterPage: true,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentImageIndex = index;
+                                });
+                              },
+                            ),
+                          )
+                        else
+                          Image(
+                            image: NetworkImage(
+                                postDetails.attachments![0].secure_url),
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: (postDetails.attachments ?? [])
+                            .asMap()
+                            .entries
+                            .map((entry) {
+                          return GestureDetector(
+                            onTap: () =>
+                                carouselController.animateToPage(entry.key),
+                            child: Container(
+                              width: 7.0,
+                              height: 7.0,
+                              margin: EdgeInsets.symmetric(
+                                vertical: screenHeight / 90,
+                                horizontal: screenWidth / 100,
+                              ),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _currentImageIndex == entry.key
+                                    ? defaultColor
+                                    : Colors.grey,
                               ),
                             ),
                           );
-                        },
+                        }).toList(),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 100,
+                    start: screenWidth / 500,
+                  ),
+                  child: Row(
+                    children: [
+                      /// Post Likes
+                      (postDetails.likesCount) > 0
+                          ? IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/NewLikeColor.svg',
+                                width: 22.0,
+                                height: 22.0,
+                              ),
+                            )
+                          : Container(),
+                      (postDetails.likesCount > 0)
+                          ? Text(
+                              '${postDetails.likesCount}',
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 12,
+                                color: HexColor("575757"),
+                              ),
+                            )
+                          : Container(),
+                      const Spacer(),
+
+                      /// Post Comments
+                      // postDetails.likesCount > 0
+                      //     ? IconButton(
+                      //   padding: EdgeInsets.zero,
+                      //   onPressed: () {},
+                      //   icon: SvgPicture.asset(
+                      //     'assets/images/like.svg',
+                      //   ),
+                      // )
+                      //     : Container(),
+                      // (postDetails.likesCount > 0) ?
+                      // Text(
+                      //   '${postDetails.likesCount}',
+                      //   style: TextStyle(
+                      //     fontFamily: "Roboto",
+                      //     fontSize: 12,
+                      //     color: HexColor("575757"),
+                      //   ),
+                      // ): Container(),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 100,
+                    end: screenWidth / 100,
+                  ),
+                  child: Container(
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 30,
+                      end: screenWidth / 30,
+                      top: screenHeight / 200,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (postDetails.likesCount > 0 &&
+                            loggedInUser.id != postDetails.createdBy.id)
+                          postSubComponent(
+                            "assets/images/NewLikeColor.svg",
+                            " Like",
+                            color: HexColor("4267B2"),
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token ??
+                                      "");
+                            },
+                          )
+                        else if (postDetails.likesCount > 0 &&
+                            loggedInUser.id == postDetails.createdBy.id)
+                          postSubComponent(
+                            "assets/images/NewLikeColor.svg",
+                            " Like",
+                            color: HexColor("4267B2"),
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token ??
+                                      "");
+                            },
+                          )
+                        else
+                          postSubComponent(
+                            "assets/images/like.svg",
+                            "Like",
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token ??
+                                      "");
+                            },
+                          ),
+                        const Spacer(),
+                        postSubComponent("assets/images/comment.svg", "Comment"),
+                        const Spacer(),
+                        postSubComponent(
+                          "assets/images/share.svg",
+                          "Share",
+                          onTap: () {
+                            HomeLayoutCubit.get(context).sharePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                    "");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: defaultColor,
+                                content: Text(
+                                  'Post is shared',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

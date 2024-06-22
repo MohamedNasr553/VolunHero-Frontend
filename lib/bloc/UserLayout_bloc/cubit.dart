@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/models/AddCommentModel.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/GetCommentModel.dart';
 import 'package:flutter_code/models/GetPostByIdModel.dart';
@@ -182,6 +183,40 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(GetCommentErrorState());
     });
   }
+
+  /// ----------------------- Add Comment --------------------------
+  AddCommentResponse? addCommentResponse;
+  AddComment? addComment;
+
+  void createComment({
+    required String content,
+    required String token,
+    required String postId,
+  }) async {
+    try {
+      emit(AddCommentLoadingState());
+
+      // Make the HTTP POST request
+      await DioHelper.postData(
+        url: "/post/$postId/comment",
+        data: {
+          'content': content,
+        },
+        token: token,
+      );
+
+      emit(AddCommentSuccessState());
+      getPostId(token: token, postId: postId);
+
+    } catch (error, stackTrace) {
+      print('Error Creating Comment: $error');
+      print('Stack Trace: $stackTrace');
+
+      // Emit error state
+      emit(AddCommentErrorState());
+    }
+  }
+
 
   /// ----------------------- Like Post API ------------------------
 
