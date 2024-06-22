@@ -751,17 +751,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           role: cubit.anotherUserPostsResponse!.posts[index].userId.role
                       );
                       ModifiedPost modifiedPost = ModifiedPost(
-                          id: cubit.anotherUserPostsResponse!.posts[index].post!.id,
-                          content: cubit.anotherUserPostsResponse!.posts[index].post!.content,
-                          specification: cubit.anotherUserPostsResponse!.posts[index].post!.specification,
-                          createdBy: createdBy,
-                          likesCount:cubit.anotherUserPostsResponse!.posts[index].post!.likes.length,
-                          shareCount: cubit.anotherUserPostsResponse!.posts[index].post!.shareCount,
-                          createdAt: cubit.anotherUserPostsResponse!.posts[index].post!.createdAt,
-                          updatedAt: cubit.anotherUserPostsResponse!.posts[index].post!.updatedAt,
-                          liked: false,
-                          v: cubit.anotherUserPostsResponse!.posts[index].post!.v,
-                          attachments: []
+                        id: cubit.anotherUserPostsResponse!.posts[index].post!.id,
+                        content: cubit.anotherUserPostsResponse!.posts[index].post!.content,
+                        specification: cubit.anotherUserPostsResponse!.posts[index].post!.specification,
+                        createdBy: createdBy,
+                        likesCount:cubit.anotherUserPostsResponse!.posts[index].post!.likes.length,
+                        shareCount: cubit.anotherUserPostsResponse!.posts[index].post!.shareCount,
+                        createdAt: cubit.anotherUserPostsResponse!.posts[index].post!.createdAt,
+                        updatedAt: cubit.anotherUserPostsResponse!.posts[index].post!.updatedAt,
+                        liked: false,
+                        v: cubit.anotherUserPostsResponse!.posts[index].post!.v,
+                        attachments: [],
+                        commentsCount: cubit.anotherUserPostsResponse!.posts[index].post!.commentsCount,
                       );
                       return buildPostItem(modifiedPost, context);
                     }

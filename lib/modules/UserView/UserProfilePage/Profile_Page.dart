@@ -516,7 +516,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        navigateToPage(context, CreatePost());
+                                        navigateToPage(context, const CreatePost());
                                       },
                                       child: Container(
                                         width: screenWidth / 1.5,

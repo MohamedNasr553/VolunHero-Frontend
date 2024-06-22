@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
+import 'package:flutter_code/models/GetCommentModel.dart';
+import 'package:flutter_code/models/GetPostByIdModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
@@ -140,6 +142,46 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(HomePagePostsErrorState());
     });
   }
+  /// ----------------------- Get Post by ID -----------------------
+  GetPostById? getPostById;
+  SpecificPost? post;
+
+  void getPostId({required String token, required String postId}) async {
+    emit(GetPostByIdLoadingState());
+
+    DioHelper.getData(
+      url: "/post/$postId",
+      token: token,
+    ).then((value) {
+      emit(GetPostByIdSuccessState());
+      getPostById = GetPostById.fromJson(value.data);
+      getCommentById(token: token, postId: postId);
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(GetPostByIdErrorState());
+    });
+  }
+  /// -------------------- Get Comment by Post ID ------------------
+  GetCommentsResponse? getCommentsResponse;
+  Comment? comment;
+
+  void getCommentById({required String token, required String postId}) async {
+    emit(GetCommentLoadingState());
+
+    DioHelper.getData(
+      url: "/post/$postId/comment",
+      token: token,
+    ).then((value) {
+      getCommentsResponse = GetCommentsResponse.fromJson(value.data);
+      emit(GetCommentSuccessState());
+      // print("Comments parsed: $getCommentsResponse".toString());
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(GetCommentErrorState());
+    });
+  }
 
   /// ----------------------- Like Post API ------------------------
 
@@ -160,6 +202,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getAllPosts(token: token);
       getOwnerPosts(token: token);
       // getAnotherUserData(token: token, id: postId);
+      getPostId(token: token, postId: postId);
     }).catchError((error) {
       print(error.toString());
 

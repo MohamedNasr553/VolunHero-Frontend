@@ -54,7 +54,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            navigateToPage(context, const HomePage());
+                            navigateToPage(context, const ChatsPage());
                           },
                           icon: const Icon(
                             Icons.arrow_back_outlined,

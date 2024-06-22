@@ -1,63 +1,50 @@
-class HomePagePostsResponse {
-  String message;
-  List<ModifiedPost> modifiedPosts;
+class GetPostById {
+  String? message;
+  SpecificPost? post;
 
-  HomePagePostsResponse({
-    required this.message,
-    required this.modifiedPosts,
-  });
+  GetPostById({this.message, this.post});
 
-  factory HomePagePostsResponse.fromJson(Map<String, dynamic> json) {
-    var modifiedPostsList = json['modifiedPosts'] as List<dynamic>;
-    List<ModifiedPost> posts = modifiedPostsList
-        .map((postJson) => ModifiedPost.fromJson(postJson))
-        .toList();
-
-    return HomePagePostsResponse(
-      message: json['message'],
-      modifiedPosts: posts,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'HomePagePostsModel: {message: $message, modifiedPosts: $modifiedPosts}';
+  GetPostById.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    post = json['post'] != null ? SpecificPost.fromJson(json['post']) : null;
   }
 }
 
-class ModifiedPost {
-  String id;
-  String content;
-  String specification;
+class SpecificPost {
+  String? id;
+  String? content;
+  String? specification;
   List<Attachments>? attachments;
   CreatedBy createdBy;
-  String? customId;
-  int likesCount;
-  int shareCount;
-  int commentsCount;
+  int? likesCount;
+  int? shareCount;
+  int? commentsCount;
+  List<SharedUsers>? sharedUsers;
+  List<Comments>? comments;
   DateTime createdAt;
   DateTime updatedAt;
-  bool liked;
-  int v;
+  int? iV;
 
-  ModifiedPost({
+  SpecificPost({
     required this.id,
     required this.content,
     required this.specification,
     this.attachments,
     required this.createdBy,
-    this.customId,
     required this.likesCount,
     required this.commentsCount,
     required this.shareCount,
+    required this.sharedUsers,
+    required this.comments,
     required this.createdAt,
     required this.updatedAt,
-    required this.liked,
-    required this.v,
+    required this.iV,
   });
 
-  factory ModifiedPost.fromJson(Map<String, dynamic> json) {
+  factory SpecificPost.fromJson(Map<String, dynamic> json) {
     var attachments = <Attachments>[];
+    var sharedUsers = <SharedUsers>[];
+    var comments = <Comments>[];
 
     // Check if the "attachments" key exists in the JSON data
     if (json.containsKey('attachments') && json['attachments'] != null) {
@@ -66,21 +53,49 @@ class ModifiedPost {
       });
     }
 
-    return ModifiedPost(
+    // Check if the "sharedUsers" key exists in the JSON data
+    if (json.containsKey('sharedUsers') && json['sharedUsers'] != null) {
+      json['sharedUsers'].forEach((element) {
+        sharedUsers.add(SharedUsers.fromJson(element));
+      });
+    }
+
+    // Check if the "comments" key exists in the JSON data
+    if (json.containsKey('comments') && json['comments'] != null) {
+      json['comments'].forEach((element) {
+        comments.add(Comments.fromJson(element));
+      });
+    }
+
+    return SpecificPost(
       id: json['_id'],
       content: json['content'],
       specification: json['specification'],
       attachments: attachments,
       createdBy: CreatedBy.fromJson(json['createdBy']),
-      customId: json['customId'],
       likesCount: json['likesCount'],
       commentsCount: json['commentsCount'],
       shareCount: json['shareCount'],
+      sharedUsers: sharedUsers,
+      comments: comments,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      liked: false,
-      v: json['__v'],
+      iV: json['__v'],
     );
+  }
+}
+
+class SharedUsers {
+  String? userId;
+  String? id;
+  String? sharedAt;
+
+  SharedUsers({this.userId, this.id, this.sharedAt});
+
+  SharedUsers.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    id = json['_id'];
+    sharedAt = json['sharedAt'];
   }
 }
 
@@ -98,6 +113,18 @@ class Attachments {
       secure_url: json['secure_url'],
       public_id: json['public_id'],
     );
+  }
+}
+
+class Comments {
+  String? commentId;
+  String? id;
+
+  Comments({this.commentId, this.id});
+
+  Comments.fromJson(Map<String, dynamic> json) {
+    commentId = json['commentId'];
+    id = json['_id'];
   }
 }
 
