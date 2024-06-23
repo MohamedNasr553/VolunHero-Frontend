@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
@@ -108,14 +109,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               CircleAvatar(
                                 radius: 45.0,
                                 backgroundImage: (HomeLayoutCubit.get(context)
-                                    .modifiedPost
-                                    ?.createdBy
-                                    ?.profilePic ==
-                                    null)
+                                            .modifiedPost
+                                            ?.createdBy
+                                            ?.profilePic ==
+                                        null)
                                     ? AssetImage(
-                                    'assets/images/nullProfile.png')
+                                        'assets/images/nullProfile.png')
                                     : AssetImage(
-                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic}'),
+                                        'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic}'),
                               ),
                               GestureDetector(
                                 onTap: () {},
@@ -517,7 +518,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
-                                        navigateToPage(context, const CreatePost());
+                                        navigateToPage(
+                                            context, const CreatePost());
                                       },
                                       child: Container(
                                         width: screenWidth / 1.5,
@@ -727,7 +729,7 @@ class _ProfilePageState extends State<ProfilePage> {
               token: token,
               postId: postId,
             );
-            if (postDetails.commentsCount > 0){
+            if (postDetails.commentsCount > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
                 postId: postId,
@@ -759,31 +761,32 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                (postDetails.createdBy.userName != loggedInUser.userName) ?
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 70,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.turn_right_outlined,
-                            color: Colors.grey,
-                            size: 18.0,
-                          ),
-                          SizedBox(width: screenWidth / 50),
-                          const Text(
-                            "reposted this",
-                            style: TextStyle(
+                (postDetails.createdBy.userName != loggedInUser.userName)
+                    ? Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          start: screenWidth / 70,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.turn_right_outlined,
                               color: Colors.grey,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
+                              size: 18.0,
                             ),
-                          ),
-                        ],
-                      ),
-                    ) : const SizedBox(height: 1),
+                            SizedBox(width: screenWidth / 50),
+                            const Text(
+                              "reposted this",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : const SizedBox(height: 1),
                 SizedBox(height: screenHeight / 80),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -829,7 +832,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () => _showProfilePageBottomSheet(postDetails),
+                      onPressed: () => _showProfilePageBottomSheet(
+                          postDetails, loggedInUser),
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -963,24 +967,72 @@ class _ProfilePageState extends State<ProfilePage> {
                       const Spacer(),
 
                       /// Post Comments
-                      // postDetails.likesCount > 0
-                      //     ? IconButton(
-                      //   padding: EdgeInsets.zero,
-                      //   onPressed: () {},
-                      //   icon: SvgPicture.asset(
-                      //     'assets/images/like.svg',
-                      //   ),
-                      // )
-                      //     : Container(),
-                      // (postDetails.likesCount > 0) ?
-                      // Text(
-                      //   '${postDetails.likesCount}',
-                      //   style: TextStyle(
-                      //     fontFamily: "Roboto",
-                      //     fontSize: 12,
-                      //     color: HexColor("575757"),
-                      //   ),
-                      // ): Container(),
+                      if (postDetails.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comment',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                          postDetails.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comment',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                          postDetails.commentsCount > 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.commentsCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -1048,7 +1100,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                           ),
                         const Spacer(),
-                        postSubComponent("assets/images/comment.svg", "Comment"),
+                        postSubComponent(
+                            "assets/images/comment.svg", "Comment"),
                         const Spacer(),
                         postSubComponent(
                           "assets/images/share.svg",
@@ -1057,8 +1110,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             HomeLayoutCubit.get(context).sharePost(
                                 postId: postDetails.id,
                                 token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token ??
+                                        .loginModel!
+                                        .refresh_token ??
                                     "");
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -1112,17 +1165,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showProfilePageBottomSheet(Posts? postDetails) {
+  void _showProfilePageBottomSheet(
+      Posts? postDetails, LoggedInUser? loggedInUser) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return Container(
+        return SizedBox(
           height: screenHeight / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              /// Save Post
               ListTile(
                 leading: const Icon(
                   Icons.save,
@@ -1153,8 +1208,39 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
+                  SavedPostsCubit.get(context).savePost(
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
+                    postId: postDetails!.id,
+                  );
+                  Navigator.pop(context);
+                  (SavedPostsCubit.get(context).savedPostsResponse?.message ==
+                          "success")
+                      ? ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post Saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ))
+                      : ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post already saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
                 },
               ),
+
+              /// Edit Post
               ListTile(
                 leading: const Icon(
                   Icons.edit,
@@ -1184,9 +1270,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 onTap: () {
-                  // Logic to save the post
+                  // Logic to edit post
+                  Navigator.pop(context);
                 },
               ),
+
+              /// Delete Post
               ListTile(
                 leading: const Icon(
                   Icons.delete_forever,
@@ -1217,22 +1306,35 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   // Logic to delete the post
-                  HomeLayoutCubit.get(context).deletePost(
-                      token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
-                          "",
-                      postId: postDetails!.id);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: defaultColor,
-                        content: Text(
-                          'Post is shared',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                          ),
+                  if (postDetails!.id == loggedInUser!.id) {
+                    HomeLayoutCubit.get(context).deletePost(
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                            "",
+                        postId: postDetails.id);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: defaultColor,
+                      content: Text(
+                        'Post Deleted',
+                        style: TextStyle(
+                          fontSize: 12.0,
                         ),
-                      ));
+                      ),
+                    ));
+                  } else {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: defaultColor,
+                      content: Text(
+                        'Can\'t delete the post',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ));
+                  }
                 },
               ),
             ],

@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
 class AppRoot extends StatelessWidget {
@@ -39,6 +40,12 @@ class AppRoot extends StatelessWidget {
                 OrganizationLayoutCubit()..initializeBottomItems()),
         BlocProvider(
           create: (BuildContext context) => CreatePostCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SavedPostsCubit()
+            ..getAllSavedPosts(
+                token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                    ""),
         ),
       ],
       child: MaterialApp(

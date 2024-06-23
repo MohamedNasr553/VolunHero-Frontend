@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
@@ -61,14 +62,6 @@ class UserSidePage extends StatelessWidget {
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        // Text(
-                        //   UserLoginCubit.get(context).loggedInUser?.userName ??
-                        //       "@username",
-                        //   style: const TextStyle(
-                        //     fontSize: 16.0,
-                        //     fontWeight: FontWeight.w900,
-                        //   ),
-                        // ),
                       ],
                     ),
                     accountEmail: Text(
@@ -171,6 +164,12 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
+                      SavedPostsCubit.get(context).getAllSavedPosts(
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                            "",
+                      );
                       navigateAndFinish(context, const SavedPosts());
                     },
                   ),

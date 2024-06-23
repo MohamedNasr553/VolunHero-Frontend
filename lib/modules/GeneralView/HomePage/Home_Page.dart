@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
@@ -463,7 +464,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () => _showHomePageBottomSheet(),
+                      onPressed: () => _showHomePageBottomSheet(postDetails),
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -814,13 +815,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showHomePageBottomSheet() {
+  void _showHomePageBottomSheet(ModifiedPost? postDetails) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return Container(
+        return SizedBox(
           height: screenHeight / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -855,6 +856,35 @@ class _HomePageState extends State<HomePage> {
                 ),
                 onTap: () {
                   // Logic to save the post
+                  SavedPostsCubit.get(context).savePost(
+                    token:
+                    UserLoginCubit.get(context).loginModel!.refresh_token ??
+                        "",
+                    postId: postDetails!.id,
+                  );
+                  Navigator.pop(context);
+                  (SavedPostsCubit.get(context).savedPostsResponse?.message ==
+                      "success")
+                      ? ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(
+                    backgroundColor: defaultColor,
+                    content: Text(
+                      'Post Saved',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ))
+                      : ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(
+                    backgroundColor: defaultColor,
+                    content: Text(
+                      'Post already saved',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ));
                 },
               ),
               ListTile(
@@ -886,7 +916,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 onTap: () {
-                  // Logic to save the post
+                  // Logic to hide post
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -918,7 +949,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 onTap: () {
-                  // Logic to save the post
+                  // Logic to Copy post link
+                  Navigator.pop(context);
                 },
               ),
             ],
