@@ -69,9 +69,14 @@ class SharePostSuccessState extends LayoutStates{}
 
 class SharePostErrorState extends LayoutStates{}
 
-/// Posts of owner
-class OwnerPostsInitialState extends LayoutStates {}
+/// Edit Post
+class EditPostLoadingState extends LayoutStates{}
 
+class EditPostSuccessState extends LayoutStates{}
+
+class EditPostErrorState extends LayoutStates{}
+
+/// Posts of owner
 class OwnerPostsLoadingState extends LayoutStates {}
 
 class OwnerPostsSuccessState extends LayoutStates{}

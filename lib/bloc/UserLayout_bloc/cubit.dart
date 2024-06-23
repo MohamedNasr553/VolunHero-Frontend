@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/AddCommentModel.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
+import 'package:flutter_code/models/EditPostModel.dart';
 import 'package:flutter_code/models/GetCommentModel.dart';
 import 'package:flutter_code/models/GetPostByIdModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
@@ -207,11 +208,9 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
       emit(AddCommentSuccessState());
       getPostId(token: token, postId: postId);
-    } catch (error, stackTrace) {
+    } catch (error) {
       print('Error Creating Comment: $error');
-      print('Stack Trace: $stackTrace');
 
-      // Emit error state
       emit(AddCommentErrorState());
     }
   }
@@ -304,6 +303,38 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
       emit(SharePostErrorState());
     });
+  }
+
+  /// ----------------------- Edit Post ------------------------------
+
+  EditPostResponse? editPostResponse;
+  EditPostDetails? editPostDetails;
+
+  Future<void> editPost({
+    required String content,
+    required String postId,
+    required String token,
+  }) async {
+    try {
+      emit(EditPostLoadingState());
+
+      Map<String, dynamic> requestData = {
+        'content': content,
+      };
+
+      await DioHelper.putData(
+        url: "/post/$postId",
+        data: requestData,
+        token: token,
+      );
+
+      emit(EditPostSuccessState());
+    }
+    catch (error) {
+      print('Error editing the post: $error');
+
+      emit(EditPostErrorState());
+    }
   }
 
   /// ----------------------- Owner Posts API ------------------------

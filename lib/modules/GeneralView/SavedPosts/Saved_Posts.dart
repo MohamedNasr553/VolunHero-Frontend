@@ -65,7 +65,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         text: "Saved Posts",
                         strokeColor: Colors.white,
                         textStyle: TextStyle(
-                            fontSize: 25,
+                            fontSize: 23,
                             fontWeight: FontWeight.bold,
                             fontFamily: "Roboto",
                             color: HexColor("296E6F")),
@@ -678,44 +678,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
         var screenHeight = MediaQuery.of(context).size.height;
 
         return SizedBox(
-          height: screenHeight / 5,
+          height: screenHeight / 9,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              /// Edit Post
-              ListTile(
-                leading: const Icon(
-                  Icons.edit,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Edit Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Edit your post.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to edit post
-                  Navigator.pop(context);
-                },
-              ),
               /// Remove Post
               ListTile(
                 leading: const Icon(

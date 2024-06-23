@@ -1,36 +1,35 @@
-class OwnerPostsResponse {
+class EditPostResponse {
   String message;
-  List<Posts> newPosts;
+  List<EditPostDetails> post;
 
-  OwnerPostsResponse({
+  EditPostResponse({
     required this.message,
-    required this.newPosts,
+    required this.post,
   });
 
-  factory OwnerPostsResponse.fromJson(Map<String, dynamic> json) {
+  factory EditPostResponse.fromJson(Map<String, dynamic> json) {
     var newPostsList = json['posts'] as List<dynamic>? ?? [];
-    List<Posts> newPosts = newPostsList
-        .map((postJson) => Posts.fromJson(postJson))
+    List<EditPostDetails> newPosts = newPostsList
+        .map((postJson) => EditPostDetails.fromJson(postJson))
         .toList();
 
-    return OwnerPostsResponse(
+    return EditPostResponse(
       message: json['message'] ?? '',
-      newPosts: newPosts,
+      post: newPosts,
     );
   }
 
   @override
   String toString() {
-    return 'OwnerPostsResponse: {message: $message, newPosts: $newPosts}';
+    return 'OwnerPostsResponse: {message: $message, newPosts: $post}';
   }
 }
 
-class Posts {
+class EditPostDetails {
   String id;
   String content;
   String specification;
   List<Attachments>? attachments;
-  CreatedBy createdBy;
   String? customId;
   int likesCount;
   int shareCount;
@@ -39,12 +38,11 @@ class Posts {
   DateTime updatedAt;
   int v;
 
-  Posts({
+  EditPostDetails({
     required this.id,
     required this.content,
     required this.specification,
     this.attachments,
-    required this.createdBy,
     this.customId,
     required this.likesCount,
     required this.shareCount,
@@ -54,18 +52,17 @@ class Posts {
     required this.v,
   });
 
-  factory Posts.fromJson(Map<String, dynamic> json) {
+  factory EditPostDetails.fromJson(Map<String, dynamic> json) {
     var attachmentsList = json['attachments'] as List<dynamic>? ?? [];
     var attachments = attachmentsList
         .map((attachmentJson) => Attachments.fromJson(attachmentJson))
         .toList();
 
-    return Posts(
+    return EditPostDetails(
       id: json['_id'] ?? '',
       content: json['content'] ?? '',
       specification: json['specification'] ?? '',
       attachments: attachments.isEmpty ? null : attachments,
-      createdBy: CreatedBy.fromJson(json['createdBy'] ?? {}),
       customId: json['customId'],
       likesCount: json['likesCount'] ?? 0,
       shareCount: json['shareCount'] ?? 0,
@@ -90,36 +87,6 @@ class Attachments {
     return Attachments(
       secure_url: json['secure_url'] ?? '',
       public_id: json['public_id'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'secure_url': secure_url,
-      'public_id': public_id,
-    };
-  }
-}
-
-class CreatedBy {
-  String id;
-  String userName;
-  String role;
-  String? profilePic;
-
-  CreatedBy({
-    required this.id,
-    required this.userName,
-    required this.role,
-    this.profilePic,
-  });
-
-  factory CreatedBy.fromJson(Map<String, dynamic> json) {
-    return CreatedBy(
-      id: json['_id'] ?? '',
-      userName: json['userName'] ?? '',
-      role: json['role'] ?? '',
-      profilePic: json['profilePic'],
     );
   }
 }

@@ -869,7 +869,7 @@ class _DetailedPostState extends State<DetailedPost> {
             .height;
 
         return SizedBox(
-          height: screenHeight / 3,
+          height: screenHeight / 4,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -996,7 +996,7 @@ class _DetailedPostState extends State<DetailedPost> {
             .height;
 
         return SizedBox(
-          height: screenHeight / 8,
+          height: screenHeight / 9,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

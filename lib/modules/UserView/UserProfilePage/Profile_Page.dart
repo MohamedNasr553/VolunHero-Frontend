@@ -12,6 +12,7 @@ import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
+import 'package:flutter_code/modules/GeneralView/EditPost/Edit_Post.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -1318,7 +1319,7 @@ class _ProfilePageState extends State<ProfilePage> {
         var screenHeight = MediaQuery.of(context).size.height;
 
         return SizedBox(
-          height: screenHeight / 3,
+          height: screenHeight / 4,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -1362,7 +1363,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.pop(context);
                 },
               ),
-
               /// Edit Post
               ListTile(
                 leading: const Icon(
@@ -1395,9 +1395,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () {
                   // Logic to edit post
                   Navigator.pop(context);
+                  final token = UserLoginCubit.get(context).loginModel?.refresh_token;
+                  final postId = postDetails!.id;
+                  if (token != null) {
+                    HomeLayoutCubit.get(context).getPostId(
+                      token: token,
+                      postId: postId,
+                    );
+                  }
+                  navigateToPage(context, const EditPost());
                 },
               ),
-
               /// Delete Post
               ListTile(
                 leading: const Icon(
@@ -1418,7 +1426,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: screenHeight / 130),
                     const Text(
-                      'Delete this post from your profile.',
+                      'Remove this post from your profile.',
                       style: TextStyle(
                         color: Colors.black45,
                         fontSize: 10.0,
@@ -1428,22 +1436,29 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 onTap: () {
-                  HomeLayoutCubit.get(context).deletePost(
-                    token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
-                            "",
-                    postId: postDetails!.id,
-                  );
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    backgroundColor: defaultColor,
-                    content: Text(
-                      'Post Deleted',
-                      style: TextStyle(
-                        fontSize: 12.0,
+                  if(postDetails!.createdBy.id == loggedInUser!.id){
+                    // Delete Post
+                    HomeLayoutCubit.get(context).deletePost(
+                      token:
+                      UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          "",
+                      postId: postDetails.id,
+                    );
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: defaultColor,
+                      content: Text(
+                        'Post Deleted',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                        ),
                       ),
-                    ),
-                  ));
+                    ));
+                  }
+                  else{
+                    // Delete Share
+
+                  }
                 },
               ),
             ],

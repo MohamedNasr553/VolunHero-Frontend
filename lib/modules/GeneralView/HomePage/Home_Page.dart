@@ -851,7 +851,7 @@ class _HomePageState extends State<HomePage> {
         var screenHeight = MediaQuery.of(context).size.height;
 
         return SizedBox(
-          height: screenHeight / 3,
+          height: screenHeight / 4,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

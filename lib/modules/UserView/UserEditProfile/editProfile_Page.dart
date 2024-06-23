@@ -278,7 +278,6 @@ class UserEditProfile extends StatelessWidget {
                                   text: "Profile Updated Successfully",
                                   state: ToastStates.SUCCESS,
                                 );
-                                print('Updated Data: $oldData');
                               });
                             }
                           },
