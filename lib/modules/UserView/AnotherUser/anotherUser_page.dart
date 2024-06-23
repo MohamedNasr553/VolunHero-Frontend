@@ -34,9 +34,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    UserLoginCubit.get(context).getLoggedInUserData(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     HomeLayoutCubit.get(context).getAnotherUserData(
-        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "", id: '');
+        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+        id: '');
   }
 
   @override
@@ -106,14 +108,13 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           CircleAvatar(
                             radius: 45.0,
                             backgroundImage: (HomeLayoutCubit.get(context)
-                                .modifiedPost
-                                ?.createdBy
-                                ?.profilePic ==
-                                null)
-                                ? AssetImage(
-                                'assets/images/nullProfile.png')
+                                        .modifiedPost
+                                        ?.createdBy
+                                        .profilePic ==
+                                    null)
+                                ? AssetImage('assets/images/nullProfile.png')
                                 : AssetImage(
-                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic}'),
+                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
                           ),
                           GestureDetector(
                             onTap: () {},
@@ -151,8 +152,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             children: [
                               Text(
                                 UserLoginCubit.get(context)
-                                    .anotherUser!
-                                    .firstName,
+                                        .anotherUser
+                                        ?.firstName ??
+                                    " ",
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -163,8 +165,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(width: screenWidth / 90),
                               Text(
                                 UserLoginCubit.get(context)
-                                    .anotherUser!
-                                    .lastName,
+                                        .anotherUser
+                                        ?.lastName ??
+                                    " ",
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   color: Colors.black38.withOpacity(0.7),
@@ -174,23 +177,22 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                               SizedBox(width: screenWidth / 60),
                               (UserLoginCubit.get(context)
-                                              .anotherUser!
-                                              .specification ==
+                                              .anotherUser
+                                              ?.specification ==
                                           'Medical' ||
                                       UserLoginCubit.get(context)
-                                              .anotherUser!
-                                              .specification ==
+                                              .anotherUser
+                                              ?.specification ==
                                           'Educational')
                                   ? const Icon(Icons.verified,
                                       color: Colors.blue)
                                   : Container(),
                             ],
                           ),
-                          const SizedBox(
-                            height: 1.0,
-                          ),
+                          const SizedBox(height: 1.0),
                           Text(
-                            UserLoginCubit.get(context).anotherUser!.email,
+                            UserLoginCubit.get(context).anotherUser?.email ??
+                                " ",
                             style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.black.withOpacity(0.5),
@@ -213,121 +215,222 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     children: [
                       Expanded(
                           child: InkWell(
-                        onTap: () {
-                            UserLoginCubit.get(context).handleFollow(
-                                token:  UserLoginCubit.get(context).loginModel!.refresh_token,
-                                followId:  UserLoginCubit.get(context).anotherUser!.id
-                            ).then((value) {
-                              UserLoginCubit.get(context).getLoggedInUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token);
-                              HomeLayoutCubit.get(context).getAnotherUserData(token:  UserLoginCubit.get(context).loginModel!.refresh_token, id:  UserLoginCubit.get(context).anotherUser!.id).then((value){
-                                UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                                UserLoginCubit.get(context).getAnotherUserFollowers();
-                              });
-                            });
-                         //   showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
-                        },
-                        child: (UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) == false)
-                            ? Container(
-                                decoration: BoxDecoration(
-                                    color: defaultColor,
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Center(
-                                    child: (state is! FollowLoadingState)?(Text(
-                                      "Follow",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )): Center(
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Center(
-                                    child:(state is! FollowLoadingState)? (
-                                        Text(
-                                      "Following",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )): Center(
-                                      child: Container(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
+                              onTap: () {
+                                UserLoginCubit.get(context)
+                                    .handleFollow(
+                                        token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token,
+                                        followId: UserLoginCubit.get(context)
+                                            .anotherUser!
+                                            .id)
+                                    .then((value) {
+                                  UserLoginCubit.get(context)
+                                      .getLoggedInUserData(
+                                          token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token);
+                                  HomeLayoutCubit.get(context)
+                                      .getAnotherUserData(
+                                          token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token,
+                                          id: UserLoginCubit.get(context)
+                                              .anotherUser!
+                                              .id)
+                                      .then((value) {
+                                    UserLoginCubit.get(context).anotherUser =
+                                        HomeLayoutCubit.get(context)
+                                            .anotherUser;
+                                    UserLoginCubit.get(context)
+                                        .getAnotherUserFollowers();
+                                  });
+                                });
+                                //   showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
+                              },
+                              child: (UserLoginCubit.get(context).inFollowing(
+                                          followId: UserLoginCubit.get(context)
+                                                  .anotherUser
+                                                  ?.id ??
+                                              " ") ==
+                                      false)
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                          color: defaultColor,
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: Center(
+                                          child: (state is! FollowLoadingState)
+                                              ? (Text(
+                                                  "Follow",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ))
+                                              : Center(
+                                                  child: Container(
+                                                    width: 20,
+                                                    height: 20,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
                                         ),
                                       ),
                                     )
-                                ),
-                              ),
-                      ))),
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: Center(
+                                            child:
+                                                (state is! FollowLoadingState)
+                                                    ? (Text(
+                                                        "Following",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ))
+                                                    : Center(
+                                                        child: Container(
+                                                          width: 20,
+                                                          height: 20,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      )),
+                                      ),
+                                    ))),
                       SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
-                        onTap: ()async {
-
+                        onTap: () async {
                           bool newChat = true;
-                          UserLoginCubit.get(context).getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token).then((value) {
-                            for(int i=0;i<UserLoginCubit.get(context).chats.length;i++){
+                          UserLoginCubit.get(context)
+                              .getLoggedInChats(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token)
+                              .then((value) {
+                            for (int i = 0;
+                                i < UserLoginCubit.get(context).chats.length;
+                                i++) {
                               // case 1
-                              if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
-                                  UserLoginCubit.get(context).loggedInUser!.id){
-                                if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
-                                    HomeLayoutCubit.get(context).anotherUser!.id){
-                                     newChat = false;
-                                     UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                              if (UserLoginCubit.get(context)
+                                      .chats[i]
+                                      .members[0]
+                                      .userId
+                                      .id ==
+                                  UserLoginCubit.get(context)
+                                      .loggedInUser!
+                                      .id) {
+                                if (UserLoginCubit.get(context)
+                                        .chats[i]
+                                        .members[1]
+                                        .userId
+                                        .id ==
+                                    HomeLayoutCubit.get(context)
+                                        .anotherUser!
+                                        .id) {
+                                  newChat = false;
+                                  UserLoginCubit.get(context).selectedChat =
+                                      UserLoginCubit.get(context).chats[i];
                                 }
                               }
                               // case 2
-                              if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
-                                  UserLoginCubit.get(context).loggedInUser!.id){
-                                if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
-                                    HomeLayoutCubit.get(context).anotherUser!.id){
+                              if (UserLoginCubit.get(context)
+                                      .chats[i]
+                                      .members[1]
+                                      .userId
+                                      .id ==
+                                  UserLoginCubit.get(context)
+                                      .loggedInUser!
+                                      .id) {
+                                if (UserLoginCubit.get(context)
+                                        .chats[i]
+                                        .members[0]
+                                        .userId
+                                        .id ==
+                                    HomeLayoutCubit.get(context)
+                                        .anotherUser!
+                                        .id) {
                                   newChat = false;
-                                  UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                  UserLoginCubit.get(context).selectedChat =
+                                      UserLoginCubit.get(context).chats[i];
                                 }
                               }
                             }
-                            if(newChat==true){
-                              print( HomeLayoutCubit.get(context).anotherUser!.id);
+                            if (newChat == true) {
+                              print(
+                                  HomeLayoutCubit.get(context).anotherUser!.id);
                               UserLoginCubit.get(context).createChat(
-                                  secondId: HomeLayoutCubit.get(context).anotherUser!.id.toString()
-                              );
+                                  secondId: HomeLayoutCubit.get(context)
+                                      .anotherUser!
+                                      .id
+                                      .toString());
                             }
                           }).then((value) {
-                            UserLoginCubit.get(context).getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token).then((value) {
-                              for(int i=0;i<UserLoginCubit.get(context).chats.length;i++){
+                            UserLoginCubit.get(context)
+                                .getLoggedInChats(
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token)
+                                .then((value) {
+                              for (int i = 0;
+                                  i < UserLoginCubit.get(context).chats.length;
+                                  i++) {
                                 // case 1
-                                if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
-                                    UserLoginCubit.get(context).loggedInUser!.id){
-                                  if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
-                                      HomeLayoutCubit.get(context).anotherUser!.id){
-                                    UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                if (UserLoginCubit.get(context)
+                                        .chats[i]
+                                        .members[0]
+                                        .userId
+                                        .id ==
+                                    UserLoginCubit.get(context)
+                                        .loggedInUser!
+                                        .id) {
+                                  if (UserLoginCubit.get(context)
+                                          .chats[i]
+                                          .members[1]
+                                          .userId
+                                          .id ==
+                                      HomeLayoutCubit.get(context)
+                                          .anotherUser!
+                                          .id) {
+                                    UserLoginCubit.get(context).selectedChat =
+                                        UserLoginCubit.get(context).chats[i];
                                   }
                                 }
                                 // case 2
-                                if(UserLoginCubit.get(context).chats[i].members[1].userId.id ==
-                                    UserLoginCubit.get(context).loggedInUser!.id){
-                                  if(UserLoginCubit.get(context).chats[i].members[0].userId.id ==
-                                      HomeLayoutCubit.get(context).anotherUser!.id){
-                                    UserLoginCubit.get(context).selectedChat = UserLoginCubit.get(context).chats[i];
+                                if (UserLoginCubit.get(context)
+                                        .chats[i]
+                                        .members[1]
+                                        .userId
+                                        .id ==
+                                    UserLoginCubit.get(context)
+                                        .loggedInUser!
+                                        .id) {
+                                  if (UserLoginCubit.get(context)
+                                          .chats[i]
+                                          .members[0]
+                                          .userId
+                                          .id ==
+                                      HomeLayoutCubit.get(context)
+                                          .anotherUser!
+                                          .id) {
+                                    UserLoginCubit.get(context).selectedChat =
+                                        UserLoginCubit.get(context).chats[i];
                                   }
                                 }
                               }
@@ -335,7 +438,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               navigateToPage(context, DetailedChats());
                             });
                           });
-
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -344,24 +446,23 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           child: Padding(
                             padding: const EdgeInsets.all(6.0),
                             child: Center(
-                              child: (
-                                (state is! CreateChatLoadingState)?
-                                  Text(
-                                "message",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ): Center(
-                                  child: Container(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
-                              ),
+                              child: ((state is! CreateChatLoadingState)
+                                  ? Text(
+                                      "message",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )),
                             ),
                           ),
                         ),
@@ -435,7 +536,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).anotherUser!.followers.length}",
+                                        "${UserLoginCubit.get(context).anotherUser?.followers.length ?? 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -457,7 +558,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).anotherUser!.following.length}",
+                                        "${UserLoginCubit.get(context).anotherUser?.following.length ?? 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -546,8 +647,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       ),
                                       Text(
                                         UserLoginCubit.get(context)
-                                            .anotherUser!
-                                            .specification,
+                                                .anotherUser
+                                                ?.specification ??
+                                            " ",
                                         style: const TextStyle(
                                           fontSize: 12.0,
                                           color: defaultColor,
@@ -566,7 +668,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).anotherUser!.address}",
+                                  "Lives in ${UserLoginCubit.get(context).anotherUser?.address ?? " "}",
                                 ),
                               )
                             ],
@@ -590,8 +692,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 width: screenWidth / 1.5,
                                 child: Text(
                                   UserLoginCubit.get(context)
-                                      .anotherUser!
-                                      .phone,
+                                          .anotherUser
+                                          ?.phone ??
+                                      "",
                                 ),
                               )
                             ],
@@ -633,20 +736,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             height: 1,
                             color: Colors.grey.shade300,
                           ),
-
                         ],
                       ),
                     ),
-
                   ),
                 ),
                 // Posts
                 (state is! GetAnotherUserPostsLoadingState)
                     ? SizedBox(
-                  height: screenHeight,
-                  child: buildAnotherUserPostsList(context),
-                )
-                    :  buildLoadingWidget(context),
+                        height: screenHeight,
+                        child: buildAnotherUserPostsList(context),
+                      )
+                    : buildLoadingWidget(context),
               ],
             ),
           ),
@@ -660,7 +761,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return ListView.builder(
-      itemCount:3,
+      itemCount: 3,
       itemBuilder: (BuildContext context, int index) {
         return Shimmer.fromColors(
           period: const Duration(milliseconds: 1000),
@@ -742,27 +843,38 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                //  final anotherUserPostsModel = cubit.anotherUserPostsResponse;
+                  //  final anotherUserPostsModel = cubit.anotherUserPostsResponse;
                   if (cubit.anotherUserPostsResponse != null) {
-                    if (index < cubit.anotherUserPostsResponse!.posts.length && cubit.anotherUserPostsResponse!.posts[index]!=null) {
+                    if (index < cubit.anotherUserPostsResponse!.posts.length &&
+                        cubit.anotherUserPostsResponse!.posts[index] != null) {
                       CreatedBy createdBy = CreatedBy(
                           id: cubit.anotherUser!.id,
-                          userName: cubit.anotherUserPostsResponse!.posts[index].userId.userName,
-                          role: cubit.anotherUserPostsResponse!.posts[index].userId.role
-                      );
+                          userName: cubit.anotherUserPostsResponse!.posts[index]
+                              .userId.userName,
+                          role: cubit.anotherUserPostsResponse!.posts[index]
+                              .userId.role);
                       ModifiedPost modifiedPost = ModifiedPost(
-                        id: cubit.anotherUserPostsResponse!.posts[index].post!.id,
-                        content: cubit.anotherUserPostsResponse!.posts[index].post!.content,
-                        specification: cubit.anotherUserPostsResponse!.posts[index].post!.specification,
+                        id: cubit
+                            .anotherUserPostsResponse!.posts[index].post!.id,
+                        content: cubit.anotherUserPostsResponse!.posts[index]
+                            .post!.content,
+                        specification: cubit.anotherUserPostsResponse!
+                            .posts[index].post!.specification,
                         createdBy: createdBy,
-                        likesCount:cubit.anotherUserPostsResponse!.posts[index].post!.likes.length,
-                        shareCount: cubit.anotherUserPostsResponse!.posts[index].post!.shareCount,
-                        createdAt: cubit.anotherUserPostsResponse!.posts[index].post!.createdAt,
-                        updatedAt: cubit.anotherUserPostsResponse!.posts[index].post!.updatedAt,
+                        likesCount: cubit.anotherUserPostsResponse!.posts[index]
+                            .post!.likes.length,
+                        shareCount: cubit.anotherUserPostsResponse!.posts[index]
+                            .post!.shareCount,
+                        createdAt: cubit.anotherUserPostsResponse!.posts[index]
+                            .post!.createdAt,
+                        updatedAt: cubit.anotherUserPostsResponse!.posts[index]
+                            .post!.updatedAt,
                         liked: false,
                         v: cubit.anotherUserPostsResponse!.posts[index].post!.v,
                         attachments: [],
-                        commentsCount: cubit.anotherUserPostsResponse!.posts[index].post!.commentsCount,
+                        commentsCount: cubit.anotherUserPostsResponse!
+                            .posts[index].post!.commentsCount,
+                        comments: [],
                       );
                       return buildPostItem(modifiedPost, context);
                     }
@@ -845,7 +957,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   CircleAvatar(
                     radius: 20.0,
                     backgroundImage: postDetails.createdBy.profilePic != null
-                        ? AssetImage(postDetails.createdBy.profilePic!)
+                        ? AssetImage(
+                            postDetails.createdBy.profilePic!.secure_url)
                         : const AssetImage('assets/images/nullProfile.png'),
                   ),
                   SizedBox(width: screenWidth / 50),
@@ -909,22 +1022,23 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Content
                     postDetails.content != null
                         ? Text(
-                      postDetails.content,
-                      maxLines:
-                      (postDetails.attachments) != null ? 6 : 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: "Robot",
-                        fontSize: 13.0,
-                      ),
-                    )
+                            postDetails.content,
+                            maxLines:
+                                (postDetails.attachments) != null ? 6 : 10,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: "Robot",
+                              fontSize: 13.0,
+                            ),
+                          )
                         : const SizedBox(height: 0),
 
                     SizedBox(height: screenHeight / 100),
 
                     /// Post Attachments
-                    if (postDetails.attachments != null && postDetails.attachments!.isNotEmpty)
-                    // check if there's more than one
+                    if (postDetails.attachments != null &&
+                        postDetails.attachments!.isNotEmpty)
+                      // check if there's more than one
                       if (postDetails.attachments!.length > 1)
                         CarouselSlider(
                           carouselController: carouselController,
@@ -957,8 +1071,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                      (postDetails.attachments ?? []).asMap().entries.map((entry) {
+                      children: (postDetails.attachments ?? [])
+                          .asMap()
+                          .entries
+                          .map((entry) {
                         return GestureDetector(
                           onTap: () =>
                               carouselController.animateToPage(entry.key),
@@ -992,24 +1108,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     /// Post Likes
                     (postDetails.likesCount) > 0
                         ? IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/NewLikeColor.svg',
-                        width: 22.0,
-                        height: 22.0,
-                      ),
-                    )
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/NewLikeColor.svg',
+                              width: 22.0,
+                              height: 22.0,
+                            ),
+                          )
                         : Container(),
                     (postDetails.likesCount > 0)
                         ? Text(
-                      '${postDetails.likesCount}',
-                      style: TextStyle(
-                        fontFamily: "Roboto",
-                        fontSize: 12,
-                        color: HexColor("575757"),
-                      ),
-                    )
+                            '${postDetails.likesCount}',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          )
                         : Container(),
                     const Spacer(),
 
@@ -1055,14 +1171,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      postSubComponent("assets/images/like.svg", "Like", onTap: () {
-                        HomeLayoutCubit.get(context).likePost(
-                            postId: postDetails.id,
-                            token: UserLoginCubit.get(context)
-                                .loginModel!
-                                .refresh_token ??
-                                "");
-                      },),
+                      postSubComponent(
+                        "assets/images/like.svg",
+                        "Like",
+                        onTap: () {
+                          HomeLayoutCubit.get(context).likePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                  "");
+                        },
+                      ),
                       const Spacer(),
                       postSubComponent("assets/images/comment.svg", "Comment"),
                       const Spacer(),
@@ -1080,8 +1200,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -1212,8 +1332,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   // Logic to save the post
                   HomeLayoutCubit.get(context).deletePost(
                       token: UserLoginCubit.get(context)
-                          .loginModel!
-                          .refresh_token ??
+                              .loginModel!
+                              .refresh_token ??
                           "",
                       postId: postDetails!.id);
                 },

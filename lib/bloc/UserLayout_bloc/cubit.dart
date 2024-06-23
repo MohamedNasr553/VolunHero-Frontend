@@ -12,7 +12,6 @@ import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/camera_view.dart';
 import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
-import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -128,7 +127,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   ModifiedPost? modifiedPost;
 
   void getAllPosts({required String token}) async {
-
     DioHelper.getData(
       url: GET_ALL_POSTS,
       token: token,
@@ -143,6 +141,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(HomePagePostsErrorState());
     });
   }
+
   /// ----------------------- Get Post by ID -----------------------
   GetPostById? getPostById;
   SpecificPost? post;
@@ -163,6 +162,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(GetPostByIdErrorState());
     });
   }
+
   /// -------------------- Get Comment by Post ID ------------------
   GetCommentsResponse? getCommentsResponse;
   Comment? comment;
@@ -207,7 +207,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
       emit(AddCommentSuccessState());
       getPostId(token: token, postId: postId);
-
     } catch (error, stackTrace) {
       print('Error Creating Comment: $error');
       print('Stack Trace: $stackTrace');
@@ -217,12 +216,35 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     }
   }
 
+  /// ----------------------- Delete Comment -----------------------
+  void deleteComment({
+    required String token,
+    required String postId,
+    required commentId,
+  }) {
+    emit(DeleteCommentLoadingState());
+
+    DioHelper.deleteData(
+      url: "/post/$postId/comment/$commentId",
+      token: token,
+    ).then((value) {
+      emit(DeleteCommentSuccessState());
+
+      getAllPosts(token: token);
+      getOwnerPosts(token: token);
+      getPostId(token: token, postId: postId);
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(DeleteCommentErrorState());
+    });
+  }
 
   /// ----------------------- Like Post API ------------------------
 
-  void likePostUI(ModifiedPost post){
-     post.liked = !post.liked;
-     emit(ChangeLikePostState());
+  void likePostUI(ModifiedPost post) {
+    post.liked = !post.liked;
+    emit(ChangeLikePostState());
   }
 
   void likePost({required String token, required String postId}) {
@@ -289,7 +311,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   Posts? newPost;
 
   void getOwnerPosts({required String token}) async {
-
     DioHelper.getData(
       url: GET_OWNER_POSTS,
       token: token,
@@ -309,8 +330,8 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
   AnotherUser? anotherUser;
 
-  Future<void> getAnotherUserData({required String? token, required String? id}) async {
-
+  Future<void> getAnotherUserData(
+      {required String? token, required String? id}) async {
     try {
       emit(GetAnotherUserDataLoadingState());
       var value = await DioHelper.getData(

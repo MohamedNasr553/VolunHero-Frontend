@@ -15,7 +15,7 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
 
-  Widget widget;
+  // Widget widget;
   // bool onBoarding = CacheHelper.get(key: 'onBoarding') ?? false;
 
   // userToken = await getUserToken();

@@ -21,7 +21,7 @@ class HomePagePostsResponse {
 
   @override
   String toString() {
-    return 'HomePagePostsModel: {message: $message, modifiedPosts: $modifiedPosts}';
+    return 'HomePagePostsResponse: {message: $message, modifiedPosts: $modifiedPosts}';
   }
 }
 
@@ -29,12 +29,13 @@ class ModifiedPost {
   String id;
   String content;
   String specification;
-  List<Attachments>? attachments;
+  List<Attachment>? attachments;
   CreatedBy createdBy;
   String? customId;
   int likesCount;
   int shareCount;
   int commentsCount;
+  List<HomePageComment> comments;
   DateTime createdAt;
   DateTime updatedAt;
   bool liked;
@@ -50,6 +51,7 @@ class ModifiedPost {
     required this.likesCount,
     required this.commentsCount,
     required this.shareCount,
+    required this.comments,
     required this.createdAt,
     required this.updatedAt,
     required this.liked,
@@ -57,14 +59,17 @@ class ModifiedPost {
   });
 
   factory ModifiedPost.fromJson(Map<String, dynamic> json) {
-    var attachments = <Attachments>[];
-
-    // Check if the "attachments" key exists in the JSON data
+    var attachments = <Attachment>[];
     if (json.containsKey('attachments') && json['attachments'] != null) {
       json['attachments'].forEach((element) {
-        attachments.add(Attachments.fromJson(element));
+        attachments.add(Attachment.fromJson(element));
       });
     }
+
+    var commentsList = json['comments'] as List<dynamic>;
+    List<HomePageComment> comments = commentsList
+        .map((commentJson) => HomePageComment.fromJson(commentJson))
+        .toList();
 
     return ModifiedPost(
       id: json['_id'],
@@ -76,6 +81,7 @@ class ModifiedPost {
       likesCount: json['likesCount'],
       commentsCount: json['commentsCount'],
       shareCount: json['shareCount'],
+      comments: comments,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       liked: false,
@@ -84,17 +90,17 @@ class ModifiedPost {
   }
 }
 
-class Attachments {
+class Attachment {
   String secure_url;
   String public_id;
 
-  Attachments({
+  Attachment({
     required this.secure_url,
     required this.public_id,
   });
 
-  factory Attachments.fromJson(Map<String, dynamic> json) {
-    return Attachments(
+  factory Attachment.fromJson(Map<String, dynamic> json) {
+    return Attachment(
       secure_url: json['secure_url'],
       public_id: json['public_id'],
     );
@@ -105,7 +111,7 @@ class CreatedBy {
   String id;
   String userName;
   String role;
-  String? profilePic;
+  ProfilePic? profilePic;
 
   CreatedBy({
     required this.id,
@@ -119,7 +125,41 @@ class CreatedBy {
       id: json['_id'],
       userName: json['userName'],
       role: json['role'],
-      profilePic: json['profilePic'],
+      profilePic: json['profilePic'] != null ? ProfilePic.fromJson(json['profilePic']) : null,
+    );
+  }
+}
+
+class ProfilePic {
+  String secure_url;
+  String public_id;
+
+  ProfilePic({
+    required this.secure_url,
+    required this.public_id,
+  });
+
+  factory ProfilePic.fromJson(Map<String, dynamic> json) {
+    return ProfilePic(
+      secure_url: json['secure_url'],
+      public_id: json['public_id'],
+    );
+  }
+}
+
+class HomePageComment {
+  String commentId;
+  String id;
+
+  HomePageComment({
+    required this.commentId,
+    required this.id,
+  });
+
+  factory HomePageComment.fromJson(Map<String, dynamic> json) {
+    return HomePageComment(
+      commentId: json['commentId'],
+      id: json['_id'],
     );
   }
 }

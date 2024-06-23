@@ -8,10 +8,13 @@ import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
+import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
+import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -74,9 +77,13 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           child: ListView.separated(
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
-                              final posts = savedPostsCubit.getSavedPostsResponse?.savedPosts;
+                              final posts = savedPostsCubit
+                                  .getSavedPostsResponse?.savedPosts;
                               if (posts != null && posts.isNotEmpty) {
-                                final detailedPosts = posts.expand((savedPost) => savedPost.posts ?? []).toList();
+                                final detailedPosts = posts
+                                    .expand(
+                                        (savedPost) => savedPost.posts ?? [])
+                                    .toList();
 
                                 if (index < detailedPosts.length) {
                                   final post = detailedPosts[index];
@@ -88,25 +95,31 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                   );
                                 }
                               }
-                              return const Center(
+                              const Center(
                                 child: Text(
                                   "No Saved Posts",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 20.0,
+                                    fontSize: 16.0,
                                     color: Colors.black87,
                                   ),
                                 ),
                               );
                             },
                             separatorBuilder: (context, index) => Padding(
-                              padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+                              padding: const EdgeInsetsDirectional.symmetric(
+                                  horizontal: 16),
                               child: Container(
                                 width: double.infinity,
                                 color: Colors.white,
                               ),
                             ),
-                            itemCount: savedPostsCubit.getSavedPostsResponse?.savedPosts?.expand((savedPost) => savedPost.posts ?? []).length ?? 1,
+                            itemCount: savedPostsCubit
+                                    .getSavedPostsResponse?.savedPosts
+                                    ?.expand(
+                                        (savedPost) => savedPost.posts ?? [])
+                                    .length ??
+                                0,
                           ),
                         ),
                       ],
@@ -119,8 +132,11 @@ class _UserSavedPostsState extends State<SavedPosts> {
         });
   }
 
-  Widget buildPostItem(Posts? postDetails, GetDetailedSavedPost? getDetailedSavedPost,
-      LoggedInUser loggedInUser, context) {
+  Widget buildPostItem(
+      Posts? postDetails,
+      GetDetailedSavedPost? getDetailedSavedPost,
+      LoggedInUser loggedInUser,
+      context) {
     if (postDetails == null || getDetailedSavedPost == null) {
       return const SizedBox();
     }
@@ -191,7 +207,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                (postDetails!.createdBy.userName != loggedInUser.userName)
+                (postDetails.createdBy.userName != loggedInUser.userName)
                     ? Padding(
                         padding: EdgeInsetsDirectional.only(
                           start: screenWidth / 70,
@@ -221,23 +237,81 @@ class _UserSavedPostsState extends State<SavedPosts> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 20.0,
-                      backgroundImage: postDetails.createdBy.profilePic != null
-                          ? AssetImage(postDetails.createdBy.profilePic!)
-                          : const AssetImage('assets/images/nullProfile.png'),
+                    InkWell(
+                      onTap: () {
+                        if (postDetails.createdBy.id ==
+                            UserLoginCubit.get(context).loggedInUser!.id) {
+                          navigateToPage(context, const ProfilePage());
+                        } else {
+                          HomeLayoutCubit.get(context)
+                              .getAnotherUserData(
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token,
+                              id: postDetails.createdBy.id)
+                              .then((value) {
+                            UserLoginCubit.get(context)
+                                .getAnotherUserPosts(
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                                id: postDetails.createdBy.id,
+                                userName: postDetails.createdBy.userName)
+                                .then((value) {
+                              UserLoginCubit.get(context).anotherUser =
+                                  HomeLayoutCubit.get(context).anotherUser;
+                              navigateToPage(
+                                  context, const AnotherUserProfile());
+                            });
+                          });
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 20.0,
+                        backgroundImage: (() {
+                          final modifiedPost = HomeLayoutCubit.get(context).modifiedPost;
+                          if (modifiedPost != null) {
+                            final createdBy = modifiedPost.createdBy;
+                            if (createdBy != null && createdBy.profilePic != null) {
+                              return NetworkImage(createdBy.profilePic!.secure_url) as ImageProvider;
+                            }
+                          }
+                          return const AssetImage("assets/images/nullProfile.png");
+                        })(),
+                      ),
                     ),
                     SizedBox(width: screenWidth / 50),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          postDetails.createdBy.userName,
-                          style: const TextStyle(
-                            fontFamily: "Roboto",
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                        InkWell(
+                          onTap: () {
+                            if (postDetails.createdBy.id ==
+                                UserLoginCubit.get(context).loggedInUser!.id) {
+                              navigateToPage(context, const ProfilePage());
+                            } else {
+                              HomeLayoutCubit.get(context)
+                                  .getAnotherUserData(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
+                                  id: postDetails.createdBy.id)
+                                  .then((value) {
+                                UserLoginCubit.get(context).anotherUser =
+                                    HomeLayoutCubit.get(context).anotherUser;
+                                navigateToPage(
+                                    context, const AnotherUserProfile());
+                              });
+                            }
+                          },
+                          child: Text(
+                            postDetails.createdBy.userName,
+                            style: const TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 0.5),
@@ -262,8 +336,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () =>
-                          _showProfilePageBottomSheet(getDetailedSavedPost, loggedInUser),
+                      onPressed: () => _showProfilePageBottomSheet(
+                          postDetails,
+                          loggedInUser),
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -596,7 +671,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
   }
 
   void _showProfilePageBottomSheet(
-      GetDetailedSavedPost? getDetailedSavedPost, LoggedInUser loggedInUser) {
+      Posts? postDetails, LoggedInUser loggedInUser) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -672,12 +747,11 @@ class _UserSavedPostsState extends State<SavedPosts> {
                 ),
                 onTap: () {
                   // Logic to remove saved post
-                  // HomeLayoutCubit.get(context).deletePost(
-                  //     token: UserLoginCubit.get(context)
-                  //         .loginModel!
-                  //         .refresh_token ??
-                  //         "",
-                  //     postId: getSavedPost!.id);
+                  SavedPostsCubit.get(context).removeSavedPost(
+                    token:
+                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+                    postId: postDetails!.id,
+                  );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: defaultColor,

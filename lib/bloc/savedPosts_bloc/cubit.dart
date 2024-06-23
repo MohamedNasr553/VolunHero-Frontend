@@ -70,4 +70,25 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       emit(GetAllSavedPostsErrorState());
     }
   }
+
+  /// ----------------------- Remove Saved Posts API -------------------------
+  void removeSavedPost({
+    required String token,
+    required String postId,
+  }) {
+    emit(RemovePostLoadingState());
+
+    DioHelper.deleteData(
+      url: "/savedPosts/$postId",
+      token: token,
+    ).then((value) {
+      emit(RemovePostSuccessState());
+
+      getAllSavedPosts(token: token);
+    }).catchError((error) {
+      print(error.toString());
+
+      emit(RemovePostErrorState());
+    });
+  }
 }

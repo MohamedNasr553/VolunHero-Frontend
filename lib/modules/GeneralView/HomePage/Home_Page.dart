@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
@@ -29,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   var searchController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
-  bool load = false;
 
   @override
   void initState() {
@@ -49,116 +49,144 @@ class _HomePageState extends State<HomePage> {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Scaffold(
-            appBar: AppBar(
-              leading: Builder(builder: (context) {
-                return Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 40,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.transparent,
-                      child: ClipOval(
-                        child: (HomeLayoutCubit.get(context)
-                                    .modifiedPost
-                                    ?.createdBy
-                                    .profilePic ==
-                                null)
-                            ? Image.asset('assets/images/nullProfile.png')
-                            : Image.asset(
-                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-              actions: [
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    top: screenHeight / 300,
-                  ),
-                  child: SizedBox(
-                    width: screenWidth / 1.42,
-                    height: screenHeight / 25,
-                    child: TextFormField(
-                      controller: searchController,
-                      validator: (value) {
-                        return null;
-                      },
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                        ),
-                        hintText: 'Search...',
-                        hintStyle: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.grey.shade500,
-                        ),
-                        fillColor: Colors.white,
-                        filled: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 20.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 0.5,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 0.5,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(7.0),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
+        return BlocConsumer<SavedPostsCubit, SavedPostsStates>(
+          listener: (context, state) {
+            if (state is SavedPostsSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: defaultColor,
+                content: Text(
+                  'Post saved',
+                  style: TextStyle(
+                    fontSize: 12.0,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    top: screenHeight / 300,
-                    start: screenWidth / 80,
-                    end: screenWidth / 60,
+              ));
+            } else if (state is SavedPostsErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: defaultColor,
+                content: Text(
+                  'Post already saved',
+                  style: TextStyle(
+                    fontSize: 12.0,
                   ),
-                  child: IconButton(
-                      onPressed: () {
-                        //  navigateToPage(context, ChatsPage());
-                        UserLoginCubit.get(context)
-                            .getLoggedInChats(
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token)
-                            .then((value) {
-                          navigateToPage(context, const ChatsPage());
-                        });
-                      },
-                      icon: SvgPicture.asset("assets/images/messagesIcon.svg")),
                 ),
-              ],
-            ),
-            drawer: const UserSidePage(),
-            body: (state is! HomePagePostsLoadingState)
-                ? buildPostsList(context)
-                : buildLoadingWidget(context));
+              ));
+            }
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  leading: Builder(builder: (context) {
+                    return Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: screenWidth / 40,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                          child: ClipOval(
+                            child: (HomeLayoutCubit.get(context)
+                                        .modifiedPost
+                                        ?.createdBy
+                                        .profilePic ==
+                                    null)
+                                ? Image.asset('assets/images/nullProfile.png')
+                                : Image.asset(
+                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                  actions: [
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        top: screenHeight / 300,
+                      ),
+                      child: SizedBox(
+                        width: screenWidth / 1.42,
+                        height: screenHeight / 25,
+                        child: TextFormField(
+                          controller: searchController,
+                          validator: (value) {
+                            return null;
+                          },
+                          style: const TextStyle(
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Search...',
+                            hintStyle: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey.shade500,
+                            ),
+                            fillColor: Colors.white,
+                            filled: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16.0, horizontal: 20.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                                width: 0.5,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                                width: 0.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                              borderSide: const BorderSide(
+                                color: Colors.white,
+                                width: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        top: screenHeight / 300,
+                        start: screenWidth / 80,
+                        end: screenWidth / 60,
+                      ),
+                      child: IconButton(
+                          onPressed: () {
+                            //  navigateToPage(context, ChatsPage());
+                            UserLoginCubit.get(context)
+                                .getLoggedInChats(
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token)
+                                .then((value) {
+                              navigateToPage(context, const ChatsPage());
+                            });
+                          },
+                          icon: SvgPicture.asset(
+                              "assets/images/messagesIcon.svg")),
+                    ),
+                  ],
+                ),
+                drawer: const UserSidePage(),
+                body: (state is! HomePagePostsLoadingState)
+                    ? buildPostsList(context)
+                    : buildLoadingWidget(context));
+          },
+        );
       },
     );
   }
@@ -336,7 +364,7 @@ class _HomePageState extends State<HomePage> {
               token: token,
               postId: postId,
             );
-            if (postDetails.commentsCount > 0){
+            if (postDetails.commentsCount > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
                 postId: postId,
@@ -402,9 +430,8 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
-                        backgroundImage: (postDetails.createdBy.profilePic !=
-                                null)
-                            ? AssetImage(postDetails.createdBy.profilePic!)
+                        backgroundImage: postDetails.createdBy.profilePic != null
+                            ? NetworkImage(postDetails.createdBy.profilePic!.secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -631,21 +658,21 @@ class _HomePageState extends State<HomePage> {
                           ),
                         )
                       else if (postDetails.likesCount > 0 &&
-                            postDetails.commentsCount > 1)
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: screenWidth / 50,
-                              end: screenWidth / 50,
+                          postDetails.commentsCount > 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
                             ),
-                            child: Text(
-                              '${postDetails.commentsCount} Comments',
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 12,
-                                color: HexColor("575757"),
-                              ),
-                            ),
-                          )
+                          ),
+                        )
                       else if (postDetails.commentsCount == 0)
                         Container()
                       else
@@ -735,20 +762,22 @@ class _HomePageState extends State<HomePage> {
                           "assets/images/comment.svg",
                           "Comment",
                           onTap: () {
-                            HomeLayoutCubit.get(context).getPostId(
-                              token: postDetails.id,
-                              postId: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "",
-                            );
-                            HomeLayoutCubit.get(context).getCommentById(
-                              token: postDetails.id,
-                              postId: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "",
-                            );
+                            final token = UserLoginCubit.get(context)
+                                .loginModel
+                                ?.refresh_token;
+                            final postId = postDetails.id;
+                            if (token != null) {
+                              HomeLayoutCubit.get(context).getPostId(
+                                token: token,
+                                postId: postId,
+                              );
+                              if (postDetails.commentsCount > 0) {
+                                HomeLayoutCubit.get(context).getCommentById(
+                                  token: token,
+                                  postId: postId,
+                                );
+                              }
+                            }
                             navigateToPage(context, const DetailedPost());
                           },
                         ),
@@ -858,33 +887,11 @@ class _HomePageState extends State<HomePage> {
                   // Logic to save the post
                   SavedPostsCubit.get(context).savePost(
                     token:
-                    UserLoginCubit.get(context).loginModel!.refresh_token ??
-                        "",
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
                     postId: postDetails!.id,
                   );
                   Navigator.pop(context);
-                  (SavedPostsCubit.get(context).savedPostsResponse?.message ==
-                      "success")
-                      ? ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(
-                    backgroundColor: defaultColor,
-                    content: Text(
-                      'Post Saved',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ))
-                      : ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(
-                    backgroundColor: defaultColor,
-                    content: Text(
-                      'Post already saved',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ));
                 },
               ),
               ListTile(

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/states.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/models/CreatePostModel.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
@@ -12,6 +13,8 @@ class CreatePostCubit extends Cubit<CreatePostStates> {
   /// ----------------------- Create Posts API ------------------------
 
   CreatePostsResponse? createPostsResponse;
+  Post? createPostDetails;
+
   Future<void> createPost({
     required String content,
     List<Map<String, dynamic>>? attachments,
@@ -37,7 +40,6 @@ class CreatePostCubit extends Cubit<CreatePostStates> {
         token: token,
       );
 
-      print(createPostData.toString());
       emit(CreatePostSuccessState());
     }
     catch (error) {
