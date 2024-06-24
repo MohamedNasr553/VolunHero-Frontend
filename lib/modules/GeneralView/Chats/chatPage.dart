@@ -150,7 +150,7 @@ class _ChatsPageState extends State<ChatsPage> {
                   Container(
                     width: screenWidth,
                     height: screenHeight -
-                        ((screenHeight / 35) + 36 + screenHeight / 13.5),
+                        ((screenHeight / 30) + 36 + screenHeight / 13.5),
                     decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(40.0)),
@@ -294,83 +294,78 @@ class _ChatsPageState extends State<ChatsPage> {
               children: [
                 CircleAvatar(
                   radius: 25,
-                  child: Image.asset(
+                  backgroundImage: AssetImage(
                       "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}"),
                 ),
                 SizedBox(
-                  width: screenWidth / 30,
+                  width: 10,
                 ),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          (UserLoginCubit.get(context).loggedInUser!.id !=
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (UserLoginCubit.get(context).loggedInUser!.id !=
                                   chats[index].members[1].userId.id)
-                              ? "${chats[index].members[1].userId.userName}"
-                              : "${chats[index].members[0].userId.userName}",
-                          maxLines: 2,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: "Roboto",
-                            fontSize: 16,
+                                  ? "${chats[index].members[1].userId.userName}"
+                                  : "${chats[index].members[0].userId.userName}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: "Roboto",
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: screenWidth / 2.5,
-                          height: 1,
-                        ),
-                        Text(
-                          (chats[index].messages.length > 0)
-                              ? getFormatedTime(chats[index]
-                                      .messages[
-                                          chats[index].messages.length - 1]
-                                      .createdAt)
-                                  .toString()
-                              : "",
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            fontFamily: "Roboto",
-                            color: (chats.length == 1)
-                                ? HexColor("0BA3B9")
-                                : HexColor("888383"),
-                            fontWeight: (chats.length == 1)
-                                ? FontWeight.bold
-                                : FontWeight.w400,
+                          SizedBox(
+                            width: 10,
                           ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          ((chats[index].messages.length <= 0)
-                              ? "Tap to message"
-                              : chats[index]
-                                  .messages[chats[index].messages.length - 1]
-                                  .text),
-                          maxLines: 2,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: (chats.length == 1)
-                                ? FontWeight.bold
-                                : FontWeight.w400,
-                            fontFamily: "Roboto",
-                            color: HexColor("888383"),
-                          ),
+                          Text(
+                            (chats[index].messages.isNotEmpty)
+                                ? getFormatedTime(chats[index]
+                                .messages[chats[index].messages.length - 1]
+                                .createdAt)
+                                .toString()
+                                : "",
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontFamily: "Roboto",
+                              color: (chats.length == 1)
+                                  ? HexColor("0BA3B9")
+                                  : HexColor("888383"),
+                              fontWeight: (chats.length == 1)
+                                  ? FontWeight.bold
+                                  : FontWeight.w400,
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        (chats[index].messages.isEmpty)
+                            ? "Tap to message"
+                            : chats[index]
+                            .messages[chats[index].messages.length - 1]
+                            .text,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: (chats.length == 1)
+                              ? FontWeight.bold
+                              : FontWeight.w400,
+                          fontFamily: "Roboto",
+                          color: HexColor("888383"),
                         ),
-                        SizedBox(
-                          width: screenWidth / 1.6,
-                          height: 1,
-                        ),
-                      ],
-                    )
-                  ],
-                )
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
