@@ -700,42 +700,18 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildPostsList(context) {
+  Widget buildPostsList(BuildContext context) {
     var ownerPostsCubit = HomeLayoutCubit.get(context);
     var loginCubit = UserLoginCubit.get(context);
 
-    if (ownerPostsCubit.ownerPostsModel != null) {
-      if (ownerPostsCubit.ownerPostsModel!.newPosts.isNotEmpty) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
-                  if (ownerPostsModel != null) {
-                    if (index < ownerPostsModel.newPosts.length) {
-                      return buildPostItem(ownerPostsModel.newPosts[index],
-                          loginCubit.loggedInUserData!.doc, context);
-                    }
-                  }
-                  return const SizedBox(); // Return an empty SizedBox if no post is available
-                },
-                separatorBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                  ),
-                ),
-                itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
-              ),
-            ),
-          ],
-        );
-      } else {
-        return Container(
+    if (ownerPostsCubit.ownerPostsModel == null) {
+      return buildLoadingWidget(context);
+    }
+
+    if (ownerPostsCubit.ownerPostsModel!.newPosts.isEmpty) {
+      return Center(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14.0),
@@ -748,22 +724,44 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          child: const Center(
-            child: Text(
-              'No posts available',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+          child: const Text(
+            'No posts available',
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
+            textAlign: TextAlign.center,
           ),
-        );
-      }
-    } else {
-      return buildLoadingWidget(context);
+        ),
+      );
     }
+
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
+        if (ownerPostsModel != null) {
+          if (index < ownerPostsModel.newPosts.length) {
+            return buildPostItem(
+                ownerPostsModel.newPosts[index], loginCubit.loggedInUserData!.doc, context);
+          }
+        }
+        return const SizedBox(); // Return an empty SizedBox if no post is available
+      },
+      separatorBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Container(
+          width: double.infinity,
+          color: Colors.white,
+        ),
+      ),
+      itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
+    );
   }
+
+
 
   Widget buildPostItem(Posts? postDetails, LoggedInUser loggedInUser, context) {
     if (postDetails == null) {

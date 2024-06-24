@@ -4,45 +4,64 @@ class GetSavedPostsResponse {
 
   GetSavedPostsResponse({this.message, this.savedPosts});
 
-  GetSavedPostsResponse.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    if (json['savedPosts'] != null) {
-      savedPosts = <GetSavedPosts>[];
-      json['savedPosts'].forEach((v) {
-        savedPosts!.add(GetSavedPosts.fromJson(v));
-      });
-    }
+  factory GetSavedPostsResponse.fromJson(Map<String, dynamic> json) {
+    return GetSavedPostsResponse(
+      message: json['message'],
+      savedPosts: json['savedPosts'] != null
+          ? List<GetSavedPosts>.from(
+          json['savedPosts'].map((v) => GetSavedPosts.fromJson(v)))
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'message': message,
+      'savedPosts': savedPosts?.map((v) => v.toJson()).toList(),
+    };
   }
 }
 
 class GetSavedPosts {
-  String? id;
-  String? userId;
+  String id;
+  String userId;
   List<GetDetailedSavedPost>? posts;
-  String? createdAt;
-  String? updatedAt;
-  int? iV;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int iV;
 
-  GetSavedPosts(
-      {this.id,
-        this.userId,
-        this.posts,
-        this.createdAt,
-        this.updatedAt,
-        this.iV});
+  GetSavedPosts({
+    required this.id,
+    required this.userId,
+    required this.posts,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.iV,
+  });
 
-  GetSavedPosts.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    userId = json['userId'];
-    if (json['posts'] != null) {
-      posts = <GetDetailedSavedPost>[];
-      json['posts'].forEach((v) {
-        posts!.add(GetDetailedSavedPost.fromJson(v));
-      });
-    }
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    iV = json['__v'];
+  factory GetSavedPosts.fromJson(Map<String, dynamic> json) {
+    return GetSavedPosts(
+      id: json['_id'],
+      userId: json['userId'],
+      posts: json['posts'] != null
+          ? List<GetDetailedSavedPost>.from(
+          json['posts'].map((v) => GetDetailedSavedPost.fromJson(v)))
+          : null,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      iV: json['__v'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'userId': userId,
+      'posts': posts?.map((v) => v.toJson()).toList(),
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      '__v': iV,
+    };
   }
 }
 
@@ -52,8 +71,17 @@ class GetDetailedSavedPost {
 
   GetDetailedSavedPost({this.postId, this.sId});
 
-  GetDetailedSavedPost.fromJson(Map<String, dynamic> json) {
-    postId = json['postId'];
-    sId = json['_id'];
+  factory GetDetailedSavedPost.fromJson(Map<String, dynamic> json) {
+    return GetDetailedSavedPost(
+      postId: json['postId'],
+      sId: json['_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'postId': postId,
+      '_id': sId,
+    };
   }
 }

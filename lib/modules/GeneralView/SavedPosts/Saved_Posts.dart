@@ -10,7 +10,6 @@ import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
-import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
@@ -35,109 +34,141 @@ class _UserSavedPostsState extends State<SavedPosts> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-        listener: (context, states) {},
-        builder: (context, states) {
-          return BlocConsumer<HomeLayoutCubit, LayoutStates>(
-            listener: (context, states) {},
-            builder: (context, states) {
-              return BlocConsumer<SavedPostsCubit, SavedPostsStates>(
-                listener: (context, states) {},
-                builder: (context, states) {
-                  final homeCubit = HomeLayoutCubit.get(context);
-                  final loginCubit = UserLoginCubit.get(context);
-                  final savedPostsCubit = SavedPostsCubit.get(context);
+      listener: (context, states) {},
+      builder: (context, states) {
+        var screenHeight = MediaQuery.of(context).size.height;
+        var screenWidth = MediaQuery.of(context).size.width;
 
-                  return Scaffold(
+        return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+          listener: (context, states) {},
+          builder: (context, states) {
+            return BlocConsumer<SavedPostsCubit, SavedPostsStates>(
+              listener: (context, states) {},
+              builder: (context, states) {
+                final homeCubit = HomeLayoutCubit.get(context);
+                final loginCubit = UserLoginCubit.get(context);
+                final savedPostsCubit = SavedPostsCubit.get(context);
+
+                return Scaffold(
+                  backgroundColor: Colors.grey[200],
+                  appBar: AppBar(
                     backgroundColor: Colors.grey[200],
-                    appBar: AppBar(
-                      backgroundColor: Colors.grey[200],
-                      leading: IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/images/arrowLeft.svg',
-                        ),
-                        color: HexColor("858888"),
-                        onPressed: () {
-                          navigateAndFinish(
-                              context, const VolunHeroUserLayout());
-                        },
+                    leading: IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/images/arrowLeft.svg',
                       ),
-                      title: StrokeText(
-                        text: "Saved Posts",
-                        strokeColor: Colors.white,
-                        textStyle: TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Roboto",
-                            color: HexColor("296E6F")),
-                      ),
+                      color: HexColor("858888"),
+                      onPressed: () {
+                        navigateAndFinish(context, const VolunHeroUserLayout());
+                      },
                     ),
-                    body: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.separated(
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              final posts = savedPostsCubit
-                                  .getSavedPostsResponse?.savedPosts;
-                              if (posts != null && posts.isNotEmpty) {
-                                final detailedPosts = posts
-                                    .expand(
-                                        (savedPost) => savedPost.posts ?? [])
-                                    .toList();
+                    title: StrokeText(
+                      text: "Saved Posts",
+                      strokeColor: Colors.white,
+                      textStyle: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Roboto",
+                          color: HexColor("296E6F")),
+                    ),
+                  ),
+                  body: Column(
+                    children: [
+                      Expanded(
+                        child: Builder(
+                          builder: (context) {
+                            final posts = savedPostsCubit
+                                .getSavedPostsResponse?.savedPosts;
+                            if (posts != null && posts.isNotEmpty) {
+                              final detailedPosts = posts
+                                  .expand((savedPost) => savedPost.posts ?? [])
+                                  .toList();
 
-                                if (index < detailedPosts.length) {
-                                  final post = detailedPosts[index];
-                                  return buildPostItem(
-                                    homeCubit.ownerPostsModel!.newPosts[index],
-                                    post,
-                                    loginCubit.loggedInUserData!.doc,
-                                    context,
-                                  );
-                                }
-                              }
-                              const Center(
-                                child: Text(
-                                  "No Saved Posts",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16.0,
-                                    color: Colors.black87,
+                              if (detailedPosts.isNotEmpty) {
+                                return ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final post = detailedPosts[index];
+                                    return buildPostItem(
+                                      homeCubit.homePagePostsModel!
+                                          .modifiedPosts[index],
+                                      SavedPostsCubit.get(context)
+                                          .getSavedPosts,
+                                      post,
+                                      loginCubit.loggedInUserData!.doc,
+                                      context,
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) => Padding(
+                                    padding:
+                                        const EdgeInsetsDirectional.symmetric(
+                                            horizontal: 16),
+                                    child: Container(
+                                      width: double.infinity,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) => Padding(
-                              padding: const EdgeInsetsDirectional.symmetric(
-                                  horizontal: 16),
-                              child: Container(
-                                width: double.infinity,
-                                color: Colors.white,
+                                  itemCount: detailedPosts.length,
+                                );
+                              }
+                            }
+                            return Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                top: screenHeight / 30,
+                                start: screenWidth / 20,
+                                end: screenWidth / 15,
                               ),
-                            ),
-                            itemCount: savedPostsCubit
-                                    .getSavedPostsResponse?.savedPosts
-                                    ?.expand(
-                                        (savedPost) => savedPost.posts ?? [])
-                                    .length ??
-                                0,
-                          ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Save posts for later",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 24.0,
+                                      color: Colors.black87,
+                                      fontFamily: "Roboto",
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight / 150),
+                                  const Text(
+                                    "Don\'t let the good ones fly away! "
+                                    "Save Posts to easily find them again"
+                                    " in the future.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 11.0,
+                                      color: Colors.black38,
+                                      fontFamily: "Poppins",
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        });
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget buildPostItem(
-      Posts? postDetails,
+      ModifiedPost? postDetails,
+      GetSavedPosts? getSavedPost,
       GetDetailedSavedPost? getDetailedSavedPost,
       LoggedInUser loggedInUser,
       context) {
-    if (postDetails == null || getDetailedSavedPost == null) {
+    if (postDetails == null ||
+        getSavedPost == null ||
+        getDetailedSavedPost == null) {
       return const SizedBox();
     }
 
@@ -145,10 +176,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     // Handling Post Duration
-    DateTime? createdAt = postDetails.createdAt;
+    DateTime createdAt = getSavedPost.createdAt;
     String? durationText;
 
-    DateTime createdTime = createdAt;
+    DateTime? createdTime = createdAt;
     DateTime timeNow = DateTime.now();
     Duration difference = timeNow.difference(createdTime);
 
@@ -169,16 +200,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
       child: GestureDetector(
         onTap: () {
           final token = UserLoginCubit.get(context).loginModel?.refresh_token;
-          final postId = postDetails.id;
           if (token != null) {
             HomeLayoutCubit.get(context).getPostId(
               token: token,
-              postId: postId,
+              postId: getDetailedSavedPost.postId!,
             );
             if (postDetails.commentsCount > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
-                postId: postId,
+                postId: getDetailedSavedPost.postId!,
               );
             }
           }
@@ -245,18 +275,18 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         } else {
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token,
-                              id: postDetails.createdBy.id)
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
+                                  id: postDetails.createdBy.id)
                               .then((value) {
                             UserLoginCubit.get(context)
                                 .getAnotherUserPosts(
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token,
-                                id: postDetails.createdBy.id,
-                                userName: postDetails.createdBy.userName)
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
+                                    id: postDetails.createdBy.id,
+                                    userName: postDetails.createdBy.userName)
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
@@ -269,14 +299,18 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       child: CircleAvatar(
                         radius: 20.0,
                         backgroundImage: (() {
-                          final modifiedPost = HomeLayoutCubit.get(context).modifiedPost;
+                          final modifiedPost =
+                              HomeLayoutCubit.get(context).modifiedPost;
                           if (modifiedPost != null) {
                             final createdBy = modifiedPost.createdBy;
-                            if (createdBy != null && createdBy.profilePic != null) {
-                              return NetworkImage(createdBy.profilePic!.secure_url) as ImageProvider;
+                            if (createdBy.profilePic != null) {
+                              return NetworkImage(
+                                      createdBy.profilePic!.secure_url)
+                                  as ImageProvider;
                             }
                           }
-                          return const AssetImage("assets/images/nullProfile.png");
+                          return const AssetImage(
+                              "assets/images/nullProfile.png");
                         })(),
                       ),
                     ),
@@ -292,10 +326,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             } else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: postDetails.createdBy.id)
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token,
+                                      id: postDetails.createdBy.id)
                                   .then((value) {
                                 UserLoginCubit.get(context).anotherUser =
                                     HomeLayoutCubit.get(context).anotherUser;
@@ -337,8 +371,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     const Spacer(),
                     IconButton(
                       onPressed: () => _showProfilePageBottomSheet(
-                          postDetails,
-                          loggedInUser),
+                          getDetailedSavedPost, loggedInUser),
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -569,7 +602,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
+                                  postId: getDetailedSavedPost.postId!,
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
@@ -584,7 +617,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
+                                  postId: getDetailedSavedPost.postId!,
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
@@ -597,7 +630,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             "Like",
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
+                                  postId: getDetailedSavedPost.postId!,
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
@@ -613,7 +646,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           "Share",
                           onTap: () {
                             HomeLayoutCubit.get(context).sharePost(
-                                postId: postDetails.id,
+                                postId: getDetailedSavedPost.postId!,
                                 token: UserLoginCubit.get(context)
                                         .loginModel!
                                         .refresh_token ??
@@ -671,7 +704,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
   }
 
   void _showProfilePageBottomSheet(
-      Posts? postDetails, LoggedInUser loggedInUser) {
+      GetDetailedSavedPost? getDetailedSavedPost, LoggedInUser loggedInUser) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -715,8 +748,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   // Logic to remove saved post
                   SavedPostsCubit.get(context).removeSavedPost(
                     token:
-                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-                    postId: postDetails!.id,
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
+                    postId: getDetailedSavedPost!.postId!,
                   );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
