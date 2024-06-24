@@ -32,13 +32,22 @@ class _UserSavedPostsState extends State<SavedPosts> {
   int _currentImageIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    if (UserLoginCubit.get(context).loginModel!.refresh_token != null &&
+        UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
+      SavedPostsCubit.get(context).getAllSavedPosts(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, states) {},
       builder: (context, states) {
         var screenHeight = MediaQuery.of(context).size.height;
         var screenWidth = MediaQuery.of(context).size.width;
-
         return BlocConsumer<HomeLayoutCubit, LayoutStates>(
           listener: (context, states) {},
           builder: (context, states) {
@@ -77,38 +86,30 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       Expanded(
                         child: Builder(
                           builder: (context) {
-                            final posts = savedPostsCubit
-                                .getSavedPostsResponse?.savedPosts;
-                            if (posts != null && posts.isNotEmpty) {
-                              final detailedPosts = posts
-                                  .expand((savedPost) => savedPost.posts ?? [])
-                                  .toList();
-
-                              if (detailedPosts.isNotEmpty) {
+                            final posts = savedPostsCubit.getDetailedSavedPosts;
+                            if (posts != null) {
+                              if (savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
                                 return ListView.separated(
                                   physics: const BouncingScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    final post = detailedPosts[index];
-                                    return buildPostItem(
-                                      homeCubit.homePagePostsModel!
-                                          .modifiedPosts[index],
-                                      SavedPostsCubit.get(context)
-                                          .getSavedPosts,
-                                      post,
+                                    return buildSavedPostItem(
+                                      homeCubit.homePagePostsModel!.modifiedPosts[index],
+                                      SavedPostsCubit.get(context).getSavedPosts,
+                                      savedPostsCubit.getDetailedSavedPosts!,
                                       loginCubit.loggedInUserData!.doc,
                                       context,
                                     );
                                   },
                                   separatorBuilder: (context, index) => Padding(
                                     padding:
-                                        const EdgeInsetsDirectional.symmetric(
-                                            horizontal: 16),
+                                    const EdgeInsetsDirectional.symmetric(
+                                        horizontal: 16),
                                     child: Container(
                                       width: double.infinity,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  itemCount: detailedPosts.length,
+                                  itemCount: savedPostsCubit.detailedSavedPosts!.length,
                                 );
                               }
                             }
@@ -133,9 +134,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                   ),
                                   SizedBox(height: screenHeight / 150),
                                   const Text(
-                                    "Don\'t let the good ones fly away! "
-                                    "Save Posts to easily find them again"
-                                    " in the future.",
+                                    "Don't let the good ones fly away! "
+                                        "Save Posts to easily find them again"
+                                        " in the future.",
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 11.0,
@@ -160,18 +161,18 @@ class _UserSavedPostsState extends State<SavedPosts> {
     );
   }
 
-  Widget buildPostItem(
-      ModifiedPost? postDetails,
+  Widget buildSavedPostItem(
+      ModifiedPost? specificPost,
       GetSavedPosts? getSavedPost,
       GetDetailedSavedPost? getDetailedSavedPost,
       LoggedInUser loggedInUser,
       context) {
-    if (postDetails == null ||
+    if (specificPost == null ||
         getSavedPost == null ||
         getDetailedSavedPost == null) {
       return const SizedBox();
     }
-
+    print("Post id el gy le save: ${specificPost.id}");
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -199,13 +200,14 @@ class _UserSavedPostsState extends State<SavedPosts> {
       padding: EdgeInsets.all(screenWidth / 50),
       child: GestureDetector(
         onTap: () {
+          print("Post ID le detailed post: $getDetailedSavedPost.postId!");
           final token = UserLoginCubit.get(context).loginModel?.refresh_token;
           if (token != null) {
             HomeLayoutCubit.get(context).getPostId(
               token: token,
               postId: getDetailedSavedPost.postId!,
             );
-            if (postDetails.commentsCount > 0) {
+            if (specificPost.commentsCount > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
                 postId: getDetailedSavedPost.postId!,
@@ -237,56 +239,29 @@ class _UserSavedPostsState extends State<SavedPosts> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                (postDetails.createdBy.userName != loggedInUser.userName)
-                    ? Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          start: screenWidth / 70,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.turn_right_outlined,
-                              color: Colors.grey,
-                              size: 18.0,
-                            ),
-                            SizedBox(width: screenWidth / 50),
-                            const Text(
-                              "reposted this",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(height: 1),
-                SizedBox(height: screenHeight / 80),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     InkWell(
                       onTap: () {
-                        if (postDetails.createdBy.id ==
+                        if (specificPost.createdBy.id ==
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: postDetails.createdBy.id)
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token,
+                              id: specificPost.createdBy.id)
                               .then((value) {
                             UserLoginCubit.get(context)
                                 .getAnotherUserPosts(
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token,
-                                    id: postDetails.createdBy.id,
-                                    userName: postDetails.createdBy.userName)
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                                id: specificPost.createdBy.id,
+                                userName: specificPost.createdBy.userName)
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
@@ -298,20 +273,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
-                        backgroundImage: (() {
-                          final modifiedPost =
-                              HomeLayoutCubit.get(context).modifiedPost;
-                          if (modifiedPost != null) {
-                            final createdBy = modifiedPost.createdBy;
-                            if (createdBy.profilePic != null) {
-                              return NetworkImage(
-                                      createdBy.profilePic!.secure_url)
-                                  as ImageProvider;
-                            }
-                          }
-                          return const AssetImage(
-                              "assets/images/nullProfile.png");
-                        })(),
+                        backgroundImage: specificPost.createdBy.profilePic != null
+                            ? NetworkImage(specificPost.createdBy.profilePic!.secure_url) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
                     SizedBox(width: screenWidth / 50),
@@ -320,16 +284,16 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       children: [
                         InkWell(
                           onTap: () {
-                            if (postDetails.createdBy.id ==
+                            if (specificPost.createdBy.id ==
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
                             } else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
-                                      token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token,
-                                      id: postDetails.createdBy.id)
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
+                                  id: specificPost.createdBy.id)
                                   .then((value) {
                                 UserLoginCubit.get(context).anotherUser =
                                     HomeLayoutCubit.get(context).anotherUser;
@@ -339,7 +303,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             }
                           },
                           child: Text(
-                            postDetails.createdBy.userName,
+                            specificPost.createdBy.userName,
                             style: const TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 14,
@@ -361,9 +325,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                               ),
                             ),
                             const SizedBox(width: 2),
-                            SvgPicture.asset(
-                              'assets/images/earthIcon.svg',
-                            ),
+                            SvgPicture.asset('assets/images/earthIcon.svg'),
                           ],
                         )
                       ],
@@ -372,15 +334,11 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     IconButton(
                       onPressed: () => _showProfilePageBottomSheet(
                           getDetailedSavedPost, loggedInUser),
-                      icon: SvgPicture.asset(
-                        'assets/images/postSettings.svg',
-                      ),
+                      icon: SvgPicture.asset('assets/images/postSettings.svg'),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: SvgPicture.asset(
-                        'assets/images/closePost.svg',
-                      ),
+                      icon: SvgPicture.asset('assets/images/closePost.svg'),
                     ),
                   ],
                 ),
@@ -395,29 +353,29 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Post Content
-                      postDetails.content != null
+                      specificPost.content != null
                           ? Text(
-                              postDetails.content,
-                              maxLines:
-                                  (postDetails.attachments) != null ? 6 : 10,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontFamily: "Robot",
-                                fontSize: 13.0,
-                              ),
-                            )
+                        specificPost.content,
+                        maxLines:
+                        (specificPost.attachments) != null ? 6 : 10,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: "Robot",
+                          fontSize: 13.0,
+                        ),
+                      )
                           : const SizedBox(height: 0),
 
                       SizedBox(height: screenHeight / 100),
 
                       /// Post Attachments
-                      if (postDetails.attachments != null &&
-                          postDetails.attachments!.isNotEmpty)
-                        // check if there's more than one
-                        if (postDetails.attachments!.length > 1)
+                      if (specificPost.attachments != null &&
+                          specificPost.attachments!.isNotEmpty)
+                      // check if there's more than one
+                        if (specificPost.attachments!.length > 1)
                           CarouselSlider(
                             carouselController: carouselController,
-                            items: postDetails.attachments!.map((attachment) {
+                            items: specificPost.attachments!.map((attachment) {
                               return Image(
                                 image: NetworkImage(attachment.secure_url),
                                 width: double.infinity,
@@ -440,13 +398,13 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         else
                           Image(
                             image: NetworkImage(
-                                postDetails.attachments![0].secure_url),
+                                specificPost.attachments![0].secure_url),
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: (postDetails.attachments ?? [])
+                        children: (specificPost.attachments ?? [])
                             .asMap()
                             .entries
                             .map((entry) {
@@ -481,96 +439,96 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   child: Row(
                     children: [
                       /// Post Likes
-                      (postDetails.likesCount) > 0
+                      (specificPost.likesCount) > 0
                           ? IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/NewLikeColor.svg',
-                                width: 22.0,
-                                height: 22.0,
-                              ),
-                            )
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                        icon: SvgPicture.asset(
+                          'assets/images/NewLikeColor.svg',
+                          width: 22.0,
+                          height: 22.0,
+                        ),
+                      )
                           : Container(),
-                      (postDetails.likesCount > 0)
+                      (specificPost.likesCount > 0)
                           ? Text(
-                              '${postDetails.likesCount}',
+                        '${specificPost.likesCount}',
+                        style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 12,
+                          color: HexColor("575757"),
+                        ),
+                      )
+                          : Container(),
+                      const Spacer(),
+
+                      /// Post Comments
+                      if (specificPost.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${specificPost.commentsCount} Comment',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (specificPost.likesCount > 0 &&
+                          specificPost.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${specificPost.commentsCount} Comment',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (specificPost.likesCount > 0 &&
+                            specificPost.commentsCount > 1)
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: screenWidth / 50,
+                              end: screenWidth / 50,
+                            ),
+                            child: Text(
+                              '${specificPost.commentsCount} Comments',
                               style: TextStyle(
                                 fontFamily: "Roboto",
                                 fontSize: 12,
                                 color: HexColor("575757"),
                               ),
-                            )
-                          : Container(),
-                      const Spacer(),
-
-                      /// Post Comments
-                      if (postDetails.commentsCount == 1)
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: screenWidth / 50,
-                            end: screenWidth / 50,
-                            bottom: screenHeight / 50,
-                          ),
-                          child: Text(
-                            '${postDetails.commentsCount} Comment',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
                             ),
-                          ),
-                        )
-                      else if (postDetails.likesCount > 0 &&
-                          postDetails.commentsCount == 1)
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: screenWidth / 50,
-                            end: screenWidth / 50,
-                          ),
-                          child: Text(
-                            '${postDetails.commentsCount} Comment',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
+                          )
+                        else if (specificPost.commentsCount == 0)
+                            Container()
+                          else
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: screenWidth / 50,
+                                end: screenWidth / 50,
+                                bottom: screenHeight / 50,
+                              ),
+                              child: Text(
+                                '${specificPost.commentsCount} Comments',
+                                style: TextStyle(
+                                  fontFamily: "Roboto",
+                                  fontSize: 12,
+                                  color: HexColor("575757"),
+                                ),
+                              ),
                             ),
-                          ),
-                        )
-                      else if (postDetails.likesCount > 0 &&
-                          postDetails.commentsCount > 1)
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: screenWidth / 50,
-                            end: screenWidth / 50,
-                          ),
-                          child: Text(
-                            '${postDetails.commentsCount} Comments',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          ),
-                        )
-                      else if (postDetails.commentsCount == 0)
-                        Container()
-                      else
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: screenWidth / 50,
-                            end: screenWidth / 50,
-                            bottom: screenHeight / 50,
-                          ),
-                          child: Text(
-                            '${postDetails.commentsCount} Comments',
-                            style: TextStyle(
-                              fontFamily: "Roboto",
-                              fontSize: 12,
-                              color: HexColor("575757"),
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                 ),
@@ -594,33 +552,33 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (postDetails.likesCount > 0 &&
-                            loggedInUser.id != postDetails.createdBy.id)
+                        if (specificPost.likesCount > 0 &&
+                            loggedInUser.id != specificPost.createdBy.id)
                           postSubComponent(
                             "assets/images/NewLikeColor.svg",
                             " Like",
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: getDetailedSavedPost.postId!,
+                                  postId: specificPost.id,
                                   token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
+                                      .loginModel!
+                                      .refresh_token ??
                                       "");
                             },
                           )
-                        else if (postDetails.likesCount > 0 &&
-                            loggedInUser.id == postDetails.createdBy.id)
+                        else if (specificPost.likesCount > 0 &&
+                            loggedInUser.id == specificPost.createdBy.id)
                           postSubComponent(
                             "assets/images/NewLikeColor.svg",
                             " Like",
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: getDetailedSavedPost.postId!,
+                                  postId: specificPost.id,
                                   token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
+                                      .loginModel!
+                                      .refresh_token ??
                                       "");
                             },
                           )
@@ -630,10 +588,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             "Like",
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: getDetailedSavedPost.postId!,
+                                  postId: specificPost.id,
                                   token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
+                                      .loginModel!
+                                      .refresh_token ??
                                       "");
                             },
                           ),
@@ -644,25 +602,25 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
-                          onTap: () {
-                            HomeLayoutCubit.get(context).sharePost(
-                                postId: getDetailedSavedPost.postId!,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: defaultColor,
-                                content: Text(
-                                  'Post is shared',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
+                          // onTap: () {
+                          //   HomeLayoutCubit.get(context).sharePost(
+                          //       postId: getDetailedSavedPost.postId!,
+                          //       token: UserLoginCubit.get(context)
+                          //           .loginModel!
+                          //           .refresh_token ??
+                          //           "");
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     const SnackBar(
+                          //       backgroundColor: defaultColor,
+                          //       content: Text(
+                          //         'Post is shared',
+                          //         style: TextStyle(
+                          //           fontSize: 12.0,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   );
+                          // },
                         ),
                       ],
                     ),
@@ -678,8 +636,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
+        Color color = const Color(0xFF575757),
+        FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -746,11 +704,12 @@ class _UserSavedPostsState extends State<SavedPosts> {
                 ),
                 onTap: () {
                   // Logic to remove saved post
+                  print("Post id el hytms7 mn el save: ${getDetailedSavedPost!.postId!}");
                   SavedPostsCubit.get(context).removeSavedPost(
                     token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
-                            "",
-                    postId: getDetailedSavedPost!.postId!,
+                    UserLoginCubit.get(context).loginModel!.refresh_token ??
+                        "",
+                    postId: getDetailedSavedPost.postId!,
                   );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

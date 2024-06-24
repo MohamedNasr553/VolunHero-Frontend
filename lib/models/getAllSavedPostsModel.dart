@@ -58,8 +58,8 @@ class GetSavedPosts {
       '_id': id,
       'userId': userId,
       'posts': posts?.map((v) => v.toJson()).toList(),
-      'createdAt': createdAt?.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       '__v': iV,
     };
   }
@@ -67,21 +67,21 @@ class GetSavedPosts {
 
 class GetDetailedSavedPost {
   String? postId;
-  String? sId;
+  String? id;
 
-  GetDetailedSavedPost({this.postId, this.sId});
+  GetDetailedSavedPost({this.postId, this.id});
 
   factory GetDetailedSavedPost.fromJson(Map<String, dynamic> json) {
     return GetDetailedSavedPost(
       postId: json['postId'],
-      sId: json['_id'],
+      id: json['_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'postId': postId,
-      '_id': sId,
+      '_id': id,
     };
   }
 }

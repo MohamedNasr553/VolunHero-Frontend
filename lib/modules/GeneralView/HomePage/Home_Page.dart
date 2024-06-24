@@ -271,6 +271,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildPostsList(context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     var homeCubit = HomeLayoutCubit.get(context);
     var loggedInUserCubit = UserLoginCubit.get(context);
 
@@ -297,7 +298,6 @@ class _HomePageState extends State<HomePage> {
                             );
                           }
                         }
-                        return const Text("No Posts Available");
                       },
                       separatorBuilder: (context, index) => Padding(
                         padding: const EdgeInsetsDirectional.symmetric(
@@ -316,10 +316,45 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         );
-      } else {
-        return const Center(child: Text('No posts available'));
       }
-    } else {
+      else {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.post_add,
+                size: 60,
+                color: Colors.black54,
+              ),
+              SizedBox(height: screenHeight / 100),
+              const Text(
+                "No posts available right now",
+                style: TextStyle(
+                  fontSize: 19.0,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "Roboto",
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: screenHeight / 200),
+              const Text(
+                "Posts "
+                    "and attachments will "
+                    "show up here.",
+                style: TextStyle(
+                  fontSize: 11.0,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: "Roboto",
+                  color: Colors.black38,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+    else {
       return buildLoadingWidget(context);
     }
   }
@@ -491,7 +526,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () => _showHomePageBottomSheet(postDetails),
+                      onPressed: () {
+                        _showHomePageBottomSheet(postDetails);
+                      },
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -844,7 +881,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showHomePageBottomSheet(ModifiedPost? postDetails) {
+  void _showHomePageBottomSheet(ModifiedPost? modifiedPost) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -884,12 +921,13 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 onTap: () {
+                  print("Post id el hyroh le save: ${modifiedPost!.id}");
                   // Logic to save the post
                   SavedPostsCubit.get(context).savePost(
                     token:
                         UserLoginCubit.get(context).loginModel!.refresh_token ??
                             "",
-                    postId: postDetails!.id,
+                    postId: modifiedPost.id,
                   );
                   Navigator.pop(context);
                 },

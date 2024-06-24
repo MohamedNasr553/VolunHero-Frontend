@@ -6,19 +6,14 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
-import 'package:flutter_code/models/LoggedInUserModel.dart';
-import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
-import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../GeneralView/Chats/chatPage.dart';
 
 class AnotherUserProfile extends StatefulWidget {
   const AnotherUserProfile({super.key});
@@ -34,11 +29,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    UserLoginCubit.get(context).getLoggedInUserData(
-        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     HomeLayoutCubit.get(context).getAnotherUserData(
         token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-        id: '');
+        id: HomeLayoutCubit.get(context).modifiedPost?.createdBy.id ?? "");
   }
 
   @override
@@ -66,11 +59,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Profile and Cover photo
+                // Profile Pic
                 Stack(
                   children: [
-                    // Cover Photo
-                    // Cover Photo
                     Container(
                       height: screenHeight / 7.5,
                       width: double.infinity,
@@ -107,14 +98,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         children: [
                           CircleAvatar(
                             radius: 45.0,
-                            backgroundImage: (HomeLayoutCubit.get(context)
-                                        .modifiedPost
-                                        ?.createdBy
-                                        .profilePic ==
-                                    null)
-                                ? AssetImage('assets/images/nullProfile.png')
-                                : AssetImage(
-                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic}'),
+                            backgroundImage: HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic != null
+                                ? NetworkImage(HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic!.secure_url) as ImageProvider
+                                : const AssetImage("assets/images/nullProfile.png"),
                           ),
                           GestureDetector(
                             onTap: () {},
@@ -137,7 +123,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     ),
                   ],
                 ),
-                // Username & UserEmail
+                // Username & Email
                 Padding(
                   padding: EdgeInsetsDirectional.only(
                     start: screenWidth / 30,
@@ -152,8 +138,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             children: [
                               Text(
                                 UserLoginCubit.get(context)
-                                        .anotherUser
-                                        ?.firstName ??
+                                    .anotherUser
+                                    ?.firstName ??
                                     " ",
                                 style: TextStyle(
                                   fontSize: 18.0,
@@ -246,7 +232,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         .getAnotherUserFollowers();
                                   });
                                 });
-                                //   showToast(text: UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id).toString(), state: ToastStates.SUCCESS);
                               },
                               child: (UserLoginCubit.get(context).inFollowing(
                                           followId: UserLoginCubit.get(context)
@@ -263,19 +248,19 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         padding: const EdgeInsets.all(6.0),
                                         child: Center(
                                           child: (state is! FollowLoadingState)
-                                              ? (Text(
+                                              ? (const Text(
                                                   "Follow",
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ))
-                                              : Center(
-                                                  child: Container(
+                                              : const Center(
+                                                  child: SizedBox(
                                                     width: 20,
                                                     height: 20,
                                                     child:
-                                                        CircularProgressIndicator(
+                                                    CircularProgressIndicator(
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -293,7 +278,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         child: Center(
                                             child:
                                                 (state is! FollowLoadingState)
-                                                    ? (Text(
+                                                    ? (const Text(
                                                         "Following",
                                                         style: TextStyle(
                                                           color: Colors.white,
@@ -301,8 +286,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                                               FontWeight.w600,
                                                         ),
                                                       ))
-                                                    : Center(
-                                                        child: Container(
+                                                    : const Center(
+                                                        child: SizedBox(
                                                           width: 20,
                                                           height: 20,
                                                           child:
@@ -313,7 +298,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                                       )),
                                       ),
                                     ))),
-                      SizedBox(width: 2),
+                      const SizedBox(width: 2),
                       Expanded(
                           child: InkWell(
                         onTap: () async {
@@ -447,15 +432,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             padding: const EdgeInsets.all(6.0),
                             child: Center(
                               child: ((state is! CreateChatLoadingState)
-                                  ? Text(
+                                  ? const Text(
                                       "message",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     )
-                                  : Center(
-                                      child: Container(
+                                  : const Center(
+                                      child: SizedBox(
                                         width: 20,
                                         height: 20,
                                         child: CircularProgressIndicator(
@@ -466,10 +451,12 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             ),
                           ),
                         ),
-                      )),
+                      ),
+                      ),
                     ],
                   ),
                 ),
+                /// Posts, Following and Followers Count
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
@@ -503,9 +490,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: screenHeight / 100,
-                          ),
+                          SizedBox(height: screenHeight / 100),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -514,7 +499,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "0",
+                                        "${UserLoginCubit.get(context).anotherUserPostsResponse?.posts.length ?? " "}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -523,28 +508,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       ),
                                       Text(
                                         "Posts",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${UserLoginCubit.get(context).anotherUser?.followers.length ?? 0}",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Followers",
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -567,6 +530,28 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       ),
                                       Text(
                                         "Following",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "${UserLoginCubit.get(context).anotherUser?.followers.length ?? 0}",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.black.withOpacity(0.7),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Followers",
                                         style: TextStyle(
                                           fontSize: 14.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -606,9 +591,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          const Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Personal Details",
                                 style: TextStyle(
                                   color: Colors.black,
@@ -630,9 +615,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   'assets/images/Specification.svg',
                                 ),
                               ),
-                              SizedBox(
-                                width: screenWidth / 30,
-                              ),
+                              SizedBox(width: screenWidth / 30),
                               SizedBox(
                                   width: screenWidth / 1.5,
                                   child: Row(
@@ -673,9 +656,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               )
                             ],
                           ),
-                          SizedBox(
-                            height: screenHeight / 70,
-                          ),
+                          SizedBox(height: screenHeight / 70),
                           const Text(
                             "Contact Info",
                             style: TextStyle(
@@ -704,44 +685,63 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     ),
                   ),
                 ),
-                // Create post
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 10.0,
-                          spreadRadius: -5.0,
-                          offset: const Offset(
-                              10.0, 10.0), // Right and bottom shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Posts",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                // Posts
+                if (UserLoginCubit.get(context).anotherUserPostsResponse !=
+                    null &&
+                    UserLoginCubit.get(context).anotherUserPostsResponse!.posts.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.all(screenWidth / 60),
+                    child: Container(
+                      height: screenHeight / 10,
+                      width: screenWidth,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            blurRadius: 10.0,
+                            spreadRadius: -5.0,
+                            offset: const Offset(10.0, 10.0),
                           ),
-                          SizedBox(height: screenHeight / 100),
-                          Container(
-                            height: 1,
-                            color: Colors.grey.shade300,
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.post_add,
+                            size: 28,
+                            color: Colors.black54,
+                          ),
+                          SizedBox(height: screenHeight / 200),
+                          const Text(
+                            "No Posts Available",
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Roboto",
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight / 300),
+                          const Text(
+                            "Posts "
+                                "and attachments will "
+                                "show up here.",
+                            style: TextStyle(
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Poppins",
+                              color: Colors.black38,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                // Posts
+                  )
+                else
                 (state is! GetAnotherUserPostsLoadingState)
                     ? SizedBox(
                         height: screenHeight,
@@ -832,8 +832,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   }
 
   Widget buildAnotherUserPostsList(context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     var cubit = UserLoginCubit.get(context);
-    print(cubit.anotherUserPostsResponse);
 
     if (cubit.anotherUserPostsResponse != null) {
       if (cubit.anotherUserPostsResponse!.posts.isNotEmpty) {
@@ -843,10 +844,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
               child: ListView.separated(
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  //  final anotherUserPostsModel = cubit.anotherUserPostsResponse;
                   if (cubit.anotherUserPostsResponse != null) {
-                    if (index < cubit.anotherUserPostsResponse!.posts.length &&
-                        cubit.anotherUserPostsResponse!.posts[index] != null) {
+                    if (index < cubit.anotherUserPostsResponse!.posts.length) {
                       CreatedBy createdBy = CreatedBy(
                           id: cubit.anotherUser!.id,
                           userName: cubit.anotherUserPostsResponse!.posts[index]
@@ -895,7 +894,58 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
           ],
         );
       } else {
-        return const Center(child: Text('No posts available'));
+        return Padding(
+          padding: EdgeInsets.all(screenWidth / 60),
+          child: Container(
+            height: screenHeight / 10,
+            width: screenWidth,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 10.0,
+                  spreadRadius: -5.0,
+                  offset: const Offset(10.0, 10.0),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.post_add,
+                  size: 28,
+                  color: Colors.black54,
+                ),
+                SizedBox(height: screenHeight / 200),
+                const Text(
+                  "No Posts Available",
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Roboto",
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: screenHeight / 300),
+                const Text(
+                  "Posts "
+                      "and attachments will "
+                      "show up here.",
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Poppins",
+                    color: Colors.black38,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       }
     } else {
       return buildLoadingWidget(context);
@@ -1231,7 +1281,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return Container(
+        return SizedBox(
           height: screenHeight / 3,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

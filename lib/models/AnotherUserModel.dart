@@ -20,6 +20,28 @@ class AnotherUser {
   final List<dynamic> followers;
   final String updatedAt;
 
+  AnotherUser({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.userName,
+    required this.slugUserName,
+    required this.email,
+    required this.phone,
+    required this.role,
+    this.profilePic,
+    this.coverPic,
+    required this.images,
+    required this.DOB,
+    required this.address,
+    required this.gender,
+    required this.locations,
+    required this.specification,
+    required this.attachments,
+    required this.following,
+    required this.followers,
+    required this.updatedAt,
+  });
 
   factory AnotherUser.fromJson(Map<String, dynamic> json) {
     return AnotherUser(
@@ -45,29 +67,6 @@ class AnotherUser {
       updatedAt: json['updatedAt'],
     );
   }
-
-  AnotherUser({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.userName,
-    required this.slugUserName,
-    required this.email,
-    required this.phone,
-    required this.role,
-    this.profilePic,
-    this.coverPic,
-    required this.images,
-    required this.DOB,
-    required this.address,
-    required this.gender,
-    required this.locations,
-    required this.specification,
-    required this.attachments,
-    required this.following,
-    required this.followers,
-    required this.updatedAt,
-  });
 
   @override
   String toString() {

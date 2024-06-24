@@ -67,25 +67,19 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<void> getLoggedInUserData({required String? token}) async {
     try {
-      print("token in get logged in user: ");
-      print(token);
-      print("token in get logged in user: ");
       emit(GetLoggedInUserLoadingState());
 
       var value = await DioHelper.getData(
         url: GET_USER,
         token: token,
       );
-      print(value);
 
       loggedInUserModel = LoggedInUserModel.fromJson(value.data);
       loggedInUserData = loggedInUserModel?.data;
       loggedInUser = loggedInUserData?.doc;
 
-      print(loggedInUser.toString());
       emit(GetLoggedInUserSuccessState());
     } catch (error) {
-      print('Error: $error');
 
       emit(GetLoggedInUserErrorState(error.toString()));
     }
@@ -102,26 +96,11 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }) async {
     try {
       emit(UpdateLoggedInUserLoadingState());
-      Map<String, dynamic> requestData = {
-        'firstName': firstName,
-        'lastName': lastName,
-        'userName': userName,
-        'phone': phone,
-        'address': address,
-      };
-      print(requestData.toString());
 
-      var value = await DioHelper.patchData(
-        url: UPDATE_USER,
-        token: token,
-        data: requestData,
-      );
 
-      print(value);
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
       emit(UpdateLoggedInUserErrorState(error.toString()));
-      print('Error updating user data: $error');
     }
   }
 
@@ -135,7 +114,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         if(userChat[i].id == chatId){
           selectedChat = userChat[i];
           getLoggedInChats(token: loginModel!.refresh_token);
-          print("assigned");
           emit(RefreshMessagesSuccessState());
         }
       }
@@ -148,22 +126,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String secondId,
 
   }) async {
-    Map<String, dynamic> requestData = {
-
-      'secondId': secondId
-    };
 
     try {
       emit(CreateChatLoadingState());
-      var response = await DioHelper.postData(
-          url: CREATE_CHAT,
-          data: requestData,
-          token: loginModel!.refresh_token
-      ).then((value) async {
-      emit(CreateChatSuccessState());
-
-
-      });
 
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
@@ -181,29 +146,11 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String token,
     required Chat? chat
   }) async {
-    Map<String, dynamic> requestData = {
-      'chatId': chatId,
-      'senderId': senderId,
-      'text': text,
-    };
-    print(text);
-    print(chatId);
-    print(senderId);
 
     try {
       emit(CreateMessageLoadingState());
-      var response = await DioHelper.postData(
-        url: CREATE_MSG,
-        data: requestData,
-        token: token
-      ).then((value) async {
-
-      });
 
       // Assuming DioHelper.postData returns the response directly
-      print("this is response of msg");
-      print(response.data);
-      print("this is response of msg");
       // After sending the message successfully, refresh the chat page
 
       return "Message sent successfully";
@@ -238,7 +185,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
             // print("   ");
             // print(value.data);
              MessageResponse messageResponse = MessageResponse.fromJson(value.data);
-             chats[i].messages = messageResponse!.messages;
+             chats[i].messages = messageResponse.messages;
              //print(chats[i].messages);
           }).catchError((error){
 
@@ -246,13 +193,11 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         }
         emit(GetLoggedInUserChatsSuccessState());
       }).catchError((error) {
-        print(error.toString());
         emit(GetLoggedInUserChatsErrorState(error.toString()));
       });
 
     } catch (error) {
       emit(GetLoggedInUserChatsErrorState(error.toString()));
-      print(error.toString());
     }
     return "";
   }
@@ -263,7 +208,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     // id bat3 elanother
     for (int i = 0; i < loggedInUser!.following.length; i++) {
       if (loggedInUser!.following[i]["userId"] == followId) {
-        print("3amelo follow y3m");
         return true;
       }
     }
@@ -274,28 +218,14 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       {required String? token, required String? followId}) async {
     try {
       emit(FollowLoadingState());
-      var value;
 
       if (inFollowing(followId: followId) == false) {
-        value = await DioHelper.patchData(
-          url: "/users/${followId}/makefollow",
-          token: token,
-        );
         emit(FollowSuccessState());
       } else {
-        value = await DioHelper.patchData(
-          url: "/users/${followId}/makeunfollow",
-          token: token,
-        );
         emit(UnFollowSuccessState());
       }
-      print("message el follow");
-      print(value.data["message"] == "success");
-      print(inFollowing(followId: followId));
-      print("message el follow");
     } catch (error) {
       emit(FollowErrorState());
-      print('Error: $error');
     }
   }
 
@@ -311,34 +241,25 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangeFollowState());
   }
 
-
-
   //---------------- another user posts endpoints----------------------------
   AnotherUserPostsResponse? anotherUserPostsResponse;
+  PostWrapper? postWrapper;
 
   Future<void> getAnotherUserPosts({required String? token,required String userName,required String id}) async {
 
     DioHelper.getData(
-      url: "/users/${userName}/${id}/post",
+      url: "/users/$userName/$id/post",
       token: token,
     ).then((value) {
       emit(GetAnotherUserPostsLoadingState());
 
       anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(value.data);
-      print("inside the endpoint function");
-      print(anotherUserPostsResponse);
+
      }).catchError((error) {
-      print(error.toString());
+
       emit(GetAnotherUserPostsErrorState(error));
     });
   }
-
-  // --------------------- Get messages--------------------------
-
-
-
-
-
 }
 
 

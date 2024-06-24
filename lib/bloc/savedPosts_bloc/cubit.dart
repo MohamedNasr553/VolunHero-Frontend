@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
 import 'package:flutter_code/models/savePostModel.dart';
+import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
@@ -10,11 +11,12 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
 
   static SavedPostsCubit get(context) => BlocProvider.of(context);
 
-  /// ----------------------- Save Posts API ------------------------
+  SavedPostsResponse? getSavedPostsResponse;
+  GetSavedPosts? getSavedPosts;
+  GetDetailedSavedPost? getDetailedSavedPosts;
+  List<GetDetailedSavedPost>? detailedSavedPosts = [];
 
-  SavedPostsResponse? savedPostsResponse;
-  SavedPost? savedPost;
-
+  /// ----------------------- Save Post API ------------------------
   void savePost({
     required String token,
     required String postId,
@@ -31,64 +33,53 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       emit(SavedPostsSuccessState());
       getAllSavedPosts(token: token);
     } catch (error) {
-      print('Error Creating Post: $error');
-
       emit(SavedPostsErrorState());
     }
   }
 
   /// ----------------------- Get All Saved Posts API ------------------------
-
-  GetSavedPostsResponse? getSavedPostsResponse;
-  GetSavedPosts? getSavedPosts;
-  GetDetailedSavedPost? getDetailedSavedPost;
-
   void getAllSavedPosts({
     required String token,
   }) async {
     emit(GetAllSavedPostsLoadingState());
 
     try {
-      final value = await DioHelper.getData(
+      final response = await DioHelper.getData(
         url: SAVED_POSTS,
         token: token,
       );
 
-      getSavedPostsResponse = GetSavedPostsResponse.fromJson(value.data);
+      getSavedPostsResponse = SavedPostsResponse.fromJson(response.data);
+      detailedSavedPosts = getSavedPostsResponse?.savedPosts
+          .expand<GetDetailedSavedPost>((savedPost) =>
+      savedPost.posts.map((post) => post as GetDetailedSavedPost))
+          .toList() ?? [];
 
-      getSavedPosts = getSavedPostsResponse?.savedPosts?.isNotEmpty == true
-          ? getSavedPostsResponse!.savedPosts!.first
-          : null;
-      getDetailedSavedPost = getSavedPosts?.posts?.isNotEmpty == true
-          ? getSavedPosts!.posts!.first
-          : null;
 
       emit(GetAllSavedPostsSuccessState());
     } catch (error) {
       print(error.toString());
-
       emit(GetAllSavedPostsErrorState());
     }
   }
 
-  /// ----------------------- Remove Saved Posts API -------------------------
+  /// ----------------------- Remove Saved Post API ------------------------
   void removeSavedPost({
     required String token,
     required String postId,
-  }) {
+  }) async {
     emit(RemovePostLoadingState());
 
-    DioHelper.deleteData(
-      url: "/savedPosts/$postId",
-      token: token,
-    ).then((value) {
+    try {
+      await DioHelper.deleteData(
+        url: "/savedPosts/$postId",
+        token: token,
+      );
+
       emit(RemovePostSuccessState());
-
       getAllSavedPosts(token: token);
-    }).catchError((error) {
-      print(error.toString());
-
+    } catch (error) {
       emit(RemovePostErrorState());
-    });
+    }
   }
 }

@@ -161,7 +161,6 @@ class _DetailedPostState extends State<DetailedPost> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-
                           /// Profile Pic
                           CircleAvatar(
                             radius: 20.0,
@@ -173,7 +172,6 @@ class _DetailedPostState extends State<DetailedPost> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               /// Username
                               InkWell(
                                 onTap: () {
@@ -683,8 +681,8 @@ class _DetailedPostState extends State<DetailedPost> {
             /// Profile Pic
             CircleAvatar(
               radius: 20.0,
-              backgroundImage: (commentModel.createdBy.profilePic != null)
-                  ? AssetImage(commentModel.createdBy.profilePic!)
+              backgroundImage: commentModel.createdBy.profilePic != null
+                  ? NetworkImage(commentModel.createdBy.profilePic!.secure_url!) as ImageProvider
                   : const AssetImage("assets/images/nullProfile.png"),
             ),
             SizedBox(width: screenWidth / 40),

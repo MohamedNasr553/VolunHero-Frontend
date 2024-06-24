@@ -46,7 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var postController = TextEditingController();
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
@@ -136,22 +135,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   CircleAvatar(
                                     radius: 45.0,
-                                    backgroundImage: (() {
-                                      final modifiedPost =
-                                          HomeLayoutCubit.get(context)
-                                              .modifiedPost;
-                                      if (modifiedPost != null) {
-                                        final createdBy =
-                                            modifiedPost.createdBy;
-                                        if (createdBy.profilePic != null) {
-                                          return NetworkImage(createdBy
-                                              .profilePic!
-                                              .secure_url) as ImageProvider;
-                                        }
-                                      }
-                                      return const AssetImage(
-                                          "assets/images/nullProfile.png");
-                                    })(),
+                                    backgroundImage: HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic != null
+                                        ? NetworkImage(HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic!.secure_url) as ImageProvider
+                                        : const AssetImage("assets/images/nullProfile.png"),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
@@ -315,7 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "${(UserLoginCubit.get(context).loggedInUser!.followers.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                                "${(UserLoginCubit.get(context).loggedInUser!.followers.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
                                                 style: TextStyle(
                                                   fontSize: 16.0,
                                                   color: Colors.black
@@ -339,7 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "${(UserLoginCubit.get(context).loggedInUser!.following.length >= 1) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                                "${(UserLoginCubit.get(context).loggedInUser!.following.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
                                                 style: TextStyle(
                                                   fontSize: 16.0,
                                                   color: Colors.black
@@ -520,92 +506,135 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         // Create post
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 10.0,
-                                  spreadRadius: -5.0,
-                                  offset: const Offset(
-                                      10.0, 10.0), // Right and bottom shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Your Posts",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  SizedBox(height: screenHeight / 100),
-                                  Container(
-                                    height: 1,
-                                    color: Colors.grey.shade300,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(left: screenWidth / 20),
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            navigateToPage(
-                                                context, const CreatePost());
-                                          },
-                                          child: Container(
-                                            width: screenWidth / 1.5,
-                                            child: TextFormField(
-                                              controller: postController,
-                                              decoration: const InputDecoration(
-                                                hintText:
-                                                    "What's on your mind ?",
-                                                hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 14.0,
-                                                ),
-                                                border: InputBorder
-                                                    .none, // Hide the border line
-                                              ),
-                                              maxLines: null,
-                                            ),
-                                          ),
-                                        ),
-                                        const Spacer(),
-                                        IconButton(
-                                          // Upload photo from device Gallery
-                                          onPressed: _uploadPhoto,
-                                          icon: Image.asset(
-                                            'assets/images/Img_box_duotone_line.png',
-                                            width: 25.0,
-                                            height: 25.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                        GestureDetector(
+                          onTap: (){
+                            HomeLayoutCubit.get(context)
+                                .changeBottomNavBar(2);
+                            navigateAndFinish(
+                                context, const VolunHeroUserLayout());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 10.0,
+                                    spreadRadius: -5.0,
+                                    offset: const Offset(
+                                        10.0, 10.0), // Right and bottom shadow
                                   ),
                                 ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Your Posts",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                    SizedBox(height: screenHeight / 100),
+                                    Container(
+                                      height: 1,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    Padding(
+                                      padding:
+                                      EdgeInsets.only(left: screenWidth / 20),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: screenWidth / 1.5,
+                                            child: const Text(
+                                              "What's on your mind ?",
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14.0,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          IconButton(
+                                            onPressed: (){},
+                                            icon: Image.asset(
+                                              'assets/images/Img_box_duotone_line.png',
+                                              width: 25.0,
+                                              height: 25.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                         // Posts
                         if (HomeLayoutCubit.get(context).ownerPostsModel !=
-                                null &&
-                            HomeLayoutCubit.get(context)
-                                .ownerPostsModel!
-                                .newPosts
-                                .isEmpty)
-                          const Center(child: Text("No Posts Available"))
+                              null &&
+                            HomeLayoutCubit.get(context).ownerPostsModel!
+                                .newPosts.isEmpty)
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth / 60),
+                            child: Container(
+                              height: screenHeight / 10,
+                              width: screenWidth,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(14.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    blurRadius: 10.0,
+                                    spreadRadius: -5.0,
+                                    offset: const Offset(10.0, 10.0),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.post_add,
+                                    size: 28,
+                                    color: Colors.black54,
+                                  ),
+                                  SizedBox(height: screenHeight / 200),
+                                  const Text(
+                                    "No Posts Available",
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Roboto",
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight / 300),
+                                  const Text(
+                                    "Your Posts "
+                                        "and attachments will "
+                                        "show up here.",
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Poppins",
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                         else
                           (state is! OwnerPostsLoadingState)
                               ? SizedBox(
@@ -708,35 +737,6 @@ class _ProfilePageState extends State<ProfilePage> {
       return buildLoadingWidget(context);
     }
 
-    if (ownerPostsCubit.ownerPostsModel!.newPosts.isEmpty) {
-      return Center(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                blurRadius: 10.0,
-                spreadRadius: -5.0,
-                offset: const Offset(10.0, 10.0),
-              ),
-            ],
-          ),
-          child: const Text(
-            'No posts available',
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
-
     return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -760,8 +760,6 @@ class _ProfilePageState extends State<ProfilePage> {
       itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
     );
   }
-
-
 
   Widget buildPostItem(Posts? postDetails, LoggedInUser loggedInUser, context) {
     if (postDetails == null) {
@@ -869,7 +867,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (postDetails.createdBy.id ==
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
-                        } else {
+                        }
+                        else {
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
                                   token: UserLoginCubit.get(context)
@@ -897,7 +896,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         radius: 20.0,
                         backgroundImage: (postDetails.createdBy.profilePic !=
                                 null)
-                            ? AssetImage(postDetails.createdBy.profilePic!)
+                            ? NetworkImage(postDetails.createdBy.profilePic!) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -910,7 +909,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             if (postDetails.createdBy.id ==
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
-                            } else {
+                            }
+                            else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
                                       token: UserLoginCubit.get(context)

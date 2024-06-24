@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/models/AddCommentModel.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/EditPostModel.dart';
@@ -135,10 +136,8 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(HomePagePostsLoadingState());
       homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
 
-      print('Parsed HomePagePostsModel: $homePagePostsModel'.toString());
       emit(HomePagePostsSuccessState());
     }).catchError((error) {
-      print(error.toString());
       emit(HomePagePostsErrorState());
     });
   }
@@ -158,8 +157,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getPostById = GetPostById.fromJson(value.data);
       getCommentById(token: token, postId: postId);
     }).catchError((error) {
-      print(error.toString());
-
       emit(GetPostByIdErrorState());
     });
   }
@@ -179,8 +176,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(GetCommentSuccessState());
       // print("Comments parsed: $getCommentsResponse".toString());
     }).catchError((error) {
-      print(error.toString());
-
       emit(GetCommentErrorState());
     });
   }
@@ -209,8 +204,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(AddCommentSuccessState());
       getPostId(token: token, postId: postId);
     } catch (error) {
-      print('Error Creating Comment: $error');
-
       emit(AddCommentErrorState());
     }
   }
@@ -233,8 +226,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getOwnerPosts(token: token);
       getPostId(token: token, postId: postId);
     }).catchError((error) {
-      print(error.toString());
-
       emit(DeleteCommentErrorState());
     });
   }
@@ -246,7 +237,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     emit(ChangeLikePostState());
   }
 
-  void likePost({required String token, required String postId}) {
+  void likePost({required String token, required String postId, context}) {
     emit(LikePostLoadingState());
 
     DioHelper.patchData(
@@ -257,11 +248,10 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
       getAllPosts(token: token);
       getOwnerPosts(token: token);
+      SavedPostsCubit.get(context).getAllSavedPosts(token: token);
       // getAnotherUserData(token: token, id: postId);
       getPostId(token: token, postId: postId);
     }).catchError((error) {
-      print(error.toString());
-
       emit(LikePostErrorState());
     });
   }
@@ -280,8 +270,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getAllPosts(token: token);
       getOwnerPosts(token: token);
     }).catchError((error) {
-      print(error.toString());
-
       emit(DeletePostErrorState());
     });
   }
@@ -299,8 +287,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getAllPosts(token: token);
       getOwnerPosts(token: token);
     }).catchError((error) {
-      print(error.toString());
-
       emit(SharePostErrorState());
     });
   }
@@ -329,10 +315,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       );
 
       emit(EditPostSuccessState());
-    }
-    catch (error) {
-      print('Error editing the post: $error');
-
+    } catch (error) {
       emit(EditPostErrorState());
     }
   }
@@ -349,10 +332,8 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       emit(OwnerPostsLoadingState());
       ownerPostsModel = OwnerPostsResponse.fromJson(value.data);
 
-      print('Parsed OwnerPostsModel: $ownerPostsModel'.toString());
       emit(OwnerPostsSuccessState());
     }).catchError((error) {
-      print(error.toString());
       emit(OwnerPostsErrorState());
     });
   }
@@ -361,28 +342,23 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
 
   AnotherUser? anotherUser;
 
-  Future<void> getAnotherUserData(
-      {required String? token, required String? id}) async {
+  Future<void> getAnotherUserData({
+    required String? token,
+    required String? id,
+  }) async {
     try {
       emit(GetAnotherUserDataLoadingState());
       var value = await DioHelper.getData(
         url: "/users/$id",
         token: token,
       );
-      print("el another user: ");
-      print(value);
-      print("el another user: ");
 
-      if (value != null) {
-        // Parse the JSON response and assign it to the 'anotherUser' variable
-        anotherUser = AnotherUser.fromJson(value.data["data"]["doc"]);
-        // Now you can access the details of the user through 'anotherUser'
-        print(anotherUser);
-        emit(GetAnotherUserDataSuccessState());
-      }
+      // Parse the JSON response and assign it to the 'anotherUser' variable
+      anotherUser = AnotherUser.fromJson(value.data["data"]["doc"]);
+      // Now you can access the details of the user through 'anotherUser'
+      emit(GetAnotherUserDataSuccessState());
     } catch (error) {
       emit(GetAnotherUserDataErrorState());
-      print('Error: $error');
     }
   }
 }

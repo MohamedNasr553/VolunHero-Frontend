@@ -30,8 +30,8 @@ class AnotherUserPostsResponse {
 
 class PostWrapper {
   String id;
-  User userId;
-  Post? post;
+  AnotherUserData userId;
+  AnotherUserPost? post;
   DateTime createdAt;
   DateTime updatedAt;
   int v;
@@ -48,8 +48,8 @@ class PostWrapper {
   factory PostWrapper.fromJson(Map<String, dynamic> json) {
     return PostWrapper(
       id: json['_id'],
-      userId: User.fromJson(json['userId']),
-      post: json['post'] != null ? Post.fromJson(json['post']) : null,
+      userId: AnotherUserData.fromJson(json['userId']),
+      post: json['post'] != null ? AnotherUserPost.fromJson(json['post']) : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'],
@@ -73,21 +73,21 @@ class PostWrapper {
   }
 }
 
-class User {
+class AnotherUserData {
   String id;
   String userName;
   String role;
   String? profilePic;
 
-  User({
+  AnotherUserData({
     required this.id,
     required this.userName,
     required this.role,
     this.profilePic,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory AnotherUserData.fromJson(Map<String, dynamic> json) {
+    return AnotherUserData(
       id: json['_id'],
       userName: json['userName'],
       role: json['role'],
@@ -110,7 +110,7 @@ class User {
   }
 }
 
-class Post {
+class AnotherUserPost {
   String id;
   String content;
   String specification;
@@ -126,7 +126,7 @@ class Post {
   DateTime updatedAt;
   int v;
 
-  Post({
+  AnotherUserPost({
     required this.id,
     required this.content,
     required this.specification,
@@ -143,14 +143,14 @@ class Post {
     required this.v,
   });
 
-  factory Post.fromJson(Map<String, dynamic> json) {
+  factory AnotherUserPost.fromJson(Map<String, dynamic> json) {
     var attachmentsList = json['attachments'] as List<dynamic>? ?? [];
     List<Attachment> attachments = attachmentsList.map((attachmentJson) => Attachment.fromJson(attachmentJson)).toList();
 
     var likesList = json['likes'] as List<dynamic>;
     List<Like> likes = likesList.map((likeJson) => Like.fromJson(likeJson)).toList();
 
-    return Post(
+    return AnotherUserPost(
       id: json['_id'],
       content: json['content'],
       specification: json['specification'],

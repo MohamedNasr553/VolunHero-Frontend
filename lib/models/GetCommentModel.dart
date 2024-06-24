@@ -60,7 +60,7 @@ class CreatedBy {
   String id;
   String userName;
   String role;
-  String? profilePic;
+  ProfilePic? profilePic;
 
   CreatedBy({
     required this.id,
@@ -74,7 +74,24 @@ class CreatedBy {
       id: json['_id'],
       userName: json['userName'],
       role: json['role'],
-      profilePic: json['profilePic'],
+      profilePic: json['profilePic'] != null ? ProfilePic.fromJson(json['profilePic']) : null,
+    );
+  }
+}
+
+class ProfilePic {
+  String secure_url;
+  String public_id;
+
+  ProfilePic({
+    required this.secure_url,
+    required this.public_id,
+  });
+
+  factory ProfilePic.fromJson(Map<String, dynamic> json) {
+    return ProfilePic(
+      secure_url: json['secure_url'],
+      public_id: json['public_id'],
     );
   }
 }
