@@ -21,15 +21,20 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   }) async {
     try {
       emit(SavedPostsLoadingState());
-
+      print("Mn elsaved function: $postId");
       await DioHelper.postData(
         url: "/savedPosts/$postId",
         data: {},
         token: token,
-      );
+      ).then((value) {
+        print("ksldfjghl;skdfjgkl;dfsg");
+        print(value);
+        print("ksldfjghl;skdfjgkl;dfsg");
+        getAllSavedPosts(token: token);
+      });
 
       emit(SavedPostsSuccessState());
-      getAllSavedPosts(token: token);
+
     } catch (error) {
       emit(SavedPostsErrorState());
     }
@@ -41,7 +46,7 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   GetSavedPosts? getSavedPosts;
   GetDetailedSavedPost? getDetailedSavedPost;
 
-  void getAllSavedPosts({required String token}) async {
+  Future<void> getAllSavedPosts({required String token}) async {
     emit(GetAllSavedPostsLoadingState());
 
     try {

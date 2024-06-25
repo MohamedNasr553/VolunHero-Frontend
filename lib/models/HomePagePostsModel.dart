@@ -57,7 +57,10 @@ class ModifiedPost {
     required this.liked,
     required this.v,
   });
-
+  @override
+  String toString() {
+    return 'Modified Post: {$id : $content}';
+  }
   factory ModifiedPost.fromJson(Map<String, dynamic> json) {
     var attachments = <Attachment>[];
     if (json.containsKey('attachments') && json['attachments'] != null) {

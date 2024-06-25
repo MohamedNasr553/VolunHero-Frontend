@@ -101,11 +101,23 @@ class _UserSavedPostsState extends State<SavedPosts> {
         child: Column(
           children: [
             ListView.separated(
+              reverse: true,
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
+                List<ModifiedPost> postsList =  homeCubit.homePagePostsModel!.modifiedPosts;
+                ModifiedPost? modifiedPost;
+                for(int i=0;i<postsList.length;i++){
+                    if(postsList[i].id == savedPostsCubit.getSavedPosts!.posts![index].postId){
+                      print("********************");
+                      print(postsList[i]);
+                      print("********************");
+                      print(savedPostsCubit.getSavedPosts!.posts![index]);
+                      modifiedPost = postsList[i];
+                    }
+                }
                 return buildSavedPostItem(
-                  homeCubit.homePagePostsModel!.modifiedPosts[index],
+                  modifiedPost,
                   // SavedPostsCubit.get(context).getSavedPosts,
                   savedPostsCubit.getSavedPosts!.posts![index],
                   // savedPostsCubit.getDetailedSavedPost,

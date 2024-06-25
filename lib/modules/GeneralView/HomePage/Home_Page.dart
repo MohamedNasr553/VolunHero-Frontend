@@ -291,6 +291,7 @@ class _HomePageState extends State<HomePage> {
                         final homePagePostsModel = homeCubit.homePagePostsModel;
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
+
                             return buildPostItem(
                               homePagePostsModel.modifiedPosts[index],
                               loggedInUserCubit.loggedInUserData!.doc,
@@ -364,7 +365,6 @@ class _HomePageState extends State<HomePage> {
     if (postDetails == null) {
       return const SizedBox();
     }
-
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -527,6 +527,8 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
                     IconButton(
                       onPressed: () {
+                        print("Modified to be saved: ");
+                        print(postDetails);
                         _showHomePageBottomSheet(postDetails);
                       },
                       icon: SvgPicture.asset(
@@ -921,13 +923,14 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 onTap: () {
-                  print("Post id el hyroh le save: ${modifiedPost!.id}");
+                  print("Modified to be saved: ");
+                  print(modifiedPost);
                   // Logic to save the post
                   SavedPostsCubit.get(context).savePost(
                     token:
                         UserLoginCubit.get(context).loginModel!.refresh_token ??
                             "",
-                    postId: modifiedPost.id,
+                    postId: modifiedPost!.id,
                   );
                   Navigator.pop(context);
                 },
