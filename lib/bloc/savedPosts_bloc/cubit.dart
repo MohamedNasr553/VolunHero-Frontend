@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
 import 'package:flutter_code/models/savePostModel.dart';
-import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
@@ -11,12 +10,11 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
 
   static SavedPostsCubit get(context) => BlocProvider.of(context);
 
-  SavedPostsResponse? getSavedPostsResponse;
-  GetSavedPosts? getSavedPosts;
-  GetDetailedSavedPost? getDetailedSavedPosts;
-  List<GetDetailedSavedPost>? detailedSavedPosts = [];
-
   /// ----------------------- Save Post API ------------------------
+
+  SavedPostsResponse? savedPostsResponse;
+  SavedPost? savedPost;
+
   void savePost({
     required String token,
     required String postId,
@@ -38,9 +36,12 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   }
 
   /// ----------------------- Get All Saved Posts API ------------------------
-  void getAllSavedPosts({
-    required String token,
-  }) async {
+
+  GetSavedPostsResponse? getSavedPostsResponse;
+  GetSavedPosts? getSavedPosts;
+  GetDetailedSavedPost? getDetailedSavedPost;
+
+  void getAllSavedPosts({required String token}) async {
     emit(GetAllSavedPostsLoadingState());
 
     try {
@@ -49,19 +50,26 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
         token: token,
       );
 
-      getSavedPostsResponse = SavedPostsResponse.fromJson(response.data);
-      detailedSavedPosts = getSavedPostsResponse?.savedPosts
-          .expand<GetDetailedSavedPost>((savedPost) =>
-      savedPost.posts.map((post) => post as GetDetailedSavedPost))
-          .toList() ?? [];
+      // API response
+      print("API Response: ${response.data.toString()}");
 
+      // Parse the API response
+      getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
 
-      emit(GetAllSavedPostsSuccessState());
+      if (getSavedPostsResponse != null && getSavedPostsResponse!.savedPosts!.isNotEmpty) {
+        getSavedPosts = getSavedPostsResponse!.savedPosts![0];
+
+        print("Parsed Saved Posts Count: ${getSavedPosts!.posts!.length}");
+
+        emit(GetAllSavedPostsSuccessState());
+      }
     } catch (error) {
-      print(error.toString());
+      print("Error fetching saved posts: $error");
+
       emit(GetAllSavedPostsErrorState());
     }
   }
+
 
   /// ----------------------- Remove Saved Post API ------------------------
   void removeSavedPost({

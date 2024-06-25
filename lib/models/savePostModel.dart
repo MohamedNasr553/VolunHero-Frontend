@@ -9,7 +9,8 @@ class SavedPostsResponse {
 
   factory SavedPostsResponse.fromJson(Map<String, dynamic> json) {
     var savedPostsList = json['savedPosts'] as List<dynamic>;
-    List<SavedPost> posts = savedPostsList.map((postJson) => SavedPost.fromJson(postJson)).toList();
+    List<SavedPost> posts =
+        savedPostsList.map((postJson) => SavedPost.fromJson(postJson)).toList();
 
     return SavedPostsResponse(
       message: json['message'],
@@ -42,7 +43,8 @@ class SavedPost {
 
   factory SavedPost.fromJson(Map<String, dynamic> json) {
     var postsList = json['posts'] as List<dynamic>;
-    List<Post> posts = postsList.map((postJson) => Post.fromJson(postJson)).toList();
+    List<Post> posts =
+        postsList.map((postJson) => Post.fromJson(postJson)).toList();
 
     return SavedPost(
       id: json['_id'],

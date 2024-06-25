@@ -44,28 +44,20 @@ class _UserSavedPostsState extends State<SavedPosts> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (context, states) {},
-      builder: (context, states) {
-        var screenHeight = MediaQuery.of(context).size.height;
-        var screenWidth = MediaQuery.of(context).size.width;
+      listener: (context, state) {},
+      builder: (context, state) {
         return BlocConsumer<HomeLayoutCubit, LayoutStates>(
-          listener: (context, states) {},
-          builder: (context, states) {
+          listener: (context, state) {},
+          builder: (context, state) {
             return BlocConsumer<SavedPostsCubit, SavedPostsStates>(
-              listener: (context, states) {},
-              builder: (context, states) {
-                final homeCubit = HomeLayoutCubit.get(context);
-                final loginCubit = UserLoginCubit.get(context);
-                final savedPostsCubit = SavedPostsCubit.get(context);
-
+              listener: (context, state) {},
+              builder: (context, state) {
                 return Scaffold(
                   backgroundColor: Colors.grey[200],
                   appBar: AppBar(
                     backgroundColor: Colors.grey[200],
                     leading: IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/images/arrowLeft.svg',
-                      ),
+                      icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
                       color: HexColor("858888"),
                       onPressed: () {
                         navigateAndFinish(context, const VolunHeroUserLayout());
@@ -75,83 +67,16 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       text: "Saved Posts",
                       strokeColor: Colors.white,
                       textStyle: TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Roboto",
-                          color: HexColor("296E6F")),
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Roboto",
+                        color: HexColor("296E6F"),
+                      ),
                     ),
                   ),
-                  body: Column(
-                    children: [
-                      Expanded(
-                        child: Builder(
-                          builder: (context) {
-                            final posts = savedPostsCubit.getDetailedSavedPosts;
-                            if (posts != null) {
-                              if (savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
-                                return ListView.separated(
-                                  physics: const BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return buildSavedPostItem(
-                                      homeCubit.homePagePostsModel!.modifiedPosts[index],
-                                      SavedPostsCubit.get(context).getSavedPosts,
-                                      savedPostsCubit.getDetailedSavedPosts!,
-                                      loginCubit.loggedInUserData!.doc,
-                                      context,
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) => Padding(
-                                    padding:
-                                    const EdgeInsetsDirectional.symmetric(
-                                        horizontal: 16),
-                                    child: Container(
-                                      width: double.infinity,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  itemCount: savedPostsCubit.detailedSavedPosts!.length,
-                                );
-                              }
-                            }
-                            return Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                top: screenHeight / 30,
-                                start: screenWidth / 20,
-                                end: screenWidth / 15,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Save posts for later",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 24.0,
-                                      color: Colors.black87,
-                                      fontFamily: "Roboto",
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight / 150),
-                                  const Text(
-                                    "Don't let the good ones fly away! "
-                                        "Save Posts to easily find them again"
-                                        " in the future.",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 11.0,
-                                      color: Colors.black38,
-                                      fontFamily: "Poppins",
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  body: (state is! SavedPostsLoadingState)
+                      ? buildSavePostList(context)
+                      : const SizedBox(),
                 );
               },
             );
@@ -161,23 +86,102 @@ class _UserSavedPostsState extends State<SavedPosts> {
     );
   }
 
+  Widget buildSavePostList(context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    final homeCubit = HomeLayoutCubit.get(context);
+    final loginCubit = UserLoginCubit.get(context);
+    final savedPostsCubit = SavedPostsCubit.get(context);
+
+    // print("ListView Length: ${savedPostsCubit.getSavedPosts!.posts!.length}");
+    // Checks if getDetailedSavedPost is NotEmpty
+    if (savedPostsCubit.getSavedPosts!.posts != null &&
+        savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return buildSavedPostItem(
+                  homeCubit.homePagePostsModel!.modifiedPosts[index],
+                  // SavedPostsCubit.get(context).getSavedPosts,
+                  savedPostsCubit.getSavedPosts!.posts![index],
+                  // savedPostsCubit.getDetailedSavedPost,
+                  loginCubit.loggedInUserData!.doc,
+                  context,
+                );
+              },
+              separatorBuilder: (context, index) => Padding(
+                padding: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 16,
+                ),
+                child: Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                ),
+              ),
+              itemCount: savedPostsCubit.getSavedPosts!.posts!.length,
+            ),
+          ],
+        ),
+      );
+    }
+    // Handle no saved posts
+    else {
+      return Padding(
+        padding: EdgeInsetsDirectional.only(
+          top: screenHeight / 30,
+          start: screenWidth / 20,
+          end: screenWidth / 15,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Save posts for later",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 24.0,
+                color: Colors.black87,
+                fontFamily: "Roboto",
+              ),
+            ),
+            SizedBox(height: screenHeight / 150),
+            const Text(
+              "Don't let the good ones fly away! "
+              "Save Posts to easily find them again"
+              " in the future.",
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 11.0,
+                color: Colors.black38,
+                fontFamily: "Poppins",
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   Widget buildSavedPostItem(
-      ModifiedPost? specificPost,
-      GetSavedPosts? getSavedPost,
-      GetDetailedSavedPost? getDetailedSavedPost,
-      LoggedInUser loggedInUser,
-      context) {
-    if (specificPost == null ||
-        getSavedPost == null ||
-        getDetailedSavedPost == null) {
+    ModifiedPost? modifiedPost,
+    GetDetailedSavedPost? getDetailedSavedPost,
+    LoggedInUser loggedInUser,
+    context,
+  ) {
+    if (modifiedPost == null || getDetailedSavedPost == null) {
       return const SizedBox();
     }
-    print("Post id el gy le save: ${specificPost.id}");
+    print("---------- Post id el gy le save: ${modifiedPost.id} -----------");
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     // Handling Post Duration
-    DateTime createdAt = getSavedPost.createdAt;
+    DateTime? createdAt = modifiedPost.createdAt;
     String? durationText;
 
     DateTime? createdTime = createdAt;
@@ -200,14 +204,14 @@ class _UserSavedPostsState extends State<SavedPosts> {
       padding: EdgeInsets.all(screenWidth / 50),
       child: GestureDetector(
         onTap: () {
-          print("Post ID le detailed post: $getDetailedSavedPost.postId!");
+          print("Post ID le detailed post: ${getDetailedSavedPost.postId!}");
           final token = UserLoginCubit.get(context).loginModel?.refresh_token;
           if (token != null) {
             HomeLayoutCubit.get(context).getPostId(
               token: token,
               postId: getDetailedSavedPost.postId!,
             );
-            if (specificPost.commentsCount > 0) {
+            if (modifiedPost.commentsCount > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
                 postId: getDetailedSavedPost.postId!,
@@ -244,24 +248,24 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (specificPost.createdBy.id ==
+                        if (modifiedPost.createdBy.id ==
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token,
-                              id: specificPost.createdBy.id)
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
+                                  id: modifiedPost.createdBy.id)
                               .then((value) {
                             UserLoginCubit.get(context)
                                 .getAnotherUserPosts(
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token,
-                                id: specificPost.createdBy.id,
-                                userName: specificPost.createdBy.userName)
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
+                                    id: modifiedPost.createdBy.id,
+                                    userName: modifiedPost.createdBy.userName)
                                 .then((value) {
                               UserLoginCubit.get(context).anotherUser =
                                   HomeLayoutCubit.get(context).anotherUser;
@@ -273,8 +277,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
-                        backgroundImage: specificPost.createdBy.profilePic != null
-                            ? NetworkImage(specificPost.createdBy.profilePic!.secure_url) as ImageProvider
+                        backgroundImage: modifiedPost.createdBy.profilePic !=
+                                null
+                            ? NetworkImage(modifiedPost.createdBy.profilePic!
+                                .secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -284,16 +290,16 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       children: [
                         InkWell(
                           onTap: () {
-                            if (specificPost.createdBy.id ==
+                            if (modifiedPost.createdBy.id ==
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
                             } else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: specificPost.createdBy.id)
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token,
+                                      id: modifiedPost.createdBy.id)
                                   .then((value) {
                                 UserLoginCubit.get(context).anotherUser =
                                     HomeLayoutCubit.get(context).anotherUser;
@@ -303,7 +309,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             }
                           },
                           child: Text(
-                            specificPost.createdBy.userName,
+                            modifiedPost.createdBy.userName,
                             style: const TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 14,
@@ -353,29 +359,29 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Post Content
-                      specificPost.content != null
+                      modifiedPost.content != null
                           ? Text(
-                        specificPost.content,
-                        maxLines:
-                        (specificPost.attachments) != null ? 6 : 10,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: "Robot",
-                          fontSize: 13.0,
-                        ),
-                      )
+                              modifiedPost.content,
+                              maxLines:
+                                  (modifiedPost.attachments) != null ? 6 : 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: "Robot",
+                                fontSize: 13.0,
+                              ),
+                            )
                           : const SizedBox(height: 0),
 
                       SizedBox(height: screenHeight / 100),
 
                       /// Post Attachments
-                      if (specificPost.attachments != null &&
-                          specificPost.attachments!.isNotEmpty)
-                      // check if there's more than one
-                        if (specificPost.attachments!.length > 1)
+                      if (modifiedPost.attachments != null &&
+                          modifiedPost.attachments!.isNotEmpty)
+                        // check if there's more than one
+                        if (modifiedPost.attachments!.length > 1)
                           CarouselSlider(
                             carouselController: carouselController,
-                            items: specificPost.attachments!.map((attachment) {
+                            items: modifiedPost.attachments!.map((attachment) {
                               return Image(
                                 image: NetworkImage(attachment.secure_url),
                                 width: double.infinity,
@@ -398,13 +404,13 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         else
                           Image(
                             image: NetworkImage(
-                                specificPost.attachments![0].secure_url),
+                                modifiedPost.attachments![0].secure_url),
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: (specificPost.attachments ?? [])
+                        children: (modifiedPost.attachments ?? [])
                             .asMap()
                             .entries
                             .map((entry) {
@@ -439,31 +445,31 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   child: Row(
                     children: [
                       /// Post Likes
-                      (specificPost.likesCount) > 0
+                      (modifiedPost.likesCount) > 0
                           ? IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          'assets/images/NewLikeColor.svg',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      )
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/NewLikeColor.svg',
+                                width: 22.0,
+                                height: 22.0,
+                              ),
+                            )
                           : Container(),
-                      (specificPost.likesCount > 0)
+                      (modifiedPost.likesCount > 0)
                           ? Text(
-                        '${specificPost.likesCount}',
-                        style: TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 12,
-                          color: HexColor("575757"),
-                        ),
-                      )
+                              '${modifiedPost.likesCount}',
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 12,
+                                color: HexColor("575757"),
+                              ),
+                            )
                           : Container(),
                       const Spacer(),
 
                       /// Post Comments
-                      if (specificPost.commentsCount == 1)
+                      if (modifiedPost.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
@@ -471,7 +477,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             bottom: screenHeight / 50,
                           ),
                           child: Text(
-                            '${specificPost.commentsCount} Comment',
+                            '${modifiedPost.commentsCount} Comment',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -479,15 +485,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (specificPost.likesCount > 0 &&
-                          specificPost.commentsCount == 1)
+                      else if (modifiedPost.likesCount > 0 &&
+                          modifiedPost.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 50,
                           ),
                           child: Text(
-                            '${specificPost.commentsCount} Comment',
+                            '${modifiedPost.commentsCount} Comment',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -495,40 +501,40 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (specificPost.likesCount > 0 &&
-                            specificPost.commentsCount > 1)
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: screenWidth / 50,
-                              end: screenWidth / 50,
+                      else if (modifiedPost.likesCount > 0 &&
+                          modifiedPost.commentsCount > 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${modifiedPost.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
                             ),
-                            child: Text(
-                              '${specificPost.commentsCount} Comments',
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 12,
-                                color: HexColor("575757"),
-                              ),
+                          ),
+                        )
+                      else if (modifiedPost.commentsCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${modifiedPost.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
                             ),
-                          )
-                        else if (specificPost.commentsCount == 0)
-                            Container()
-                          else
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                                bottom: screenHeight / 50,
-                              ),
-                              child: Text(
-                                '${specificPost.commentsCount} Comments',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
-                                ),
-                              ),
-                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -552,33 +558,33 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (specificPost.likesCount > 0 &&
-                            loggedInUser.id != specificPost.createdBy.id)
+                        if (modifiedPost.likesCount > 0 &&
+                            loggedInUser.id != modifiedPost.createdBy.id)
                           postSubComponent(
                             "assets/images/NewLikeColor.svg",
                             " Like",
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: specificPost.id,
+                                  postId: modifiedPost.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           )
-                        else if (specificPost.likesCount > 0 &&
-                            loggedInUser.id == specificPost.createdBy.id)
+                        else if (modifiedPost.likesCount > 0 &&
+                            loggedInUser.id == modifiedPost.createdBy.id)
                           postSubComponent(
                             "assets/images/NewLikeColor.svg",
                             " Like",
                             color: HexColor("4267B2"),
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: specificPost.id,
+                                  postId: modifiedPost.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           )
@@ -588,10 +594,10 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             "Like",
                             onTap: () {
                               HomeLayoutCubit.get(context).likePost(
-                                  postId: specificPost.id,
+                                  postId: modifiedPost.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           ),
@@ -636,8 +642,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -704,11 +710,12 @@ class _UserSavedPostsState extends State<SavedPosts> {
                 ),
                 onTap: () {
                   // Logic to remove saved post
-                  print("Post id el hytms7 mn el save: ${getDetailedSavedPost!.postId!}");
+                  print(
+                      "Post id el hytms7 mn el save: ${getDetailedSavedPost!.postId!}");
                   SavedPostsCubit.get(context).removeSavedPost(
                     token:
-                    UserLoginCubit.get(context).loginModel!.refresh_token ??
-                        "",
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
                     postId: getDetailedSavedPost.postId!,
                   );
                   Navigator.pop(context);

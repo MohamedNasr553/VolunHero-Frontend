@@ -7,61 +7,40 @@ class GetSavedPostsResponse {
   factory GetSavedPostsResponse.fromJson(Map<String, dynamic> json) {
     return GetSavedPostsResponse(
       message: json['message'],
-      savedPosts: json['savedPosts'] != null
-          ? List<GetSavedPosts>.from(
-          json['savedPosts'].map((v) => GetSavedPosts.fromJson(v)))
-          : null,
+      savedPosts: (json['savedPosts'] as List?)
+          ?.map((i) => GetSavedPosts.fromJson(i))
+          .toList(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'message': message,
-      'savedPosts': savedPosts?.map((v) => v.toJson()).toList(),
-    };
   }
 }
 
 class GetSavedPosts {
-  String id;
-  String userId;
+  String? id;
+  String? userId;
   List<GetDetailedSavedPost>? posts;
-  DateTime createdAt;
-  DateTime updatedAt;
-  int iV;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  int? v;
 
-  GetSavedPosts({
-    required this.id,
-    required this.userId,
-    required this.posts,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.iV,
-  });
+  GetSavedPosts(
+      {this.id,
+      this.userId,
+      this.posts,
+      this.createdAt,
+      this.updatedAt,
+      this.v});
 
   factory GetSavedPosts.fromJson(Map<String, dynamic> json) {
     return GetSavedPosts(
       id: json['_id'],
       userId: json['userId'],
-      posts: json['posts'] != null
-          ? List<GetDetailedSavedPost>.from(
-          json['posts'].map((v) => GetDetailedSavedPost.fromJson(v)))
-          : null,
+      posts: (json['posts'] as List?)
+          ?.map((i) => GetDetailedSavedPost.fromJson(i))
+          .toList(),
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      iV: json['__v'],
+      v: json['__v'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'userId': userId,
-      'posts': posts?.map((v) => v.toJson()).toList(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': iV,
-    };
   }
 }
 
@@ -76,12 +55,5 @@ class GetDetailedSavedPost {
       postId: json['postId'],
       id: json['_id'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'postId': postId,
-      '_id': id,
-    };
   }
 }
