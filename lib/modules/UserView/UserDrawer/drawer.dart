@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
@@ -41,6 +39,7 @@ class UserSidePage extends StatelessWidget {
           listener: (context, state) {},
           builder: (context, state) {
             return Drawer(
+              backgroundColor: Colors.white,
               child: SmoothListView(
                 duration: const Duration(milliseconds: 200),
                 children: [
@@ -51,16 +50,16 @@ class UserSidePage extends StatelessWidget {
                           UserLoginCubit.get(context).loggedInUser?.firstName ??
                               "First",
                           style: const TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        SizedBox(width: screenWidth / 90),
+                        SizedBox(width: screenWidth / 150),
                         Text(
                           UserLoginCubit.get(context).loggedInUser?.lastName ??
                               "Last",
                           style: const TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -76,24 +75,27 @@ class UserSidePage extends StatelessWidget {
                     ),
                     currentAccountPicture: CircleAvatar(
                       child: ClipOval(
-                        child: (HomeLayoutCubit.get(context)
-                                    .modifiedPost
-                                    ?.createdBy
-                                    ?.profilePic ==
-                                null)
-                            ? Image.asset(
-                                'assets/images/nullProfile.png',
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy?.profilePic ?? 'defaultProfile.png'}',
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                      ),
+                          child: (HomeLayoutCubit.get(context)
+                                      .modifiedPost
+                                      ?.createdBy
+                                      ?.profilePic ==
+                                  null)
+                              ? Image.asset(
+                                  'assets/images/nullProfile.png',
+                                  width: 90,
+                                  height: 90,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image(
+                                  width: 90,
+                                  height: 90,
+                                  image: NetworkImage(
+                                      UserLoginCubit.get(context)
+                                              .loggedInUser
+                                              ?.profilePic
+                                              ?.secure_url ??
+                                          'default_image_url'),
+                                )),
                     ),
                     decoration: const BoxDecoration(
                       color: defaultColor,
@@ -172,8 +174,7 @@ class UserSidePage extends StatelessWidget {
                                 .refresh_token ??
                             "",
                       );
-                        navigateAndFinish(context, const SavedPosts());
-
+                      navigateAndFinish(context, const SavedPosts());
                     },
                   ),
                   ListTile(

@@ -488,139 +488,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                 "assets/images/share.svg",
                                 "Share",
                                 onTap: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      var screenHeight =
-                                          MediaQuery.of(context).size.height;
-
-                                      return SizedBox(
-                                        height: screenHeight / 7,
-                                        child: Padding(
-                                          padding: EdgeInsetsDirectional.only(
-                                            top: screenHeight / 30,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.2),
-                                                        spreadRadius: 0.5,
-                                                        blurRadius: 0.5,
-                                                        offset:
-                                                            const Offset(0, 2),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .only(
-                                                      start: screenWidth / 15,
-                                                      end: screenWidth / 15,
-                                                      top: screenHeight / 100,
-                                                      bottom:
-                                                          screenHeight / 100,
-                                                    ),
-                                                    child: const Center(
-                                                      child: Text(
-                                                        "Discard",
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: screenWidth / 10),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  HomeLayoutCubit.get(context)
-                                                      .sharePost(
-                                                          postId:
-                                                              specificPost.id!,
-                                                          token: UserLoginCubit
-                                                                      .get(
-                                                                          context)
-                                                                  .loginModel!
-                                                                  .refresh_token ??
-                                                              "");
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    const SnackBar(
-                                                      backgroundColor:
-                                                          defaultColor,
-                                                      content: Text(
-                                                        'Post is shared',
-                                                        style: TextStyle(
-                                                          fontSize: 12.0,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: defaultColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black
-                                                            .withOpacity(0.2),
-                                                        spreadRadius: 0.5,
-                                                        blurRadius: 0.5,
-                                                        offset:
-                                                            const Offset(0, 2),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .only(
-                                                      start: screenWidth / 15,
-                                                      end: screenWidth / 15,
-                                                      top: screenHeight / 100,
-                                                      bottom:
-                                                          screenHeight / 100,
-                                                    ),
-                                                    child: const Center(
-                                                      child: Text(
-                                                        "Share Now",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  shareSubComponent(specificPost, context);
                                 },
                               ),
                             ],
@@ -951,113 +819,132 @@ class _DetailedPostState extends State<DetailedPost> {
       context: context,
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
+        var screenWidth = MediaQuery.of(context).size.width;
 
-        return SizedBox(
-          height: screenHeight / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.save,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Save Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 4,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.save,
+                      size: 25,
                     ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Add this to your saved items.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Save Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Add this to your saved items.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to save the post
-                  SavedPostsCubit.get(context).savePost(
-                    token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                    onTap: () {
+                      // Logic to save the post
+                      SavedPostsCubit.get(context).savePost(
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
                             "",
-                    postId: specificPost!.id!,
-                  );
-                  Navigator.pop(context);
-                },
+                        postId: specificPost!.id!,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.close,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hide Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'See fewer posts like this.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {},
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {},
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.close,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Hide Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'See fewer posts like this.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {},
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.copy,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Copy link',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Copy post URL.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {},
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -1068,63 +955,82 @@ class _DetailedPostState extends State<DetailedPost> {
       context: context,
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
+        var screenWidth = MediaQuery.of(context).size.width;
 
-        return SizedBox(
-          height: screenHeight / 9,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.delete,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Delete',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Delete Comment',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to delete Comment
-                  HomeLayoutCubit.get(context).deleteComment(
-                    token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
-                            "",
-                    postId: comment!.postId,
-                    commentId: comment.id,
-                  );
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    backgroundColor: defaultColor,
-                    content: Text(
-                      'Comment Deleted',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ));
-                },
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 9,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
               ),
-            ],
-          ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.delete,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Delete Comment',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to delete Comment
+                      HomeLayoutCubit.get(context).deleteComment(
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                            "",
+                        postId: comment!.postId,
+                        commentId: comment.id,
+                      );
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        backgroundColor: defaultColor,
+                        content: Text(
+                          'Comment Deleted',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
         );
       },
     );
@@ -1206,6 +1112,141 @@ class _DetailedPostState extends State<DetailedPost> {
           ],
         ),
       ),
+    );
+  }
+
+  void shareSubComponent(SpecificPost? postDetails, context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 5.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: screenWidth / 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        HomeLayoutCubit.get(context).sharePost(
+                          token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                              "",
+                          postId: postDetails!.id!,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post already saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: screenHeight / 20,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: screenWidth / 55),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                  "assets/images/share.svg",
+                                  width: 30.0,
+                                  height: 30.0,
+                                ),
+                              ),
+                              SizedBox(width: screenWidth / 60),
+                              const Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Share Now',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.0),
+                                  Text(
+                                    'Instantly bring this post to others\' feeds.',
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 55),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: screenWidth / 1.09,
+                        height: screenHeight / 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white70,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -1099,7 +1099,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void shareSubComponent(ModifiedPost? postDetails, context){
+  void shareSubComponent(ModifiedPost? postDetails, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -1116,20 +1116,23 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
-                padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 20),
+                padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: screenWidth / 20),
                 child: Column(
-                  mainAxisAlignment:
-                  MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         HomeLayoutCubit.get(context).sharePost(
-                          token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
                               "",
                           postId: postDetails!.id,
                         );
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
                             'Post already saved',
@@ -1144,7 +1147,8 @@ class _HomePageState extends State<HomePage> {
                         height: screenHeight / 20,
                         color: Colors.white,
                         child: Padding(
-                          padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 55),
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: screenWidth / 55),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

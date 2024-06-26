@@ -1287,7 +1287,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _showProfilePageBottomSheet(
       Posts? postDetails, LoggedInUser? loggedInUser) {
-
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -1338,14 +1337,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       // Logic to save the post
                       SavedPostsCubit.get(context).savePost(
-                        token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
                             "",
                         postId: postDetails!.id,
                       );
                       Navigator.pop(context);
                     },
                   ),
+
                   /// Edit Post
                   ListTile(
                     leading: const Icon(
@@ -1390,6 +1391,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       navigateToPage(context, const EditPost());
                     },
                   ),
+
                   /// Delete Post / Remove Share
                   ListTile(
                     leading: const Icon(
@@ -1398,63 +1400,64 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     title: (postDetails!.sharedFrom == null)
                         ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Delete Post',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: screenHeight / 130),
-                        const Text(
-                          'Remove this post from your profile.',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    )
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Delete Post',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight / 130),
+                              const Text(
+                                'Remove this post from your profile.',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          )
                         : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Remove Share',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Remove Share',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight / 130),
+                              const Text(
+                                'Remove this post from your profile.',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: screenHeight / 130),
-                        const Text(
-                          'Remove this post from your profile.',
-                          style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
                     onTap: () {
                       if (postDetails.sharedFrom == null) {
                         // Delete Post
                         HomeLayoutCubit.get(context).deletePost(
                           token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
+                                  .loginModel!
+                                  .refresh_token ??
                               "",
                           postId: postDetails.id,
                         );
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
                             'Post Deleted',
@@ -1467,13 +1470,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Delete Share
                         HomeLayoutCubit.get(context).removeShare(
                           token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
+                                  .loginModel!
+                                  .refresh_token ??
                               "",
                           postId: postDetails.id,
                         );
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
                             'Removed',
@@ -1581,7 +1585,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void shareSubComponent(Posts? postDetails, context){
+  void shareSubComponent(Posts? postDetails, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -1598,20 +1602,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
-                padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 20),
+                padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: screenWidth / 20),
                 child: Column(
-                  mainAxisAlignment:
-                  MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         HomeLayoutCubit.get(context).sharePost(
-                          token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
                               "",
                           postId: postDetails!.id,
                         );
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
                             'Post already saved',
@@ -1626,7 +1633,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: screenHeight / 20,
                         color: Colors.white,
                         child: Padding(
-                          padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 55),
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: screenWidth / 55),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,

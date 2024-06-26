@@ -33,7 +33,7 @@ class LoggedInUser {
   final String email;
   final String phone;
   final String role;
-  final String? profilePic;
+  final ProfilePic? profilePic;
   final String? coverPic;
   final List<String> images;
   final String address;
@@ -83,7 +83,9 @@ class LoggedInUser {
       email: json['email'],
       phone: json['phone'],
       role: json['role'],
-      profilePic: json['profilePic'],
+      profilePic: json['profilePic'] != null
+          ? ProfilePic.fromJson(json['profilePic'])
+          : null,
       coverPic: json['coverPic'],
       images: List<String>.from(json['images']),
       address: json['address'],
@@ -99,9 +101,26 @@ class LoggedInUser {
       v: json['__v'],
     );
   }
+}
+
+class ProfilePic {
+  String secure_url;
+  String public_id;
+
+  ProfilePic({
+    required this.secure_url,
+    required this.public_id,
+  });
+
+  factory ProfilePic.fromJson(Map<String, dynamic> json) {
+    return ProfilePic(
+      secure_url: json['secure_url'],
+      public_id: json['public_id'],
+    );
+  }
 
   @override
   String toString() {
-    return 'LoggedInUser{id: $id, firstName: $firstName, lastName: $lastName, userName: $userName, slugUserName: $slugUserName, email: $email, phone: $phone, role: $role, profilePic: $profilePic, coverPic: $coverPic, images: $images, gender: $gender, headquarters: $headquarters, specialties: $specialties, locations: $locations, specification: $specification, updatedAt: $updatedAt, v: $v}';
+    return 'ProfilePic: {secureUrl: $secure_url, publicId: $public_id}';
   }
 }
