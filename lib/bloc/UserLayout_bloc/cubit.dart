@@ -371,7 +371,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
         url: "/users/$id",
         token: token,
       );
-
       // Parse the JSON response and assign it to the 'anotherUser' variable
       anotherUser = AnotherUser.fromJson(value.data["data"]["doc"]);
       // Now you can access the details of the user through 'anotherUser'

@@ -19,37 +19,83 @@ class AnotherUserPostsResponse {
     );
   }
 
-  @override
-  String toString() {
-    return jsonEncode({
+  Map<String, dynamic> toJson() {
+    return {
       'message': message,
       'posts': posts.map((post) => post.toJson()).toList(),
-    });
+    };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
   }
 }
 
 class PostWrapper {
   String id;
-  AnotherUserData userId;
-  AnotherUserPost? post;
+  String content;
+  String specification;
+  List<Attachment> attachments;
+  AnotherUserData createdBy;
+  AnotherUserData? sharedBy;
+  AnotherUserPost? mainPost;
+  AnotherUserPost? sharedFrom;
+  int likesCount;
+  int shareCount;
+  int commentsCount;
+  List<Like> likes;
+  List<SharedUser> sharedUsers;
+  List<dynamic> comments;
   DateTime createdAt;
   DateTime updatedAt;
   int v;
 
   PostWrapper({
     required this.id,
-    required this.userId,
-    this.post,
+    required this.content,
+    required this.specification,
+    required this.attachments,
+    required this.createdBy,
+    this.sharedBy,
+    this.mainPost,
+    this.sharedFrom,
+    required this.likesCount,
+    required this.shareCount,
+    required this.commentsCount,
+    required this.likes,
+    required this.sharedUsers,
+    required this.comments,
     required this.createdAt,
     required this.updatedAt,
     required this.v,
   });
 
   factory PostWrapper.fromJson(Map<String, dynamic> json) {
+    var attachmentsList = json['attachments'] as List<dynamic>;
+    List<Attachment> attachments = attachmentsList.map((attachmentJson) => Attachment.fromJson(attachmentJson)).toList();
+
+    var likesList = json['likes'] as List<dynamic>;
+    List<Like> likes = likesList.map((likeJson) => Like.fromJson(likeJson)).toList();
+
+    var sharedUsersList = json['sharedUsers'] as List<dynamic>;
+    List<SharedUser> sharedUsers = sharedUsersList.map((sharedUserJson) => SharedUser.fromJson(sharedUserJson)).toList();
+
     return PostWrapper(
       id: json['_id'],
-      userId: AnotherUserData.fromJson(json['userId']),
-      post: json['post'] != null ? AnotherUserPost.fromJson(json['post']) : null,
+      content: json['content'],
+      specification: json['specification'],
+      attachments: attachments,
+      createdBy: AnotherUserData.fromJson(json['createdBy']),
+      sharedBy: json['sharedBy'] != null ? AnotherUserData.fromJson(json['sharedBy']) : null,
+      mainPost: json['mainPost'] != null ? AnotherUserPost.fromJson(json['mainPost']) : null,
+      sharedFrom: json['sharedFrom'] != null ? AnotherUserPost.fromJson(json['sharedFrom']) : null,
+      likesCount: json['likesCount'],
+      shareCount: json['shareCount'],
+      commentsCount: json['commentsCount'],
+      likes: likes,
+      sharedUsers: sharedUsers,
+      comments: List<dynamic>.from(json['comments']),
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'],
@@ -59,8 +105,19 @@ class PostWrapper {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'userId': userId.toJson(),
-      'post': post?.toJson(),
+      'content': content,
+      'specification': specification,
+      'attachments': attachments.map((attachment) => attachment.toJson()).toList(),
+      'createdBy': createdBy.toJson(),
+      'sharedBy': sharedBy?.toJson(),
+      'mainPost': mainPost?.toJson(),
+      'sharedFrom': sharedFrom?.toJson(),
+      'likesCount': likesCount,
+      'shareCount': shareCount,
+      'commentsCount': commentsCount,
+      'likes': likes.map((like) => like.toJson()).toList(),
+      'sharedUsers': sharedUsers.map((sharedUser) => sharedUser.toJson()).toList(),
+      'comments': comments,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'v': v,
@@ -114,7 +171,7 @@ class AnotherUserPost {
   String id;
   String content;
   String specification;
-  List<Attachment>? attachments;
+  List<Attachment> attachments;
   String createdBy;
   int likesCount;
   int shareCount;
@@ -130,7 +187,7 @@ class AnotherUserPost {
     required this.id,
     required this.content,
     required this.specification,
-    this.attachments,
+    required this.attachments,
     required this.createdBy,
     required this.likesCount,
     required this.shareCount,
@@ -144,7 +201,7 @@ class AnotherUserPost {
   });
 
   factory AnotherUserPost.fromJson(Map<String, dynamic> json) {
-    var attachmentsList = json['attachments'] as List<dynamic>? ?? [];
+    var attachmentsList = json['attachments'] as List<dynamic>;
     List<Attachment> attachments = attachmentsList.map((attachmentJson) => Attachment.fromJson(attachmentJson)).toList();
 
     var likesList = json['likes'] as List<dynamic>;
@@ -173,7 +230,7 @@ class AnotherUserPost {
       'id': id,
       'content': content,
       'specification': specification,
-      'attachments': attachments?.map((attachment) => attachment.toJson()).toList(),
+      'attachments': attachments.map((attachment) => attachment.toJson()).toList(),
       'createdBy': createdBy,
       'likesCount': likesCount,
       'shareCount': shareCount,
@@ -250,3 +307,37 @@ class Like {
     return jsonEncode(toJson());
   }
 }
+
+class SharedUser {
+  String userId;
+  String id;
+  DateTime sharedAt;
+
+  SharedUser({
+    required this.userId,
+    required this.id,
+    required this.sharedAt,
+  });
+
+  factory SharedUser.fromJson(Map<String, dynamic> json) {
+    return SharedUser(
+      userId: json['userId'],
+      id: json['_id'],
+      sharedAt: DateTime.parse(json['sharedAt']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+    'userId': userId,
+      'id': id,
+      'sharedAt': sharedAt.toIso8601String(),
+    };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
+  }
+}
+

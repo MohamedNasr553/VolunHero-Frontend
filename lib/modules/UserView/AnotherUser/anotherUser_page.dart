@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
@@ -13,6 +14,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../../bloc/savedPosts_bloc/cubit.dart';
+import '../../../models/LoggedInUserModel.dart';
+import '../../GeneralView/DetailedPost/Detailed_Post.dart';
+import '../UserProfilePage/Profile_Page.dart';
 
 
 class AnotherUserProfile extends StatefulWidget {
@@ -29,9 +35,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    HomeLayoutCubit.get(context).getAnotherUserData(
-        token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-        id: HomeLayoutCubit.get(context).modifiedPost?.createdBy.id ?? "");
+    HomeLayoutCubit.get(context)
+        .getAnotherUserData(
+        token: UserLoginCubit.get(context)
+            .loginModel!
+            .refresh_token,
+        id: UserLoginCubit.get(context).anotherUser!.id);
+
+      UserLoginCubit.get(context)
+          .getAnotherUserPosts(
+          token: UserLoginCubit.get(context)
+              .loginModel!
+              .refresh_token,
+          id: UserLoginCubit.get(context).anotherUser!.id,
+          userName:UserLoginCubit.get(context).anotherUser!.userName)
+          .then((value) {
+        UserLoginCubit.get(context).anotherUser =
+            HomeLayoutCubit.get(context).anotherUser;
+      });
   }
 
   @override
@@ -42,7 +63,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Scaffold(
+        return  Scaffold(
           appBar: AppBar(
             backgroundColor: defaultColor,
             leading: IconButton(
@@ -741,13 +762,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       ),
                     ),
                   )
-                else
-                (state is! GetAnotherUserPostsLoadingState)
-                    ? SizedBox(
-                        height: screenHeight,
-                        child: buildAnotherUserPostsList(context),
-                      )
-                    : buildLoadingWidget(context),
+                else buildAnotherUserPostsList(context)
+
               ],
             ),
           ),
@@ -838,60 +854,78 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
     if (cubit.anotherUserPostsResponse != null) {
       if (cubit.anotherUserPostsResponse!.posts.isNotEmpty) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  if (cubit.anotherUserPostsResponse != null) {
-                    if (index < cubit.anotherUserPostsResponse!.posts.length) {
-                      CreatedBy createdBy = CreatedBy(
-                          id: cubit.anotherUser!.id,
-                          userName: cubit.anotherUserPostsResponse!.posts[index]
-                              .userId.userName,
-                          role: cubit.anotherUserPostsResponse!.posts[index]
-                              .userId.role);
-                      ModifiedPost modifiedPost = ModifiedPost(
-                        id: cubit
-                            .anotherUserPostsResponse!.posts[index].post!.id,
-                        content: cubit.anotherUserPostsResponse!.posts[index]
-                            .post!.content,
-                        specification: cubit.anotherUserPostsResponse!
-                            .posts[index].post!.specification,
-                        createdBy: createdBy,
-                        likesCount: cubit.anotherUserPostsResponse!.posts[index]
-                            .post!.likes.length,
-                        shareCount: cubit.anotherUserPostsResponse!.posts[index]
-                            .post!.shareCount,
-                        createdAt: cubit.anotherUserPostsResponse!.posts[index]
-                            .post!.createdAt,
-                        updatedAt: cubit.anotherUserPostsResponse!.posts[index]
-                            .post!.updatedAt,
-                        liked: false,
-                        v: cubit.anotherUserPostsResponse!.posts[index].post!.v,
-                        attachments: [],
-                        commentsCount: cubit.anotherUserPostsResponse!
-                            .posts[index].post!.commentsCount,
-                        comments: [],
-                      );
-                      return buildPostItem(modifiedPost, context);
-                    }
-                  }
-                  return const Text("No Posts Available");
-                },
-                separatorBuilder: (context, index) => Padding(
-                  padding:
-                      const EdgeInsetsDirectional.symmetric(horizontal: 16),
-                  child: Container(
-                    width: double.infinity,
-                    color: Colors.white,
-                  ),
-                ),
-                itemCount: cubit.anotherUserPostsResponse!.posts.length,
-              ),
+        return ListView.separated(
+          physics: ScrollPhysics(),
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            if (cubit.anotherUserPostsResponse != null) {
+              if (index < cubit.anotherUserPostsResponse!.posts.length) {
+                CreatedBy createdBy = new CreatedBy(
+                    id:cubit.anotherUserPostsResponse!.posts[index].createdBy.id,
+                    userName: cubit.anotherUserPostsResponse!.posts[index].createdBy.userName,
+                    role: cubit.anotherUserPostsResponse!.posts[index].createdBy.role);
+                List<Attachment> attachments =[];
+
+                for(int i=0;i<cubit.anotherUserPostsResponse!.posts[index].attachments.length;i++){
+                   Attachment attachment = new Attachment(
+                       secure_url: cubit.anotherUserPostsResponse!.posts[index].attachments[i].secureUrl,
+                       public_id: cubit.anotherUserPostsResponse!.posts[index].attachments[i].publicId
+                   );
+                   attachments.add(attachment);
+                }
+                ModifiedPost? modifiedPost = new ModifiedPost(
+                    id: cubit.anotherUserPostsResponse!.posts[index].id,
+                    content: cubit.anotherUserPostsResponse!.posts[index].content,
+                    specification: cubit.anotherUserPostsResponse!.posts[index].specification,
+                    createdBy:createdBy,
+                    likesCount: cubit.anotherUserPostsResponse!.posts[index].likesCount,
+                    commentsCount: cubit.anotherUserPostsResponse!.posts[index].commentsCount,
+                    shareCount: cubit.anotherUserPostsResponse!.posts[index].shareCount,
+                    comments: [],
+                    createdAt: cubit.anotherUserPostsResponse!.posts[index].createdAt,
+                    updatedAt: cubit.anotherUserPostsResponse!.posts[index].updatedAt,
+                    liked: false,
+                    attachments: attachments,
+                    v: cubit.anotherUserPostsResponse!.posts[index].v
+                );
+                print("sdsdsdsdsdsds");
+                print(cubit.anotherUserPostsResponse!.posts[index]);
+                print("sdsdsdsdsdsds");
+                return buildPostItem(
+                    modifiedPost,
+                    LoggedInUser(
+                        id: UserLoginCubit.get(context).loggedInUser!.id,
+                        firstName: UserLoginCubit.get(context).loggedInUser!.firstName,
+                        lastName: UserLoginCubit.get(context).loggedInUser!.lastName,
+                        userName: UserLoginCubit.get(context).loggedInUser!.userName,
+                        slugUserName: UserLoginCubit.get(context).loggedInUser!.slugUserName,
+                        email: UserLoginCubit.get(context).loggedInUser!.email,
+                        phone: UserLoginCubit.get(context).loggedInUser!.phone,
+                        role: UserLoginCubit.get(context).loggedInUser!.role,
+                        images: UserLoginCubit.get(context).loggedInUser!.images,
+                        address: UserLoginCubit.get(context).loggedInUser!.address,
+                        gender: UserLoginCubit.get(context).loggedInUser!.gender,
+                        headquarters: UserLoginCubit.get(context).loggedInUser!.headquarters,
+                        specification: UserLoginCubit.get(context).loggedInUser!.specification,
+                        attachments: UserLoginCubit.get(context).loggedInUser!.attachments,
+                        following: UserLoginCubit.get(context).loggedInUser!.following,
+                        followers: UserLoginCubit.get(context).loggedInUser!.followers,
+                        updatedAt: UserLoginCubit.get(context).loggedInUser!.updatedAt,
+                        v: UserLoginCubit.get(context).loggedInUser!.v
+                    ), context);
+              }
+            }
+            return const Text("No Posts Available");
+          },
+          separatorBuilder: (context, index) => Padding(
+            padding:
+                const EdgeInsetsDirectional.symmetric(horizontal: 16),
+            child: Container(
+              width: double.infinity,
+              color: Colors.white,
             ),
-          ],
+          ),
+          itemCount: cubit.anotherUserPostsResponse!.posts.length,
         );
       } else {
         return Padding(
@@ -952,11 +986,12 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     }
   }
 
-  Widget buildPostItem(ModifiedPost? postDetails, context) {
+
+  Widget buildPostItem(ModifiedPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
     if (postDetails == null) {
       return const SizedBox();
     }
-
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -982,266 +1017,468 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
     return Padding(
       padding: EdgeInsets.all(screenWidth / 50),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 10.0,
-              spreadRadius: -5.0,
-              offset: const Offset(10.0, 10.0), // Right and bottom shadow
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth / 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: postDetails.createdBy.profilePic != null
-                        ? AssetImage(
-                            postDetails.createdBy.profilePic!.secure_url)
-                        : const AssetImage('assets/images/nullProfile.png'),
-                  ),
-                  SizedBox(width: screenWidth / 50),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        postDetails.createdBy.userName,
-                        style: const TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 0.5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            durationText,
-                            style: TextStyle(
-                              color: HexColor("B8B9BA"),
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          SvgPicture.asset(
-                            'assets/images/earthIcon.svg',
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () => _showProfilePageBottomSheet(postDetails),
-                    icon: SvgPicture.asset(
-                      'assets/images/postSettings.svg',
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/images/closePost.svg',
-                    ),
-                  ),
-                ],
+      child: GestureDetector(
+        onTap: () {
+          final token = UserLoginCubit.get(context).loginModel?.refresh_token;
+          final postId = postDetails.id;
+          if (token != null) {
+            HomeLayoutCubit.get(context).getPostId(
+              token: token,
+              postId: postId,
+            );
+            if (postDetails.commentsCount > 0) {
+              HomeLayoutCubit.get(context).getCommentById(
+                token: token,
+                postId: postId,
+              );
+            }
+          }
+
+          navigateToPage(context, const DetailedPost());
+          // (HomeLayoutCubit.get(context).getPostById is GetPostByIdSuccessState)
+          //     ? navigateToPage(context, const DetailedPost())
+          //     : const SizedBox();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                blurRadius: 10.0,
+                spreadRadius: -5.0,
+                offset: const Offset(10.0, 10.0), // Right and bottom shadow
               ),
-              const SizedBox(height: 1.0),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 100,
-                  start: screenWidth / 50,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ],
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth / 80),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                (postDetails.sharedFrom != null)
+                    ? Column(
                   children: [
-                    /// Post Content
-                    postDetails.content != null
-                        ? Text(
-                            postDetails.content,
-                            maxLines:
-                                (postDetails.attachments) != null ? 6 : 10,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontFamily: "Robot",
-                              fontSize: 13.0,
-                            ),
-                          )
-                        : const SizedBox(height: 0),
-
-                    SizedBox(height: screenHeight / 100),
-
-                    /// Post Attachments
-                    if (postDetails.attachments != null &&
-                        postDetails.attachments!.isNotEmpty)
-                      // check if there's more than one
-                      if (postDetails.attachments!.length > 1)
-                        CarouselSlider(
-                          carouselController: carouselController,
-                          items: postDetails.attachments!.map((attachment) {
-                            return Image(
-                              image: NetworkImage(attachment.secure_url),
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            height: 200,
-                            viewportFraction: 1.0,
-                            enableInfiniteScroll: true,
-                            autoPlayCurve: Curves.easeIn,
-                            enlargeCenterPage: true,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                _currentImageIndex = index;
+                    SizedBox(height: screenHeight / 120),
+                    sharedByUserInfo(postDetails, loggedInUser, context),
+                  ],
+                )
+                    : const SizedBox(),
+                SizedBox(height: screenHeight / 120),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (postDetails.createdBy.id ==
+                            UserLoginCubit.get(context).loggedInUser!.id) {
+                          navigateToPage(context, const ProfilePage());
+                        } else {
+                          // HomeLayoutCubit.get(context)
+                          //     .getAnotherUserData(
+                          //         token: UserLoginCubit.get(context)
+                          //             .loginModel!
+                          //             .refresh_token,
+                          //         id: postDetails.createdBy.id)
+                          //     .then((value) {
+                          //       print(postDetails.createdBy.id);
+                          //   UserLoginCubit.get(context)
+                          //       .getAnotherUserPosts(
+                          //           token: UserLoginCubit.get(context)
+                          //               .loginModel!
+                          //               .refresh_token,
+                          //           id: postDetails.createdBy.id,
+                          //           userName: postDetails.createdBy.userName)
+                          //       .then((value) {
+                          //     UserLoginCubit.get(context).anotherUser =
+                          //         HomeLayoutCubit.get(context).anotherUser;
+                          //     navigateToPage(
+                          //         context, const AnotherUserProfile());
+                          //   });
+                          // });
+                          UserLoginCubit.get(context).anotherUser?.id = postDetails.createdBy.id;
+                          UserLoginCubit.get(context).anotherUser?.userName = postDetails.createdBy.userName;
+                          navigateToPage(
+                              context,  AnotherUserProfile());
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: 20.0,
+                        backgroundImage: postDetails.createdBy.profilePic !=
+                            null
+                            ? NetworkImage(postDetails.createdBy.profilePic!
+                            .secure_url) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
+                      ),
+                    ),
+                    SizedBox(width: screenWidth / 50),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (postDetails.createdBy.id ==
+                                UserLoginCubit.get(context).loggedInUser!.id) {
+                              navigateToPage(context, const ProfilePage());
+                            } else {
+                              HomeLayoutCubit.get(context)
+                                  .getAnotherUserData(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token,
+                                  id: postDetails.createdBy.id)
+                                  .then((value) {
+                                UserLoginCubit.get(context).anotherUser =
+                                    HomeLayoutCubit.get(context).anotherUser;
+                                navigateToPage(
+                                    context, const AnotherUserProfile());
                               });
-                            },
+                            }
+                          },
+                          child: Text(
+                            postDetails.createdBy.userName,
+                            style: const TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
-                        )
-                      else
-                        Image(
-                          image: NetworkImage(
-                              postDetails.attachments![0].secure_url),
-                          width: double.infinity,
-                          fit: BoxFit.cover,
                         ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: (postDetails.attachments ?? [])
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        return GestureDetector(
-                          onTap: () =>
-                              carouselController.animateToPage(entry.key),
-                          child: Container(
-                            width: 7.0,
-                            height: 7.0,
-                            margin: EdgeInsets.symmetric(
-                              vertical: screenHeight / 90,
-                              horizontal: screenWidth / 100,
+                        const SizedBox(height: 0.5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              durationText,
+                              style: TextStyle(
+                                color: HexColor("B8B9BA"),
+                                fontSize: 10.0,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentImageIndex == entry.key
-                                  ? defaultColor
-                                  : Colors.grey,
+                            const SizedBox(width: 2),
+                            SvgPicture.asset(
+                              'assets/images/earthIcon.svg',
                             ),
-                          ),
-                        );
-                      }).toList(),
+                          ],
+                        )
+                      ],
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        // print("Modified to be saved: ");
+                        // print(postDetails);
+                        _showHomePageBottomSheet(postDetails);
+                      },
+                      icon: SvgPicture.asset(
+                        'assets/images/postSettings.svg',
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset(
+                        'assets/images/closePost.svg',
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  top: screenHeight / 100,
-                  start: screenWidth / 500,
-                ),
-                child: Row(
-                  children: [
-                    /// Post Likes
-                    (postDetails.likesCount) > 0
-                        ? IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            icon: SvgPicture.asset(
-                              'assets/images/NewLikeColor.svg',
-                              width: 22.0,
-                              height: 22.0,
+                const SizedBox(height: 1.0),
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 100,
+                    start: screenWidth / 50,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Post Content
+                      postDetails.content != null
+                          ? Text(
+                        postDetails.content,
+                        maxLines:
+                        (postDetails.attachments) != null ? 6 : 10,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: "Robot",
+                          fontSize: 13.0,
+                        ),
+                      )
+                          : const SizedBox(height: 0),
+
+                      SizedBox(height: screenHeight / 100),
+
+                      /// Post Attachments
+                      if (postDetails.attachments != null &&
+                          postDetails.attachments!.isNotEmpty)
+                      // check if there's more than one
+                        if (postDetails.attachments!.length > 1)
+                          CarouselSlider(
+                            carouselController: carouselController,
+                            items: postDetails.attachments!.map((attachment) {
+                              return Image(
+                                image: NetworkImage(attachment.secure_url),
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              );
+                            }).toList(),
+                            options: CarouselOptions(
+                              height: 200,
+                              viewportFraction: 1.0,
+                              enableInfiniteScroll: true,
+                              autoPlayCurve: Curves.easeIn,
+                              enlargeCenterPage: true,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  _currentImageIndex = index;
+                                });
+                              },
                             ),
                           )
-                        : Container(),
-                    (postDetails.likesCount > 0)
-                        ? Text(
-                            '${postDetails.likesCount}',
+                        else
+                          Image(
+                            image: NetworkImage(
+                              postDetails.attachments![0].secure_url,
+                            ),
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                      if (postDetails.attachments != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: postDetails.attachments!
+                              .asMap()
+                              .entries
+                              .map((entry) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  carouselController.animateToPage(entry.key),
+                              child: Container(
+                                width: 7.0,
+                                height: 7.0,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: screenHeight / 90,
+                                  horizontal: screenWidth / 100,
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _currentImageIndex == entry.key
+                                      ? defaultColor
+                                      : Colors.grey,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 100,
+                    start: screenWidth / 500,
+                  ),
+                  child: Row(
+                    children: [
+                      /// Post Likes
+                      (postDetails.likesCount) > 0
+                          ? IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                        icon: SvgPicture.asset(
+                          'assets/images/NewLikeColor.svg',
+                          width: 22.0,
+                          height: 22.0,
+                        ),
+                      )
+                          : Container(),
+                      (postDetails.likesCount > 0)
+                          ? Text(
+                        '${postDetails.likesCount}',
+                        style: TextStyle(
+                          fontFamily: "Roboto",
+                          fontSize: 12,
+                          color: HexColor("575757"),
+                        ),
+                      )
+                          : Container(),
+                      const Spacer(),
+
+                      /// Post Comments
+                      if (postDetails.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comment',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
                               color: HexColor("575757"),
                             ),
+                          ),
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                          postDetails.commentsCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comment',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.likesCount > 0 &&
+                            postDetails.commentsCount > 1)
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: screenWidth / 50,
+                              end: screenWidth / 50,
+                            ),
+                            child: Text(
+                              '${postDetails.commentsCount} Comments',
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 12,
+                                color: HexColor("575757"),
+                              ),
+                            ),
                           )
-                        : Container(),
-                    const Spacer(),
-
-                    /// Post Comments
-                    // postDetails.likesCount > 0
-                    //     ? IconButton(
-                    //   padding: EdgeInsets.zero,
-                    //   onPressed: () {},
-                    //   icon: SvgPicture.asset(
-                    //     'assets/images/like.svg',
-                    //   ),
-                    // )
-                    //     : Container(),
-                    // (postDetails.likesCount > 0) ?
-                    // Text(
-                    //   '${postDetails.likesCount}',
-                    //   style: TextStyle(
-                    //     fontFamily: "Roboto",
-                    //     fontSize: 12,
-                    //     color: HexColor("575757"),
-                    //   ),
-                    // ): Container(),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.only(
-                  start: screenWidth / 100,
-                  end: screenWidth / 100,
-                ),
-                child: Container(
-                  height: 1.0,
-                  color: Colors.grey[300],
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    start: screenWidth / 30,
-                    end: screenWidth / 30,
-                    top: screenHeight / 200,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      postSubComponent(
-                        "assets/images/like.svg",
-                        "Like",
-                        onTap: () {
-                          HomeLayoutCubit.get(context).likePost(
-                              postId: postDetails.id,
-                              token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
-                                  "");
-                        },
-                      ),
-                      const Spacer(),
-                      postSubComponent("assets/images/comment.svg", "Comment"),
-                      const Spacer(),
-                      postSubComponent("assets/images/share.svg", "Share"),
+                        else if (postDetails.commentsCount == 0)
+                            Container()
+                          else
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: screenWidth / 50,
+                                end: screenWidth / 50,
+                                bottom: screenHeight / 50,
+                              ),
+                              child: Text(
+                                '${postDetails.commentsCount} Comments',
+                                style: TextStyle(
+                                  fontFamily: "Roboto",
+                                  fontSize: 12,
+                                  color: HexColor("575757"),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: screenWidth / 100,
+                    end: screenWidth / 100,
+                  ),
+                  child: Container(
+                    height: 1.0,
+                    color: Colors.grey[300],
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 30,
+                      end: screenWidth / 30,
+                      top: screenHeight / 200,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (postDetails.likesCount > 0 &&
+                            loggedInUser.id != postDetails.createdBy.id)
+                          postSubComponent(
+                            "assets/images/NewLikeColor.svg",
+                            " Like",
+                            color: HexColor("4267B2"),
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                      "");
+                            },
+                          )
+                        else if (postDetails.likesCount > 0 &&
+                            loggedInUser.id == postDetails.createdBy.id)
+                          postSubComponent(
+                            "assets/images/NewLikeColor.svg",
+                            " Like",
+                            color: HexColor("4267B2"),
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                      "");
+                            },
+                          )
+                        else
+                          postSubComponent(
+                            "assets/images/like.svg",
+                            "Like",
+                            onTap: () {
+                              HomeLayoutCubit.get(context).likePost(
+                                  postId: postDetails.id,
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token ??
+                                      "");
+                            },
+                          ),
+                        const Spacer(),
+                        postSubComponent(
+                          "assets/images/comment.svg",
+                          "Comment",
+                          onTap: () {
+                            final token = UserLoginCubit.get(context)
+                                .loginModel
+                                ?.refresh_token;
+                            final postId = postDetails.id;
+                            if (token != null) {
+                              HomeLayoutCubit.get(context).getPostId(
+                                token: token,
+                                postId: postId,
+                              );
+                              if (postDetails.commentsCount > 0) {
+                                HomeLayoutCubit.get(context).getCommentById(
+                                  token: token,
+                                  postId: postId,
+                                );
+                              }
+                            }
+                            navigateToPage(context, const DetailedPost());
+                          },
+                        ),
+                        const Spacer(),
+                        postSubComponent(
+                          "assets/images/share.svg",
+                          "Share",
+                          onTap: () {
+                            shareSubComponent(postDetails, context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1250,8 +1487,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
+        Color color = const Color(0xFF575757),
+        FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -1272,6 +1509,363 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
           )
         ],
       ),
+    );
+  }
+
+  void _showHomePageBottomSheet(ModifiedPost? modifiedPost) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenWidth = MediaQuery.of(context).size.width;
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 4,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.save,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Save Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Add this to your saved items.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // print("Modified to be saved: ");
+                      // print(modifiedPost);
+                      // Logic to save the post
+                      SavedPostsCubit.get(context).savePost(
+                        token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
+                        postId: modifiedPost!.id,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.close,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hide Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'See fewer posts like this.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to hide post
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to Copy post link
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget sharedByUserInfo(ModifiedPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        if (postDetails.sharedBy!.id ==
+            UserLoginCubit.get(context).loggedInUser!.id) {
+          navigateToPage(context, const ProfilePage());
+        } else {
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+              token: UserLoginCubit.get(context).loginModel!.refresh_token,
+              id: postDetails.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                token:
+                UserLoginCubit.get(context).loginModel!.refresh_token,
+                id: postDetails.sharedBy!.id,
+                userName: postDetails.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 40,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(
+                "assets/images/share.svg",
+                width: 18.0,
+                height: 18.0,
+              ),
+            ),
+            SizedBox(width: screenWidth / 80),
+            CircleAvatar(
+              radius: 10.0,
+              backgroundImage: postDetails!.sharedBy!.profilePic != null
+                  ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
+              as ImageProvider
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 80),
+            Text(
+              (postDetails.sharedBy!.userName == loggedInUser.userName)
+                  ? 'You'
+                  : postDetails.sharedBy!.userName,
+              style: const TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(width: screenWidth / 150),
+            const Text(
+              'shared this',
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void shareSubComponent(ModifiedPost? postDetails, context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 5.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.symmetric(
+                    horizontal: screenWidth / 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        HomeLayoutCubit.get(context).sharePost(
+                          token: UserLoginCubit.get(context)
+                              .loginModel!
+                              .refresh_token ??
+                              "",
+                          postId: postDetails!.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post already saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: screenHeight / 20,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: screenWidth / 55),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                  "assets/images/share.svg",
+                                  width: 30.0,
+                                  height: 30.0,
+                                ),
+                              ),
+                              SizedBox(width: screenWidth / 60),
+                              const Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Share Now',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.0),
+                                  Text(
+                                    'Instantly bring this post to others\' feeds.',
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 55),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: screenWidth / 1.09,
+                        height: screenHeight / 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white70,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

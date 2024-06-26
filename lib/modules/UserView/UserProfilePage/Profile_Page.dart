@@ -90,6 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   body: SingleChildScrollView(
+
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -287,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                "0",
+                                                HomeLayoutCubit.get(context).ownerPostsModel!.newPosts.length.toString()??"0",
                                                 style: TextStyle(
                                                   fontSize: 16.0,
                                                   color: Colors.black
@@ -646,13 +647,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           )
-                        else
-                          (state is! OwnerPostsLoadingState)
-                              ? SizedBox(
-                                  height: screenHeight,
-                                  child: buildPostsList(context),
-                                )
-                              : buildLoadingWidget(context),
+                        else buildPostsList(context)
                       ],
                     ),
                   ),
@@ -749,7 +744,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return ListView.separated(
-      physics: const BouncingScrollPhysics(),
+      physics:ScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final ownerPostsModel = ownerPostsCubit.ownerPostsModel;

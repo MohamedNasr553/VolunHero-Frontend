@@ -446,27 +446,43 @@ class _HomePageState extends State<HomePage> {
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
+                          // HomeLayoutCubit.get(context)
+                          //     .getAnotherUserData(
+                          //         token: UserLoginCubit.get(context)
+                          //             .loginModel!
+                          //             .refresh_token,
+                          //         id: postDetails.createdBy.id)
+                          //     .then((value) {
+                          //       print(postDetails.createdBy.id);
+                          //   UserLoginCubit.get(context)
+                          //       .getAnotherUserPosts(
+                          //           token: UserLoginCubit.get(context)
+                          //               .loginModel!
+                          //               .refresh_token,
+                          //           id: postDetails.createdBy.id,
+                          //           userName: postDetails.createdBy.userName)
+                          //       .then((value) {
+                          //     UserLoginCubit.get(context).anotherUser =
+                          //         HomeLayoutCubit.get(context).anotherUser;
+                          //     navigateToPage(
+                          //         context, const AnotherUserProfile());
+                          //   });
+                          // });
+
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
                                   token: UserLoginCubit.get(context)
                                       .loginModel!
                                       .refresh_token,
-                                  id: postDetails.createdBy.id)
-                              .then((value) {
-                            UserLoginCubit.get(context)
-                                .getAnotherUserPosts(
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token,
-                                    id: postDetails.createdBy.id,
-                                    userName: postDetails.createdBy.userName)
-                                .then((value) {
-                              UserLoginCubit.get(context).anotherUser =
-                                  HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(
-                                  context, const AnotherUserProfile());
-                            });
+                                  id: postDetails.createdBy.id).then((value) {
+                                    UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
+                                    print("not nulllllll");
+
+                                    print("not nulllllll");
+                                navigateToPage(
+                                    context, const AnotherUserProfile());
                           });
+
                         }
                       },
                       child: CircleAvatar(

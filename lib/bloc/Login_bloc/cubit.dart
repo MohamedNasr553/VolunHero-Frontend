@@ -255,6 +255,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(value.data);
 
+
+
      }).catchError((error) {
 
       emit(GetAnotherUserPostsErrorState(error));

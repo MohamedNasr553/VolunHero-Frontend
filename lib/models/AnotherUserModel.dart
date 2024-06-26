@@ -1,8 +1,8 @@
 class AnotherUser {
-  final String id;
+  late  String id;
   final String firstName;
   final String lastName;
-  final String userName;
+  late  String userName;
   final String slugUserName;
   final String email;
   final String phone;
