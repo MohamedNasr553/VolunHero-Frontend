@@ -34,7 +34,6 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       });
 
       emit(SavedPostsSuccessState());
-
     } catch (error) {
       emit(SavedPostsErrorState());
     }
@@ -61,7 +60,8 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       // Parse the API response
       getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
 
-      if (getSavedPostsResponse != null && getSavedPostsResponse!.savedPosts!.isNotEmpty) {
+      if (getSavedPostsResponse != null &&
+          getSavedPostsResponse!.savedPosts!.isNotEmpty) {
         getSavedPosts = getSavedPostsResponse!.savedPosts![0];
 
         print("Parsed Saved Posts Count: ${getSavedPosts!.posts!.length}");
@@ -74,7 +74,6 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       emit(GetAllSavedPostsErrorState());
     }
   }
-
 
   /// ----------------------- Remove Saved Post API ------------------------
   void removeSavedPost({

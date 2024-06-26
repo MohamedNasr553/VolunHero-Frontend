@@ -16,6 +16,9 @@ class SpecificPost {
   String? specification;
   List<Attachments>? attachments;
   CreatedBy createdBy;
+  SharedBy? sharedBy;
+  String? mainPost;
+  String? sharedFrom;
   int? likesCount;
   int? shareCount;
   int? commentsCount;
@@ -31,6 +34,9 @@ class SpecificPost {
     required this.specification,
     this.attachments,
     required this.createdBy,
+    this.sharedBy,
+    this.mainPost,
+    this.sharedFrom,
     required this.likesCount,
     required this.commentsCount,
     required this.shareCount,
@@ -46,21 +52,18 @@ class SpecificPost {
     var sharedUsers = <SharedUsers>[];
     var comments = <Comments>[];
 
-    // Check if the "attachments" key exists in the JSON data
     if (json.containsKey('attachments') && json['attachments'] != null) {
       json['attachments'].forEach((element) {
         attachments.add(Attachments.fromJson(element));
       });
     }
 
-    // Check if the "sharedUsers" key exists in the JSON data
     if (json.containsKey('sharedUsers') && json['sharedUsers'] != null) {
       json['sharedUsers'].forEach((element) {
         sharedUsers.add(SharedUsers.fromJson(element));
       });
     }
 
-    // Check if the "comments" key exists in the JSON data
     if (json.containsKey('comments') && json['comments'] != null) {
       json['comments'].forEach((element) {
         comments.add(Comments.fromJson(element));
@@ -73,6 +76,10 @@ class SpecificPost {
       specification: json['specification'],
       attachments: attachments,
       createdBy: CreatedBy.fromJson(json['createdBy']),
+      sharedBy:
+          json['sharedBy'] != null ? SharedBy.fromJson(json['sharedBy']) : null,
+      mainPost: json['mainPost'],
+      sharedFrom: json['sharedFrom'],
       likesCount: json['likesCount'],
       commentsCount: json['commentsCount'],
       shareCount: json['shareCount'],
@@ -103,10 +110,7 @@ class Attachments {
   String secure_url;
   String public_id;
 
-  Attachments({
-    required this.secure_url,
-    required this.public_id,
-  });
+  Attachments({required this.secure_url, required this.public_id});
 
   factory Attachments.fromJson(Map<String, dynamic> json) {
     return Attachments(
@@ -132,10 +136,7 @@ class ProfilePic {
   String secure_url;
   String public_id;
 
-  ProfilePic({
-    required this.secure_url,
-    required this.public_id,
-  });
+  ProfilePic({required this.secure_url, required this.public_id});
 
   factory ProfilePic.fromJson(Map<String, dynamic> json) {
     return ProfilePic(
@@ -151,19 +152,44 @@ class CreatedBy {
   String role;
   ProfilePic? profilePic;
 
-  CreatedBy({
-    required this.id,
-    required this.userName,
-    required this.role,
-    this.profilePic,
-  });
+  CreatedBy(
+      {required this.id,
+      required this.userName,
+      required this.role,
+      this.profilePic});
 
   factory CreatedBy.fromJson(Map<String, dynamic> json) {
     return CreatedBy(
-        id: json['_id'],
-        userName: json['userName'],
-        role: json['role'],
-        profilePic: json['profilePic'] != null ? ProfilePic.fromJson(json['profilePic']) : null,
+      id: json['_id'],
+      userName: json['userName'],
+      role: json['role'],
+      profilePic: json['profilePic'] != null
+          ? ProfilePic.fromJson(json['profilePic'])
+          : null,
+    );
+  }
+}
+
+class SharedBy {
+  String id;
+  String userName;
+  String role;
+  ProfilePic? profilePic;
+
+  SharedBy(
+      {required this.id,
+      required this.userName,
+      required this.role,
+      this.profilePic});
+
+  factory SharedBy.fromJson(Map<String, dynamic> json) {
+    return SharedBy(
+      id: json['_id'],
+      userName: json['userName'],
+      role: json['role'],
+      profilePic: json['profilePic'] != null
+          ? ProfilePic.fromJson(json['profilePic'])
+          : null,
     );
   }
 }

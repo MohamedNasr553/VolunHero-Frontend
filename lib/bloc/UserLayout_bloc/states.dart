@@ -69,6 +69,13 @@ class SharePostSuccessState extends LayoutStates {}
 
 class SharePostErrorState extends LayoutStates {}
 
+/// Remove Share
+class RemoveShareLoadingState extends LayoutStates {}
+
+class RemoveShareSuccessState extends LayoutStates {}
+
+class RemoveShareErrorState extends LayoutStates {}
+
 /// Edit Post
 class EditPostLoadingState extends LayoutStates {}
 

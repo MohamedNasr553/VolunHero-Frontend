@@ -275,6 +275,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   }
 
   /// ----------------------- Share Post API ------------------------
+
   void sharePost({required String token, required String postId}) {
     emit(SharePostLoadingState());
 
@@ -288,6 +289,24 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getOwnerPosts(token: token);
     }).catchError((error) {
       emit(SharePostErrorState());
+    });
+  }
+
+  /// ----------------------- Remove Shared Post API -----------------
+
+  void removeShare({required String token, required String postId}) {
+    emit(RemoveShareLoadingState());
+
+    DioHelper.patchData(
+      url: "/post/$postId/removeShare",
+      token: token,
+    ).then((value) {
+      emit(RemoveShareSuccessState());
+
+      getAllPosts(token: token);
+      getOwnerPosts(token: token);
+    }).catchError((error) {
+      emit(RemoveShareErrorState());
     });
   }
 

@@ -68,30 +68,20 @@ class _DetailedPostState extends State<DetailedPost> {
                       leading: IconButton(
                         icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
                         color: HexColor("858888"),
-                        onPressed: () =>
-                            navigateToPage(
-                                context, const VolunHeroUserLayout()),
+                        onPressed: () => navigateToPage(
+                            context, const VolunHeroUserLayout()),
                       ),
                     ),
-                    body: HomeLayoutCubit
-                        .get(context)
-                        .getPostById
-                        ?.post != null
+                    body: HomeLayoutCubit.get(context).getPostById?.post != null
                         ? buildDetailedPostItem(
-                      HomeLayoutCubit
-                          .get(context)
-                          .getPostById
-                          ?.post,
-                      UserLoginCubit
-                          .get(context)
-                          .loggedInUserModel!
-                          .data
-                          .doc,
-                      HomeLayoutCubit
-                          .get(context)
-                          .comment,
-                      context,
-                    )
+                            HomeLayoutCubit.get(context).getPostById?.post,
+                            UserLoginCubit.get(context)
+                                .loggedInUserModel!
+                                .data
+                                .doc,
+                            HomeLayoutCubit.get(context).comment,
+                            context,
+                          )
                         : const SizedBox(),
                   );
                 },
@@ -103,14 +93,8 @@ class _DetailedPostState extends State<DetailedPost> {
 
   Widget buildDetailedPostItem(SpecificPost? specificPost,
       LoggedInUser loggedInUser, Comment? commentModel, context) {
-    var screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
-    var screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     var commentController = TextEditingController();
 
     // Handling Post Duration
@@ -139,7 +123,7 @@ class _DetailedPostState extends State<DetailedPost> {
           padding: EdgeInsets.symmetric(horizontal: screenWidth / 35),
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: screenHeight / 100),
+              padding: EdgeInsets.symmetric(vertical: screenHeight / 300),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -154,19 +138,34 @@ class _DetailedPostState extends State<DetailedPost> {
                   ],
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(screenHeight / 300),
+                  padding: EdgeInsets.all(screenHeight / 80),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      (specificPost.sharedFrom != null)
+                          ? Column(
+                              children: [
+                                SizedBox(height: screenHeight / 120),
+                                sharedByUserInfo(
+                                    specificPost, loggedInUser, context),
+                              ],
+                            )
+                          : const SizedBox(),
+                      SizedBox(height: screenHeight / 120),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           /// Profile Pic
                           CircleAvatar(
                             radius: 20.0,
-                            backgroundImage: specificPost.createdBy.profilePic != null
-                                ? NetworkImage(specificPost.createdBy.profilePic!.secure_url) as ImageProvider
-                                : const AssetImage("assets/images/nullProfile.png"),
+                            backgroundImage:
+                                specificPost.createdBy.profilePic != null
+                                    ? NetworkImage(specificPost
+                                        .createdBy
+                                        .profilePic!
+                                        .secure_url) as ImageProvider
+                                    : const AssetImage(
+                                        "assets/images/nullProfile.png"),
                           ),
                           SizedBox(width: screenWidth / 50),
                           Column(
@@ -176,8 +175,7 @@ class _DetailedPostState extends State<DetailedPost> {
                               InkWell(
                                 onTap: () {
                                   if (specificPost.createdBy.id ==
-                                      UserLoginCubit
-                                          .get(context)
+                                      UserLoginCubit.get(context)
                                           .loggedInUser!
                                           .id) {
                                     navigateToPage(
@@ -185,8 +183,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                   } else {
                                     HomeLayoutCubit.get(context)
                                         .getAnotherUserData(
-                                      token: UserLoginCubit
-                                          .get(context)
+                                      token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token,
                                       id: specificPost.createdBy.id,
@@ -194,20 +191,17 @@ class _DetailedPostState extends State<DetailedPost> {
                                         .then((value) {
                                       UserLoginCubit.get(context)
                                           .getAnotherUserPosts(
-                                        token: UserLoginCubit
-                                            .get(context)
+                                        token: UserLoginCubit.get(context)
                                             .loginModel!
                                             .refresh_token,
                                         id: specificPost.createdBy.id,
                                         userName:
-                                        specificPost.createdBy.userName,
+                                            specificPost.createdBy.userName,
                                       )
                                           .then((value) {
-                                        UserLoginCubit
-                                            .get(context)
-                                            .anotherUser =
-                                            HomeLayoutCubit
-                                                .get(context)
+                                        UserLoginCubit.get(context)
+                                                .anotherUser =
+                                            HomeLayoutCubit.get(context)
                                                 .anotherUser;
                                         navigateToPage(context,
                                             const AnotherUserProfile());
@@ -274,12 +268,11 @@ class _DetailedPostState extends State<DetailedPost> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-
                             /// Post Content
                             Text(
                               specificPost.content!,
                               maxLines:
-                              (specificPost.attachments!) != null ? 6 : 10,
+                                  (specificPost.attachments!) != null ? 6 : 10,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: "Robot",
@@ -290,7 +283,7 @@ class _DetailedPostState extends State<DetailedPost> {
 
                             /// Post Attachments
                             if (specificPost.attachments!.isNotEmpty)
-                            // check if there's more than one
+                              // check if there's more than one
                               if (specificPost.attachments!.length > 1)
                                 CarouselSlider(
                                   carouselController: carouselController,
@@ -298,7 +291,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                       .map((attachment) {
                                     return Image(
                                       image:
-                                      NetworkImage(attachment.secure_url),
+                                          NetworkImage(attachment.secure_url),
                                       width: double.infinity,
                                       fit: BoxFit.cover,
                                     );
@@ -331,9 +324,8 @@ class _DetailedPostState extends State<DetailedPost> {
                                   .entries
                                   .map((entry) {
                                 return GestureDetector(
-                                  onTap: () =>
-                                      carouselController
-                                          .animateToPage(entry.key),
+                                  onTap: () => carouselController
+                                      .animateToPage(entry.key),
                                   child: Container(
                                     width: 7.0,
                                     height: 7.0,
@@ -361,28 +353,27 @@ class _DetailedPostState extends State<DetailedPost> {
                         ),
                         child: Row(
                           children: [
-
                             /// Post Likes
                             (specificPost.likesCount!) > 0
                                 ? IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/NewLikeColor.svg',
-                                width: 22.0,
-                                height: 22.0,
-                              ),
-                            )
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {},
+                                    icon: SvgPicture.asset(
+                                      'assets/images/NewLikeColor.svg',
+                                      width: 22.0,
+                                      height: 22.0,
+                                    ),
+                                  )
                                 : Container(),
                             (specificPost.likesCount! > 0)
                                 ? Text(
-                              '${specificPost.likesCount!}',
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 12,
-                                color: HexColor("575757"),
-                              ),
-                            )
+                                    '${specificPost.likesCount!}',
+                                    style: TextStyle(
+                                      fontFamily: "Roboto",
+                                      fontSize: 12,
+                                      color: HexColor("575757"),
+                                    ),
+                                  )
                                 : Container(),
                             const Spacer(),
 
@@ -403,60 +394,56 @@ class _DetailedPostState extends State<DetailedPost> {
                                   ),
                                 ),
                               )
+                            else if (specificPost.likesCount! > 0 &&
+                                specificPost.commentsCount == 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comment',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              )
+                            else if (specificPost.likesCount! > 0 &&
+                                specificPost.commentsCount! > 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comments',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              )
+                            else if (specificPost.commentsCount == 0)
+                              Container()
                             else
-                              if (specificPost.likesCount! > 0 &&
-                                  specificPost.commentsCount == 1)
-                                Padding(
-                                  padding: EdgeInsetsDirectional.only(
-                                    start: screenWidth / 50,
-                                    end: screenWidth / 50,
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 50,
+                                  bottom: screenHeight / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.commentsCount} Comments',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
                                   ),
-                                  child: Text(
-                                    '${specificPost.commentsCount} Comment',
-                                    style: TextStyle(
-                                      fontFamily: "Roboto",
-                                      fontSize: 12,
-                                      color: HexColor("575757"),
-                                    ),
-                                  ),
-                                )
-                              else
-                                if (specificPost.likesCount! > 0 &&
-                                    specificPost.commentsCount! > 1)
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.only(
-                                      start: screenWidth / 50,
-                                      end: screenWidth / 50,
-                                    ),
-                                    child: Text(
-                                      '${specificPost.commentsCount} Comments',
-                                      style: TextStyle(
-                                        fontFamily: "Roboto",
-                                        fontSize: 12,
-                                        color: HexColor("575757"),
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  if (specificPost.commentsCount == 0)
-                                    Container()
-                                  else
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.only(
-                                        start: screenWidth / 50,
-                                        end: screenWidth / 50,
-                                        bottom: screenHeight / 50,
-                                      ),
-                                      child: Text(
-                                        '${specificPost
-                                            .commentsCount} Comments',
-                                        style: TextStyle(
-                                          fontFamily: "Roboto",
-                                          fontSize: 12,
-                                          color: HexColor("575757"),
-                                        ),
-                                      ),
-                                    ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -486,10 +473,9 @@ class _DetailedPostState extends State<DetailedPost> {
                                 onTap: () {
                                   HomeLayoutCubit.get(context).likePost(
                                       postId: specificPost.id!,
-                                      token: UserLoginCubit
-                                          .get(context)
-                                          .loginModel!
-                                          .refresh_token ??
+                                      token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token ??
                                           "");
                                 },
                               ),
@@ -502,23 +488,138 @@ class _DetailedPostState extends State<DetailedPost> {
                                 "assets/images/share.svg",
                                 "Share",
                                 onTap: () {
-                                  HomeLayoutCubit.get(context).sharePost(
-                                      postId: specificPost.id!,
-                                      token: UserLoginCubit
-                                          .get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                          "");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      backgroundColor: defaultColor,
-                                      content: Text(
-                                        'Post is shared',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      var screenHeight =
+                                          MediaQuery.of(context).size.height;
+
+                                      return SizedBox(
+                                        height: screenHeight / 7,
+                                        child: Padding(
+                                          padding: EdgeInsetsDirectional.only(
+                                            top: screenHeight / 30,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 0.5,
+                                                        blurRadius: 0.5,
+                                                        offset:
+                                                            const Offset(0, 2),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .only(
+                                                      start: screenWidth / 15,
+                                                      end: screenWidth / 15,
+                                                      top: screenHeight / 100,
+                                                      bottom:
+                                                          screenHeight / 100,
+                                                    ),
+                                                    child: const Center(
+                                                      child: Text(
+                                                        "Discard",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: screenWidth / 10),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  HomeLayoutCubit.get(context)
+                                                      .sharePost(
+                                                          postId:
+                                                              specificPost.id!,
+                                                          token: UserLoginCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .loginModel!
+                                                                  .refresh_token ??
+                                                              "");
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      backgroundColor:
+                                                          defaultColor,
+                                                      content: Text(
+                                                        'Post is shared',
+                                                        style: TextStyle(
+                                                          fontSize: 12.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: defaultColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.2),
+                                                        spreadRadius: 0.5,
+                                                        blurRadius: 0.5,
+                                                        offset:
+                                                            const Offset(0, 2),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .only(
+                                                      start: screenWidth / 15,
+                                                      end: screenWidth / 15,
+                                                      top: screenHeight / 100,
+                                                      bottom:
+                                                          screenHeight / 100,
+                                                    ),
+                                                    child: const Center(
+                                                      child: Text(
+                                                        "Share Now",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -546,8 +647,7 @@ class _DetailedPostState extends State<DetailedPost> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
-                  var comments = HomeLayoutCubit
-                      .get(context)
+                  var comments = HomeLayoutCubit.get(context)
                       .getCommentsResponse
                       ?.comments;
                   if (comments == null || comments.isEmpty) {
@@ -556,20 +656,18 @@ class _DetailedPostState extends State<DetailedPost> {
                   return buildCommentItem(
                       comments[index], specificPost, context);
                 },
-                separatorBuilder: (context, index) =>
-                    Padding(
-                      padding: EdgeInsetsDirectional.symmetric(
-                          vertical: screenHeight / 80),
-                      child: Container(
-                        width: double.infinity,
-                        color: Colors.white,
-                      ),
-                    ),
-                itemCount: HomeLayoutCubit
-                    .get(context)
-                    .getCommentsResponse
-                    ?.comments
-                    .length ??
+                separatorBuilder: (context, index) => Padding(
+                  padding: EdgeInsetsDirectional.symmetric(
+                      vertical: screenHeight / 80),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                  ),
+                ),
+                itemCount: HomeLayoutCubit.get(context)
+                        .getCommentsResponse
+                        ?.comments
+                        .length ??
                     0,
               ),
             ),
@@ -595,8 +693,8 @@ class _DetailedPostState extends State<DetailedPost> {
                 alignment: Alignment.centerRight,
                 children: [
                   Padding(
-                    padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 60),
+                    padding:
+                        EdgeInsetsDirectional.only(start: screenWidth / 60),
                     child: TextField(
                       controller: commentController,
                       style: const TextStyle(
@@ -614,10 +712,9 @@ class _DetailedPostState extends State<DetailedPost> {
                     onTap: () {
                       HomeLayoutCubit.get(context).createComment(
                         content: commentController.text,
-                        token: UserLoginCubit
-                            .get(context)
-                            .loginModel!
-                            .refresh_token ??
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
                             "",
                         postId: specificPost.id!,
                       );
@@ -637,20 +734,14 @@ class _DetailedPostState extends State<DetailedPost> {
     );
   }
 
-  Widget buildCommentItem(Comment? commentModel, SpecificPost? specificPost,
-      context) {
+  Widget buildCommentItem(
+      Comment? commentModel, SpecificPost? specificPost, context) {
     if (commentModel == null) {
       return Container();
     }
 
-    var screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    var screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
 
     // Handling Post Duration
     DateTime? createdAt = commentModel.createdAt;
@@ -677,12 +768,12 @@ class _DetailedPostState extends State<DetailedPost> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             /// Profile Pic
             CircleAvatar(
               radius: 20.0,
               backgroundImage: commentModel.createdBy.profilePic != null
-                  ? NetworkImage(commentModel.createdBy.profilePic!.secure_url!) as ImageProvider
+                  ? NetworkImage(commentModel.createdBy.profilePic!.secure_url)
+                      as ImageProvider
                   : const AssetImage("assets/images/nullProfile.png"),
             ),
             SizedBox(width: screenWidth / 40),
@@ -711,7 +802,6 @@ class _DetailedPostState extends State<DetailedPost> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       /// Comment UserName, Author Text
                       Row(
                         children: [
@@ -724,32 +814,32 @@ class _DetailedPostState extends State<DetailedPost> {
                             ),
                           ),
                           (commentModel.createdBy.id ==
-                              specificPost!.createdBy.id)
+                                  specificPost!.createdBy.id)
                               ? const Spacer()
                               : const Spacer(),
                           (commentModel.createdBy.id ==
-                              specificPost.createdBy.id)
+                                  specificPost.createdBy.id)
                               ? Container(
-                            decoration: BoxDecoration(
-                              color: defaultColor.withOpacity(0.4),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 60,
-                                end: screenWidth / 60,
-                                top: screenHeight / 500,
-                                bottom: screenHeight / 500,
-                              ),
-                              child: const Text(
-                                "Author",
-                                style: TextStyle(
-                                  fontSize: 9.5,
-                                  fontFamily: "Roboto",
-                                ),
-                              ),
-                            ),
-                          )
+                                  decoration: BoxDecoration(
+                                    color: defaultColor.withOpacity(0.4),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.only(
+                                      start: screenWidth / 60,
+                                      end: screenWidth / 60,
+                                      top: screenHeight / 500,
+                                      bottom: screenHeight / 500,
+                                    ),
+                                    child: const Text(
+                                      "Author",
+                                      style: TextStyle(
+                                        fontSize: 9.5,
+                                        fontFamily: "Roboto",
+                                      ),
+                                    ),
+                                  ),
+                                )
                               : Container(),
                           SizedBox(width: screenWidth / 30),
                           GestureDetector(
@@ -807,11 +897,10 @@ class _DetailedPostState extends State<DetailedPost> {
               InkWell(
                 onTap: () {
                   HomeLayoutCubit.get(context).likePost(
-                      postId: specificPost!.id!,
-                      token: UserLoginCubit
-                          .get(context)
-                          .loginModel!
-                          .refresh_token ??
+                      postId: specificPost.id!,
+                      token: UserLoginCubit.get(context)
+                              .loginModel!
+                              .refresh_token ??
                           "");
                 },
                 child: const Text(
@@ -832,8 +921,8 @@ class _DetailedPostState extends State<DetailedPost> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -861,10 +950,7 @@ class _DetailedPostState extends State<DetailedPost> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        var screenHeight = MediaQuery
-            .of(context)
-            .size
-            .height;
+        var screenHeight = MediaQuery.of(context).size.height;
 
         return SizedBox(
           height: screenHeight / 4,
@@ -903,11 +989,8 @@ class _DetailedPostState extends State<DetailedPost> {
                   // Logic to save the post
                   SavedPostsCubit.get(context).savePost(
                     token:
-                    UserLoginCubit
-                        .get(context)
-                        .loginModel!
-                        .refresh_token ??
-                        "",
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
                     postId: specificPost!.id!,
                   );
                   Navigator.pop(context);
@@ -941,9 +1024,7 @@ class _DetailedPostState extends State<DetailedPost> {
                     ),
                   ],
                 ),
-                onTap: () {
-
-                },
+                onTap: () {},
               ),
               ListTile(
                 leading: const Icon(
@@ -973,9 +1054,7 @@ class _DetailedPostState extends State<DetailedPost> {
                     ),
                   ],
                 ),
-                onTap: () {
-
-                },
+                onTap: () {},
               ),
             ],
           ),
@@ -988,10 +1067,7 @@ class _DetailedPostState extends State<DetailedPost> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        var screenHeight = MediaQuery
-            .of(context)
-            .size
-            .height;
+        var screenHeight = MediaQuery.of(context).size.height;
 
         return SizedBox(
           height: screenHeight / 9,
@@ -1029,11 +1105,9 @@ class _DetailedPostState extends State<DetailedPost> {
                 onTap: () {
                   // Logic to delete Comment
                   HomeLayoutCubit.get(context).deleteComment(
-                    token: UserLoginCubit
-                        .get(context)
-                        .loginModel!
-                        .refresh_token ??
-                        "",
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                            "",
                     postId: comment!.postId,
                     commentId: comment.id,
                   );
@@ -1053,6 +1127,85 @@ class _DetailedPostState extends State<DetailedPost> {
           ),
         );
       },
+    );
+  }
+
+  Widget sharedByUserInfo(SpecificPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        if (postDetails.sharedBy!.id ==
+            UserLoginCubit.get(context).loggedInUser!.id) {
+          navigateToPage(context, const ProfilePage());
+        } else {
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                  id: postDetails.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token,
+                    id: postDetails.sharedBy!.id,
+                    userName: postDetails.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 40,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(
+                "assets/images/share.svg",
+                width: 18.0,
+                height: 18.0,
+              ),
+            ),
+            SizedBox(width: screenWidth / 80),
+            CircleAvatar(
+              radius: 10.0,
+              backgroundImage: postDetails!.sharedBy!.profilePic != null
+                  ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
+                      as ImageProvider
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 80),
+            Text(
+              (postDetails.sharedBy!.userName == loggedInUser.userName)
+                  ? 'You'
+                  : postDetails.sharedBy!.userName,
+              style: const TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(width: screenWidth / 150),
+            const Text(
+              'shared this',
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

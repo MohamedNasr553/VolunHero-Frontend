@@ -10,7 +10,6 @@ import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
-import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
 import 'package:flutter_code/modules/GeneralView/EditPost/Edit_Post.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
@@ -135,9 +134,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   CircleAvatar(
                                     radius: 45.0,
-                                    backgroundImage: HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic != null
-                                        ? NetworkImage(HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic!.secure_url) as ImageProvider
-                                        : const AssetImage("assets/images/nullProfile.png"),
+                                    backgroundImage: HomeLayoutCubit.get(
+                                                    context)
+                                                .modifiedPost
+                                                ?.createdBy
+                                                .profilePic !=
+                                            null
+                                        ? NetworkImage(
+                                            HomeLayoutCubit.get(context)
+                                                .modifiedPost!
+                                                .createdBy
+                                                .profilePic!
+                                                .secure_url) as ImageProvider
+                                        : const AssetImage(
+                                            "assets/images/nullProfile.png"),
                                   ),
                                   GestureDetector(
                                     onTap: () {},
@@ -507,9 +517,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         // Create post
                         GestureDetector(
-                          onTap: (){
-                            HomeLayoutCubit.get(context)
-                                .changeBottomNavBar(2);
+                          onTap: () {
+                            HomeLayoutCubit.get(context).changeBottomNavBar(2);
                             navigateAndFinish(
                                 context, const VolunHeroUserLayout());
                           },
@@ -546,8 +555,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Colors.grey.shade300,
                                     ),
                                     Padding(
-                                      padding:
-                                      EdgeInsets.only(left: screenWidth / 20),
+                                      padding: EdgeInsets.only(
+                                          left: screenWidth / 20),
                                       child: Row(
                                         children: [
                                           SizedBox(
@@ -562,7 +571,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                           const Spacer(),
                                           IconButton(
-                                            onPressed: (){},
+                                            onPressed: () {},
                                             icon: Image.asset(
                                               'assets/images/Img_box_duotone_line.png',
                                               width: 25.0,
@@ -580,9 +589,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         // Posts
                         if (HomeLayoutCubit.get(context).ownerPostsModel !=
-                              null &&
-                            HomeLayoutCubit.get(context).ownerPostsModel!
-                                .newPosts.isEmpty)
+                                null &&
+                            HomeLayoutCubit.get(context)
+                                .ownerPostsModel!
+                                .newPosts
+                                .isEmpty)
                           Padding(
                             padding: EdgeInsets.all(screenWidth / 60),
                             child: Container(
@@ -622,8 +633,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   SizedBox(height: screenHeight / 300),
                                   const Text(
                                     "Your Posts "
-                                        "and attachments will "
-                                        "show up here.",
+                                    "and attachments will "
+                                    "show up here.",
                                     style: TextStyle(
                                       fontSize: 10.0,
                                       fontWeight: FontWeight.w600,
@@ -738,14 +749,14 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return ListView.separated(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
         if (ownerPostsModel != null) {
           if (index < ownerPostsModel.newPosts.length) {
-            return buildPostItem(
-                ownerPostsModel.newPosts[index], loginCubit.loggedInUserData!.doc, context);
+            return buildPostItem(ownerPostsModel.newPosts[index],
+                loginCubit.loggedInUserData!.doc, context);
           }
         }
         return const SizedBox(); // Return an empty SizedBox if no post is available
@@ -832,33 +843,15 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                (postDetails.createdBy.userName != loggedInUser.userName)
-                    ? Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          start: screenWidth / 70,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.turn_right_outlined,
-                              color: Colors.grey,
-                              size: 18.0,
-                            ),
-                            SizedBox(width: screenWidth / 50),
-                            const Text(
-                              "reposted this",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                (postDetails.sharedFrom != null)
+                    ? Column(
+                        children: [
+                          SizedBox(height: screenHeight / 120),
+                          sharedByUserInfo(postDetails, loggedInUser, context),
+                        ],
                       )
-                    : const SizedBox(height: 1),
-                SizedBox(height: screenHeight / 80),
+                    : const SizedBox(),
+                SizedBox(height: screenHeight / 120),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -867,8 +860,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (postDetails.createdBy.id ==
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
-                        }
-                        else {
+                        } else {
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
                                   token: UserLoginCubit.get(context)
@@ -896,7 +888,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         radius: 20.0,
                         backgroundImage: (postDetails.createdBy.profilePic !=
                                 null)
-                            ? NetworkImage(postDetails.createdBy.profilePic!) as ImageProvider
+                            ? NetworkImage(postDetails.createdBy.profilePic!
+                                .secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -909,8 +902,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             if (postDetails.createdBy.id ==
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
-                            }
-                            else {
+                            } else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
                                       token: UserLoginCubit.get(context)
@@ -1251,23 +1243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           "assets/images/share.svg",
                           "Share",
                           onTap: () {
-                            HomeLayoutCubit.get(context).sharePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: defaultColor,
-                                content: Text(
-                                  'Post is shared',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            );
+                            shareSubComponent(postDetails, context);
                           },
                         ),
                       ],
@@ -1311,156 +1287,426 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _showProfilePageBottomSheet(
       Posts? postDetails, LoggedInUser? loggedInUser) {
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         var screenHeight = MediaQuery.of(context).size.height;
+        var screenWidth = MediaQuery.of(context).size.width;
 
-        return SizedBox(
-          height: screenHeight / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              /// Save Post
-              ListTile(
-                leading: const Icon(
-                  Icons.save,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Save Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 4,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  /// Save Post
+                  ListTile(
+                    leading: const Icon(
+                      Icons.save,
+                      size: 25,
                     ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Add this to your saved items.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Save Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Add this to your saved items.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to save the post
-                  SavedPostsCubit.get(context).savePost(
-                    token:
+                    onTap: () {
+                      // Logic to save the post
+                      SavedPostsCubit.get(context).savePost(
+                        token:
                         UserLoginCubit.get(context).loginModel!.refresh_token ??
                             "",
-                    postId: postDetails!.id,
-                  );
-                  Navigator.pop(context);
-                },
+                        postId: postDetails!.id,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  /// Edit Post
+                  ListTile(
+                    leading: const Icon(
+                      Icons.edit,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Edit Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Edit your post.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to edit post
+                      Navigator.pop(context);
+                      final token =
+                          UserLoginCubit.get(context).loginModel?.refresh_token;
+                      final postId = postDetails!.id;
+                      if (token != null) {
+                        HomeLayoutCubit.get(context).getPostId(
+                          token: token,
+                          postId: postId,
+                        );
+                      }
+                      navigateToPage(context, const EditPost());
+                    },
+                  ),
+                  /// Delete Post / Remove Share
+                  ListTile(
+                    leading: const Icon(
+                      Icons.delete_forever,
+                      size: 25,
+                    ),
+                    title: (postDetails!.sharedFrom == null)
+                        ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Delete Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Remove this post from your profile.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    )
+                        : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Remove Share',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Remove this post from your profile.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      if (postDetails.sharedFrom == null) {
+                        // Delete Post
+                        HomeLayoutCubit.get(context).deletePost(
+                          token: UserLoginCubit.get(context)
+                              .loginModel!
+                              .refresh_token ??
+                              "",
+                          postId: postDetails.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post Deleted',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      } else {
+                        // Delete Share
+                        HomeLayoutCubit.get(context).removeShare(
+                          token: UserLoginCubit.get(context)
+                              .loginModel!
+                              .refresh_token ??
+                              "",
+                          postId: postDetails.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Removed',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      }
+                    },
+                  ),
+                ],
               ),
-              /// Edit Post
-              ListTile(
-                leading: const Icon(
-                  Icons.edit,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Edit Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Edit your post.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to edit post
-                  Navigator.pop(context);
-                  final token = UserLoginCubit.get(context).loginModel?.refresh_token;
-                  final postId = postDetails!.id;
-                  if (token != null) {
-                    HomeLayoutCubit.get(context).getPostId(
-                      token: token,
-                      postId: postId,
-                    );
-                  }
-                  navigateToPage(context, const EditPost());
-                },
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
               ),
-              /// Delete Post
-              ListTile(
-                leading: const Icon(
-                  Icons.delete_forever,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget sharedByUserInfo(
+      Posts? postDetails, LoggedInUser loggedInUser, BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        if (postDetails.sharedBy!.id ==
+            UserLoginCubit.get(context).loggedInUser!.id) {
+          navigateToPage(context, const ProfilePage());
+        } else {
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                  id: postDetails.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token,
+                    id: postDetails.sharedBy!.id,
+                    userName: postDetails.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 40,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(
+                "assets/images/share.svg",
+                width: 18.0,
+                height: 18.0,
+              ),
+            ),
+            SizedBox(width: screenWidth / 80),
+            CircleAvatar(
+              radius: 10.0,
+              backgroundImage: postDetails!.sharedBy!.profilePic != null
+                  ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
+                      as ImageProvider
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 80),
+            Text(
+              (postDetails.sharedBy!.userName == loggedInUser.userName)
+                  ? 'You'
+                  : postDetails.sharedBy!.userName,
+              style: const TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(width: screenWidth / 150),
+            const Text(
+              'shared this',
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void shareSubComponent(Posts? postDetails, context){
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 5.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 20),
+                child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Delete Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Remove this post from your profile.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  if(postDetails!.createdBy.id == loggedInUser!.id){
-                    // Delete Post
-                    HomeLayoutCubit.get(context).deletePost(
-                      token:
-                      UserLoginCubit.get(context).loginModel!.refresh_token ??
-                          "",
-                      postId: postDetails.id,
-                    );
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: defaultColor,
-                      content: Text(
-                        'Post Deleted',
-                        style: TextStyle(
-                          fontSize: 12.0,
+                    GestureDetector(
+                      onTap: (){
+                        HomeLayoutCubit.get(context).sharePost(
+                          token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                              "",
+                          postId: postDetails!.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post already saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: screenHeight / 20,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 55),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                  "assets/images/share.svg",
+                                  width: 30.0,
+                                  height: 30.0,
+                                ),
+                              ),
+                              SizedBox(width: screenWidth / 60),
+                              const Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Share Now',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.0),
+                                  Text(
+                                    'Instantly bring this post to others\' feeds.',
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ));
-                  }
-                  else{
-                    // Delete Share
-
-                  }
-                },
+                    ),
+                    SizedBox(height: screenHeight / 55),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: screenWidth / 1.09,
+                        height: screenHeight / 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white70,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
         );
       },
     );

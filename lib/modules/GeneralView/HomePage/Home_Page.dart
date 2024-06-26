@@ -291,7 +291,6 @@ class _HomePageState extends State<HomePage> {
                         final homePagePostsModel = homeCubit.homePagePostsModel;
                         if (homePagePostsModel != null) {
                           if (index < homePagePostsModel.modifiedPosts.length) {
-
                             return buildPostItem(
                               homePagePostsModel.modifiedPosts[index],
                               loggedInUserCubit.loggedInUserData!.doc,
@@ -317,8 +316,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         );
-      }
-      else {
+      } else {
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -341,8 +339,8 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: screenHeight / 200),
               const Text(
                 "Posts "
-                    "and attachments will "
-                    "show up here.",
+                "and attachments will "
+                "show up here.",
                 style: TextStyle(
                   fontSize: 11.0,
                   fontWeight: FontWeight.w600,
@@ -354,8 +352,7 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       }
-    }
-    else {
+    } else {
       return buildLoadingWidget(context);
     }
   }
@@ -431,6 +428,15 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                (postDetails.sharedFrom != null)
+                    ? Column(
+                        children: [
+                          SizedBox(height: screenHeight / 120),
+                          sharedByUserInfo(postDetails, loggedInUser, context),
+                        ],
+                      )
+                    : const SizedBox(),
+                SizedBox(height: screenHeight / 120),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -465,8 +471,10 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
-                        backgroundImage: postDetails.createdBy.profilePic != null
-                            ? NetworkImage(postDetails.createdBy.profilePic!.secure_url) as ImageProvider
+                        backgroundImage: postDetails.createdBy.profilePic !=
+                                null
+                            ? NetworkImage(postDetails.createdBy.profilePic!
+                                .secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -527,8 +535,8 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
                     IconButton(
                       onPressed: () {
-                        print("Modified to be saved: ");
-                        print(postDetails);
+                        // print("Modified to be saved: ");
+                        // print(postDetails);
                         _showHomePageBottomSheet(postDetails);
                       },
                       icon: SvgPicture.asset(
@@ -570,7 +578,8 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: screenHeight / 100),
 
                       /// Post Attachments
-                      if (postDetails.attachments!.isNotEmpty)
+                      if (postDetails.attachments != null &&
+                          postDetails.attachments!.isNotEmpty)
                         // check if there's more than one
                         if (postDetails.attachments!.length > 1)
                           CarouselSlider(
@@ -603,32 +612,33 @@ class _HomePageState extends State<HomePage> {
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: postDetails.attachments!
-                            .asMap()
-                            .entries
-                            .map((entry) {
-                          return GestureDetector(
-                            onTap: () =>
-                                carouselController.animateToPage(entry.key),
-                            child: Container(
-                              width: 7.0,
-                              height: 7.0,
-                              margin: EdgeInsets.symmetric(
-                                vertical: screenHeight / 90,
-                                horizontal: screenWidth / 100,
+                      if (postDetails.attachments != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: postDetails.attachments!
+                              .asMap()
+                              .entries
+                              .map((entry) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  carouselController.animateToPage(entry.key),
+                              child: Container(
+                                width: 7.0,
+                                height: 7.0,
+                                margin: EdgeInsets.symmetric(
+                                  vertical: screenHeight / 90,
+                                  horizontal: screenWidth / 100,
+                                ),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _currentImageIndex == entry.key
+                                      ? defaultColor
+                                      : Colors.grey,
+                                ),
                               ),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _currentImageIndex == entry.key
-                                    ? defaultColor
-                                    : Colors.grey,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                            );
+                          }).toList(),
+                        ),
                     ],
                   ),
                 ),
@@ -825,23 +835,7 @@ class _HomePageState extends State<HomePage> {
                           "assets/images/share.svg",
                           "Share",
                           onTap: () {
-                            HomeLayoutCubit.get(context).sharePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "");
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: defaultColor,
-                                content: Text(
-                                  'Post is shared',
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            );
+                            shareSubComponent(postDetails, context);
                           },
                         ),
                       ],
@@ -887,122 +881,350 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
+        var screenWidth = MediaQuery.of(context).size.width;
         var screenHeight = MediaQuery.of(context).size.height;
 
-        return SizedBox(
-          height: screenHeight / 4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.save,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Save Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 4,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.save,
+                      size: 25,
                     ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Add this to your saved items.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Save Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Add this to your saved items.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                onTap: () {
-                  print("Modified to be saved: ");
-                  print(modifiedPost);
-                  // Logic to save the post
-                  SavedPostsCubit.get(context).savePost(
-                    token:
+                    onTap: () {
+                      // print("Modified to be saved: ");
+                      // print(modifiedPost);
+                      // Logic to save the post
+                      SavedPostsCubit.get(context).savePost(
+                        token:
                         UserLoginCubit.get(context).loginModel!.refresh_token ??
                             "",
-                    postId: modifiedPost!.id,
-                  );
-                  Navigator.pop(context);
-                },
+                        postId: modifiedPost!.id,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.close,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Hide Post',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'See fewer posts like this.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to hide post
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to Copy post link
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.close,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget sharedByUserInfo(ModifiedPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        if (postDetails.sharedBy!.id ==
+            UserLoginCubit.get(context).loggedInUser!.id) {
+          navigateToPage(context, const ProfilePage());
+        } else {
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                  id: postDetails.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token,
+                    id: postDetails.sharedBy!.id,
+                    userName: postDetails.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 40,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(
+                "assets/images/share.svg",
+                width: 18.0,
+                height: 18.0,
+              ),
+            ),
+            SizedBox(width: screenWidth / 80),
+            CircleAvatar(
+              radius: 10.0,
+              backgroundImage: postDetails!.sharedBy!.profilePic != null
+                  ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
+                      as ImageProvider
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 80),
+            Text(
+              (postDetails.sharedBy!.userName == loggedInUser.userName)
+                  ? 'You'
+                  : postDetails.sharedBy!.userName,
+              style: const TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(width: screenWidth / 150),
+            const Text(
+              'shared this',
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void shareSubComponent(ModifiedPost? postDetails, context){
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 5.5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 20),
+                child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Hide Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: (){
+                        HomeLayoutCubit.get(context).sharePost(
+                          token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                              "",
+                          postId: postDetails!.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post already saved',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: screenHeight / 20,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.symmetric(horizontal: screenWidth / 55),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {},
+                                child: SvgPicture.asset(
+                                  "assets/images/share.svg",
+                                  width: 30.0,
+                                  height: 30.0,
+                                ),
+                              ),
+                              SizedBox(width: screenWidth / 60),
+                              const Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Share Now',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  SizedBox(height: 1.0),
+                                  Text(
+                                    'Instantly bring this post to others\' feeds.',
+                                    style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'See fewer posts like this.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
+                    SizedBox(height: screenHeight / 55),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: screenWidth / 1.09,
+                        height: screenHeight / 20,
+                        decoration: BoxDecoration(
+                          color: Colors.white70,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
-                onTap: () {
-                  // Logic to hide post
-                  Navigator.pop(context);
-                },
               ),
-              ListTile(
-                leading: const Icon(
-                  Icons.copy,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Copy link',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Copy post URL.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to Copy post link
-                  Navigator.pop(context);
-                },
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

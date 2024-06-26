@@ -105,22 +105,19 @@ class _UserSavedPostsState extends State<SavedPosts> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                List<ModifiedPost> postsList =  homeCubit.homePagePostsModel!.modifiedPosts;
+                List<ModifiedPost> postsList =
+                    homeCubit.homePagePostsModel!.modifiedPosts;
                 ModifiedPost? modifiedPost;
-                for(int i=0;i<postsList.length;i++){
-                    if(postsList[i].id == savedPostsCubit.getSavedPosts!.posts![index].postId){
-                      print("********************");
-                      print(postsList[i]);
-                      print("********************");
-                      print(savedPostsCubit.getSavedPosts!.posts![index]);
-                      modifiedPost = postsList[i];
-                    }
+                for (int i = 0; i < postsList.length; i++) {
+                  if (postsList[i].id ==
+                      savedPostsCubit.getSavedPosts!.posts![index].postId) {
+
+                    modifiedPost = postsList[i];
+                  }
                 }
                 return buildSavedPostItem(
                   modifiedPost,
-                  // SavedPostsCubit.get(context).getSavedPosts,
                   savedPostsCubit.getSavedPosts!.posts![index],
-                  // savedPostsCubit.getDetailedSavedPost,
                   loginCubit.loggedInUserData!.doc,
                   context,
                 );
@@ -188,7 +185,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
     if (modifiedPost == null || getDetailedSavedPost == null) {
       return const SizedBox();
     }
-    print("---------- Post id el gy le save: ${modifiedPost.id} -----------");
+    // print("Post id el gy le save: ${modifiedPost.id}");
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -216,7 +213,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
       padding: EdgeInsets.all(screenWidth / 50),
       child: GestureDetector(
         onTap: () {
-          print("Post ID le detailed post: ${getDetailedSavedPost.postId!}");
+          // print("Post ID le detailed post: ${getDetailedSavedPost.postId!}");
           final token = UserLoginCubit.get(context).loginModel?.refresh_token;
           if (token != null) {
             HomeLayoutCubit.get(context).getPostId(
@@ -255,6 +252,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                (modifiedPost.sharedFrom != null)
+                    ? Column(
+                        children: [
+                          SizedBox(height: screenHeight / 120),
+                          sharedByUserInfo(modifiedPost, loggedInUser, context),
+                        ],
+                      )
+                    : const SizedBox(),
+                SizedBox(height: screenHeight / 120),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -620,25 +626,128 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
-                          // onTap: () {
-                          //   HomeLayoutCubit.get(context).sharePost(
-                          //       postId: getDetailedSavedPost.postId!,
-                          //       token: UserLoginCubit.get(context)
-                          //           .loginModel!
-                          //           .refresh_token ??
-                          //           "");
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(
-                          //       backgroundColor: defaultColor,
-                          //       content: Text(
-                          //         'Post is shared',
-                          //         style: TextStyle(
-                          //           fontSize: 12.0,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   );
-                          // },
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                var screenHeight =
+                                    MediaQuery.of(context).size.height;
+
+                                return SizedBox(
+                                  height: screenHeight / 7,
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.only(
+                                      top: screenHeight / 30,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 0.5,
+                                                  blurRadius: 0.5,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                start: screenWidth / 15,
+                                                end: screenWidth / 15,
+                                                top: screenHeight / 100,
+                                                bottom: screenHeight / 100,
+                                              ),
+                                              child: const Center(
+                                                child: Text(
+                                                  "Discard",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: screenWidth / 10),
+                                        GestureDetector(
+                                          onTap: () {
+                                            HomeLayoutCubit.get(context)
+                                                .sharePost(
+                                                    postId: modifiedPost.id,
+                                                    token: UserLoginCubit.get(
+                                                                context)
+                                                            .loginModel!
+                                                            .refresh_token ??
+                                                        "");
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                backgroundColor: defaultColor,
+                                                content: Text(
+                                                  'Post is shared',
+                                                  style: TextStyle(
+                                                    fontSize: 12.0,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: defaultColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.2),
+                                                  spreadRadius: 0.5,
+                                                  blurRadius: 0.5,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                start: screenWidth / 15,
+                                                end: screenWidth / 15,
+                                                top: screenHeight / 100,
+                                                bottom: screenHeight / 100,
+                                              ),
+                                              child: const Center(
+                                                child: Text(
+                                                  "Share Now",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -722,13 +831,12 @@ class _UserSavedPostsState extends State<SavedPosts> {
                 ),
                 onTap: () {
                   // Logic to remove saved post
-                  print(
-                      "Post id el hytms7 mn el save: ${getDetailedSavedPost!.postId!}");
+                  // print("Post id el hytms7 mn el save: ${getDetailedSavedPost!.postId!}");
                   SavedPostsCubit.get(context).removeSavedPost(
                     token:
                         UserLoginCubit.get(context).loginModel!.refresh_token ??
                             "",
-                    postId: getDetailedSavedPost.postId!,
+                    postId: getDetailedSavedPost!.postId!,
                   );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -746,6 +854,85 @@ class _UserSavedPostsState extends State<SavedPosts> {
           ),
         );
       },
+    );
+  }
+
+  Widget sharedByUserInfo(ModifiedPost? postDetails, LoggedInUser loggedInUser,
+      BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return GestureDetector(
+      onTap: () {
+        if (postDetails.sharedBy!.id ==
+            UserLoginCubit.get(context).loggedInUser!.id) {
+          navigateToPage(context, const ProfilePage());
+        } else {
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                  id: postDetails.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token,
+                    id: postDetails.sharedBy!.id,
+                    userName: postDetails.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
+        }
+      },
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 40,
+        ),
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () {},
+              child: SvgPicture.asset(
+                "assets/images/share.svg",
+                width: 18.0,
+                height: 18.0,
+              ),
+            ),
+            SizedBox(width: screenWidth / 80),
+            CircleAvatar(
+              radius: 10.0,
+              backgroundImage: postDetails!.sharedBy!.profilePic != null
+                  ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
+                      as ImageProvider
+                  : const AssetImage("assets/images/nullProfile.png"),
+            ),
+            SizedBox(width: screenWidth / 80),
+            Text(
+              (postDetails.sharedBy!.userName == loggedInUser.userName)
+                  ? 'You'
+                  : postDetails.sharedBy!.userName,
+              style: const TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            SizedBox(width: screenWidth / 150),
+            const Text(
+              'shared this',
+              style: TextStyle(
+                fontFamily: "Roboto",
+                fontSize: 10,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
