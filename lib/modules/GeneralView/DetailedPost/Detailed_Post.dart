@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -787,33 +788,6 @@ class _DetailedPostState extends State<DetailedPost> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   void _showHomePageBottomSheet(SpecificPost? specificPost, context) {
     showModalBottomSheet(
       context: context,
@@ -845,9 +819,9 @@ class _DetailedPostState extends State<DetailedPost> {
                         const Text(
                           'Save Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -885,9 +859,9 @@ class _DetailedPostState extends State<DetailedPost> {
                         const Text(
                           'Hide Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -915,9 +889,9 @@ class _DetailedPostState extends State<DetailedPost> {
                         const Text(
                           'Copy link',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -931,7 +905,12 @@ class _DetailedPostState extends State<DetailedPost> {
                         ),
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${specificPost!.id}",
+                        context,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -1247,6 +1226,21 @@ class _DetailedPostState extends State<DetailedPost> {
           ],
         );
       },
+    );
+  }
+
+  void _copyUrl(String url, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: defaultColor,
+        content: Text(
+          'Post URL copied to clipboard',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ),
     );
   }
 }

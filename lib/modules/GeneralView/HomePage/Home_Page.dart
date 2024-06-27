@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
@@ -17,7 +18,6 @@ import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -184,87 +184,14 @@ class _HomePageState extends State<HomePage> {
                 drawer: const UserSidePage(),
                 body: (state is! HomePagePostsLoadingState)
                     ? buildPostsList(context)
-                    : buildLoadingWidget(context));
+                    : buildLoadingWidget(
+                        HomeLayoutCubit.get(context)
+                                .homePagePostsModel
+                                ?.modifiedPosts
+                                .length ??
+                            0,
+                        context));
           },
-        );
-      },
-    );
-  }
-
-  Widget buildLoadingWidget(context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
-    return ListView.builder(
-      itemCount: HomeLayoutCubit.get(context)
-              .homePagePostsModel
-              ?.modifiedPosts
-              .length ??
-          0,
-      itemBuilder: (BuildContext context, int index) {
-        return Shimmer.fromColors(
-          period: const Duration(milliseconds: 1000),
-          baseColor: Colors.grey,
-          highlightColor: Colors.white30,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 20,
-                    ),
-                    SizedBox(
-                      width: screenWidth / 40,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight / 100,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: screenHeight / 4,
-                    width: screenWidth,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );
@@ -353,7 +280,13 @@ class _HomePageState extends State<HomePage> {
         );
       }
     } else {
-      return buildLoadingWidget(context);
+      return buildLoadingWidget(
+          HomeLayoutCubit.get(context)
+                  .homePagePostsModel
+                  ?.modifiedPosts
+                  .length ??
+              0,
+          context);
     }
   }
 
@@ -474,15 +407,15 @@ class _HomePageState extends State<HomePage> {
                                   token: UserLoginCubit.get(context)
                                       .loginModel!
                                       .refresh_token,
-                                  id: postDetails.createdBy.id).then((value) {
-                                    UserLoginCubit.get(context).anotherUser = HomeLayoutCubit.get(context).anotherUser;
-                                    print("not nulllllll");
+                                  id: postDetails.createdBy.id)
+                              .then((value) {
+                            UserLoginCubit.get(context).anotherUser =
+                                HomeLayoutCubit.get(context).anotherUser;
+                            print("not nulllllll");
 
-                                    print("not nulllllll");
-                                navigateToPage(
-                                    context, const AnotherUserProfile());
+                            print("not nulllllll");
+                            navigateToPage(context, const AnotherUserProfile());
                           });
-
                         }
                       },
                       child: CircleAvatar(
@@ -866,33 +799,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   void _showHomePageBottomSheet(ModifiedPost? modifiedPost) {
     showModalBottomSheet(
       context: context,
@@ -924,9 +830,9 @@ class _HomePageState extends State<HomePage> {
                         const Text(
                           'Save Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -945,8 +851,9 @@ class _HomePageState extends State<HomePage> {
                       // print(modifiedPost);
                       // Logic to save the post
                       SavedPostsCubit.get(context).savePost(
-                        token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
                             "",
                         postId: modifiedPost!.id,
                       );
@@ -965,9 +872,9 @@ class _HomePageState extends State<HomePage> {
                         const Text(
                           'Hide Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -998,9 +905,9 @@ class _HomePageState extends State<HomePage> {
                         const Text(
                           'Copy link',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1017,6 +924,10 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       // Logic to Copy post link
                       Navigator.pop(context);
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${modifiedPost!.id}",
+                        context,
+                      );
                     },
                   ),
                 ],
@@ -1247,6 +1158,21 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       },
+    );
+  }
+
+  void _copyUrl(String url, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: defaultColor,
+        content: Text(
+          'Post URL copied to clipboard',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ),
     );
   }
 }

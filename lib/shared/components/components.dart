@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_code/layout/VolunHeroOrganizationLayout/layout.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Widget defaultButton({
@@ -444,3 +447,105 @@ Widget donationFormUI({
         ),
       ),
     );
+
+Widget buildLoadingWidget(int itemCount, context) {
+  var screenHeight = MediaQuery.of(context).size.height;
+  var screenWidth = MediaQuery.of(context).size.width;
+
+  return ListView.builder(
+    itemCount: itemCount,
+    itemBuilder: (BuildContext context, int index) {
+      return Shimmer.fromColors(
+        period: const Duration(milliseconds: 1000),
+        baseColor: Colors.grey,
+        highlightColor: Colors.white30,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const CircleAvatar(
+                    radius: 20,
+                  ),
+                  SizedBox(
+                    width: screenWidth / 40,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: screenHeight / 75,
+                        width: screenWidth / 4,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      SizedBox(
+                        height: screenHeight / 75,
+                        width: screenWidth / 2,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: screenHeight / 100,
+              ),
+              Center(
+                child: SizedBox(
+                  height: screenHeight / 4,
+                  width: screenWidth,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget postSubComponent(String assetIcon, String action,
+    {GestureTapCallback? onTap,
+    Color color = const Color(0xFF575757),
+    FontWeight fontWeight = FontWeight.w300}) {
+  return InkWell(
+    onTap: onTap,
+    child: Row(
+      children: [
+        SvgPicture.asset(
+          assetIcon,
+          color: color,
+        ),
+        const SizedBox(width: 1),
+        Text(
+          action,
+          style: TextStyle(
+            fontSize: 12,
+            fontFamily: "Roboto",
+            color: color,
+            fontWeight: fontWeight,
+          ),
+        )
+      ],
+    ),
+  );
+}

@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -90,7 +91,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   body: SingleChildScrollView(
-
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -288,7 +288,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                HomeLayoutCubit.get(context).ownerPostsModel!.newPosts.length.toString()??"0",
+                                                HomeLayoutCubit.get(context)
+                                                        .ownerPostsModel
+                                                        ?.newPosts
+                                                        .length
+                                                        .toString() ??
+                                                    "0",
                                                 style: TextStyle(
                                                   fontSize: 16.0,
                                                   color: Colors.black
@@ -647,7 +652,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           )
-                        else buildPostsList(context)
+                        else
+                          buildPostsList(context)
                       ],
                     ),
                   ),
@@ -660,91 +666,17 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget buildLoadingWidget(context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (BuildContext context, int index) {
-        return Shimmer.fromColors(
-          period: const Duration(milliseconds: 1000),
-          baseColor: Colors.grey,
-          highlightColor: Colors.white30,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 20,
-                    ),
-                    SizedBox(
-                      width: screenWidth / 40,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight / 100,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: screenHeight / 4,
-                    width: screenWidth,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget buildPostsList(BuildContext context) {
     var ownerPostsCubit = HomeLayoutCubit.get(context);
     var loginCubit = UserLoginCubit.get(context);
 
     if (ownerPostsCubit.ownerPostsModel == null) {
-      return buildLoadingWidget(context);
+      return buildLoadingWidget(
+          ownerPostsCubit.ownerPostsModel!.newPosts.length, context);
     }
 
     return ListView.separated(
-      physics:ScrollPhysics(),
+      physics: const ScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
@@ -1253,33 +1185,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   void _showProfilePageBottomSheet(
       Posts? postDetails, LoggedInUser? loggedInUser) {
     showModalBottomSheet(
@@ -1292,7 +1197,7 @@ class _ProfilePageState extends State<ProfilePage> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              height: screenHeight / 4,
+              height: screenHeight / 3,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -1313,9 +1218,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         const Text(
                           'Save Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1341,7 +1246,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       Navigator.pop(context);
                     },
                   ),
-
                   /// Edit Post
                   ListTile(
                     leading: const Icon(
@@ -1355,9 +1259,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         const Text(
                           'Edit Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1386,7 +1290,44 @@ class _ProfilePageState extends State<ProfilePage> {
                       navigateToPage(context, const EditPost());
                     },
                   ),
-
+                  /// Copy Post URl
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to Copy post link
+                      Navigator.pop(context);
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${postDetails!.id}",
+                        context,
+                      );
+                    },
+                  ),
                   /// Delete Post / Remove Share
                   ListTile(
                     leading: const Icon(
@@ -1400,11 +1341,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               const Text(
                                 'Delete Post',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black54,
+                                  ),
                               ),
                               SizedBox(height: screenHeight / 130),
                               const Text(
@@ -1424,9 +1365,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               const Text(
                                 'Remove Share',
                                 style: TextStyle(
-                                  color: Colors.black,
                                   fontSize: 14.0,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black54,
                                 ),
                               ),
                               SizedBox(height: screenHeight / 130),
@@ -1725,5 +1666,20 @@ class _ProfilePageState extends State<ProfilePage> {
       // For example:
       // _handleImage(pickedFile);
     }
+  }
+
+  void _copyUrl(String url, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: defaultColor,
+        content: Text(
+          'Post URL copied to clipboard',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ),
+    );
   }
 }

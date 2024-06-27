@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
@@ -13,13 +13,11 @@ import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../bloc/savedPosts_bloc/cubit.dart';
 import '../../../models/LoggedInUserModel.dart';
 import '../../GeneralView/DetailedPost/Detailed_Post.dart';
 import '../UserProfilePage/Profile_Page.dart';
-
 
 class AnotherUserProfile extends StatefulWidget {
   const AnotherUserProfile({super.key});
@@ -35,24 +33,19 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
-    HomeLayoutCubit.get(context)
-        .getAnotherUserData(
-        token: UserLoginCubit.get(context)
-            .loginModel!
-            .refresh_token,
+    HomeLayoutCubit.get(context).getAnotherUserData(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token,
         id: UserLoginCubit.get(context).anotherUser!.id);
 
-      UserLoginCubit.get(context)
-          .getAnotherUserPosts(
-          token: UserLoginCubit.get(context)
-              .loginModel!
-              .refresh_token,
-          id: UserLoginCubit.get(context).anotherUser!.id,
-          userName:UserLoginCubit.get(context).anotherUser!.userName)
-          .then((value) {
-        UserLoginCubit.get(context).anotherUser =
-            HomeLayoutCubit.get(context).anotherUser;
-      });
+    UserLoginCubit.get(context)
+        .getAnotherUserPosts(
+            token: UserLoginCubit.get(context).loginModel!.refresh_token,
+            id: UserLoginCubit.get(context).anotherUser!.id,
+            userName: UserLoginCubit.get(context).anotherUser!.userName)
+        .then((value) {
+      UserLoginCubit.get(context).anotherUser =
+          HomeLayoutCubit.get(context).anotherUser;
+    });
   }
 
   @override
@@ -63,7 +56,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return  Scaffold(
+        return Scaffold(
           appBar: AppBar(
             backgroundColor: defaultColor,
             leading: IconButton(
@@ -119,9 +112,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         children: [
                           CircleAvatar(
                             radius: 45.0,
-                            backgroundImage: HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic != null
-                                ? NetworkImage(HomeLayoutCubit.get(context).modifiedPost!.createdBy.profilePic!.secure_url) as ImageProvider
-                                : const AssetImage("assets/images/nullProfile.png"),
+                            backgroundImage: HomeLayoutCubit.get(context)
+                                        .modifiedPost
+                                        ?.createdBy
+                                        .profilePic !=
+                                    null
+                                ? NetworkImage(HomeLayoutCubit.get(context)
+                                    .modifiedPost!
+                                    .createdBy
+                                    .profilePic!
+                                    .secure_url) as ImageProvider
+                                : const AssetImage(
+                                    "assets/images/nullProfile.png"),
                           ),
                           GestureDetector(
                             onTap: () {},
@@ -159,8 +161,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             children: [
                               Text(
                                 UserLoginCubit.get(context)
-                                    .anotherUser
-                                    ?.firstName ??
+                                        .anotherUser
+                                        ?.firstName ??
                                     " ",
                                 style: TextStyle(
                                   fontSize: 18.0,
@@ -281,7 +283,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                                     width: 20,
                                                     height: 20,
                                                     child:
-                                                    CircularProgressIndicator(
+                                                        CircularProgressIndicator(
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -321,73 +323,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                     ))),
                       const SizedBox(width: 2),
                       Expanded(
-                          child: InkWell(
-                        onTap: () async {
-                          bool newChat = true;
-                          UserLoginCubit.get(context)
-                              .getLoggedInChats(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token)
-                              .then((value) {
-                            for (int i = 0;
-                                i < UserLoginCubit.get(context).chats.length;
-                                i++) {
-                              // case 1
-                              if (UserLoginCubit.get(context)
-                                      .chats[i]
-                                      .members[0]
-                                      .userId
-                                      .id ==
-                                  UserLoginCubit.get(context)
-                                      .loggedInUser!
-                                      .id) {
-                                if (UserLoginCubit.get(context)
-                                        .chats[i]
-                                        .members[1]
-                                        .userId
-                                        .id ==
-                                    HomeLayoutCubit.get(context)
-                                        .anotherUser!
-                                        .id) {
-                                  newChat = false;
-                                  UserLoginCubit.get(context).selectedChat =
-                                      UserLoginCubit.get(context).chats[i];
-                                }
-                              }
-                              // case 2
-                              if (UserLoginCubit.get(context)
-                                      .chats[i]
-                                      .members[1]
-                                      .userId
-                                      .id ==
-                                  UserLoginCubit.get(context)
-                                      .loggedInUser!
-                                      .id) {
-                                if (UserLoginCubit.get(context)
-                                        .chats[i]
-                                        .members[0]
-                                        .userId
-                                        .id ==
-                                    HomeLayoutCubit.get(context)
-                                        .anotherUser!
-                                        .id) {
-                                  newChat = false;
-                                  UserLoginCubit.get(context).selectedChat =
-                                      UserLoginCubit.get(context).chats[i];
-                                }
-                              }
-                            }
-                            if (newChat == true) {
-                              print(
-                                  HomeLayoutCubit.get(context).anotherUser!.id);
-                              UserLoginCubit.get(context).createChat(
-                                  secondId: HomeLayoutCubit.get(context)
-                                      .anotherUser!
-                                      .id
-                                      .toString());
-                            }
-                          }).then((value) {
+                        child: InkWell(
+                          onTap: () async {
+                            bool newChat = true;
                             UserLoginCubit.get(context)
                                 .getLoggedInChats(
                                     token: UserLoginCubit.get(context)
@@ -414,6 +352,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       HomeLayoutCubit.get(context)
                                           .anotherUser!
                                           .id) {
+                                    newChat = false;
                                     UserLoginCubit.get(context).selectedChat =
                                         UserLoginCubit.get(context).chats[i];
                                   }
@@ -435,48 +374,113 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                       HomeLayoutCubit.get(context)
                                           .anotherUser!
                                           .id) {
+                                    newChat = false;
                                     UserLoginCubit.get(context).selectedChat =
                                         UserLoginCubit.get(context).chats[i];
                                   }
                                 }
                               }
+                              if (newChat == true) {
+                                UserLoginCubit.get(context).createChat(
+                                    secondId: HomeLayoutCubit.get(context)
+                                        .anotherUser!
+                                        .id
+                                        .toString());
+                              }
                             }).then((value) {
-                              navigateToPage(context, DetailedChats());
+                              UserLoginCubit.get(context)
+                                  .getLoggedInChats(
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token)
+                                  .then((value) {
+                                for (int i = 0;
+                                    i <
+                                        UserLoginCubit.get(context)
+                                            .chats
+                                            .length;
+                                    i++) {
+                                  // case 1
+                                  if (UserLoginCubit.get(context)
+                                          .chats[i]
+                                          .members[0]
+                                          .userId
+                                          .id ==
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .id) {
+                                    if (UserLoginCubit.get(context)
+                                            .chats[i]
+                                            .members[1]
+                                            .userId
+                                            .id ==
+                                        HomeLayoutCubit.get(context)
+                                            .anotherUser!
+                                            .id) {
+                                      UserLoginCubit.get(context).selectedChat =
+                                          UserLoginCubit.get(context).chats[i];
+                                    }
+                                  }
+                                  // case 2
+                                  if (UserLoginCubit.get(context)
+                                          .chats[i]
+                                          .members[1]
+                                          .userId
+                                          .id ==
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .id) {
+                                    if (UserLoginCubit.get(context)
+                                            .chats[i]
+                                            .members[0]
+                                            .userId
+                                            .id ==
+                                        HomeLayoutCubit.get(context)
+                                            .anotherUser!
+                                            .id) {
+                                      UserLoginCubit.get(context).selectedChat =
+                                          UserLoginCubit.get(context).chats[i];
+                                    }
+                                  }
+                                }
+                              }).then((value) {
+                                navigateToPage(context, DetailedChats());
+                              });
                             });
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black38.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(4)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Center(
-                              child: ((state is! CreateChatLoadingState)
-                                  ? const Text(
-                                      "message",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    )
-                                  : const Center(
-                                      child: SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.black38.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: Center(
+                                child: ((state is! CreateChatLoadingState)
+                                    ? const Text(
+                                        "message",
+                                        style: TextStyle(
                                           color: Colors.white,
+                                          fontWeight: FontWeight.w600,
                                         ),
-                                      ),
-                                    )),
+                                      )
+                                    : const Center(
+                                        child: SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      )),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      ),
                     ],
                   ),
                 ),
+
                 /// Posts, Following and Followers Count
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -708,8 +712,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                 ),
                 // Posts
                 if (UserLoginCubit.get(context).anotherUserPostsResponse !=
-                    null &&
-                    UserLoginCubit.get(context).anotherUserPostsResponse!.posts.isEmpty)
+                        null &&
+                    UserLoginCubit.get(context)
+                        .anotherUserPostsResponse!
+                        .posts
+                        .isEmpty)
                   Padding(
                     padding: EdgeInsets.all(screenWidth / 60),
                     child: Container(
@@ -749,8 +756,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           SizedBox(height: screenHeight / 300),
                           const Text(
                             "Posts "
-                                "and attachments will "
-                                "show up here.",
+                            "and attachments will "
+                            "show up here.",
                             style: TextStyle(
                               fontSize: 10.0,
                               fontWeight: FontWeight.w600,
@@ -762,83 +769,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       ),
                     ),
                   )
-                else buildAnotherUserPostsList(context)
-
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildLoadingWidget(context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
-
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (BuildContext context, int index) {
-        return Shimmer.fromColors(
-          period: const Duration(milliseconds: 1000),
-          baseColor: Colors.grey,
-          highlightColor: Colors.white30,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 20,
-                    ),
-                    SizedBox(
-                      width: screenWidth / 40,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 4,
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: screenHeight / 75,
-                          width: screenWidth / 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: screenHeight / 100,
-                ),
-                Center(
-                  child: SizedBox(
-                    height: screenHeight / 4,
-                    width: screenWidth,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
+                else
+                  buildAnotherUserPostsList(context)
               ],
             ),
           ),
@@ -855,71 +787,98 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     if (cubit.anotherUserPostsResponse != null) {
       if (cubit.anotherUserPostsResponse!.posts.isNotEmpty) {
         return ListView.separated(
-          physics: ScrollPhysics(),
+          physics: const ScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (context, index) {
             if (cubit.anotherUserPostsResponse != null) {
               if (index < cubit.anotherUserPostsResponse!.posts.length) {
-                CreatedBy createdBy = new CreatedBy(
-                    id:cubit.anotherUserPostsResponse!.posts[index].createdBy.id,
-                    userName: cubit.anotherUserPostsResponse!.posts[index].createdBy.userName,
-                    role: cubit.anotherUserPostsResponse!.posts[index].createdBy.role);
-                List<Attachment> attachments =[];
+                CreatedBy createdBy = CreatedBy(
+                    id: cubit
+                        .anotherUserPostsResponse!.posts[index].createdBy.id,
+                    userName: cubit.anotherUserPostsResponse!.posts[index]
+                        .createdBy.userName,
+                    role: cubit
+                        .anotherUserPostsResponse!.posts[index].createdBy.role);
+                List<Attachment> attachments = [];
 
-                for(int i=0;i<cubit.anotherUserPostsResponse!.posts[index].attachments.length;i++){
-                   Attachment attachment = new Attachment(
-                       secure_url: cubit.anotherUserPostsResponse!.posts[index].attachments[i].secureUrl,
-                       public_id: cubit.anotherUserPostsResponse!.posts[index].attachments[i].publicId
-                   );
-                   attachments.add(attachment);
+                for (int i = 0;
+                    i <
+                        cubit.anotherUserPostsResponse!.posts[index].attachments
+                            .length;
+                    i++) {
+                  Attachment attachment = Attachment(
+                      secure_url: cubit.anotherUserPostsResponse!.posts[index]
+                          .attachments[i].secureUrl,
+                      public_id: cubit.anotherUserPostsResponse!.posts[index]
+                          .attachments[i].publicId);
+                  attachments.add(attachment);
                 }
-                ModifiedPost? modifiedPost = new ModifiedPost(
+                ModifiedPost? modifiedPost = ModifiedPost(
                     id: cubit.anotherUserPostsResponse!.posts[index].id,
-                    content: cubit.anotherUserPostsResponse!.posts[index].content,
-                    specification: cubit.anotherUserPostsResponse!.posts[index].specification,
-                    createdBy:createdBy,
-                    likesCount: cubit.anotherUserPostsResponse!.posts[index].likesCount,
-                    commentsCount: cubit.anotherUserPostsResponse!.posts[index].commentsCount,
-                    shareCount: cubit.anotherUserPostsResponse!.posts[index].shareCount,
+                    content:
+                        cubit.anotherUserPostsResponse!.posts[index].content,
+                    specification: cubit
+                        .anotherUserPostsResponse!.posts[index].specification,
+                    createdBy: createdBy,
+                    likesCount:
+                        cubit.anotherUserPostsResponse!.posts[index].likesCount,
+                    commentsCount: cubit
+                        .anotherUserPostsResponse!.posts[index].commentsCount,
+                    shareCount:
+                        cubit.anotherUserPostsResponse!.posts[index].shareCount,
                     comments: [],
-                    createdAt: cubit.anotherUserPostsResponse!.posts[index].createdAt,
-                    updatedAt: cubit.anotherUserPostsResponse!.posts[index].updatedAt,
+                    createdAt:
+                        cubit.anotherUserPostsResponse!.posts[index].createdAt,
+                    updatedAt:
+                        cubit.anotherUserPostsResponse!.posts[index].updatedAt,
                     liked: false,
                     attachments: attachments,
-                    v: cubit.anotherUserPostsResponse!.posts[index].v
-                );
-                print("sdsdsdsdsdsds");
-                print(cubit.anotherUserPostsResponse!.posts[index]);
-                print("sdsdsdsdsdsds");
+                    v: cubit.anotherUserPostsResponse!.posts[index].v);
                 return buildPostItem(
                     modifiedPost,
                     LoggedInUser(
                         id: UserLoginCubit.get(context).loggedInUser!.id,
-                        firstName: UserLoginCubit.get(context).loggedInUser!.firstName,
-                        lastName: UserLoginCubit.get(context).loggedInUser!.lastName,
-                        userName: UserLoginCubit.get(context).loggedInUser!.userName,
-                        slugUserName: UserLoginCubit.get(context).loggedInUser!.slugUserName,
+                        firstName:
+                            UserLoginCubit.get(context).loggedInUser!.firstName,
+                        lastName:
+                            UserLoginCubit.get(context).loggedInUser!.lastName,
+                        userName:
+                            UserLoginCubit.get(context).loggedInUser!.userName,
+                        slugUserName: UserLoginCubit.get(context)
+                            .loggedInUser!
+                            .slugUserName,
                         email: UserLoginCubit.get(context).loggedInUser!.email,
                         phone: UserLoginCubit.get(context).loggedInUser!.phone,
                         role: UserLoginCubit.get(context).loggedInUser!.role,
-                        images: UserLoginCubit.get(context).loggedInUser!.images,
-                        address: UserLoginCubit.get(context).loggedInUser!.address,
-                        gender: UserLoginCubit.get(context).loggedInUser!.gender,
-                        headquarters: UserLoginCubit.get(context).loggedInUser!.headquarters,
-                        specification: UserLoginCubit.get(context).loggedInUser!.specification,
-                        attachments: UserLoginCubit.get(context).loggedInUser!.attachments,
-                        following: UserLoginCubit.get(context).loggedInUser!.following,
-                        followers: UserLoginCubit.get(context).loggedInUser!.followers,
-                        updatedAt: UserLoginCubit.get(context).loggedInUser!.updatedAt,
-                        v: UserLoginCubit.get(context).loggedInUser!.v
-                    ), context);
+                        images:
+                            UserLoginCubit.get(context).loggedInUser!.images,
+                        address:
+                            UserLoginCubit.get(context).loggedInUser!.address,
+                        gender:
+                            UserLoginCubit.get(context).loggedInUser!.gender,
+                        headquarters: UserLoginCubit.get(context)
+                            .loggedInUser!
+                            .headquarters,
+                        specification: UserLoginCubit.get(context)
+                            .loggedInUser!
+                            .specification,
+                        attachments: UserLoginCubit.get(context)
+                            .loggedInUser!
+                            .attachments,
+                        following:
+                            UserLoginCubit.get(context).loggedInUser!.following,
+                        followers:
+                            UserLoginCubit.get(context).loggedInUser!.followers,
+                        updatedAt:
+                            UserLoginCubit.get(context).loggedInUser!.updatedAt,
+                        v: UserLoginCubit.get(context).loggedInUser!.v),
+                    context);
               }
             }
             return const Text("No Posts Available");
           },
           separatorBuilder: (context, index) => Padding(
-            padding:
-                const EdgeInsetsDirectional.symmetric(horizontal: 16),
+            padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
             child: Container(
               width: double.infinity,
               color: Colors.white,
@@ -967,8 +926,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                 SizedBox(height: screenHeight / 300),
                 const Text(
                   "Posts "
-                      "and attachments will "
-                      "show up here.",
+                  "and attachments will "
+                  "show up here.",
                   style: TextStyle(
                     fontSize: 10.0,
                     fontWeight: FontWeight.w600,
@@ -982,10 +941,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         );
       }
     } else {
-      return buildLoadingWidget(context);
+      return buildLoadingWidget(
+          cubit.anotherUserPostsResponse?.posts.length ?? 0, context);
     }
   }
-
 
   Widget buildPostItem(ModifiedPost? postDetails, LoggedInUser loggedInUser,
       BuildContext context) {
@@ -1060,11 +1019,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
               children: [
                 (postDetails.sharedFrom != null)
                     ? Column(
-                  children: [
-                    SizedBox(height: screenHeight / 120),
-                    sharedByUserInfo(postDetails, loggedInUser, context),
-                  ],
-                )
+                        children: [
+                          SizedBox(height: screenHeight / 120),
+                          sharedByUserInfo(postDetails, loggedInUser, context),
+                        ],
+                      )
                     : const SizedBox(),
                 SizedBox(height: screenHeight / 120),
                 Row(
@@ -1098,18 +1057,19 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           //         context, const AnotherUserProfile());
                           //   });
                           // });
-                          UserLoginCubit.get(context).anotherUser?.id = postDetails.createdBy.id;
-                          UserLoginCubit.get(context).anotherUser?.userName = postDetails.createdBy.userName;
-                          navigateToPage(
-                              context,  AnotherUserProfile());
+                          UserLoginCubit.get(context).anotherUser?.id =
+                              postDetails.createdBy.id;
+                          UserLoginCubit.get(context).anotherUser?.userName =
+                              postDetails.createdBy.userName;
+                          navigateToPage(context, const AnotherUserProfile());
                         }
                       },
                       child: CircleAvatar(
                         radius: 20.0,
                         backgroundImage: postDetails.createdBy.profilePic !=
-                            null
+                                null
                             ? NetworkImage(postDetails.createdBy.profilePic!
-                            .secure_url) as ImageProvider
+                                .secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -1125,10 +1085,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             } else {
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: postDetails.createdBy.id)
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token,
+                                      id: postDetails.createdBy.id)
                                   .then((value) {
                                 UserLoginCubit.get(context).anotherUser =
                                     HomeLayoutCubit.get(context).anotherUser;
@@ -1199,15 +1159,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       /// Post Content
                       postDetails.content != null
                           ? Text(
-                        postDetails.content,
-                        maxLines:
-                        (postDetails.attachments) != null ? 6 : 10,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontFamily: "Robot",
-                          fontSize: 13.0,
-                        ),
-                      )
+                              postDetails.content,
+                              maxLines:
+                                  (postDetails.attachments) != null ? 6 : 10,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: "Robot",
+                                fontSize: 13.0,
+                              ),
+                            )
                           : const SizedBox(height: 0),
 
                       SizedBox(height: screenHeight / 100),
@@ -1215,7 +1175,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       /// Post Attachments
                       if (postDetails.attachments != null &&
                           postDetails.attachments!.isNotEmpty)
-                      // check if there's more than one
+                        // check if there's more than one
                         if (postDetails.attachments!.length > 1)
                           CarouselSlider(
                             carouselController: carouselController,
@@ -1287,24 +1247,24 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       /// Post Likes
                       (postDetails.likesCount) > 0
                           ? IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          'assets/images/NewLikeColor.svg',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      )
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/NewLikeColor.svg',
+                                width: 22.0,
+                                height: 22.0,
+                              ),
+                            )
                           : Container(),
                       (postDetails.likesCount > 0)
                           ? Text(
-                        '${postDetails.likesCount}',
-                        style: TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 12,
-                          color: HexColor("575757"),
-                        ),
-                      )
+                              '${postDetails.likesCount}',
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 12,
+                                color: HexColor("575757"),
+                              ),
+                            )
                           : Container(),
                       const Spacer(),
 
@@ -1342,39 +1302,39 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           ),
                         )
                       else if (postDetails.likesCount > 0 &&
-                            postDetails.commentsCount > 1)
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: screenWidth / 50,
-                              end: screenWidth / 50,
+                          postDetails.commentsCount > 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
                             ),
-                            child: Text(
-                              '${postDetails.commentsCount} Comments',
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 12,
-                                color: HexColor("575757"),
-                              ),
+                          ),
+                        )
+                      else if (postDetails.commentsCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 50,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
                             ),
-                          )
-                        else if (postDetails.commentsCount == 0)
-                            Container()
-                          else
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 50,
-                                end: screenWidth / 50,
-                                bottom: screenHeight / 50,
-                              ),
-                              child: Text(
-                                '${postDetails.commentsCount} Comments',
-                                style: TextStyle(
-                                  fontFamily: "Roboto",
-                                  fontSize: 12,
-                                  color: HexColor("575757"),
-                                ),
-                              ),
-                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -1408,8 +1368,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               HomeLayoutCubit.get(context).likePost(
                                   postId: postDetails.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           )
@@ -1423,8 +1383,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               HomeLayoutCubit.get(context).likePost(
                                   postId: postDetails.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           )
@@ -1436,8 +1396,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               HomeLayoutCubit.get(context).likePost(
                                   postId: postDetails.id,
                                   token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
+                                          .loginModel!
+                                          .refresh_token ??
                                       "");
                             },
                           ),
@@ -1487,8 +1447,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
   Widget postSubComponent(String assetIcon, String action,
       {GestureTapCallback? onTap,
-        Color color = const Color(0xFF575757),
-        FontWeight fontWeight = FontWeight.w300}) {
+      Color color = const Color(0xFF575757),
+      FontWeight fontWeight = FontWeight.w300}) {
     return InkWell(
       onTap: onTap,
       child: Row(
@@ -1543,9 +1503,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         const Text(
                           'Save Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1564,8 +1524,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       // print(modifiedPost);
                       // Logic to save the post
                       SavedPostsCubit.get(context).savePost(
-                        token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token ??
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
                             "",
                         postId: modifiedPost!.id,
                       );
@@ -1584,9 +1545,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         const Text(
                           'Hide Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1617,9 +1578,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         const Text(
                           'Copy link',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -1636,6 +1597,10 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     onTap: () {
                       // Logic to Copy post link
                       Navigator.pop(context);
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${modifiedPost!.id}",
+                        context,
+                      );
                     },
                   ),
                 ],
@@ -1667,15 +1632,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         } else {
           HomeLayoutCubit.get(context)
               .getAnotherUserData(
-              token: UserLoginCubit.get(context).loginModel!.refresh_token,
-              id: postDetails.sharedBy!.id)
+                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
+                  id: postDetails.sharedBy!.id)
               .then((value) {
             UserLoginCubit.get(context)
                 .getAnotherUserPosts(
-                token:
-                UserLoginCubit.get(context).loginModel!.refresh_token,
-                id: postDetails.sharedBy!.id,
-                userName: postDetails.sharedBy!.userName)
+                    token:
+                        UserLoginCubit.get(context).loginModel!.refresh_token,
+                    id: postDetails.sharedBy!.id,
+                    userName: postDetails.sharedBy!.userName)
                 .then((value) {
               UserLoginCubit.get(context).anotherUser =
                   HomeLayoutCubit.get(context).anotherUser;
@@ -1703,7 +1668,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
               radius: 10.0,
               backgroundImage: postDetails!.sharedBy!.profilePic != null
                   ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
-              as ImageProvider
+                      as ImageProvider
                   : const AssetImage("assets/images/nullProfile.png"),
             ),
             SizedBox(width: screenWidth / 80),
@@ -1760,8 +1725,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       onTap: () {
                         HomeLayoutCubit.get(context).sharePost(
                           token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
+                                  .loginModel!
+                                  .refresh_token ??
                               "",
                           postId: postDetails!.id,
                         );
@@ -1869,126 +1834,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     );
   }
 
-  void _showProfilePageBottomSheet(ModifiedPost? postDetails) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        var screenHeight = MediaQuery.of(context).size.height;
-
-        return SizedBox(
-          height: screenHeight / 3,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ListTile(
-                leading: const Icon(
-                  Icons.save,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Save Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Add this to your saved items.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to save the post
-                },
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.edit,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Edit Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Edit your post.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to save the post
-                },
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.delete_forever,
-                  size: 25,
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Delete Post',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: screenHeight / 130),
-                    const Text(
-                      'Delete this post from your profile.',
-                      style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  // Logic to save the post
-                  HomeLayoutCubit.get(context).deletePost(
-                      token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
-                          "",
-                      postId: postDetails!.id);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Future<void> _uploadPhoto() async {
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(
@@ -1999,5 +1844,20 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
       // For example:
       // _handleImage(pickedFile);
     }
+  }
+
+  void _copyUrl(String url, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: defaultColor,
+        content: Text(
+          'Post URL copied to clipboard',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -632,33 +633,6 @@ class _UserSavedPostsState extends State<SavedPosts> {
     );
   }
 
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   void _showProfilePageBottomSheet(
       GetDetailedSavedPost? getDetailedSavedPost, LoggedInUser loggedInUser) {
     showModalBottomSheet(
@@ -671,7 +645,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              height: screenHeight / 9,
+              height: screenHeight / 5.5,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -692,9 +666,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         const Text(
                           'Remove Post',
                           style: TextStyle(
-                            color: Colors.black,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
                           ),
                         ),
                         SizedBox(height: screenHeight / 130),
@@ -728,6 +702,44 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           ),
                         ),
                       ));
+                    },
+                  ),
+                  /// Copy Post URL
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to Copy post link
+                      Navigator.pop(context);
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${getDetailedSavedPost!.id}",
+                        context,
+                      );
                     },
                   ),
                 ],
@@ -879,6 +891,20 @@ class _UserSavedPostsState extends State<SavedPosts> {
           ],
         );
       },
+    );
+  }
+  void _copyUrl(String url, BuildContext context) {
+    Clipboard.setData(ClipboardData(text: url));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: defaultColor,
+        content: Text(
+          'Post URL copied to clipboard',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ),
     );
   }
 }
