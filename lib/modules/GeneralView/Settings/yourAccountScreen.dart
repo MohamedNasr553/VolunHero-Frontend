@@ -133,7 +133,8 @@ class YourAccountPage extends StatelessWidget {
     );
   }
 
-  Widget buttonComponent(var screenWidth, var screenHeight, String iconAsset, String text) {
+  Widget buttonComponent(
+      var screenWidth, var screenHeight, String iconAsset, String text) {
     return InkWell(
       onTap: () {},
       child: Container(
