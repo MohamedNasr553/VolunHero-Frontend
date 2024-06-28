@@ -4,6 +4,7 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
+import 'package:flutter_code/models/NotificationsModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import '../../models/AnotherUserPostsModel.dart';
 import '../../models/ChatsModel.dart';
@@ -260,6 +261,37 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
      }).catchError((error) {
 
       emit(GetAnotherUserPostsErrorState(error));
+    });
+  }
+  //---------------------------Notifications--------------------------
+  NotificationsModel? notificationsModel;
+  Future<void> markNotification(String? token,String id)async{
+    emit(MarkNotificationLoadingState());
+    DioHelper.patchData(
+      url: "/notifications/${id}/read",
+      token: token,
+    ).then((value) {
+    emit(MarkNotificationSuccessState());
+
+    }).catchError((error){
+    emit(MarkNotificationErrorState(error.toString()));
+
+    });
+  }
+
+
+  Future<void> getLoggedInUserNotifications(String? token)async{
+    emit(GetLoggedInUserNotificationLoadingState());
+    DioHelper.getData(
+      url: "/notifications",
+      token: token,
+    ).then((value) {
+      notificationsModel = NotificationsModel.fromJson(value.data);
+      emit(GetLoggedInUserNotificationSuccessState());
+      print(notificationsModel);
+
+    }).catchError((error) {
+      emit(GetLoggedInUserNotificationErrorState(error));
     });
   }
 }
