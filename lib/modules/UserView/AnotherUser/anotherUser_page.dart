@@ -15,6 +15,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../bloc/savedPosts_bloc/cubit.dart';
+import '../../../models/ChatsModel.dart';
 import '../../../models/LoggedInUserModel.dart';
 import '../../GeneralView/DetailedPost/Detailed_Post.dart';
 import '../UserProfilePage/Profile_Page.dart';
@@ -33,19 +34,29 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
+    /// Another User Data
     HomeLayoutCubit.get(context).getAnotherUserData(
         token: UserLoginCubit.get(context).loginModel!.refresh_token,
-        id: UserLoginCubit.get(context).anotherUser!.id);
+        id: HomeLayoutCubit.get(context).anotherUser!.id);
 
+    /// Another User Posts
     UserLoginCubit.get(context)
         .getAnotherUserPosts(
             token: UserLoginCubit.get(context).loginModel!.refresh_token,
-            id: UserLoginCubit.get(context).anotherUser!.id,
-            userName: UserLoginCubit.get(context).anotherUser!.userName)
+            id: HomeLayoutCubit.get(context).anotherUser!.id,
+            userName: HomeLayoutCubit.get(context).anotherUser!.userName)
         .then((value) {
       UserLoginCubit.get(context).anotherUser =
           HomeLayoutCubit.get(context).anotherUser;
     });
+
+    /// Logged in user chats
+    UserLoginCubit.get(context)
+        .getLoggedInChats(
+        token: UserLoginCubit.get(context)
+            .loginModel!
+            .refresh_token);
+
   }
 
   @override
@@ -54,7 +65,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+
+      },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -160,7 +173,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           Row(
                             children: [
                               Text(
-                                UserLoginCubit.get(context)
+                                HomeLayoutCubit.get(context)
                                         .anotherUser
                                         ?.firstName ??
                                     " ",
@@ -173,7 +186,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               ),
                               SizedBox(width: screenWidth / 90),
                               Text(
-                                UserLoginCubit.get(context)
+                                HomeLayoutCubit.get(context)
                                         .anotherUser
                                         ?.lastName ??
                                     " ",
@@ -185,11 +198,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 ),
                               ),
                               SizedBox(width: screenWidth / 60),
-                              (UserLoginCubit.get(context)
+                              (HomeLayoutCubit.get(context)
                                               .anotherUser
                                               ?.specification ==
                                           'Medical' ||
-                                      UserLoginCubit.get(context)
+                                  HomeLayoutCubit.get(context)
                                               .anotherUser
                                               ?.specification ==
                                           'Educational')
@@ -326,127 +339,26 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         child: InkWell(
                           onTap: () async {
                             bool newChat = true;
-                            UserLoginCubit.get(context)
-                                .getLoggedInChats(
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token)
-                                .then((value) {
-                              for (int i = 0;
-                                  i < UserLoginCubit.get(context).chats.length;
-                                  i++) {
-                                // case 1
-                                if (UserLoginCubit.get(context)
-                                        .chats[i]
-                                        .members[0]
-                                        .userId
-                                        .id ==
-                                    UserLoginCubit.get(context)
-                                        .loggedInUser!
-                                        .id) {
-                                  if (UserLoginCubit.get(context)
-                                          .chats[i]
-                                          .members[1]
-                                          .userId
-                                          .id ==
-                                      HomeLayoutCubit.get(context)
-                                          .anotherUser!
-                                          .id) {
-                                    newChat = false;
-                                    UserLoginCubit.get(context).selectedChat =
-                                        UserLoginCubit.get(context).chats[i];
-                                  }
-                                }
-                                // case 2
-                                if (UserLoginCubit.get(context)
-                                        .chats[i]
-                                        .members[1]
-                                        .userId
-                                        .id ==
-                                    UserLoginCubit.get(context)
-                                        .loggedInUser!
-                                        .id) {
-                                  if (UserLoginCubit.get(context)
-                                          .chats[i]
-                                          .members[0]
-                                          .userId
-                                          .id ==
-                                      HomeLayoutCubit.get(context)
-                                          .anotherUser!
-                                          .id) {
-                                    newChat = false;
-                                    UserLoginCubit.get(context).selectedChat =
-                                        UserLoginCubit.get(context).chats[i];
-                                  }
-                                }
-                              }
-                              if (newChat == true) {
-                                UserLoginCubit.get(context).createChat(
-                                    secondId: HomeLayoutCubit.get(context)
-                                        .anotherUser!
-                                        .id
-                                        .toString());
-                              }
-                            }).then((value) {
+
+                            UserLoginCubit.get(context).createChat(secondId: HomeLayoutCubit.get(context).anotherUser!.id).then((_){
+                              /// Logged in user chats
                               UserLoginCubit.get(context)
                                   .getLoggedInChats(
-                                      token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token)
-                                  .then((value) {
-                                for (int i = 0;
-                                    i <
-                                        UserLoginCubit.get(context)
-                                            .chats
-                                            .length;
-                                    i++) {
-                                  // case 1
-                                  if (UserLoginCubit.get(context)
-                                          .chats[i]
-                                          .members[0]
-                                          .userId
-                                          .id ==
-                                      UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .id) {
-                                    if (UserLoginCubit.get(context)
-                                            .chats[i]
-                                            .members[1]
-                                            .userId
-                                            .id ==
-                                        HomeLayoutCubit.get(context)
-                                            .anotherUser!
-                                            .id) {
-                                      UserLoginCubit.get(context).selectedChat =
-                                          UserLoginCubit.get(context).chats[i];
-                                    }
-                                  }
-                                  // case 2
-                                  if (UserLoginCubit.get(context)
-                                          .chats[i]
-                                          .members[1]
-                                          .userId
-                                          .id ==
-                                      UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .id) {
-                                    if (UserLoginCubit.get(context)
-                                            .chats[i]
-                                            .members[0]
-                                            .userId
-                                            .id ==
-                                        HomeLayoutCubit.get(context)
-                                            .anotherUser!
-                                            .id) {
-                                      UserLoginCubit.get(context).selectedChat =
-                                          UserLoginCubit.get(context).chats[i];
-                                    }
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token).then((onValue){
+                                for (int i=0;i<UserLoginCubit.get(context).chatResponse!.chats.length;i++){
+                                  Chat userChat = UserLoginCubit.get(context).chatResponse!.chats[i];
+                                  if(userChat.members[0].userId.id == UserLoginCubit.get(context).anotherUser!.id ||
+                                      userChat.members[1].userId.id == UserLoginCubit.get(context).anotherUser!.id ){
+                                    UserLoginCubit.get(context).selectedChat = userChat;
+                                     navigateToPage(context, DetailedChats());
                                   }
                                 }
-                              }).then((value) {
-                                navigateToPage(context, DetailedChats());
                               });
                             });
+
+
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -546,7 +458,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).anotherUser?.following.length ?? 0}",
+                                        "${HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -568,7 +480,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).anotherUser?.followers.length ?? 0}",
+                                        "${HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -676,7 +588,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(
                                 width: screenWidth / 1.5,
                                 child: Text(
-                                  "Lives in ${UserLoginCubit.get(context).anotherUser?.address ?? " "}",
+                                  "Lives in ${HomeLayoutCubit.get(context).anotherUser?.address ?? " "}",
                                 ),
                               )
                             ],

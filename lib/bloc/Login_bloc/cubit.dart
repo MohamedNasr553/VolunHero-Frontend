@@ -127,9 +127,20 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String secondId,
 
   }) async {
+    Map<String, dynamic> requestData = {
+      'secondId': secondId
+    };
 
     try {
       emit(CreateChatLoadingState());
+      var response = await DioHelper.postData(
+          url: CREATE_CHAT,
+          data: requestData,
+          token: loginModel!.refresh_token
+      ).then((value) async {
+        print(value);
+        emit(CreateChatSuccessState());
+      });
 
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
@@ -140,6 +151,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
 
 
+
+
   Future<String> sendMessage({
     required String chatId,
     required String senderId,
@@ -147,11 +160,29 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String token,
     required Chat? chat
   }) async {
+    Map<String, dynamic> requestData = {
+      'chatId': chatId,
+      'senderId': senderId,
+      'text': text,
+    };
+    print(text);
+    print(chatId);
+    print(senderId);
 
     try {
       emit(CreateMessageLoadingState());
+      var response = await DioHelper.postData(
+          url: CREATE_MSG,
+          data: requestData,
+          token: token
+      ).then((value) async {
+      emit(CreateMessageSuccessState());
+      });
 
       // Assuming DioHelper.postData returns the response directly
+      print("this is response of msg");
+      print(response.data);
+      print("this is response of msg");
       // After sending the message successfully, refresh the chat page
 
       return "Message sent successfully";
@@ -173,26 +204,24 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: GET_CHATS,
         token: token,
       ).then((value) {
-
-   //     print(value.data);
+     //  print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
+       print(chatResponse);
         for(int i=0;i<chats.length;i++){
           DioHelper.getData(
               url:GET_CHAT_MSGS+chats[i].id,
               token: token
           ).then((value) {
-            // print(i);
-            // print("   ");
-            // print(value.data);
+       //     print(i);
+        //    print("   ");
+        //    print(value.data);
              MessageResponse messageResponse = MessageResponse.fromJson(value.data);
              chats[i].messages = messageResponse.messages;
-             //print(chats[i].messages);
-          }).catchError((error){
-
+          //   print(chats[i].messages);
           });
         }
-        emit(GetLoggedInUserChatsSuccessState());
+         emit(GetLoggedInUserChatsSuccessState());
       }).catchError((error) {
         emit(GetLoggedInUserChatsErrorState(error.toString()));
       });

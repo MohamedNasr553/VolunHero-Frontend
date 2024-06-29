@@ -28,6 +28,17 @@ class _DetailedChatsState extends State<DetailedChats> {
   TextEditingController _textController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    /// Logged in user chats
+    UserLoginCubit.get(context)
+        .getLoggedInChats(
+        token: UserLoginCubit.get(context)
+            .loginModel!
+            .refresh_token);
+  }
+  @override
   Widget build(BuildContext context) {
     chat = UserLoginCubit.get(context).selectedChat;
     double screenHeight = MediaQuery.of(context).size.height;
