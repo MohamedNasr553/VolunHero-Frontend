@@ -11,6 +11,7 @@ import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
+import 'package:flutter_code/modules/GeneralView/SearchPosts/searchPosts.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserDrawer/drawer.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
@@ -27,7 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var searchController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
 
@@ -107,52 +107,38 @@ class _HomePageState extends State<HomePage> {
                       padding: EdgeInsetsDirectional.only(
                         top: screenHeight / 300,
                       ),
-                      child: SizedBox(
-                        width: screenWidth / 1.42,
-                        height: screenHeight / 25,
-                        child: TextFormField(
-                          controller: searchController,
-                          validator: (value) {
-                            return null;
-                          },
-                          style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w500,
+                      child: GestureDetector(
+                        onTap: () => navigateAndFinish(context, const SearchPostsPage()),
+                        child: Container(
+                          width: screenWidth / 1.48,
+                          height: screenHeight / 25,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(7.0),
                           ),
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.grey,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: screenWidth / 40,
                             ),
-                            hintText: 'Search...',
-                            hintStyle: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.grey.shade500,
-                            ),
-                            fillColor: Colors.white,
-                            filled: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 20.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(7.0),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 0.5,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(7.0),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 0.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(7.0),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 0.5,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Icon(
+                                  Icons.search,
+                                  size: 23.0,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(width: screenWidth / 50),
+                                const Text(
+                                  'Search...',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w600,
+
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

@@ -83,6 +83,13 @@ class EditPostSuccessState extends LayoutStates {}
 
 class EditPostErrorState extends LayoutStates {}
 
+/// Search Post
+class SearchPostLoadingState extends LayoutStates {}
+
+class SearchPostSuccessState extends LayoutStates {}
+
+class SearchPostErrorState extends LayoutStates {}
+
 /// Posts of owner
 class OwnerPostsLoadingState extends LayoutStates {}
 

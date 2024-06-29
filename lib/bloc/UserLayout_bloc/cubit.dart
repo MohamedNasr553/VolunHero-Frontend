@@ -9,6 +9,7 @@ import 'package:flutter_code/models/GetCommentModel.dart';
 import 'package:flutter_code/models/GetPostByIdModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
+import 'package:flutter_code/models/SearchPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
@@ -357,7 +358,32 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     });
   }
 
-  /// ---------------------------Another User ------------------
+  /// --------------------------- Search Posts ------------------
+  SearchPostResponse? searchPostResponse;
+  SearchPostDetails? searchPostDetails;
+
+  void searchPost({
+    required String content,
+    required String token,
+  }) async {
+    emit(SearchPostLoadingState());
+
+    DioHelper.postData(
+      url: "/post/search",
+      data: {
+        'content': content,
+      },
+      token: token,
+    ).then((value) {
+      searchPostResponse = SearchPostResponse.fromJson(value.data);
+      emit(SearchPostSuccessState());
+    }).catchError((onError) {
+      print(onError.toString());
+      emit(SearchPostErrorState());
+    });
+  }
+
+  /// --------------------------- Another User ------------------
 
   AnotherUser? anotherUser;
 

@@ -893,6 +893,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
       },
     );
   }
+
   void _copyUrl(String url, BuildContext context) {
     Clipboard.setData(ClipboardData(text: url));
     ScaffoldMessenger.of(context).showSnackBar(

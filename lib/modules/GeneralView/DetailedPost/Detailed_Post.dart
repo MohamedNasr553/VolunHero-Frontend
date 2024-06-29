@@ -28,7 +28,6 @@ class DetailedPost extends StatefulWidget {
 
 class _DetailedPostState extends State<DetailedPost> {
   final CarouselController carouselController = CarouselController();
-
   int _currentImageIndex = 0;
 
   @override
