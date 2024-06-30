@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -127,9 +129,20 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String secondId,
 
   }) async {
+    Map<String, dynamic> requestData = {
+      'secondId': secondId
+    };
 
     try {
       emit(CreateChatLoadingState());
+      var response = await DioHelper.postData(
+          url: CREATE_CHAT,
+          data: requestData,
+          token: loginModel!.refresh_token
+      ).then((value) async {
+        print(value);
+        emit(CreateChatSuccessState());
+      });
 
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
@@ -140,6 +153,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
 
 
+
+
   Future<String> sendMessage({
     required String chatId,
     required String senderId,
@@ -147,11 +162,29 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String token,
     required Chat? chat
   }) async {
+    Map<String, dynamic> requestData = {
+      'chatId': chatId,
+      'senderId': senderId,
+      'text': text,
+    };
+    print(text);
+    print(chatId);
+    print(senderId);
 
     try {
       emit(CreateMessageLoadingState());
+      var response = await DioHelper.postData(
+          url: CREATE_MSG,
+          data: requestData,
+          token: token
+      ).then((value) async {
+      emit(CreateMessageSuccessState());
+      });
 
       // Assuming DioHelper.postData returns the response directly
+      print("this is response of msg");
+      print(response.data);
+      print("this is response of msg");
       // After sending the message successfully, refresh the chat page
 
       return "Message sent successfully";
@@ -173,26 +206,24 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: GET_CHATS,
         token: token,
       ).then((value) {
-
-   //     print(value.data);
+     //  print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
+       print(chatResponse);
         for(int i=0;i<chats.length;i++){
           DioHelper.getData(
               url:GET_CHAT_MSGS+chats[i].id,
               token: token
           ).then((value) {
-            // print(i);
-            // print("   ");
-            // print(value.data);
+       //     print(i);
+        //    print("   ");
+        //    print(value.data);
              MessageResponse messageResponse = MessageResponse.fromJson(value.data);
              chats[i].messages = messageResponse.messages;
-             //print(chats[i].messages);
-          }).catchError((error){
-
+          //   print(chats[i].messages);
           });
         }
-        emit(GetLoggedInUserChatsSuccessState());
+         emit(GetLoggedInUserChatsSuccessState());
       }).catchError((error) {
         emit(GetLoggedInUserChatsErrorState(error.toString()));
       });
@@ -201,6 +232,43 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(GetLoggedInUserChatsErrorState(error.toString()));
     }
     return "";
+  }
+
+
+  List<Chat> filteredChats = [];
+  StreamController<List<Chat>> _filteredChatsController = StreamController<List<Chat>>.broadcast();
+
+  Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
+
+
+
+  List<Chat> getChatsBySearch(String searchChat) {
+    filteredChats = [];
+    emit(GetSearchChatLoadingState());
+
+    for (int i = 0; i < chats.length; i++) {
+      bool isMatch = false;
+      if (chats[i].members[0].userId.id != loggedInUser!.id) {
+        isMatch = chats[i].members[0].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+      }
+      if (chats[i].members[1].userId.id != loggedInUser!.id) {
+        isMatch = chats[i].members[1].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+      }
+      if (isMatch) {
+        filteredChats.add(chats[i]);
+      }
+    }
+
+    print(filteredChats);
+    _filteredChatsController.add(filteredChats);  // Add the filtered chats to the stream
+    emit(GetSearchChatSuccessState());
+    return filteredChats;
+  }
+
+  @override
+  Future<void> close() {
+    _filteredChatsController.close();
+    return super.close();
   }
 
   // -------------------------- make follow using endpoints -----------------

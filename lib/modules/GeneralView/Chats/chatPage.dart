@@ -4,7 +4,9 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
+import 'package:flutter_code/modules/GeneralView/SearchChat/search_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
@@ -28,6 +30,15 @@ class _ChatsPageState extends State<ChatsPage> {
     super.initState();
     // After 3 seconds, set the _showWidget to true
     Future.delayed(const Duration(seconds: 2), () {});
+    /// Logged in user chats
+    UserLoginCubit.get(context)
+        .getLoggedInChats(
+        token: UserLoginCubit.get(context)
+            .loginModel!
+            .refresh_token).then((onValue){
+      chats = UserLoginCubit.get(context).chats;
+    });
+
   }
 
   String parseCreatedAt(String createdAt) {
@@ -134,7 +145,9 @@ class _ChatsPageState extends State<ChatsPage> {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            navigateToPage(context, SearchChatPage());
+                          },
                           icon: const Icon(
                             Icons.search,
                             size: 28,
@@ -164,11 +177,11 @@ class _ChatsPageState extends State<ChatsPage> {
                                 Expanded(
                                   child: (state
                                           is! GetLoggedInUserChatsLoadingState)
-                                      ? ListView.separated(
+                                      ? (chats.length>0)?ListView.separated(
                                           physics:
                                               const BouncingScrollPhysics(),
                                           itemBuilder: (context, index) =>
-                                              buildChatItem(index, context),
+                                          buildChatItem(index, context) ,
                                           separatorBuilder: (context, index) =>
                                               Padding(
                                             padding:
@@ -181,13 +194,28 @@ class _ChatsPageState extends State<ChatsPage> {
                                             ),
                                           ),
                                           itemCount: chats.length,
-                                        )
+                                        ):(Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text("No Chats Yet "
+                                            ,style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontSize: 32)
+                                            ,),
+                                          Text("Connect with people to volunteer"
+                                            ,style: TextStyle(
+                                                color: Colors.grey[400],
+                                                fontSize: 18)
+                                            ,),
+
+                                        ],
+                                      )
+                                  )
+                                  )
                                       : Center(
-                                          child: Text(
-                                          "No Chats Yet",
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.grey),
-                                        )),
+                                          child: CircularProgressIndicator(color: defaultColor,)),
                                 ),
                               ],
                             ),

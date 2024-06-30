@@ -397,10 +397,7 @@ class _HomePageState extends State<HomePage> {
                               .then((value) {
                             UserLoginCubit.get(context).anotherUser =
                                 HomeLayoutCubit.get(context).anotherUser;
-                            print("not nulllllll");
-
-                            print("not nulllllll");
-                            navigateToPage(context, const AnotherUserProfile());
+                            navigateToPage(context,   AnotherUserProfile());
                           });
                         }
                       },

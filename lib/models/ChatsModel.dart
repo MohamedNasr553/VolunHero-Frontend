@@ -69,7 +69,7 @@ class Member {
 class User {
   String id;
   String userName;
-  String? profilePic;
+  ProfilePic? profilePic;
 
   User({
     required this.id,
@@ -81,7 +81,7 @@ class User {
     return User(
       id: json['_id'],
       userName: json['userName'],
-      profilePic: json['profilePic'],
+      profilePic: json['profilePic'] != null ? ProfilePic.fromJson(json['profilePic']) : null,
     );
   }
 
@@ -91,25 +91,25 @@ class User {
   }
 }
 
-class MessageResponse {
-  String message;
-  List<Message> messages;
+class ProfilePic {
+  String secureUrl;
+  String publicId;
 
-  MessageResponse({
-    required this.message,
-    required this.messages,
+  ProfilePic({
+    required this.secureUrl,
+    required this.publicId,
   });
 
-  factory MessageResponse.fromJson(Map<String, dynamic> json) {
-    return MessageResponse(
-      message: json['message'],
-      messages: List<Message>.from(json['messages'].map((x) => Message.fromJson(x))),
+  factory ProfilePic.fromJson(Map<String, dynamic> json) {
+    return ProfilePic(
+      secureUrl: json['secure_url'],
+      publicId: json['public_id'],
     );
   }
 
   @override
   String toString() {
-    return 'MessageResponse(message: $message, messages: $messages)';
+    return 'ProfilePic(secureUrl: $secureUrl, publicId: $publicId)';
   }
 }
 
@@ -150,5 +150,27 @@ class Message {
   @override
   String toString() {
     return 'Message(id: $id, chatId: $chatId, senderId: $senderId, text: $text, isDeleted: $isDeleted, createdAt: $createdAt, updatedAt: $updatedAt, v: $v)';
+  }
+}
+
+class MessageResponse {
+  String message;
+  List<Message> messages;
+
+  MessageResponse({
+    required this.message,
+    required this.messages,
+  });
+
+  factory MessageResponse.fromJson(Map<String, dynamic> json) {
+    return MessageResponse(
+      message: json['message'],
+      messages: List<Message>.from(json['messages'].map((x) => Message.fromJson(x))),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'MessageResponse(message: $message, messages: $messages)';
   }
 }
