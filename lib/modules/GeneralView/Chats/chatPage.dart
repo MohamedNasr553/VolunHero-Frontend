@@ -4,6 +4,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
+import 'package:flutter_code/modules/GeneralView/SearchChat/search_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -144,7 +145,9 @@ class _ChatsPageState extends State<ChatsPage> {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            navigateToPage(context, SearchChatPage());
+                          },
                           icon: const Icon(
                             Icons.search,
                             size: 28,

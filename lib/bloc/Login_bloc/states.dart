@@ -96,6 +96,9 @@ class MarkNotificationErrorState extends UserLoginStates {
   final String error;
   MarkNotificationErrorState(this.error);
 }
+// Get Search chat states
+class GetSearchChatSuccessState extends UserLoginStates {}
+class GetSearchChatLoadingState extends UserLoginStates {}
 
 // Send message States
 class CreateMessageSuccessState extends UserLoginStates {}

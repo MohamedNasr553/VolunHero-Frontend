@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
@@ -230,6 +232,43 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(GetLoggedInUserChatsErrorState(error.toString()));
     }
     return "";
+  }
+
+
+  List<Chat> filteredChats = [];
+  StreamController<List<Chat>> _filteredChatsController = StreamController<List<Chat>>.broadcast();
+
+  Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
+
+
+
+  List<Chat> getChatsBySearch(String searchChat) {
+    filteredChats = [];
+    emit(GetSearchChatLoadingState());
+
+    for (int i = 0; i < chats.length; i++) {
+      bool isMatch = false;
+      if (chats[i].members[0].userId.id != loggedInUser!.id) {
+        isMatch = chats[i].members[0].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+      }
+      if (chats[i].members[1].userId.id != loggedInUser!.id) {
+        isMatch = chats[i].members[1].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+      }
+      if (isMatch) {
+        filteredChats.add(chats[i]);
+      }
+    }
+
+    print(filteredChats);
+    _filteredChatsController.add(filteredChats);  // Add the filtered chats to the stream
+    emit(GetSearchChatSuccessState());
+    return filteredChats;
+  }
+
+  @override
+  Future<void> close() {
+    _filteredChatsController.close();
+    return super.close();
   }
 
   // -------------------------- make follow using endpoints -----------------
