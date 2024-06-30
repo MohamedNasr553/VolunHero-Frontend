@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Settings_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
@@ -46,6 +47,9 @@ class AppRoot extends StatelessWidget {
             ..getAllSavedPosts(
                 token: UserLoginCubit.get(context).loginModel!.refresh_token ??
                     ""),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SettingsCubit()
         ),
       ],
       child: MaterialApp(

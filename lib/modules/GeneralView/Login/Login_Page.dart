@@ -23,7 +23,7 @@ class LoginPage extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-        listener: (context, state) {},
+        listener: (context, state) { },
         builder: (context, state) {
           return Scaffold(
             body: SingleChildScrollView(
@@ -138,13 +138,13 @@ class LoginPage extends StatelessWidget {
                                     return null;
                                   },
                                   style: const TextStyle(
-                                    fontSize: 13.0,
+                                    fontSize: 12.0,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   decoration: InputDecoration(
                                     labelStyle: const TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 14.0,
+                                      fontSize: 12.0,
                                       fontWeight: FontWeight.w300,
                                     ),
                                     hintText: 'Password',
@@ -239,6 +239,8 @@ class LoginPage extends StatelessWidget {
                                                 const VolunHeroUserLayout());
                                           }
                                         });
+                                      }).catchError((onError){
+
                                       });
                                     }
                                   },

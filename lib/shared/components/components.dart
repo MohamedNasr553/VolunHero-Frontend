@@ -66,14 +66,14 @@ Widget defaultTextFormField({
     controller: controller,
     validator: validate,
     style: const TextStyle(
-      fontSize: 13.0,
+      fontSize: 11.0,
       fontWeight: FontWeight.w500,
     ),
     decoration: InputDecoration(
       labelText: labelText,
       labelStyle: const TextStyle(
         color: Colors.grey,
-        fontSize: 14.0,
+        fontSize: 12.0,
         fontWeight: FontWeight.w300,
       ),
       hintText: hintText,
