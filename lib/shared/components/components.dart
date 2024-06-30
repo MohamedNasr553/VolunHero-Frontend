@@ -23,9 +23,7 @@ Widget defaultButton({
       width: width,
       height: height,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          radius,
-        ),
+        borderRadius: BorderRadius.circular(radius),
         color: color,
       ),
       child: MaterialButton(
@@ -60,6 +58,8 @@ Widget defaultTextFormField({
   double width = 20.0,
   double height = 10.0,
   double outlineBorderWidth = 0.5,
+  Color fillColor = Colors.white,
+  Color hintColor = Colors.grey,
 }) {
   return TextFormField(
     onTap: onTap,
@@ -81,7 +81,7 @@ Widget defaultTextFormField({
         fontSize: hintSize,
         color: Colors.grey.shade500,
       ),
-      fillColor: Colors.white,
+      fillColor: fillColor,
       filled: true,
       contentPadding: EdgeInsets.symmetric(vertical: height, horizontal: width),
       border: OutlineInputBorder(
@@ -171,9 +171,11 @@ Widget updateProfileTextFormField({
       ),
     );
 
-Widget separator() => Container(
+Widget separator()
+=>
+    Container(
       height: 1.0,
-      color: HexColor("039FA2"),
+      color: Colors.grey.shade300,
     );
 
 void navigateToPage(context, widget) => Navigator.push(
@@ -546,6 +548,63 @@ Widget postSubComponent(String assetIcon, String action,
           ),
         )
       ],
+    ),
+  );
+}
+
+Widget buildSettingsItem(IconData? icon, String title, BuildContext context, Widget screen){
+  var screenHeight = MediaQuery.of(context).size.height;
+  var screenWidth = MediaQuery.of(context).size.width;
+
+  return InkWell(
+    onTap: () => navigateToPage(context, screen),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.white,
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          top: screenHeight / 120,
+          bottom: screenHeight / 120,
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: screenWidth / 30,
+                end: screenWidth / 30,
+              ),
+              child: Icon(
+                icon,
+                size: 25,
+                color: HexColor("039FA2"),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: screenWidth / 80,
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: "Roboto",
+                  color: Colors.black87,
+                  fontSize: 21,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                end: screenWidth / 60,
+              ),
+              child: SvgPicture.asset("assets/images/Expand_right.svg"),
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }

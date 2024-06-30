@@ -6,10 +6,8 @@ import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/components/constants.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
@@ -78,7 +76,7 @@ class UserSidePage extends StatelessWidget {
                           child: (HomeLayoutCubit.get(context)
                                       .modifiedPost
                                       ?.createdBy
-                                      ?.profilePic ==
+                                      .profilePic ==
                                   null)
                               ? Image.asset(
                                   'assets/images/nullProfile.png',
@@ -177,6 +175,7 @@ class UserSidePage extends StatelessWidget {
                       navigateAndFinish(context, const SavedPosts());
                     },
                   ),
+                  const Divider(),
                   ListTile(
                     leading: const Icon(
                       Icons.phone,
@@ -193,24 +192,6 @@ class UserSidePage extends StatelessWidget {
                     onTap: () {
                       cubit.changeBottomNavBar(1);
                       navigateAndFinish(context, const VolunHeroUserLayout());
-                    },
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.info_outline,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Help and Support',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context); // Close the drawer
                     },
                   ),
                   ListTile(
@@ -234,7 +215,7 @@ class UserSidePage extends StatelessWidget {
                   ListTile(
                     contentPadding: EdgeInsetsDirectional.only(
                       top: screenHeight / 7,
-                      start: screenWidth / 30,
+                      start: screenWidth / 23,
                     ),
                     leading: const Icon(
                       Icons.add_circle_outline_sharp,
@@ -254,7 +235,7 @@ class UserSidePage extends StatelessWidget {
                   ),
                   ListTile(
                     contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 30,
+                      start: screenWidth / 23,
                     ),
                     leading: const Icon(
                       Icons.exit_to_app_outlined,

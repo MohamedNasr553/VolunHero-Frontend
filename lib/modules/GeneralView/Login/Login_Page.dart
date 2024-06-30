@@ -4,16 +4,12 @@ import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
 import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/components/constants.dart';
-import 'package:flutter_code/shared/network/local/CacheHelper.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 import '../../../bloc/Login_bloc/cubit.dart';
 import '../../../bloc/Login_bloc/states.dart';
-import '../../../bloc/UserLayout_bloc/cubit.dart';
-import '../../../bloc/UserLayout_bloc/states.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
