@@ -8,6 +8,7 @@ import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/models/NotificationsModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
+import 'package:flutter_code/shared/styles/colors.dart';
 import '../../models/AnotherUserPostsModel.dart';
 import '../../models/ChatsModel.dart';
 import '../../shared/network/endpoints.dart';
@@ -36,6 +37,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   Future<String> loginUser({
     required String email,
     required String password,
+    required BuildContext context,
   }) async {
     Map<String, dynamic> requestData = {
       'email': email,
@@ -48,17 +50,35 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: LOGIN,
         data: requestData,
       );
-      // print(value.toString());
 
       loginModel = LoginModel.fromJson(value.data);
 
-      // print(loginModel?.refresh_token);
       emit(UserLoginSuccessState());
-      showToast(text: "Logged In Successfully", state: ToastStates.SUCCESS);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: defaultColor,
+          content: Text(
+            'Logged In Successfully',
+            style: TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ),
+      );
       return "Logged In Successfully";
     } catch (error) {
       emit(UserLoginErrorState(error.toString()));
-      showToast(text: "Email Address or Password is not correct", state: ToastStates.ERROR);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Email Address or Password is not correct',
+            style: TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ),
+      );
       return "Something went Wrong!";
     }
   }
@@ -135,14 +155,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
     try {
       emit(CreateChatLoadingState());
-      var response = await DioHelper.postData(
-          url: CREATE_CHAT,
-          data: requestData,
-          token: loginModel!.refresh_token
-      ).then((value) async {
-        print(value);
-        emit(CreateChatSuccessState());
-      });
 
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
@@ -236,7 +248,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
 
   List<Chat> filteredChats = [];
-  StreamController<List<Chat>> _filteredChatsController = StreamController<List<Chat>>.broadcast();
+  final StreamController<List<Chat>> _filteredChatsController = StreamController<List<Chat>>.broadcast();
 
   Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
 
@@ -336,7 +348,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   Future<void> markNotification(String? token,String id)async{
     emit(MarkNotificationLoadingState());
     DioHelper.patchData(
-      url: "/notifications/${id}/read",
+      url: "/notifications/$id/read",
       token: token,
     ).then((value) {
     emit(MarkNotificationSuccessState());

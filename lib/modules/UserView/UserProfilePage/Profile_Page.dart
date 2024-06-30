@@ -672,7 +672,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (ownerPostsCubit.ownerPostsModel == null) {
       return buildLoadingWidget(
-          ownerPostsCubit.ownerPostsModel!.newPosts.length, context);
+          ownerPostsCubit.ownerPostsModel?.newPosts.length ?? 0, context);
     }
 
     return ListView.separated(

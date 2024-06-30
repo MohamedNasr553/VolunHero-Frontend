@@ -73,9 +73,9 @@ class GetAnotherUserPostsLoadingState extends UserLoginStates {}
 
 class GetAnotherUserPostsErrorState extends UserLoginStates {
   final String error;
+
   GetAnotherUserPostsErrorState(this.error);
 }
-
 
 // LoggedIn User Notifications States
 class GetLoggedInUserNotificationSuccessState extends UserLoginStates {}
@@ -84,6 +84,7 @@ class GetLoggedInUserNotificationLoadingState extends UserLoginStates {}
 
 class GetLoggedInUserNotificationErrorState extends UserLoginStates {
   final String error;
+
   GetLoggedInUserNotificationErrorState(this.error);
 }
 
@@ -94,10 +95,13 @@ class MarkNotificationLoadingState extends UserLoginStates {}
 
 class MarkNotificationErrorState extends UserLoginStates {
   final String error;
+
   MarkNotificationErrorState(this.error);
 }
+
 // Get Search chat states
 class GetSearchChatSuccessState extends UserLoginStates {}
+
 class GetSearchChatLoadingState extends UserLoginStates {}
 
 // Send message States

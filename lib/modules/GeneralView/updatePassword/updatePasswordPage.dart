@@ -45,10 +45,19 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                   ),
                 ),
               );
+              navigateToPage(context, const AccountInformationPage());
             }
-            if(state is UpdatePasswordLoadingState){
-              const Center(
-                child: CircularProgressIndicator(),
+            else if(state is UpdatePasswordErrorState){
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                    "Invalid Current Password",
+                    style: TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
               );
             }
           },
@@ -288,6 +297,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                 newPassword: newPasswordController.text,
                                 token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
                               );
+
                             },
                             text: 'Save',
                           ),

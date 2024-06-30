@@ -38,6 +38,14 @@ class _HomePageState extends State<HomePage> {
         UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
       HomeLayoutCubit.get(context).getAllPosts(
           token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+      UserLoginCubit.get(context)
+          .getLoggedInUserData(
+          token: UserLoginCubit.get(
+              context)
+              .loginModel!
+              .refresh_token);
+      UserLoginCubit.get(context)
+          .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token);
     }
   }
 

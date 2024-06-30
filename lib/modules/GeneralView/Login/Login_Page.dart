@@ -23,7 +23,25 @@ class LoginPage extends StatelessWidget {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-        listener: (context, state) { },
+        listener: (context, state) {
+          if(state is UserLoginSuccessState) {
+            UserLoginCubit.get(context).getLoggedInUserData(
+                token: UserLoginCubit
+                    .get(context)
+                    .loginModel!
+                    .refresh_token);
+            UserLoginCubit.get(context)
+                .getLoggedInChats(token: UserLoginCubit
+                .get(context)
+                .loginModel!
+                .refresh_token);
+            if (UserLoginCubit
+                .get(context)
+                .loggedInUser != null) {
+              navigateAndFinish(context, const VolunHeroUserLayout());
+            }
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             body: SingleChildScrollView(
@@ -62,9 +80,7 @@ class LoginPage extends StatelessWidget {
                               strokeWidth: 3.0,
                               strokeColor: Colors.white,
                             ),
-                            SizedBox(
-                              width: 2.0,
-                            ),
+                            SizedBox(width: 2.0),
                             Text(
                               "lcome Back !",
                               style: TextStyle(
@@ -221,27 +237,26 @@ class LoginPage extends StatelessWidget {
                                         email:
                                         emailAddressController.text,
                                         password: passwordController.text,
-                                      )
-                                          .then((value) {
-                                        UserLoginCubit.get(context)
-                                            .getLoggedInUserData(
-                                            token: UserLoginCubit.get(
-                                                context)
-                                                .loginModel!
-                                                .refresh_token)
-                                            .then((value) {
-                                          UserLoginCubit.get(context)
-                                              .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token);
-                                          if (UserLoginCubit.get(context)
-                                              .loggedInUser !=
-                                              null) {
-                                            navigateAndFinish(context,
-                                                const VolunHeroUserLayout());
-                                          }
-                                        });
-                                      }).catchError((onError){
-
-                                      });
+                                        context: context,
+                                      );
+                                        // .then((value) {
+                                      //   UserLoginCubit.get(context)
+                                      //       .getLoggedInUserData(
+                                      //       token: UserLoginCubit.get(
+                                      //           context)
+                                      //           .loginModel!
+                                      //           .refresh_token)
+                                      //       .then((value) {
+                                      //     UserLoginCubit.get(context)
+                                      //         .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token);
+                                      //     if (UserLoginCubit.get(context)
+                                      //         .loggedInUser !=
+                                      //         null) {
+                                      //       navigateAndFinish(context,
+                                      //           const VolunHeroUserLayout());
+                                      //     }
+                                      //   });
+                                      // });
                                     }
                                   },
                                   text: "Login",
