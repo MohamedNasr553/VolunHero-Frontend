@@ -74,6 +74,7 @@ class OnBoarding2 extends StatelessWidget {
               // ).then((value){
               //   navigateAndFinish(context, const UserSignupPage());
               // });
+              navigateAndFinish(context, const UserSignupPage());
             },
             text: 'Sign up as a user',
             isUpperCase: false,

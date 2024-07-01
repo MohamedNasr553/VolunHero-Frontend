@@ -21,6 +21,8 @@ class UserSignupPage extends StatefulWidget {
 }
 
 class _UserSignupPageState extends State<UserSignupPage> {
+  List<File>? attachments;
+  File? profilePic;
   var formKey = GlobalKey<FormState>();
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
@@ -517,8 +519,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 ),
                                 child: InkWell(
                                   onTap: () async {
-                                    await _requestPermission();
-                                    _pickProfileFile();
+                                  //  await _requestPermission();
+                                    pickProfileFile();
                                   },
                                   child: Center(
                                     child: Row(
@@ -575,8 +577,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 ),
                                 child: InkWell(
                                   onTap: () async {
-                                    await _requestPermission();
-                                    _pickFile();
+                                    //await _requestPermission();
+                                    pickFiles();
                                   },
                                   child: Center(
                                     child: Row(
@@ -637,15 +639,11 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       cpassword: confirmPasswordController.text,
                                       phone: phoneController.text,
                                       specification: selectedItem,
-                                      // Convert _filePath to File object
-                                      attachments: _filePath != null
-                                          ? File(_filePath!)
-                                          : null,
-                                      profilePic: _profilePath != null
-                                          ? File(_profilePath!)
-                                          : null,
+                                      attachments: attachments,
+                                      profilePic: profilePic,
                                       classification: classification,
                                     );
+                                    // navigateToPage(context, LoginPage());
                                     // if (UserSignUpCubit.get(context).signupModel != null) {
                                     //   if (UserSignUpCubit.get(context).signupModel!.message == 'success') {
                                     //     showToast(
@@ -774,24 +772,22 @@ class _UserSignupPageState extends State<UserSignupPage> {
     }
   }
 
-  void _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+  Future<void> pickFiles() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
 
     if (result != null) {
       setState(() {
-        showToast(text: _filePath??"file path b null", state: ToastStates.WARNING);
-        _filePath = result.files.single.path!;
+        attachments = result.paths.map((path) => File(path!)).toList();
       });
     }
   }
 
-  void _pickProfileFile() async {
+  Future<void> pickProfileFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       setState(() {
-        showToast(text: _profilePath??"file path b null", state: ToastStates.WARNING);
-        _profilePath = result.files.single.path!;
+        profilePic = File(result.files.single.path!);
       });
     }
   }

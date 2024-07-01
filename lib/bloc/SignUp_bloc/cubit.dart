@@ -7,6 +7,7 @@ import 'package:flutter_code/models/SignUpModel.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UserSignUpCubit extends Cubit<UserSignUpStates> {
   UserSignUpCubit() : super(UserSignUpInitialState());
@@ -33,7 +34,7 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
   }
 
   SignupModel? signupModel;
-  void registerUser({
+  Future<void> registerUser({
     required String firstName,
     required String lastName,
     required String DOB,
@@ -45,7 +46,7 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
     required String phone,
     required String specification,
     required String classification,
-    File? attachments,
+    List<File>? attachments,
     File? profilePic,
   }) async {
     emit(UserSignUpLoadingState());
@@ -64,13 +65,14 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
       MapEntry('phone', phone),
       MapEntry('specification', specification),
     ]);
-    print("classification: $classification");
+    print("Attachmentss");
+    for(int i=0;i<attachments!.length;i++){
+      print(attachments?[i].toString());
+    }
     bool attachmentsRequired =
     (classification == "medical" || classification == "educational");
 
-
-    print(classification);
-    if(profilePic!=null){
+    if (profilePic != null) {
       String fileName = profilePic.path.split('/').last;
       formData.files.add(MapEntry(
         'profilePic',
@@ -79,38 +81,30 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
           filename: fileName,
         ),
       ));
-      print(formData.files);
-      print(profilePic.path);
-      print(fileName);
+      emit(UserSignUpProfileState());
     }
 
-
-    if (attachmentsRequired && attachments != null) {
-      String fileName = attachments.path.split('/').last;
-      formData.files.add(MapEntry(
-        'attachments',
-        await dio.MultipartFile.fromFile(
-          attachments.path,
-          filename: fileName,
-        ),
-      ));
-
-    }
-    else if (attachmentsRequired && attachments == null) {
+    if (attachmentsRequired && attachments != null && attachments.isNotEmpty) {
+      for (var file in attachments) {
+        String fileName = file.path.split('/').last;
+        formData.files.add(MapEntry(
+          'attachments',
+          await dio.MultipartFile.fromFile(
+            file.path,
+            filename: fileName,
+          ),
+        ));
+      }
+      emit(UserSignUpAttachmentState());
+    } else if (attachmentsRequired && (attachments == null || attachments.isEmpty)) {
       showToast(
-        text:
-        'Attachments are required for medical or educational classifications',
+        text: 'Attachments are required for medical or educational classifications',
         state: ToastStates.ERROR,
       );
-      emit(UserSignUpErrorState(
-          "Attachments are required for medical or educational classifications"));
+      emit(UserSignUpErrorState("Attachments are required for medical or educational classifications"));
       return;
     }
-    print("Att: $attachments" );
-    print("prof: $profilePic" );
-    print("#######################");
-    print(formData.files);
-    print("#######################");
+
     try {
       dio.Response response = await DioHelper.dio.post(
         REGISTER,
@@ -118,17 +112,21 @@ class UserSignUpCubit extends Cubit<UserSignUpStates> {
         options: dio.Options(
           headers: {
             'Content-Type': 'multipart/form-data',
-            // Add any other headers if required
           },
         ),
       );
+
       signupModel = SignupModel.fromJson(response.data);
-      print("===============================");
-      print(response.data);
-      print("===============================");
       emit(UserSignUpSuccessState());
     } catch (error) {
       emit(UserSignUpErrorState(error.toString()));
+    }
+  }
+
+  Future<void> requestPermission() async {
+    var status = await Permission.storage.request();
+    if (status.isDenied || status.isPermanentlyDenied) {
+      showToast(text: "You Should upload file", state: ToastStates.ERROR);
     }
   }
 }
