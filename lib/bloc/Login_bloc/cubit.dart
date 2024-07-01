@@ -7,6 +7,8 @@ import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/models/NotificationsModel.dart';
+import 'package:flutter_code/models/getMyFollowers.dart';
+import 'package:flutter_code/models/getMyFollowing.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import '../../models/AnotherUserPostsModel.dart';
@@ -104,7 +106,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       emit(GetLoggedInUserSuccessState());
     } catch (error) {
-
       emit(GetLoggedInUserErrorState(error.toString()));
     }
   }
@@ -120,7 +121,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }) async {
     try {
       emit(UpdateLoggedInUserLoadingState());
-
 
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
@@ -147,12 +147,12 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-  void refreshChatPage(String chatId)async{
+  void refreshChatPage(String chatId) async {
     emit(RefreshMessagesLoadingState());
     getLoggedInChats(token: loginModel!.refresh_token).then((value) {
       List<Chat> userChat = chats;
-      for(int i=0;i<userChat.length;i++){
-        if(userChat[i].id == chatId){
+      for (int i = 0; i < userChat.length; i++) {
+        if (userChat[i].id == chatId) {
           selectedChat = userChat[i];
           getLoggedInChats(token: loginModel!.refresh_token);
           emit(RefreshMessagesSuccessState());
@@ -161,22 +161,18 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     });
   }
 
-
-
   Future<String> createChat({
     required String secondId,
   }) async {
-    Map<String, dynamic> requestData = {
-      'secondId': secondId
-    };
+    Map<String, dynamic> requestData = {'secondId': secondId};
 
     try {
       emit(CreateChatLoadingState());
       var response = await DioHelper.postData(
-          url: CREATE_CHAT,
-          data: requestData,
-          token: loginModel!.refresh_token
-      ).then((value) async {
+              url: CREATE_CHAT,
+              data: requestData,
+              token: loginModel!.refresh_token)
+          .then((value) async {
         emit(CreateChatSuccessState());
       });
     } catch (error) {
@@ -186,15 +182,12 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     return "function return";
   }
 
-
-
-  Future<String> sendMessage({
-    required String chatId,
-    required String senderId,
-    required String text,
-    required String token,
-    required Chat? chat
-  }) async {
+  Future<String> sendMessage(
+      {required String chatId,
+      required String senderId,
+      required String text,
+      required String token,
+      required Chat? chat}) async {
     Map<String, dynamic> requestData = {
       'chatId': chatId,
       'senderId': senderId,
@@ -207,11 +200,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     try {
       emit(CreateMessageLoadingState());
       var response = await DioHelper.postData(
-          url: CREATE_MSG,
-          data: requestData,
-          token: token
-      ).then((value) async {
-      emit(CreateMessageSuccessState());
+              url: CREATE_MSG, data: requestData, token: token)
+          .then((value) async {
+        emit(CreateMessageSuccessState());
       });
 
       // Assuming DioHelper.postData returns the response directly
@@ -227,11 +218,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-
-
   ChatResponse? chatResponse;
   List<Chat> chats = [];
   Chat? selectedChat;
+
   Future<String> getLoggedInChats({required String? token}) async {
     try {
       emit(GetLoggedInUserChatsLoadingState());
@@ -239,41 +229,37 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         url: GET_CHATS,
         token: token,
       ).then((value) {
-     //  print(value.data);
+        //  print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
-       print(chatResponse);
-        for(int i=0;i<chats.length;i++){
-          DioHelper.getData(
-              url:GET_CHAT_MSGS+chats[i].id,
-              token: token
-          ).then((value) {
-       //     print(i);
-        //    print("   ");
-        //    print(value.data);
-             MessageResponse messageResponse = MessageResponse.fromJson(value.data);
-             chats[i].messages = messageResponse.messages;
-          //   print(chats[i].messages);
+        print(chatResponse);
+        for (int i = 0; i < chats.length; i++) {
+          DioHelper.getData(url: GET_CHAT_MSGS + chats[i].id, token: token)
+              .then((value) {
+            //     print(i);
+            //    print("   ");
+            //    print(value.data);
+            MessageResponse messageResponse =
+                MessageResponse.fromJson(value.data);
+            chats[i].messages = messageResponse.messages;
+            //   print(chats[i].messages);
           });
         }
-         emit(GetLoggedInUserChatsSuccessState());
+        emit(GetLoggedInUserChatsSuccessState());
       }).catchError((error) {
         emit(GetLoggedInUserChatsErrorState(error.toString()));
       });
-
     } catch (error) {
       emit(GetLoggedInUserChatsErrorState(error.toString()));
     }
     return "";
   }
 
-
   List<Chat> filteredChats = [];
-  final StreamController<List<Chat>> _filteredChatsController = StreamController<List<Chat>>.broadcast();
+  final StreamController<List<Chat>> _filteredChatsController =
+      StreamController<List<Chat>>.broadcast();
 
   Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
-
-
 
   List<Chat> getChatsBySearch(String searchChat) {
     filteredChats = [];
@@ -282,10 +268,20 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     for (int i = 0; i < chats.length; i++) {
       bool isMatch = false;
       if (chats[i].members[0].userId.id != loggedInUser!.id) {
-        isMatch = chats[i].members[0].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+        isMatch = chats[i]
+            .members[0]
+            .userId
+            .userName
+            .toLowerCase()
+            .contains(searchChat.toLowerCase());
       }
       if (chats[i].members[1].userId.id != loggedInUser!.id) {
-        isMatch = chats[i].members[1].userId.userName.toLowerCase().contains(searchChat.toLowerCase());
+        isMatch = chats[i]
+            .members[1]
+            .userId
+            .userName
+            .toLowerCase()
+            .contains(searchChat.toLowerCase());
       }
       if (isMatch) {
         filteredChats.add(chats[i]);
@@ -293,7 +289,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
 
     print(filteredChats);
-    _filteredChatsController.add(filteredChats);  // Add the filtered chats to the stream
+    _filteredChatsController
+        .add(filteredChats); // Add the filtered chats to the stream
     emit(GetSearchChatSuccessState());
     return filteredChats;
   }
@@ -304,10 +301,53 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     return super.close();
   }
 
+  /// ------------------------- Get My Following ----------------------------
+  UserProfile? userProfileFollowings;
+  UserId? userIdFollowings;
+
+  void getMyFollowings({
+    required String? token,
+  }) async {
+    emit(GetMyFollowingLoadingState());
+
+    DioHelper.getData(
+      url: "/users/following",
+      token: token,
+    ).then((value) {
+      userProfileFollowings = UserProfile.fromJson(value.data);
+
+      emit(GetMyFollowingSuccessState());
+    }).catchError((error) {
+      emit(GetMyFollowingErrorState(error));
+    });
+  }
+
+  /// ------------------------- Get My Followers ----------------------------
+  GetMyFollowerResponse? userProfileFollowers;
+  Follower? userIdFollowers;
+
+  void getMyFollowers({
+    required String? token,
+  }) async {
+    emit(GetMyFollowersLoadingState());
+
+    DioHelper.getData(
+      url: "/users/followers",
+      token: token,
+    ).then((value) {
+      userProfileFollowers = GetMyFollowerResponse.fromJson(value.data);
+
+      emit(GetMyFollowersSuccessState());
+    }).catchError((error) {
+      emit(GetMyFollowersErrorState(error));
+    });
+  }
+
+
   // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
+
   bool inFollowing({required String? followId}) {
-    // id bat3 elanother
     for (int i = 0; i < loggedInUser!.following.length; i++) {
       if (loggedInUser!.following[i]["userId"] == followId) {
         return true;
@@ -343,12 +383,14 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     emit(LoginChangeFollowState());
   }
 
-  //---------------- another user posts endpoints----------------------------
+  //---------------- another user posts endpoints ----------------------------
   AnotherUserPostsResponse? anotherUserPostsResponse;
   PostWrapper? postWrapper;
 
-  Future<void> getAnotherUserPosts({required String? token,required String userName,required String id}) async {
-
+  Future<void> getAnotherUserPosts(
+      {required String? token,
+      required String userName,
+      required String id}) async {
     DioHelper.getData(
       url: "/users/$userName/$id/post",
       token: token,
@@ -356,32 +398,27 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(GetAnotherUserPostsLoadingState());
 
       anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(value.data);
-
-
-
-     }).catchError((error) {
-
+    }).catchError((error) {
       emit(GetAnotherUserPostsErrorState(error));
     });
   }
-  //---------------------------Notifications--------------------------
+
+  /// ---------------------------Notifications--------------------------
   NotificationsModel? notificationsModel;
-  Future<void> markNotification(String? token,String id)async{
+
+  Future<void> markNotification(String? token, String id) async {
     emit(MarkNotificationLoadingState());
     DioHelper.patchData(
       url: "/notifications/$id/read",
       token: token,
     ).then((value) {
-    emit(MarkNotificationSuccessState());
-
-    }).catchError((error){
-    emit(MarkNotificationErrorState(error.toString()));
-
+      emit(MarkNotificationSuccessState());
+    }).catchError((error) {
+      emit(MarkNotificationErrorState(error.toString()));
     });
   }
 
-
-  Future<void> getLoggedInUserNotifications(String? token)async{
+  Future<void> getLoggedInUserNotifications(String? token) async {
     emit(GetLoggedInUserNotificationLoadingState());
     DioHelper.getData(
       url: "/notifications",
@@ -390,21 +427,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       notificationsModel = NotificationsModel.fromJson(value.data);
       emit(GetLoggedInUserNotificationSuccessState());
       print(notificationsModel);
-
     }).catchError((error) {
       emit(GetLoggedInUserNotificationErrorState(error));
     });
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-

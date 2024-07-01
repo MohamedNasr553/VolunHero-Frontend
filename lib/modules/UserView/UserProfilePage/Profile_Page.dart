@@ -13,6 +13,8 @@ import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
 import 'package:flutter_code/modules/GeneralView/EditPost/Edit_Post.dart';
+import 'package:flutter_code/modules/GeneralView/FollowersPage/FollowersPage.dart';
+import 'package:flutter_code/modules/GeneralView/FollowingsPage/FollowingsPage.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserEditProfile/editProfile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -276,9 +278,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: screenHeight / 100,
-                                  ),
+                                  SizedBox(height: screenHeight / 100),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
@@ -313,51 +313,77 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                         ),
                                         Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "${(UserLoginCubit.get(context).loggedInUser!.followers.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
-                                                style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              UserLoginCubit.get(context)
+                                                  .getMyFollowers(
+                                                token:
+                                                    UserLoginCubit.get(context)
+                                                            .loginModel!
+                                                            .refresh_token ??
+                                                        "",
+                                              );
+                                              navigateToPage(context, const FollowersPage());
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "${(UserLoginCubit.get(context).loggedInUser!.followers.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.black
+                                                        .withOpacity(0.7),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                "Followers",
-                                                style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                                Text(
+                                                  "Followers",
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                    color: Colors.black
+                                                        .withOpacity(0.7),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                         Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                "${(UserLoginCubit.get(context).loggedInUser!.following.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
-                                                style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              UserLoginCubit.get(context)
+                                                  .getMyFollowings(
+                                                token:
+                                                UserLoginCubit.get(context)
+                                                    .loginModel!
+                                                    .refresh_token ??
+                                                    "",
+                                              );
+                                              navigateToPage(context, const FollowingsPage());
+                                            },
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  "${(UserLoginCubit.get(context).loggedInUser!.following.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                                  style: TextStyle(
+                                                    fontSize: 16.0,
+                                                    color: Colors.black
+                                                        .withOpacity(0.7),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                "Following",
-                                                style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                                Text(
+                                                  "Following",
+                                                  style: TextStyle(
+                                                    fontSize: 14.0,
+                                                    color: Colors.black
+                                                        .withOpacity(0.7),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -1151,7 +1177,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           )
                         else if (postDetails.likesCount > 0 &&
@@ -1166,7 +1193,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           )
                         else
@@ -1179,7 +1207,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           ),
                         const Spacer(),
@@ -1285,6 +1314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Navigator.pop(context);
                     },
                   ),
+
                   /// Edit Post
                   ListTile(
                     leading: const Icon(
@@ -1329,6 +1359,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       navigateToPage(context, const EditPost());
                     },
                   ),
+
                   /// Copy Post URl
                   ListTile(
                     leading: const Icon(
@@ -1367,6 +1398,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
+
                   /// Delete Post / Remove Share
                   ListTile(
                     leading: const Icon(
@@ -1380,11 +1412,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             children: [
                               const Text(
                                 'Delete Post',
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black54,
-                                  ),
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black54,
+                                ),
                               ),
                               SizedBox(height: screenHeight / 130),
                               const Text(

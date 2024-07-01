@@ -77,6 +77,28 @@ class GetAnotherUserPostsErrorState extends UserLoginStates {
   GetAnotherUserPostsErrorState(this.error);
 }
 
+// Get My Following
+class GetMyFollowingSuccessState extends UserLoginStates {}
+
+class GetMyFollowingLoadingState extends UserLoginStates {}
+
+class GetMyFollowingErrorState extends UserLoginStates {
+  final String error;
+
+  GetMyFollowingErrorState(this.error);
+}
+
+// Get My Following
+class GetMyFollowersSuccessState extends UserLoginStates {}
+
+class GetMyFollowersLoadingState extends UserLoginStates {}
+
+class GetMyFollowersErrorState extends UserLoginStates {
+  final String error;
+
+  GetMyFollowersErrorState(this.error);
+}
+
 // LoggedIn User Notifications States
 class GetLoggedInUserNotificationSuccessState extends UserLoginStates {}
 
@@ -129,11 +151,13 @@ class CreateChatErrorState extends UserLoginStates {
   CreateChatErrorState(this.error);
 }
 
-
 //Delete specific Chat
 class DeleteChatSuccessState extends UserLoginStates {}
+
 class DeleteChatLoadingState extends UserLoginStates {}
+
 class DeleteChatErrorState extends UserLoginStates {
   final String error;
+
   DeleteChatErrorState(this.error);
 }
