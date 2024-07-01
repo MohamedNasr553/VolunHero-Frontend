@@ -39,13 +39,14 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String password,
     required BuildContext context,
   }) async {
-    Map<String, dynamic> requestData = {
-      'email': email,
-      'password': password,
-    };
-
     try {
       emit(UserLoginLoadingState());
+
+      Map<String, dynamic> requestData = {
+        'email': email,
+        'password': password,
+      };
+
       var value = await DioHelper.postData(
         url: LOGIN,
         data: requestData,

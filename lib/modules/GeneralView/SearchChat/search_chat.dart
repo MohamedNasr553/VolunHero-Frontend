@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,14 +6,8 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/models/LoggedInUserModel.dart';
-import 'package:flutter_code/models/SearchPostsModel.dart';
-import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
-import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../models/ChatsModel.dart';
@@ -160,17 +153,18 @@ class _SearchChatPageState extends State<SearchChatPage> {
                       ? Padding(
                     padding: EdgeInsetsDirectional.only(
                       top: screenHeight / 130,
-                      start: screenWidth / 4.7,
+                      start: screenWidth / 22,
                     ),
-                    child: Center(
-                      child: const Text(
-                        'Try searching for people, volunteers and Organizations',
+                    child: const Center(
+                      child: Text(
+                        'Try searching for people, volunteers and organizations',
                         style: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w600, color: Colors.grey),
                       ),
                     ),
                   )
                       : const SizedBox(),
 
+                  SizedBox(height: screenHeight / 30),
                   Expanded(
                     child: StreamBuilder<List<Chat>>(
                       stream: UserLoginCubit.get(context).filteredChatsStream,
@@ -242,8 +236,6 @@ class _SearchChatPageState extends State<SearchChatPage> {
   }
 
   Widget buildChatItem(index, context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-
     Color hexColor = HexColor("0BA3A6");
     Color transparentColor = hexColor.withOpacity(0.5);
 
@@ -259,7 +251,7 @@ class _SearchChatPageState extends State<SearchChatPage> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),

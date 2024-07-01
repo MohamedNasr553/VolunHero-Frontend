@@ -38,14 +38,10 @@ class _HomePageState extends State<HomePage> {
         UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
       HomeLayoutCubit.get(context).getAllPosts(
           token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
-      UserLoginCubit.get(context)
-          .getLoggedInUserData(
-          token: UserLoginCubit.get(
-              context)
-              .loginModel!
-              .refresh_token);
-      UserLoginCubit.get(context)
-          .getLoggedInChats(token: UserLoginCubit.get(context).loginModel!.refresh_token);
+      UserLoginCubit.get(context).getLoggedInUserData(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token);
+      UserLoginCubit.get(context).getLoggedInChats(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token);
     }
   }
 
@@ -83,108 +79,110 @@ class _HomePageState extends State<HomePage> {
           },
           builder: (context, state) {
             return Scaffold(
-                appBar: AppBar(
-                  leading: Builder(builder: (context) {
-                    return Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 40,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                        child: CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.transparent,
-                          child: ClipOval(
-                            child: (HomeLayoutCubit.get(context)
-                                        .modifiedPost
-                                        ?.createdBy
-                                        .profilePic ==
-                                    null)
-                                ? Image.asset('assets/images/nullProfile.png')
-                                : Image.asset(
-                                    'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
-                          ),
+              appBar: AppBar(
+                leading: Builder(builder: (context) {
+                  return Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: screenWidth / 40,
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.transparent,
+                        child: ClipOval(
+                          child: (HomeLayoutCubit.get(context)
+                                      .modifiedPost
+                                      ?.createdBy
+                                      .profilePic ==
+                                  null)
+                              ? Image.asset('assets/images/nullProfile.png')
+                              : Image.asset(
+                                  'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
                         ),
                       ),
-                    );
-                  }),
-                  actions: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        top: screenHeight / 300,
-                      ),
-                      child: GestureDetector(
-                        onTap: () => navigateAndFinish(context, const SearchPostsPage()),
-                        child: Container(
-                          width: screenWidth / 1.48,
-                          height: screenHeight / 25,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(7.0),
+                    ),
+                  );
+                }),
+                actions: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 300,
+                    ),
+                    child: GestureDetector(
+                      onTap: () =>
+                          navigateAndFinish(context, const SearchPostsPage()),
+                      child: Container(
+                        width: screenWidth / 1.48,
+                        height: screenHeight / 25,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 40,
                           ),
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: screenWidth / 40,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.search,
-                                  size: 23.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.search,
+                                size: 23.0,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(width: screenWidth / 50),
+                              const Text(
+                                'Search...',
+                                style: TextStyle(
                                   color: Colors.grey,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                SizedBox(width: screenWidth / 50),
-                                const Text(
-                                  'Search...',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.w600,
-
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        top: screenHeight / 300,
-                        start: screenWidth / 80,
-                        end: screenWidth / 60,
-                      ),
-                      child: IconButton(
-                          onPressed: () {
-                            //  navigateToPage(context, ChatsPage());
-                            UserLoginCubit.get(context)
-                                .getLoggedInChats(
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token)
-                                .then((value) {
-                              navigateToPage(context, const ChatsPage());
-                            });
-                          },
-                          icon: SvgPicture.asset(
-                              "assets/images/messagesIcon.svg")),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 300,
+                      start: screenWidth / 80,
+                      end: screenWidth / 60,
                     ),
-                  ],
-                ),
-                drawer: const UserSidePage(),
-                body: (state is! HomePagePostsLoadingState)
-                    ? buildPostsList(context)
-                    : buildLoadingWidget(
-                        HomeLayoutCubit.get(context)
-                                .homePagePostsModel
-                                ?.modifiedPosts
-                                .length ??
-                            0,
-                        context));
+                    child: IconButton(
+                        onPressed: () {
+                          //  navigateToPage(context, ChatsPage());
+                          UserLoginCubit.get(context)
+                              .getLoggedInChats(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token)
+                              .then((value) {
+                            navigateToPage(context, const ChatsPage());
+                          });
+                        },
+                        icon:
+                            SvgPicture.asset("assets/images/messagesIcon.svg")),
+                  ),
+                ],
+              ),
+              drawer: const UserSidePage(),
+              body: (state is! HomePagePostsLoadingState)
+                  ? buildPostsList(context)
+                  : buildLoadingWidget(
+                      HomeLayoutCubit.get(context)
+                              .homePagePostsModel
+                              ?.modifiedPosts
+                              .length ??
+                          0,
+                      context,
+                    ),
+            );
           },
         );
       },
@@ -373,29 +371,6 @@ class _HomePageState extends State<HomePage> {
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
-                          // HomeLayoutCubit.get(context)
-                          //     .getAnotherUserData(
-                          //         token: UserLoginCubit.get(context)
-                          //             .loginModel!
-                          //             .refresh_token,
-                          //         id: postDetails.createdBy.id)
-                          //     .then((value) {
-                          //       print(postDetails.createdBy.id);
-                          //   UserLoginCubit.get(context)
-                          //       .getAnotherUserPosts(
-                          //           token: UserLoginCubit.get(context)
-                          //               .loginModel!
-                          //               .refresh_token,
-                          //           id: postDetails.createdBy.id,
-                          //           userName: postDetails.createdBy.userName)
-                          //       .then((value) {
-                          //     UserLoginCubit.get(context).anotherUser =
-                          //         HomeLayoutCubit.get(context).anotherUser;
-                          //     navigateToPage(
-                          //         context, const AnotherUserProfile());
-                          //   });
-                          // });
-
                           HomeLayoutCubit.get(context)
                               .getAnotherUserData(
                                   token: UserLoginCubit.get(context)
@@ -405,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                               .then((value) {
                             UserLoginCubit.get(context).anotherUser =
                                 HomeLayoutCubit.get(context).anotherUser;
-                            navigateToPage(context,   AnotherUserProfile());
+                            navigateToPage(context, const AnotherUserProfile());
                           });
                         }
                       },
@@ -475,8 +450,6 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
                     IconButton(
                       onPressed: () {
-                        // print("Modified to be saved: ");
-                        // print(postDetails);
                         _showHomePageBottomSheet(postDetails);
                       },
                       icon: SvgPicture.asset(
@@ -589,7 +562,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Row(
                     children: [
-                      /// Post Likes
+                      /// Post Likes Count
                       (postDetails.likesCount) > 0
                           ? IconButton(
                               padding: EdgeInsets.zero,
@@ -613,7 +586,7 @@ class _HomePageState extends State<HomePage> {
                           : Container(),
                       const Spacer(),
 
-                      /// Post Comments
+                      /// Post Comments Count
                       if (postDetails.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
@@ -673,6 +646,42 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: Text(
                             '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        ),
+
+                      /// Post Share Count
+                      if (postDetails.shareCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} share',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.shareCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} Shares',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -1053,7 +1062,7 @@ class _HomePageState extends State<HomePage> {
                             .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
-                            'Post already saved',
+                            'Post Shared',
                             style: TextStyle(
                               fontSize: 12.0,
                             ),

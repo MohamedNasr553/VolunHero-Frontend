@@ -35,11 +35,12 @@ class LoginPage extends StatelessWidget {
                 .get(context)
                 .loginModel!
                 .refresh_token);
-            if (UserLoginCubit
-                .get(context)
-                .loggedInUser != null) {
-              navigateAndFinish(context, const VolunHeroUserLayout());
-            }
+            // if (UserLoginCubit
+            //     .get(context)
+            //     .loggedInUser != null) {
+            //
+            // }
+            navigateAndFinish(context, const VolunHeroUserLayout());
           }
         },
         builder: (context, state) {

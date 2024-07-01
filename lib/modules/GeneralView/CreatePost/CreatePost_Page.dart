@@ -128,16 +128,17 @@ class _CreatePostState extends State<CreatePost> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 fixedSize:
-                                    Size(screenWidth / 5, screenHeight / 70),
+                                    Size(screenWidth / 5, screenHeight / 90),
                               ),
                               child: Text(
                                 'Post',
                                 style: TextStyle(
-                                  fontSize: 16.0,
+                                  fontSize: 14.0,
                                   fontWeight: FontWeight.bold,
                                   color: HexColor("027E81"),
                                   fontFamily: "Poppins",
@@ -165,14 +166,23 @@ class _CreatePostState extends State<CreatePost> {
                                           CircleAvatar(
                                             radius: 20.0,
                                             backgroundImage: (() {
-                                              final modifiedPost = HomeLayoutCubit.get(context).modifiedPost;
+                                              final modifiedPost =
+                                                  HomeLayoutCubit.get(context)
+                                                      .modifiedPost;
                                               if (modifiedPost != null) {
-                                                final createdBy = modifiedPost.createdBy;
-                                                if (createdBy != null && createdBy.profilePic != null) {
-                                                  return NetworkImage(createdBy.profilePic!.secure_url) as ImageProvider;
+                                                final createdBy =
+                                                    modifiedPost.createdBy;
+                                                if (createdBy != null &&
+                                                    createdBy.profilePic !=
+                                                        null) {
+                                                  return NetworkImage(createdBy
+                                                          .profilePic!
+                                                          .secure_url)
+                                                      as ImageProvider;
                                                 }
                                               }
-                                              return const AssetImage("assets/images/nullProfile.png");
+                                              return const AssetImage(
+                                                  "assets/images/nullProfile.png");
                                             })(),
                                           ),
                                           SizedBox(width: screenWidth / 30),
@@ -314,6 +324,9 @@ class _CreatePostState extends State<CreatePost> {
                                                   screenWidth / 14),
                                               child: Column(
                                                 children: [
+                                                  SizedBox(
+                                                      height:
+                                                          screenHeight / 60),
                                                   // Photo / Video
                                                   InkWell(
                                                     child: Row(
@@ -346,7 +359,7 @@ class _CreatePostState extends State<CreatePost> {
                                                   ),
                                                   SizedBox(
                                                       height:
-                                                          screenHeight / 35),
+                                                          screenHeight / 25),
                                                   // Emojis Keyboard
                                                   InkWell(
                                                     child: Row(
@@ -379,37 +392,6 @@ class _CreatePostState extends State<CreatePost> {
                                                           .invokeMethod(
                                                               'TextInput.show');
                                                     },
-                                                  ),
-                                                  SizedBox(
-                                                      height:
-                                                          screenHeight / 35),
-                                                  // Drop Location
-                                                  InkWell(
-                                                    child: Row(
-                                                      children: [
-                                                        ImageIcon(
-                                                          const AssetImage(
-                                                            'assets/images/Favorites_fill.png',
-                                                          ),
-                                                          size: 30,
-                                                          color: HexColor(
-                                                              "027E81"),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 7),
-                                                        const Text(
-                                                          "Drop Location",
-                                                          style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Roboto",
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    onTap: () {},
                                                   ),
                                                 ],
                                               ),

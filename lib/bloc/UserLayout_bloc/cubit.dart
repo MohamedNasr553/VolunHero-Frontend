@@ -114,7 +114,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     const HomePage(),
     const GetSupport(),
     const CreatePost(),
-    NotificationPage(),
+    const NotificationPage(),
     const CameraView()
   ];
 
@@ -232,13 +232,11 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   }
 
   /// ----------------------- Like Post API ------------------------
-
-  void likePostUI(ModifiedPost post) {
-    post.liked = !post.liked;
-    emit(ChangeLikePostState());
-  }
-
-  void likePost({required String token, required String postId, context}) {
+  void likePost({
+    required String token,
+    required String postId,
+    required BuildContext context,
+  }) {
     emit(LikePostLoadingState());
 
     DioHelper.patchData(
@@ -247,12 +245,15 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     ).then((value) {
       emit(LikePostSuccessState());
 
+      // Update relevant parts of the UI based on context
       getAllPosts(token: token);
       getOwnerPosts(token: token);
       SavedPostsCubit.get(context).getAllSavedPosts(token: token);
-      // getAnotherUserData(token: token, id: postId);
+      getAnotherUserData(token: token, id: postId);
       getPostId(token: token, postId: postId);
     }).catchError((error) {
+      print(error.toString());
+
       emit(LikePostErrorState());
     });
   }

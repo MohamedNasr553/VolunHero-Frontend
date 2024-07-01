@@ -38,14 +38,14 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     /// Another User Data
     HomeLayoutCubit.get(context).getAnotherUserData(
         token: UserLoginCubit.get(context).loginModel!.refresh_token,
-        id: HomeLayoutCubit.get(context).anotherUser!.id);
+        id: HomeLayoutCubit.get(context).anotherUser?.id ?? "");
 
     /// Another User Posts
     UserLoginCubit.get(context)
         .getAnotherUserPosts(
             token: UserLoginCubit.get(context).loginModel!.refresh_token,
-            id: HomeLayoutCubit.get(context).anotherUser!.id,
-            userName: HomeLayoutCubit.get(context).anotherUser!.userName)
+            id: HomeLayoutCubit.get(context).anotherUser?.id ?? " ",
+            userName: HomeLayoutCubit.get(context).anotherUser?.userName?? " ")
         .then((value) {
       UserLoginCubit.get(context).anotherUser =
           HomeLayoutCubit.get(context).anotherUser;
@@ -1241,6 +1241,42 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             ),
                           ),
                         ),
+
+                      /// Post Share Count
+                      if (postDetails.shareCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} share',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.shareCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} Shares',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -1641,7 +1677,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
-                            'Post already saved',
+                            'Post Shared',
                             style: TextStyle(
                               fontSize: 12.0,
                             ),

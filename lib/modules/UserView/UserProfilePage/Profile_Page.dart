@@ -667,6 +667,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildPostsList(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     var ownerPostsCubit = HomeLayoutCubit.get(context);
     var loginCubit = UserLoginCubit.get(context);
 
@@ -675,27 +676,30 @@ class _ProfilePageState extends State<ProfilePage> {
           ownerPostsCubit.ownerPostsModel?.newPosts.length ?? 0, context);
     }
 
-    return ListView.separated(
-      physics: const ScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
-        if (ownerPostsModel != null) {
-          if (index < ownerPostsModel.newPosts.length) {
-            return buildPostItem(ownerPostsModel.newPosts[index],
-                loginCubit.loggedInUserData!.doc, context);
+    return SizedBox(
+      height: screenHeight,
+      child: ListView.separated(
+        physics: const ScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final ownerPostsModel = ownerPostsCubit.ownerPostsModel;
+          if (ownerPostsModel != null) {
+            if (index < ownerPostsModel.newPosts.length) {
+              return buildPostItem(ownerPostsModel.newPosts[index],
+                  loginCubit.loggedInUserData!.doc, context);
+            }
           }
-        }
-        return const SizedBox(); // Return an empty SizedBox if no post is available
-      },
-      separatorBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          width: double.infinity,
-          color: Colors.white,
+          return const SizedBox(); // Return an empty SizedBox if no post is available
+        },
+        separatorBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Container(
+            width: double.infinity,
+            color: Colors.white,
+          ),
         ),
+        itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
       ),
-      itemCount: ownerPostsCubit.ownerPostsModel!.newPosts.length,
     );
   }
 
@@ -986,7 +990,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: Row(
                     children: [
-                      /// Post Likes
+                      /// Post Likes Count
                       (postDetails.likesCount) > 0
                           ? IconButton(
                               padding: EdgeInsets.zero,
@@ -1010,7 +1014,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           : Container(),
                       const Spacer(),
 
-                      /// Post Comments
+                      /// Post Comments Count
                       if (postDetails.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
@@ -1070,6 +1074,42 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Text(
                             '${postDetails.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        ),
+
+                      /// Post Share Count
+                      if (postDetails.shareCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} share',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (postDetails.shareCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${postDetails.shareCount} Shares',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -1557,7 +1597,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
-                            'Post already saved',
+                            'Post Shared',
                             style: TextStyle(
                               fontSize: 12.0,
                             ),

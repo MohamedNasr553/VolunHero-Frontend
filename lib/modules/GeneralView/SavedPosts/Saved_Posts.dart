@@ -453,7 +453,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   ),
                   child: Row(
                     children: [
-                      /// Post Likes
+                      /// Post Likes Count
                       (modifiedPost.likesCount) > 0
                           ? IconButton(
                               padding: EdgeInsets.zero,
@@ -477,7 +477,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           : Container(),
                       const Spacer(),
 
-                      /// Post Comments
+                      /// Post Comments Count
                       if (modifiedPost.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
@@ -537,6 +537,42 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           ),
                           child: Text(
                             '${modifiedPost.commentsCount} Comments',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        ),
+
+                      /// Post Share Count
+                      if (modifiedPost.shareCount == 1)
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${modifiedPost.shareCount} share',
+                            style: TextStyle(
+                              fontFamily: "Roboto",
+                              fontSize: 12,
+                              color: HexColor("575757"),
+                            ),
+                          ),
+                        )
+                      else if (modifiedPost.shareCount == 0)
+                        Container()
+                      else
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            start: screenWidth / 50,
+                            end: screenWidth / 23,
+                            bottom: screenHeight / 50,
+                          ),
+                          child: Text(
+                            '${modifiedPost.shareCount} Shares',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -795,7 +831,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
-                            'Post already saved',
+                            'Post Shared',
                             style: TextStyle(
                               fontSize: 12.0,
                             ),

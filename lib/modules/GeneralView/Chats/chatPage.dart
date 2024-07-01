@@ -9,7 +9,6 @@ import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../models/ChatsModel.dart';
 
@@ -21,24 +20,19 @@ class ChatsPage extends StatefulWidget {
 }
 
 class _ChatsPageState extends State<ChatsPage> {
-  bool _showWidget = false;
-
   List<Chat> chats = [];
 
   @override
   void initState() {
     super.initState();
-    // After 3 seconds, set the _showWidget to true
-    Future.delayed(const Duration(seconds: 2), () {});
+
     /// Logged in user chats
     UserLoginCubit.get(context)
         .getLoggedInChats(
-        token: UserLoginCubit.get(context)
-            .loginModel!
-            .refresh_token).then((onValue){
+            token: UserLoginCubit.get(context).loginModel!.refresh_token)
+        .then((onValue) {
       chats = UserLoginCubit.get(context).chats;
     });
-
   }
 
   String parseCreatedAt(String createdAt) {
@@ -114,7 +108,7 @@ class _ChatsPageState extends State<ChatsPage> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
-                      top: screenHeight / 15.64,
+                      top: screenHeight / 11.64,
                       left: screenWidth / 30,
                       right: screenWidth / 20,
                     ),
@@ -131,9 +125,7 @@ class _ChatsPageState extends State<ChatsPage> {
                           ),
                           color: Colors.white,
                         ),
-                        SizedBox(
-                          width: screenWidth / 18,
-                        ),
+                        SizedBox(width: screenWidth / 18),
                         const Text(
                           "Chats",
                           style: TextStyle(
@@ -146,7 +138,7 @@ class _ChatsPageState extends State<ChatsPage> {
                         const Spacer(),
                         IconButton(
                           onPressed: () {
-                            navigateToPage(context, SearchChatPage());
+                            navigateToPage(context, const SearchChatPage());
                           },
                           icon: const Icon(
                             Icons.search,
@@ -157,131 +149,68 @@ class _ChatsPageState extends State<ChatsPage> {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: screenHeight / 40,
-                  ),
+                  SizedBox(height: screenHeight / 40),
                   Container(
                     width: screenWidth,
                     height: screenHeight -
-                        ((screenHeight / 30) + 36 + screenHeight / 13.5),
+                        ((screenHeight / 30) + 36 + screenHeight / 10.85),
                     decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(40.0)),
                         color: HexColor("F3F3F3")),
-                    child: (true)
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth / 35),
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: (state
-                                          is! GetLoggedInUserChatsLoadingState)
-                                      ? (chats.length>0)?ListView.separated(
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemBuilder: (context, index) =>
-                                          buildChatItem(index, context) ,
-                                          separatorBuilder: (context, index) =>
-                                              Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.symmetric(
-                                                    horizontal:
-                                                        screenWidth / 35),
-                                            child: Container(
-                                              width: double.infinity,
-                                              color: Colors.white,
-                                            ),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth / 35),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: (state is! GetLoggedInUserChatsLoadingState)
+                                ? (chats.isNotEmpty)
+                                    ? ListView.separated(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemBuilder: (context, index) =>
+                                            buildChatItem(index, context),
+                                        separatorBuilder: (context, index) =>
+                                            Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.symmetric(
+                                                  horizontal: screenWidth / 35),
+                                          child: Container(
+                                            width: double.infinity,
+                                            color: Colors.white,
                                           ),
-                                          itemCount: chats.length,
-                                        ):(Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text("No Chats Yet "
-                                            ,style: TextStyle(
-                                                color: Colors.grey[800],
-                                                fontSize: 32)
-                                            ,),
-                                          Text("Connect with people to volunteer"
-                                            ,style: TextStyle(
-                                                color: Colors.grey[400],
-                                                fontSize: 18)
-                                            ,),
-
-                                        ],
+                                        ),
+                                        itemCount: chats.length,
                                       )
-                                  )
-                                  )
-                                      : Center(
-                                          child: CircularProgressIndicator(color: defaultColor,)),
-                                ),
-                              ],
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: 10, // Number of posts
-                            itemBuilder: (BuildContext context, int index) {
-                              return Shimmer.fromColors(
-                                period: const Duration(milliseconds: 1500),
-                                baseColor: Colors.grey,
-                                highlightColor: Colors.white30,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                    : (Center(
+                                        child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          const CircleAvatar(
-                                            radius: 30,
+                                          Text(
+                                            "No Chats Yet ",
+                                            style: TextStyle(
+                                                color: Colors.grey[800],
+                                                fontSize: 32),
                                           ),
-                                          SizedBox(
-                                            width: screenWidth / 40,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: screenHeight / 60,
-                                                width: screenWidth / 4,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: screenHeight / 50,
-                                              ),
-                                              SizedBox(
-                                                height: screenHeight / 45,
-                                                width: screenWidth / 2,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
+                                          Text(
+                                            "Connect with people to volunteer",
+                                            style: TextStyle(
+                                                color: Colors.grey[400],
+                                                fontSize: 18),
                                           ),
                                         ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                                      )))
+                                : const Center(
+                                    child: CircularProgressIndicator(
+                                    color: defaultColor,
+                                  )),
                           ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               )
@@ -293,14 +222,14 @@ class _ChatsPageState extends State<ChatsPage> {
   }
 
   Widget buildChatItem(index, context) {
+    var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-
     Color hexColor = HexColor("0BA3A6");
     Color transparentColor = hexColor.withOpacity(0.5);
 
     return InkWell(
-      onLongPress: (){
-         _showChatBottomSheet(chats[index].id, context);
+      onLongPress: () {
+        _showChatBottomSheet(chats[index].id, context);
       },
       onTap: () {
         UserLoginCubit.get(context)
@@ -308,63 +237,61 @@ class _ChatsPageState extends State<ChatsPage> {
                 token: UserLoginCubit.get(context).loginModel!.refresh_token)
             .then((value) {
           UserLoginCubit.get(context).selectedChat = chats[index];
-          print(UserLoginCubit.get(context).selectedChat);
           navigateAndFinish(context, DetailedChats());
         });
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.0),
-            color: (true) ? transparentColor : Colors.white,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage(
-                      "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}"),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: (true) ? transparentColor : Colors.white,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth / 30),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundImage: AssetImage(
+                    "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}",
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              (UserLoginCubit.get(context).loggedInUser!.id !=
-                                  chats[index].members[1].userId.id)
-                                  ? "${chats[index].members[1].userId.userName}"
-                                  : "${chats[index].members[0].userId.userName}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: "Roboto",
-                                fontSize: 16,
-                              ),
+              ),
+              SizedBox(width: screenWidth / 30),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            (UserLoginCubit.get(context).loggedInUser!.id !=
+                                    chats[index].members[1].userId.id)
+                                ? chats[index].members[1].userId.userName
+                                : chats[index].members[0].userId.userName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: "Roboto",
+                              fontSize: 16,
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(
+                            end: screenWidth / 35,
                           ),
-                          Text(
+                          child: Text(
                             (chats[index].messages.isNotEmpty)
                                 ? getFormatedTime(chats[index]
-                                .messages[chats[index].messages.length - 1]
-                                .createdAt)
-                                .toString()
+                                        .messages[
+                                            chats[index].messages.length - 1]
+                                        .createdAt)
+                                    .toString()
                                 : "",
                             style: TextStyle(
-                              fontSize: 12.0,
+                              fontSize: 11.0,
                               fontFamily: "Roboto",
                               color: (chats.length == 1)
                                   ? HexColor("0BA3B9")
@@ -373,20 +300,25 @@ class _ChatsPageState extends State<ChatsPage> {
                                   ? FontWeight.bold
                                   : FontWeight.w400,
                             ),
-                          )
-                        ],
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: screenHeight / 300),
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        end: screenWidth / 12,
                       ),
-                      SizedBox(height: 4),
-                      Text(
+                      child: Text(
                         (chats[index].messages.isEmpty)
                             ? "Tap to message"
                             : chats[index]
-                            .messages[chats[index].messages.length - 1]
-                            .text,
+                                .messages[chats[index].messages.length - 1]
+                                .text,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: (chats.length == 1)
                               ? FontWeight.bold
                               : FontWeight.w400,
@@ -394,19 +326,18 @@ class _ChatsPageState extends State<ChatsPage> {
                           color: HexColor("888383"),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-
-  void _showChatBottomSheet(chatID,context) {
+  void _showChatBottomSheet(chatID, context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -454,17 +385,22 @@ class _ChatsPageState extends State<ChatsPage> {
                       ],
                     ),
                     onTap: () {
-                         UserLoginCubit.get(context).deleteChat(token:UserLoginCubit.get(context)
-                             .loginModel!
-                             .refresh_token, chatID: chatID).then((_){
-                           UserLoginCubit.get(context)
-                               .getLoggedInChats(
-                               token: UserLoginCubit.get(context)
-                                   .loginModel!
-                                   .refresh_token).then((onValue){
-                             chats = UserLoginCubit.get(context).chats;
-                           });
-                         });
+                      UserLoginCubit.get(context)
+                          .deleteChat(
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token,
+                              chatID: chatID)
+                          .then((_) {
+                        UserLoginCubit.get(context)
+                            .getLoggedInChats(
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token)
+                            .then((onValue) {
+                          chats = UserLoginCubit.get(context).chats;
+                        });
+                      });
                     },
                   ),
                 ],
@@ -483,9 +419,6 @@ class _ChatsPageState extends State<ChatsPage> {
       },
     );
   }
-
-
-
 
   String? getFormatedTime(DateTime? CreatedAt) {
     DateTime? createdAt = CreatedAt;

@@ -54,7 +54,7 @@ class _DetailedPostState extends State<DetailedPost> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: defaultColor,
                       content: Text(
-                        'Post already saved',
+                        'Post Shared',
                         style: TextStyle(
                           fontSize: 12.0,
                         ),
@@ -353,7 +353,7 @@ class _DetailedPostState extends State<DetailedPost> {
                         ),
                         child: Row(
                           children: [
-                            /// Post Likes
+                            /// Post Likes Count
                             (specificPost.likesCount!) > 0
                                 ? IconButton(
                               padding: EdgeInsets.zero,
@@ -377,7 +377,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                 : Container(),
                             const Spacer(),
 
-                            /// Post Comments
+                            /// Post Comments Count
                             if (specificPost.commentsCount == 1)
                               Padding(
                                 padding: EdgeInsetsDirectional.only(
@@ -428,22 +428,58 @@ class _DetailedPostState extends State<DetailedPost> {
                                 )
                               else if (specificPost.commentsCount == 0)
                                   Container()
-                                else
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.only(
-                                      start: screenWidth / 50,
-                                      end: screenWidth / 50,
-                                      bottom: screenHeight / 50,
-                                    ),
-                                    child: Text(
-                                      '${specificPost.commentsCount} Comments',
-                                      style: TextStyle(
-                                        fontFamily: "Roboto",
-                                        fontSize: 12,
-                                        color: HexColor("575757"),
-                                      ),
+                              else
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    start: screenWidth / 50,
+                                    end: screenWidth / 50,
+                                    bottom: screenHeight / 50,
+                                  ),
+                                  child: Text(
+                                    '${specificPost.commentsCount} Comments',
+                                    style: TextStyle(
+                                      fontFamily: "Roboto",
+                                      fontSize: 12,
+                                      color: HexColor("575757"),
                                     ),
                                   ),
+                                ),
+
+                            /// Post Share Count
+                            if (specificPost.shareCount == 1)
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 23,
+                                  bottom: screenHeight / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.shareCount} share',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              )
+                            else if (specificPost.shareCount == 0)
+                              Container()
+                            else
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 50,
+                                  end: screenWidth / 23,
+                                  bottom: screenHeight / 50,
+                                ),
+                                child: Text(
+                                  '${specificPost.shareCount} Shares',
+                                  style: TextStyle(
+                                    fontFamily: "Roboto",
+                                    fontSize: 12,
+                                    color: HexColor("575757"),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
