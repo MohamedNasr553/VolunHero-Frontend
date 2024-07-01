@@ -20,7 +20,6 @@ import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -1152,7 +1151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           )
                         else if (postDetails.likesCount > 0 &&
@@ -1167,7 +1166,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           )
                         else
@@ -1180,7 +1179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           ),
                         const Spacer(),

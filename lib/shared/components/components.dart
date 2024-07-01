@@ -174,8 +174,8 @@ Widget updateProfileTextFormField({
 Widget separator()
 =>
     Container(
-      height: 1.0,
-      color: Colors.grey.shade300,
+      height: 0.5,
+      color: Colors.grey.shade400,
     );
 
 void navigateToPage(context, widget) => Navigator.push(

@@ -12,6 +12,7 @@ import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/GetCommentModel.dart';
 import 'package:flutter_code/models/GetPostByIdModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
+import 'package:flutter_code/modules/GeneralView/ReactionsPage/reactionsPage.dart';
 import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -72,7 +73,7 @@ class _DetailedPostState extends State<DetailedPost> {
                             context, const VolunHeroUserLayout()),
                       ),
                     ),
-                    body:  HomeLayoutCubit.get(context).getPostById?.post != null
+                    body: HomeLayoutCubit.get(context).getPostById?.post != null
                         ? buildDetailedPostItem(
                       HomeLayoutCubit.get(context).getPostById?.post,
                       UserLoginCubit.get(context)
@@ -354,27 +355,49 @@ class _DetailedPostState extends State<DetailedPost> {
                         child: Row(
                           children: [
                             /// Post Likes Count
-                            (specificPost.likesCount!) > 0
-                                ? IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/NewLikeColor.svg',
-                                width: 22.0,
-                                height: 22.0,
+                            GestureDetector(
+                              onTap: (){
+                                HomeLayoutCubit.get(context).getLikesOnPost(
+                                  token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+                                  postId: specificPost.id!,
+                                );
+                                navigateToPage(context, const ReactionsPage());
+                              },
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  bottom: screenHeight / 70,
+                                ),
+                                child: Container(
+                                  color: Colors.white,
+                                  height: screenHeight / 30,
+                                  width: screenWidth / 6,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: screenWidth / 50),
+                                      (specificPost.likesCount! > 0)
+                                          ? SvgPicture.asset(
+                                          'assets/images/NewLikeColor.svg',
+                                          width: 22.0,
+                                          height: 22.0,
+                                        )
+                                          : Container(),
+                                      SizedBox(width: screenWidth / 40),
+                                      (specificPost.likesCount! > 0)
+                                          ? Text(
+                                        '${specificPost.likesCount}',
+                                        style: TextStyle(
+                                          fontFamily: "Roboto",
+                                          fontSize: 12,
+                                          color: HexColor("575757"),
+                                        ),
+                                      )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            )
-                                : Container(),
-                            (specificPost.likesCount! > 0)
-                                ? Text(
-                              '${specificPost.likesCount!}',
-                              style: TextStyle(
-                                fontFamily: "Roboto",
-                                fontSize: 12,
-                                color: HexColor("575757"),
-                              ),
-                            )
-                                : Container(),
+                            ),
+
                             const Spacer(),
 
                             /// Post Comments Count
@@ -512,7 +535,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                       token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                          "");
+                                          "", context: context);
                                 },
                               ),
                               const Spacer(),
@@ -805,7 +828,7 @@ class _DetailedPostState extends State<DetailedPost> {
                       token: UserLoginCubit.get(context)
                           .loginModel!
                           .refresh_token ??
-                          "");
+                          "", context: context);
                 },
                 child: const Text(
                   "Like",

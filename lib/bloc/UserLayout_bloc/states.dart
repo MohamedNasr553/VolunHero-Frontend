@@ -55,6 +55,13 @@ class LikePostErrorState extends LayoutStates {}
 
 class ChangeLikePostState extends LayoutStates {}
 
+/// Get Likes On A Post
+class GetLikesOnPostLoadingState extends LayoutStates {}
+
+class GetLikesOnPostSuccessState extends LayoutStates {}
+
+class GetLikesOnPostErrorState extends LayoutStates {}
+
 /// Delete Post
 class DeletePostLoadingState extends LayoutStates {}
 

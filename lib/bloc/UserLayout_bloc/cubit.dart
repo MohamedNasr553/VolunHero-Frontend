@@ -10,6 +10,7 @@ import 'package:flutter_code/models/GetPostByIdModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/OwnerPostsModel.dart';
 import 'package:flutter_code/models/SearchPostsModel.dart';
+import 'package:flutter_code/models/likesOnSpecificPost.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
@@ -255,6 +256,27 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       print(error.toString());
 
       emit(LikePostErrorState());
+    });
+  }
+
+  /// ----------------------- Get Likes on a Post API ------------------------
+  UserLikesModel? userLikesModel;
+  LikedUser? likedUser;
+
+  void getLikesOnPost({
+    required String token,
+    required String postId,
+  }) async {
+    emit(GetLikesOnPostLoadingState());
+
+    DioHelper.getData(
+      url: "/post/$postId/like",
+      token: token,
+    ).then((value) {
+      userLikesModel = UserLikesModel.fromJson(value.data);
+      emit(GetLikesOnPostSuccessState());
+    }).catchError((error) {
+      emit(GetLikesOnPostErrorState());
     });
   }
 

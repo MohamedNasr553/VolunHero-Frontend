@@ -8,7 +8,6 @@ import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
-import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,7 +15,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../bloc/savedPosts_bloc/cubit.dart';
-import '../../../models/ChatsModel.dart';
 import '../../../models/LoggedInUserModel.dart';
 import '../../GeneralView/DetailedPost/Detailed_Post.dart';
 import '../UserProfilePage/Profile_Page.dart';
@@ -1312,7 +1310,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           )
                         else if (postDetails.likesCount > 0 &&
@@ -1327,7 +1325,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           )
                         else
@@ -1340,7 +1338,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "");
+                                      "", context: context);
                             },
                           ),
                         const Spacer(),
