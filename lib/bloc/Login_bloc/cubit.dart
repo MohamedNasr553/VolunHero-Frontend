@@ -129,6 +129,23 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   // --------------------------------- Chats ----------------------------------
 
+  Future<void> deleteChat({
+    required String? token,
+    required String chatID,
+  }) async {
+    try {
+      await DioHelper.deleteData(url: "/chat/${chatID}", token: token);
+      showToast(text: "Chat Deleted Successfully", state: ToastStates.SUCCESS);
+
+      // Remove the chat from the local list
+      chats.removeWhere((chat) => chat.id == chatID);
+
+      emit(DeleteChatSuccessState());
+    } catch (onError) {
+      emit(DeleteChatErrorState(onError.toString()));
+    }
+  }
+
   void refreshChatPage(String chatId)async{
     emit(RefreshMessagesLoadingState());
     getLoggedInChats(token: loginModel!.refresh_token).then((value) {
@@ -144,10 +161,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }
 
 
+
   Future<String> createChat({
-
     required String secondId,
-
   }) async {
     Map<String, dynamic> requestData = {
       'secondId': secondId
@@ -155,15 +171,19 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
     try {
       emit(CreateChatLoadingState());
-
+      var response = await DioHelper.postData(
+          url: CREATE_CHAT,
+          data: requestData,
+          token: loginModel!.refresh_token
+      ).then((value) async {
+        emit(CreateChatSuccessState());
+      });
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
       return "Failed to create chat: $error";
     }
     return "function return";
   }
-
-
 
 
 

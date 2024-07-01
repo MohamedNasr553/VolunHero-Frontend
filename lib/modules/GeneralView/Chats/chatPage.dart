@@ -299,6 +299,9 @@ class _ChatsPageState extends State<ChatsPage> {
     Color transparentColor = hexColor.withOpacity(0.5);
 
     return InkWell(
+      onLongPress: (){
+         _showChatBottomSheet(chats[index].id, context);
+      },
       onTap: () {
         UserLoginCubit.get(context)
             .getLoggedInChats(
@@ -401,6 +404,88 @@ class _ChatsPageState extends State<ChatsPage> {
       ),
     );
   }
+
+
+  void _showChatBottomSheet(chatID,context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenWidth = MediaQuery.of(context).size.width;
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 8,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.delete_rounded,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Delete Selected Chat',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Once you delete this chat all messages will be deleted',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                         UserLoginCubit.get(context).deleteChat(token:UserLoginCubit.get(context)
+                             .loginModel!
+                             .refresh_token, chatID: chatID).then((_){
+                           UserLoginCubit.get(context)
+                               .getLoggedInChats(
+                               token: UserLoginCubit.get(context)
+                                   .loginModel!
+                                   .refresh_token).then((onValue){
+                             chats = UserLoginCubit.get(context).chats;
+                           });
+                         });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
 
   String? getFormatedTime(DateTime? CreatedAt) {
     DateTime? createdAt = CreatedAt;

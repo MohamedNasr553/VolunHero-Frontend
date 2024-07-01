@@ -221,13 +221,15 @@ class _DetailedChatsState extends State<DetailedChats> {
             children: [
               const Spacer(),
               Container(
+                width: screenWidth/2,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
                       Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}",
+                       maxLines: null,
                        style: TextStyle(
-                         fontSize: 16
+                         fontSize: 16,
                        ),
                       ),
                       SizedBox(width: screenWidth/100,),

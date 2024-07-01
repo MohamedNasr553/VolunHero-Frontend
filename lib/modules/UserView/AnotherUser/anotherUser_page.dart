@@ -7,6 +7,7 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -340,21 +341,14 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                           onTap: () async {
                             bool newChat = true;
 
-                            UserLoginCubit.get(context).createChat(secondId: HomeLayoutCubit.get(context).anotherUser!.id).then((_){
+                            UserLoginCubit.get(context).createChat(secondId: HomeLayoutCubit.get(context).anotherUser!.id,).then((_){
                               /// Logged in user chats
                               UserLoginCubit.get(context)
                                   .getLoggedInChats(
                                   token: UserLoginCubit.get(context)
                                       .loginModel!
                                       .refresh_token).then((onValue){
-                                for (int i=0;i<UserLoginCubit.get(context).chatResponse!.chats.length;i++){
-                                  Chat userChat = UserLoginCubit.get(context).chatResponse!.chats[i];
-                                  if(userChat.members[0].userId.id == UserLoginCubit.get(context).anotherUser!.id ||
-                                      userChat.members[1].userId.id == UserLoginCubit.get(context).anotherUser!.id ){
-                                    UserLoginCubit.get(context).selectedChat = userChat;
-                                     navigateToPage(context, DetailedChats());
-                                  }
-                                }
+                                      navigateToPage(context, ChatsPage());
                               });
                             });
 

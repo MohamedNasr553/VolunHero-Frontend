@@ -128,3 +128,12 @@ class CreateChatErrorState extends UserLoginStates {
 
   CreateChatErrorState(this.error);
 }
+
+
+//Delete specific Chat
+class DeleteChatSuccessState extends UserLoginStates {}
+class DeleteChatLoadingState extends UserLoginStates {}
+class DeleteChatErrorState extends UserLoginStates {
+  final String error;
+  DeleteChatErrorState(this.error);
+}
