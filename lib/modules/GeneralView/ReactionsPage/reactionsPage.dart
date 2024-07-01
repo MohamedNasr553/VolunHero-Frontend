@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
 import 'package:flutter_code/models/likesOnSpecificPost.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
+import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
+import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,33 +21,38 @@ class ReactionsPage extends StatelessWidget {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            leading: IconButton(
-              icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
-              color: HexColor("858888"),
-              onPressed: () => navigateToPage(context, const DetailedPost()),
-            ),
-            title: const Text(
-              'Reactions',
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 24.0,
-                fontWeight: FontWeight.w600,
+        return BlocConsumer<UserLoginCubit, UserLoginStates>(
+          listener: (context, state) {},
+          builder: (context, state){
+            return Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                leading: IconButton(
+                  icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
+                  color: HexColor("858888"),
+                  onPressed: () => navigateToPage(context, const DetailedPost()),
+                ),
+                title: const Text(
+                  'Reactions',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-          ),
-          body: Column(
-            children: [
-              separator(),
-              (state is! GetLikesOnPostLoadingState)
-                  ? buildUsersLikesList(context)
-                  : const Center(
+              body: Column(
+                children: [
+                  separator(),
+                  (state is! GetLikesOnPostLoadingState)
+                      ? buildUsersLikesList(context)
+                      : const Center(
                     child: LinearProgressIndicator(color: defaultColor),
                   ),
-            ],
-          ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -110,11 +119,31 @@ class ReactionsPage extends StatelessWidget {
           Stack(
             alignment: Alignment.bottomRight,
             children: [
-              CircleAvatar(
-                radius: 27.0,
-                backgroundImage: likedUser!.profilePic != null
-                    ? NetworkImage(likedUser.profilePic!.secureUrl) as ImageProvider
-                    : const AssetImage("assets/images/nullProfile.png"),
+              InkWell(
+                onTap: (){
+                  if (likedUser.id ==
+                      UserLoginCubit.get(context).loggedInUser!.id) {
+                    navigateToPage(context, const ProfilePage());
+                  } else {
+                    HomeLayoutCubit.get(context)
+                        .getAnotherUserData(
+                        token: UserLoginCubit.get(context)
+                            .loginModel!
+                            .refresh_token,
+                        id: likedUser.id)
+                        .then((value) {
+                      UserLoginCubit.get(context).anotherUser =
+                          HomeLayoutCubit.get(context).anotherUser;
+                      navigateToPage(context, const AnotherUserProfile());
+                    });
+                  }
+                },
+                child: CircleAvatar(
+                  radius: 27.0,
+                  backgroundImage: likedUser!.profilePic != null
+                      ? NetworkImage(likedUser.profilePic!.secureUrl) as ImageProvider
+                      : const AssetImage("assets/images/nullProfile.png"),
+                ),
               ),
               SvgPicture.asset(
                 "assets/images/NewLikeColor.svg",
@@ -127,35 +156,56 @@ class ReactionsPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Text(
-                    likedUser.firstName,
-                    style: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600,
+              InkWell(
+                onTap: () {
+                  if (likedUser.id ==
+                      UserLoginCubit.get(context).loggedInUser!.id) {
+                    navigateToPage(context, const ProfilePage());
+                  } else {
+                    HomeLayoutCubit.get(context)
+                        .getAnotherUserData(
+                        token: UserLoginCubit.get(context)
+                            .loginModel!
+                            .refresh_token,
+                        id: likedUser.id)
+                        .then((value) {
+                      UserLoginCubit.get(context).anotherUser =
+                          HomeLayoutCubit.get(context).anotherUser;
+                      navigateToPage(
+                          context, const AnotherUserProfile());
+                    });
+                  }
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      likedUser.firstName,
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: screenWidth / 120),
-                  Text(
-                    likedUser.lastName,
-                    style: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600,
+                    SizedBox(width: screenWidth / 120),
+                    Text(
+                      likedUser.lastName,
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: screenWidth / 120),
-                  Text(
-                    '@${likedUser.userName}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 8.0,
-                      fontWeight: FontWeight.w600,
+                    SizedBox(width: screenWidth / 120),
+                    Text(
+                      '@${likedUser.userName}',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 8.0,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Text(
                 likedUser.specification,
