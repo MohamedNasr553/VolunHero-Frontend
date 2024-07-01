@@ -189,64 +189,93 @@ class _DetailedChatsState extends State<DetailedChats> {
       durationText = '${difference.inDays}d ';
     }
     return ( UserLoginCubit.get(context).selectedChat!.messages[index].senderId != UserLoginCubit.get(context).loggedInUser!.id)
-        ? Row(
-            children: [
-
-              SizedBox(
-                width: screenWidth / 35,
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text("${durationText}",style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[700]
-                      ),),
-                      SizedBox(width: screenWidth/100,),
-                      Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}"),
-
-                    ],
-                  ),
-                ),
-                decoration: BoxDecoration(
-                    color: HexColor("c0e1e2"),
-                    borderRadius: BorderRadius.circular(20)),
-              ),
-
-            ],
-          )
-        : Row(
-            children: [
-              const Spacer(),
-              Container(
-                width: screenWidth/2,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Text("${ UserLoginCubit.get(context).selectedChat!.messages[index].text}",
-                       maxLines: null,
-                       style: TextStyle(
-                         fontSize: 16,
-                       ),
-                      ),
-                      SizedBox(width: screenWidth/100,),
-                      Text("${durationText}",style: TextStyle(
+        ?Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: screenWidth / 35,
+        ),
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+              color: HexColor("c0e1e2"),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${durationText}",
+                      style: TextStyle(
                         fontSize: 10,
-                        color: Colors.grey[700]
-                      ),)
-                    ],
-                  ),
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                     // Add a little space between the texts
+                    Text(
+                      "${UserLoginCubit.get(context).selectedChat!.messages[index].text}",
+                      style: TextStyle(fontSize: 14), // Adjust font size as needed
+                    ),
+                  ],
                 ),
-                decoration: BoxDecoration(
-                    color: HexColor("51bbbd"),
-                    borderRadius: BorderRadius.circular(20)),
               ),
-              
-            ],
-          );
+            ),
+          ),
+        ),
+        SizedBox(
+          width: screenWidth / 35,
+        ),
+      ],
+    )
+
+
+        :  Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SizedBox(
+          width: screenWidth / 35,
+        ),
+        Flexible(
+          child: Container(
+            decoration: BoxDecoration(
+              color: HexColor("51bbbd"),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      "${UserLoginCubit.get(context).selectedChat!.messages[index].text}",
+                      style: TextStyle(fontSize: 14), // Adjust font size as needed
+                    ),
+                    SizedBox(height: 4), // Add a little space between the texts
+                    Text(
+                      "${durationText}",
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: screenWidth / 35,
+        ),
+      ],
+    )
+    ;
+
   }
 
   Widget _buildInputField() {
