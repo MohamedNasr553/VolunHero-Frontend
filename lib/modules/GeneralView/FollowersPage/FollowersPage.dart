@@ -62,7 +62,7 @@ class FollowersPage extends StatelessWidget {
     var userLoginCubit = UserLoginCubit.get(context);
 
     if (userLoginCubit.userProfileFollowers != null) {
-      if (userLoginCubit.userProfileFollowers!.followers.isNotEmpty) {
+      if (userLoginCubit.userProfileFollowers!.followersList.isNotEmpty) {
         return Expanded(
           child: Column(
             children: [
@@ -71,9 +71,9 @@ class FollowersPage extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   if (userLoginCubit.userProfileFollowers != null) {
-                    if (index < userLoginCubit.userProfileFollowers!.followers.length) {
+                    if (index < userLoginCubit.userProfileFollowers!.followersList.length) {
                       return buildMyFollowers(
-                        userLoginCubit.userProfileFollowers!.followers[index],
+                        userLoginCubit.userProfileFollowers!.followersList[index],
                         context,
                       );
                     }
@@ -86,7 +86,7 @@ class FollowersPage extends StatelessWidget {
                   ),
                   child: separator(),
                 ),
-                itemCount: userLoginCubit.userProfileFollowers?.followers.length ?? 0,
+                itemCount: userLoginCubit.userProfileFollowers?.followersList.length ?? 0,
               ),
               Padding(
                 padding: EdgeInsetsDirectional.only(
