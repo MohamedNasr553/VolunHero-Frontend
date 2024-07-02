@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:snippet_coder_utils/multi_images_utils.dart';
 import 'package:stroke_text/stroke_text.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -37,11 +40,15 @@ class _UserSignupPageState extends State<UserSignupPage> {
   String? _filePath;
   String selectedProfile = '';
   String? _profilePath;
+
+  XFile? pickedFile;
+
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    print(_filePath);
+   // print(_filePath);
 
     return BlocConsumer<UserSignUpCubit, UserSignUpStates>(
       listener: (context, states) {},
@@ -520,7 +527,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 child: InkWell(
                                   onTap: () async {
                                   //  await _requestPermission();
-                                    pickProfileFile();
+                                  pickProfileFile();
+                                 // checkPermission();
                                   },
                                   child: Center(
                                     child: Row(
@@ -528,7 +536,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          _profilePath == null
+                                          profilePic == null
                                               ? 'Add or drop your'
                                               : 'File Selected',
                                           style: const TextStyle(
@@ -538,7 +546,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                           ),
                                         ),
                                         Text(
-                                          _profilePath == null
+                                          profilePic == null
                                               ? ' Profile Pic in here'
                                               : ' tap to select another',
                                           style: const TextStyle(
@@ -578,7 +586,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 child: InkWell(
                                   onTap: () async {
                                     //await _requestPermission();
-                                    pickFiles();
+                                     await pickFiles();
                                   },
                                   child: Center(
                                     child: Row(
@@ -624,11 +632,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   } else {
                                     String classification = '';
                                     if (selectedItem == 'Medical') {
-                                      classification = 'medical';
+                                      classification = 'Medical';
                                     } else if (selectedItem == 'Educational') {
-                                      classification = 'educational';
+                                      classification = 'Educational';
                                     }
-                                    UserSignUpCubit.get(context).registerUser(
+                                    print("picked file path 2bl register");
+
+                                    UserSignUpCubit.get(context).registerUserUsingHTTP(
                                       firstName: firstNameController.text,
                                       lastName: lastNameController.text,
                                       DOB: dateOfBirthController.text,
@@ -782,13 +792,41 @@ class _UserSignupPageState extends State<UserSignupPage> {
     }
   }
 
+  checkPermission() async{
+    Map<Permission , PermissionStatus> statuses = await [
+      Permission.camera,
+      Permission.storage
+    ].request();
+    print("Asked_for_permission");
+    if(statuses[Permission.camera] != PermissionStatus.granted || statuses[Permission.storage] != PermissionStatus.granted ){
+      // Permission is not guaranted
+      return;
+    }
+    print("confirmed_for_permission");
+    pickedImage();
+  }
+
+  pickedImage()async{
+    final picker = ImagePicker();
+    pickedFile = await picker.pickImage(
+        source: ImageSource.gallery
+    );
+    print("pickedFile: ");
+    print(pickedFile.toString());
+    setState(() {
+
+    });
+  }
+
   Future<void> pickProfileFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       setState(() {
         profilePic = File(result.files.single.path!);
+        _profilePath = profilePic?.path;
       });
     }
   }
+
 }
