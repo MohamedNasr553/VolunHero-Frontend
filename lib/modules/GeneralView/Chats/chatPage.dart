@@ -174,7 +174,9 @@ class _ChatsPageState extends State<ChatsPage> {
                                             Padding(
                                           padding:
                                               EdgeInsetsDirectional.symmetric(
-                                                  horizontal: screenWidth / 35),
+                                            horizontal: screenWidth / 35,
+                                            vertical: screenHeight / 80,
+                                          ),
                                           child: Container(
                                             width: double.infinity,
                                             color: Colors.white,
@@ -252,7 +254,7 @@ class _ChatsPageState extends State<ChatsPage> {
               CircleAvatar(
                 radius: 25,
                 backgroundImage: AssetImage(
-                    "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}",
+                  "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}",
                 ),
               ),
               SizedBox(width: screenWidth / 30),

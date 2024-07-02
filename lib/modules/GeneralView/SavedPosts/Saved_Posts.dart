@@ -603,37 +603,37 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (modifiedPost.likesCount > 0 &&
-                            loggedInUser.id != modifiedPost.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: modifiedPost.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "", context: context);
-                            },
-                          )
-                        else if (modifiedPost.likesCount > 0 &&
-                            loggedInUser.id == modifiedPost.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: modifiedPost.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "", context: context);
-                            },
-                          )
-                        else
+                        // if (modifiedPost.likesCount > 0 &&
+                        //     loggedInUser.id != modifiedPost.createdBy.id)
+                        //   postSubComponent(
+                        //     "assets/images/NewLikeColor.svg",
+                        //     " Like",
+                        //     color: HexColor("4267B2"),
+                        //     onTap: () {
+                        //       HomeLayoutCubit.get(context).likePost(
+                        //           postId: modifiedPost.id,
+                        //           token: UserLoginCubit.get(context)
+                        //                   .loginModel!
+                        //                   .refresh_token ??
+                        //               "", context: context);
+                        //     },
+                        //   )
+                        // else if (modifiedPost.likesCount > 0 &&
+                        //     loggedInUser.id == modifiedPost.createdBy.id)
+                        //   postSubComponent(
+                        //     "assets/images/NewLikeColor.svg",
+                        //     " Like",
+                        //     color: HexColor("4267B2"),
+                        //     onTap: () {
+                        //       HomeLayoutCubit.get(context).likePost(
+                        //           postId: modifiedPost.id,
+                        //           token: UserLoginCubit.get(context)
+                        //                   .loginModel!
+                        //                   .refresh_token ??
+                        //               "", context: context);
+                        //     },
+                        //   )
+                        // else
                           postSubComponent(
                             "assets/images/like.svg",
                             "Like",

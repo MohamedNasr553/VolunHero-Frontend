@@ -7,6 +7,7 @@ import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/LoginModel.dart';
 import 'package:flutter_code/models/NotificationsModel.dart';
+import 'package:flutter_code/models/OtherUserFollowings.dart';
 import 'package:flutter_code/models/getMyFollowers.dart';
 import 'package:flutter_code/models/getMyFollowing.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -193,9 +194,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       'senderId': senderId,
       'text': text,
     };
-    print(text);
-    print(chatId);
-    print(senderId);
 
     try {
       emit(CreateMessageLoadingState());
@@ -206,9 +204,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       });
 
       // Assuming DioHelper.postData returns the response directly
-      print("this is response of msg");
-      print(response.data);
-      print("this is response of msg");
       // After sending the message successfully, refresh the chat page
 
       return "Message sent successfully";
@@ -232,7 +227,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         //  print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
-        print(chatResponse);
         for (int i = 0; i < chats.length; i++) {
           DioHelper.getData(url: GET_CHAT_MSGS + chats[i].id, token: token)
               .then((value) {
@@ -288,7 +282,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       }
     }
 
-    print(filteredChats);
     _filteredChatsController
         .add(filteredChats); // Add the filtered chats to the stream
     emit(GetSearchChatSuccessState());
@@ -343,6 +336,51 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     });
   }
 
+  /// ------------------------- Get Other User Following ----------------------------
+  OtherUserProfile? otherUserProfileFollowings;
+  OtherUserId? otherUserIdFollowings;
+
+  void getOtherUserFollowings({
+    required String? token,
+    required String? slugUsername,
+    required String? id,
+  }) async {
+    emit(GetOtherUserFollowingLoadingState());
+
+    DioHelper.getData(
+      url: "/users/$slugUsername/$id/following",
+      token: token,
+    ).then((value) {
+      otherUserProfileFollowings = OtherUserProfile.fromJson(value.data);
+
+      emit(GetOtherUserFollowingSuccessState());
+    }).catchError((error) {
+      emit(GetOtherUserFollowingErrorState(error));
+    });
+  }
+
+  /// ------------------------- Get Other User Followers ----------------------------
+  GetMyFollowerResponse? otherUserProfileFollowers;
+  Follower? otherUserIdFollowers;
+
+  void getOtherUserFollowers({
+    required String? token,
+    required String? slugUsername,
+    required String? id,
+  }) async {
+    emit(GetOtherUserFollowersLoadingState());
+
+    DioHelper.getData(
+      url: "/users/$slugUsername/$id/followers",
+      token: token,
+    ).then((value) {
+      otherUserProfileFollowers = GetMyFollowerResponse.fromJson(value.data);
+
+      emit(GetOtherUserFollowersSuccessState());
+    }).catchError((error) {
+      emit(GetOtherUserFollowersErrorState(error));
+    });
+  }
 
   // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
@@ -374,13 +412,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   int getAnotherUserFollowers() {
     emit(GetAnotherUserFollowersState(anotherUser!.followers.length));
     return (anotherUser!.followers.length);
-  }
-
-  bool follow = false;
-
-  void changeFollow() {
-    follow = !follow;
-    emit(LoginChangeFollowState());
   }
 
   //---------------- another user posts endpoints ----------------------------
@@ -426,7 +457,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     ).then((value) {
       notificationsModel = NotificationsModel.fromJson(value.data);
       emit(GetLoggedInUserNotificationSuccessState());
-      print(notificationsModel);
     }).catchError((error) {
       emit(GetLoggedInUserNotificationErrorState(error));
     });

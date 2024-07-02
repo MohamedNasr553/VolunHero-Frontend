@@ -8,6 +8,8 @@ import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
+import 'package:flutter_code/modules/GeneralView/otherUserFollowersPage/OtherUserFollowers.dart';
+import 'package:flutter_code/modules/GeneralView/otherUserFollowingsPage/otherUserFollowings.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,6 +35,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   @override
   void initState() {
     super.initState();
+
     /// Another User Data
     HomeLayoutCubit.get(context).getAnotherUserData(
         token: UserLoginCubit.get(context).loginModel!.refresh_token,
@@ -43,19 +46,15 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         .getAnotherUserPosts(
             token: UserLoginCubit.get(context).loginModel!.refresh_token,
             id: HomeLayoutCubit.get(context).anotherUser?.id ?? " ",
-            userName: HomeLayoutCubit.get(context).anotherUser?.userName?? " ")
+            userName: HomeLayoutCubit.get(context).anotherUser?.userName ?? " ")
         .then((value) {
       UserLoginCubit.get(context).anotherUser =
           HomeLayoutCubit.get(context).anotherUser;
     });
 
     /// Logged in user chats
-    UserLoginCubit.get(context)
-        .getLoggedInChats(
-        token: UserLoginCubit.get(context)
-            .loginModel!
-            .refresh_token);
-
+    UserLoginCubit.get(context).getLoggedInChats(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token);
   }
 
   @override
@@ -64,9 +63,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
-      listener: (context, state) {
-
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -201,7 +198,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                               .anotherUser
                                               ?.specification ==
                                           'Medical' ||
-                                  HomeLayoutCubit.get(context)
+                                      HomeLayoutCubit.get(context)
                                               .anotherUser
                                               ?.specification ==
                                           'Educational')
@@ -235,122 +232,121 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                   child: Row(
                     children: [
                       Expanded(
-                          child: InkWell(
-                              onTap: () {
+                        child: InkWell(
+                          onTap: () {
+                            UserLoginCubit.get(context)
+                                .handleFollow(
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
+                                    followId: UserLoginCubit.get(context)
+                                        .anotherUser!
+                                        .id)
+                                .then((value) {
+                              UserLoginCubit.get(context).getLoggedInUserData(
+                                  token: UserLoginCubit.get(context)
+                                      .loginModel!
+                                      .refresh_token);
+                              HomeLayoutCubit.get(context)
+                                  .getAnotherUserData(
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token,
+                                      id: UserLoginCubit.get(context)
+                                          .anotherUser!
+                                          .id)
+                                  .then((value) {
+                                UserLoginCubit.get(context).anotherUser =
+                                    HomeLayoutCubit.get(context).anotherUser;
                                 UserLoginCubit.get(context)
-                                    .handleFollow(
-                                        token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token,
-                                        followId: UserLoginCubit.get(context)
-                                            .anotherUser!
-                                            .id)
-                                    .then((value) {
-                                  UserLoginCubit.get(context)
-                                      .getLoggedInUserData(
-                                          token: UserLoginCubit.get(context)
-                                              .loginModel!
-                                              .refresh_token);
-                                  HomeLayoutCubit.get(context)
-                                      .getAnotherUserData(
-                                          token: UserLoginCubit.get(context)
-                                              .loginModel!
-                                              .refresh_token,
-                                          id: UserLoginCubit.get(context)
-                                              .anotherUser!
-                                              .id)
-                                      .then((value) {
-                                    UserLoginCubit.get(context).anotherUser =
-                                        HomeLayoutCubit.get(context)
-                                            .anotherUser;
-                                    UserLoginCubit.get(context)
-                                        .getAnotherUserFollowers();
-                                  });
-                                });
-                              },
-                              child: (UserLoginCubit.get(context).inFollowing(
-                                          followId: UserLoginCubit.get(context)
-                                                  .anotherUser
-                                                  ?.id ??
-                                              " ") ==
-                                      false)
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                          color: defaultColor,
-                                          borderRadius:
-                                              BorderRadius.circular(4)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: Center(
-                                          child: (state is! FollowLoadingState)
-                                              ? (const Text(
-                                                  "Follow",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ))
-                                              : const Center(
-                                                  child: SizedBox(
-                                                    width: 20,
-                                                    height: 20,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
+                                    .getAnotherUserFollowers();
+                              });
+                            });
+                          },
+                          child: (UserLoginCubit.get(context).inFollowing(
+                                      followId: UserLoginCubit.get(context)
+                                              .anotherUser
+                                              ?.id ??
+                                          " ") ==
+                                  false)
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                      color: defaultColor,
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: (state is! FollowLoadingState)
+                                          ? (const Text(
+                                              "Follow",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ))
+                                          : const Center(
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.white,
                                                 ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          borderRadius:
-                                              BorderRadius.circular(4)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6.0),
-                                        child: Center(
-                                            child:
-                                                (state is! FollowLoadingState)
-                                                    ? (const Text(
-                                                        "Following",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ))
-                                                    : const Center(
-                                                        child: SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      )),
-                                      ),
-                                    ))),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: (state is! FollowLoadingState)
+                                          ? (const Text(
+                                              "Following",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ))
+                                          : const Center(
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      ),
                       const SizedBox(width: 2),
                       Expanded(
                         child: InkWell(
                           onTap: () async {
-                            bool newChat = true;
-
-                            UserLoginCubit.get(context).createChat(secondId: HomeLayoutCubit.get(context).anotherUser!.id,).then((_){
+                            UserLoginCubit.get(context)
+                                .createChat(
+                              secondId:
+                                  HomeLayoutCubit.get(context).anotherUser!.id,
+                            )
+                                .then((_) {
                               /// Logged in user chats
                               UserLoginCubit.get(context)
                                   .getLoggedInChats(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token).then((onValue){
-                                      navigateToPage(context, ChatsPage());
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token)
+                                  .then((onValue) {
+                                navigateToPage(context, const ChatsPage());
                               });
                             });
-
-
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -447,47 +443,89 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0}",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      UserLoginCubit.get(context)
+                                          .getOtherUserFollowers(
+                                        token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token,
+                                        slugUsername:
+                                            HomeLayoutCubit.get(context)
+                                                .anotherUser!
+                                                .slugUserName,
+                                        id: HomeLayoutCubit.get(context)
+                                            .anotherUser!
+                                            .id,
+                                      );
+                                      navigateToPage(
+                                          context, const OtherUserFollowers());
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "${HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0}",
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            color:
+                                                Colors.black.withOpacity(0.7),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Following",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
+                                        Text(
+                                          "Followers",
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color:
+                                                Colors.black.withOpacity(0.7),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "${HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0}",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      UserLoginCubit.get(context)
+                                          .getOtherUserFollowings(
+                                        token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token,
+                                        slugUsername:
+                                            HomeLayoutCubit.get(context)
+                                                .anotherUser!
+                                                .slugUserName,
+                                        id: HomeLayoutCubit.get(context)
+                                            .anotherUser!
+                                            .id,
+                                      );
+                                      navigateToPage(
+                                          context, const OtherUserFollowings());
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "${HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0}",
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                            color:
+                                                Colors.black.withOpacity(0.7),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Followers",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black.withOpacity(0.7),
-                                          fontWeight: FontWeight.bold,
+                                        Text(
+                                          "Following",
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color:
+                                                Colors.black.withOpacity(0.7),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -1310,7 +1348,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           )
                         else if (postDetails.likesCount > 0 &&
@@ -1325,7 +1364,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           )
                         else
@@ -1338,7 +1378,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token ??
-                                      "", context: context);
+                                      "",
+                                  context: context);
                             },
                           ),
                         const Spacer(),
@@ -1381,33 +1422,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
       ),
     );
   }

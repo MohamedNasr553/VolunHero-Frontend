@@ -88,7 +88,7 @@ class GetMyFollowingErrorState extends UserLoginStates {
   GetMyFollowingErrorState(this.error);
 }
 
-// Get My Following
+// Get My Followers
 class GetMyFollowersSuccessState extends UserLoginStates {}
 
 class GetMyFollowersLoadingState extends UserLoginStates {}
@@ -97,6 +97,28 @@ class GetMyFollowersErrorState extends UserLoginStates {
   final String error;
 
   GetMyFollowersErrorState(this.error);
+}
+
+// Get Other User Following
+class GetOtherUserFollowingSuccessState extends UserLoginStates {}
+
+class GetOtherUserFollowingLoadingState extends UserLoginStates {}
+
+class GetOtherUserFollowingErrorState extends UserLoginStates {
+  final String error;
+
+  GetOtherUserFollowingErrorState(this.error);
+}
+
+// Get Other User Followers
+class GetOtherUserFollowersSuccessState extends UserLoginStates {}
+
+class GetOtherUserFollowersLoadingState extends UserLoginStates {}
+
+class GetOtherUserFollowersErrorState extends UserLoginStates {
+  final String error;
+
+  GetOtherUserFollowersErrorState(this.error);
 }
 
 // LoggedIn User Notifications States
