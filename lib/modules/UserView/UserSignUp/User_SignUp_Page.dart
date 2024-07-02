@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:camera/camera.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter_code/models/SignUpModel.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
@@ -11,10 +13,7 @@ import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:snippet_coder_utils/multi_images_utils.dart';
 import 'package:stroke_text/stroke_text.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class UserSignupPage extends StatefulWidget {
   const UserSignupPage({super.key});
@@ -24,40 +23,131 @@ class UserSignupPage extends StatefulWidget {
 }
 
 class _UserSignupPageState extends State<UserSignupPage> {
-  List<File>? attachments;
-  File? profilePic;
-  var formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
   var phoneController = TextEditingController();
-  var dateOfBirthController = TextEditingController();
   var addressController = TextEditingController();
   var userNameController = TextEditingController();
   var emailAddressController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
-  String selectedItem = '';
-  String? _filePath;
-  String selectedProfile = '';
-  String? _profilePath;
+  var specification = '';
+  final _picker = ImagePicker();
+  File? _profilePic;
+  List<File>? _attachments = [];
+  String classification = '';
+  String? selectedItem;
 
-  XFile? pickedFile;
+  Future<void> _signUp() async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
 
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://volunhero.onrender.com/api/auth/signUp'),
+      );
+
+      // bool attachmentsRequired =
+      // (classification == "Medical" || classification == "Educational");
+
+      request.fields['firstName'] = firstNameController.text;
+      request.fields['lastName'] = lastNameController.text;
+      request.fields['userName'] = userNameController.text;
+      request.fields['email'] = emailAddressController.text;
+      request.fields['password'] = passwordController.text;
+      request.fields['cpassword'] = confirmPasswordController.text;
+      request.fields['phone'] = phoneController.text;
+      request.fields['address'] = addressController.text;
+      request.fields['specification'] = selectedItem!;
+
+      if (_profilePic != null) {
+        print('Profile Pic: ${_profilePic!.path}');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profilePic',
+            _profilePic!.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+
+      for (var attachment in _attachments!) {
+        print('Attachment: ${attachment.path}');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'attachments',
+            attachment.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+
+      try {
+        final response = await request.send();
+
+        final responseString = await response.stream.bytesToString();
+        print('Response status: ${response.statusCode}');
+        print('Response body: $responseString');
+
+        if (response.statusCode == 201) {
+          print('User created successfully');
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: defaultColor,
+            content: Text(
+              'User created successfully',
+              style: TextStyle(
+                fontSize: 12.0,
+              ),
+            ),
+          ));
+        } else {
+          final responseData = jsonDecode(responseString);
+          final signUpModel = SignupModel.fromJson(responseData);
+          print('Failed to create user');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              signUpModel.message ?? 'Unexpected error',
+              style: const TextStyle(
+                fontSize: 12.0,
+              ),
+            ),
+          ));
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  Future<void> _pickProfilePic() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _profilePic = File(pickedFile!.path);
+    });
+  }
+
+  Future<void> _pickAttachments() async {
+    final pickedFiles = await _picker.pickMultiImage();
+    setState(() {
+      _attachments = pickedFiles.map((file) => File(file.path)).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-   // print(_filePath);
 
     return BlocConsumer<UserSignUpCubit, UserSignUpStates>(
       listener: (context, states) {},
       builder: (context, states) {
         return Scaffold(
           body: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
-              height: screenHeight / 0.45,
+              height: screenHeight / 0.48,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -84,7 +174,6 @@ class _UserSignupPageState extends State<UserSignupPage> {
                   SizedBox(
                     height: screenHeight / 0.3,
                     child: Padding(
-                      // padding: const EdgeInsets.fromLTRB(20, 280, 20, 0),
                       padding: EdgeInsetsDirectional.only(
                         start: screenWidth / 20,
                         top: screenHeight / 2.8,
@@ -106,9 +195,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
                               validate: (value) {
                                 if (value!.isEmpty) {
@@ -131,9 +218,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
                               validate: (value) {
                                 if (value!.isEmpty) {
@@ -156,9 +241,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
                               validate: (value) {
                                 if (value!.isEmpty) {
@@ -170,31 +253,29 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               type: TextInputType.phone,
                               hintText: 'Phone',
                             ),
-                            SizedBox(height: screenHeight / 50),
-                            const StrokeText(
-                              text: "Date Of Birth",
-                              textStyle: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
-                              ),
-                              strokeWidth: 1.0,
-                              strokeColor: Colors.black,
-                            ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
-                            defaultTextFormField(
-                              validate: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Enter your date of birth in YYYY-MM-DD';
-                                }
-                                return null;
-                              },
-                              controller: dateOfBirthController,
-                              type: TextInputType.text,
-                              hintText: 'YYYY-MM-DD',
-                            ),
+                            // SizedBox(height: screenHeight / 50),
+                            // const StrokeText(
+                            //   text: "Date Of Birth",
+                            //   textStyle: TextStyle(
+                            //     fontSize: 12.0,
+                            //     fontWeight: FontWeight.w500,
+                            //     color: Colors.black,
+                            //   ),
+                            //   strokeWidth: 1.0,
+                            //   strokeColor: Colors.black,
+                            // ),
+                            // SizedBox(height: screenHeight / 100),
+                            // defaultTextFormField(
+                            //   validate: (value) {
+                            //     if (value!.isEmpty) {
+                            //       return 'Enter your date of birth in YYYY-MM-DD';
+                            //     }
+                            //     return null;
+                            //   },
+                            //   controller: _dob,
+                            //   type: TextInputType.text,
+                            //   hintText: 'YYYY-MM-DD',
+                            // ),
                             SizedBox(height: screenHeight / 50),
                             const StrokeText(
                               text: "Address",
@@ -206,9 +287,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
                               validate: (value) {
                                 if (value!.isEmpty) {
@@ -254,9 +333,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             defaultTextFormField(
                               validate: (value) {
                                 if (value!.isEmpty) {
@@ -279,9 +356,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             TextFormField(
                               obscureText: (UserSignUpCubit.get(context).isPassword) ? true : false,
                               controller: passwordController,
@@ -355,9 +430,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
                             TextFormField(
                               obscureText: (UserSignUpCubit.get(context).isCPassword) ? true : false,
                               controller: confirmPasswordController,
@@ -431,12 +504,11 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
+                            SizedBox(height: screenHeight / 100),
+                            /// Specification
                             Column(
                               children: [
-                                RadioListTile(
+                                RadioListTile<String>(
                                   title: const Text(
                                     'General',
                                     style: TextStyle(
@@ -451,13 +523,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   value: 'General',
                                   contentPadding: EdgeInsets.zero,
                                   groupValue: selectedItem,
-                                  onChanged: (value) {
+                                  onChanged: (String? value) {
                                     setState(() {
                                       selectedItem = value!;
                                     });
                                   },
                                 ),
-                                RadioListTile(
+                                RadioListTile<String>(
                                   title: const Text(
                                     'Medical',
                                     style: TextStyle(
@@ -472,13 +544,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       const VisualDensity(vertical: -4),
                                   value: 'Medical',
                                   groupValue: selectedItem,
-                                  onChanged: (value) {
+                                  onChanged: (String? value) {
                                     setState(() {
                                       selectedItem = value!;
                                     });
                                   },
                                 ),
-                                RadioListTile(
+                                RadioListTile<String>(
                                   title: const Text(
                                     'Educational',
                                     style: TextStyle(
@@ -493,7 +565,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                       const VisualDensity(vertical: -4),
                                   value: 'Educational',
                                   groupValue: selectedItem,
-                                  onChanged: (value) {
+                                  onChanged: (String? value) {
                                     setState(() {
                                       selectedItem = value!;
                                     });
@@ -501,7 +573,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: screenHeight / 50),
+                            SizedBox(height: screenHeight / 25),
                             const StrokeText(
                               text: "Profile Picture",
                               textStyle: TextStyle(
@@ -512,55 +584,30 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
-                              child: Container(
-                                width: 400,
-                                height: 85,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(15),
+                            SizedBox(height: screenHeight / 70),
+                            ElevatedButton(
+                              onPressed: _pickProfilePic,
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor: Colors.blueGrey.shade200,
+                                minimumSize: Size(
+                                  screenHeight / 2,
+                                  screenWidth / 6,
                                 ),
-                                child: InkWell(
-                                  onTap: () async {
-                                  //  await _requestPermission();
-                                  pickProfileFile();
-                                 // checkPermission();
-                                  },
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          profilePic == null
-                                              ? 'Add or drop your'
-                                              : 'File Selected',
-                                          style: const TextStyle(
-                                            color: defaultColor,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          profilePic == null
-                                              ? ' Profile Pic in here'
-                                              : ' tap to select another',
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: const Text(
+                                'Upload Profile Photo',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
+                            SizedBox(height: screenHeight / 25),
                             const StrokeText(
                               text: "Attachments",
                               textStyle: TextStyle(
@@ -571,116 +618,47 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               strokeWidth: 1.0,
                               strokeColor: Colors.black,
                             ),
-                            SizedBox(
-                              height: screenHeight / 100,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
-                              child: Container(
-                                width: 400,
-                                height: 85,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(15),
+                            SizedBox(height: screenHeight / 70),
+                            ElevatedButton(
+                              onPressed: _pickAttachments,
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor: Colors.blueGrey.shade200,
+                                minimumSize: Size(
+                                  screenHeight / 2,
+                                  screenWidth / 6,
                                 ),
-                                child: InkWell(
-                                  onTap: () async {
-                                    //await _requestPermission();
-                                     await pickFiles();
-                                  },
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          _filePath == null
-                                              ? 'Add or drop your'
-                                              : 'File Selected',
-                                          style: const TextStyle(
-                                            color: defaultColor,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        Text(
-                                          _filePath == null
-                                              ? ' file in here'
-                                              : ' tap to select another',
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: const Text(
+                                'Upload Attachment',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
-                            SizedBox(height: screenHeight / 20),
-                            (states is! UserSignUpLoadingState)?defaultButton(
+                            SizedBox(height: screenHeight / 15),
+                            (states is! UserSignUpLoadingState) ?
+                            defaultButton(
                               function: () {
-                                if (formKey.currentState!.validate()) {
-                                  showToast(text: _profilePath??"profile b null XD", state: ToastStates.SUCCESS);
-                                  if (selectedItem.isEmpty) {
-                                    showToast(
-                                      text: 'Please select a specification',
-                                      state: ToastStates.ERROR,
-                                    );
-                                  } else {
-                                    String classification = '';
-                                    if (selectedItem == 'Medical') {
-                                      classification = 'Medical';
-                                    } else if (selectedItem == 'Educational') {
-                                      classification = 'Educational';
-                                    }
-                                    print("picked file path 2bl register");
-
-                                    UserSignUpCubit.get(context).registerUserUsingHTTP(
-                                      firstName: firstNameController.text,
-                                      lastName: lastNameController.text,
-                                      DOB: dateOfBirthController.text,
-                                      address: addressController.text,
-                                      userName: userNameController.text,
-                                      email: emailAddressController.text,
-                                      password: passwordController.text,
-                                      cpassword: confirmPasswordController.text,
-                                      phone: phoneController.text,
-                                      specification: selectedItem,
-                                      attachments: attachments,
-                                      profilePic: profilePic,
-                                      classification: classification,
-                                    );
-                                    // navigateToPage(context, LoginPage());
-                                    // if (UserSignUpCubit.get(context).signupModel != null) {
-                                    //   if (UserSignUpCubit.get(context).signupModel!.message == 'success') {
-                                    //     showToast(
-                                    //       text: 'Registered Successfully',
-                                    //       state: ToastStates.SUCCESS,
-                                    //     );
-                                    //   } else {
-                                    //     showToast(
-                                    //       text: UserSignUpCubit.get(context).signupModel!.message!,
-                                    //       state: ToastStates.ERROR,
-                                    //     );
-                                    //   }
-                                    // }
-                                    // navigateAndFinish(context, LoginPage());
-                                  }
-                                }
+                                _signUp();
+                                print("Selected Item: $selectedItem");
                               },
                               text: 'Sign up',
                               isUpperCase: false,
                               fontWeight: FontWeight.w300,
                               width: screenWidth / 1.1,
-                            ):const Center(
+                            )
+                                : const Center(
                               child: CircularProgressIndicator(
                                 color: defaultColor,
                               ),
                             ),
-                            SizedBox(height: screenHeight / 70),
+                            SizedBox(height: screenHeight / 50),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -717,7 +695,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                   Padding(
                     padding: EdgeInsetsDirectional.only(
                       start: 15.0,
-                      bottom: screenHeight / 0.601,
+                      bottom: screenHeight / 0.651,
                     ),
                     child: const Row(
                       children: [
@@ -753,80 +731,4 @@ class _UserSignupPageState extends State<UserSignupPage> {
       },
     );
   }
-
-  Future<void> _requestPermission() async {
-    // Request external storage permission
-    var status = await Permission.storage.request();
-    if (status.isDenied || status.isPermanentlyDenied) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Permission Required'),
-          content: const Text(
-            'Please allow access to external storage to upload files.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                openAppSettings();
-              },
-              child: const Text('Open Settings'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  Future<void> pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
-
-    if (result != null) {
-      setState(() {
-        attachments = result.paths.map((path) => File(path!)).toList();
-      });
-    }
-  }
-
-  checkPermission() async{
-    Map<Permission , PermissionStatus> statuses = await [
-      Permission.camera,
-      Permission.storage
-    ].request();
-    print("Asked_for_permission");
-    if(statuses[Permission.camera] != PermissionStatus.granted || statuses[Permission.storage] != PermissionStatus.granted ){
-      // Permission is not guaranted
-      return;
-    }
-    print("confirmed_for_permission");
-    pickedImage();
-  }
-
-  pickedImage()async{
-    final picker = ImagePicker();
-    pickedFile = await picker.pickImage(
-        source: ImageSource.gallery
-    );
-    print("pickedFile: ");
-    print(pickedFile.toString());
-    setState(() {
-
-    });
-  }
-
-  Future<void> pickProfileFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      setState(() {
-        profilePic = File(result.files.single.path!);
-        _profilePath = profilePic?.path;
-      });
-    }
-  }
-
 }

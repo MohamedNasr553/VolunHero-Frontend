@@ -59,10 +59,15 @@ dependencies:
   image: ^3.3.0
   flutter_tflite: ^1.0.1
   jwt_decoder: ^2.0.1
-  image_picker: ^0.8.5+3  # Align with flutter_tflite requirement
+  image_picker: ^0.8.5+3
   uuid: ^4.4.0
-  snippet_coder_utils: ^1.0.14  # Ensuring compatibility with image_picker version
+  snippet_coder_utils: ^1.0.14
   flutter_webrtc_wrapper: ^1.0.2
+  http: ^0.13.3
+  mime: ^1.0.0
+  path: ^1.8.0
+  http_parser: ^4.0.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
