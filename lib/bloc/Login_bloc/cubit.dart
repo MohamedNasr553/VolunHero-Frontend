@@ -170,9 +170,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     try {
       emit(CreateChatLoadingState());
       var response = await DioHelper.postData(
-              url: CREATE_CHAT,
-              data: requestData,
-              token: loginModel!.refresh_token)
+          url: CREATE_CHAT,
+          data: requestData,
+          token: loginModel!.refresh_token)
           .then((value) async {
         emit(CreateChatSuccessState());
       });
@@ -185,10 +185,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<String> sendMessage(
       {required String chatId,
-      required String senderId,
-      required String text,
-      required String token,
-      required Chat? chat}) async {
+        required String senderId,
+        required String text,
+        required String token,
+        required Chat? chat}) async {
     Map<String, dynamic> requestData = {
       'chatId': chatId,
       'senderId': senderId,
@@ -198,7 +198,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     try {
       emit(CreateMessageLoadingState());
       var response = await DioHelper.postData(
-              url: CREATE_MSG, data: requestData, token: token)
+          url: CREATE_MSG, data: requestData, token: token)
           .then((value) async {
         emit(CreateMessageSuccessState());
       });
@@ -234,7 +234,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
             //    print("   ");
             //    print(value.data);
             MessageResponse messageResponse =
-                MessageResponse.fromJson(value.data);
+            MessageResponse.fromJson(value.data);
             chats[i].messages = messageResponse.messages;
             //   print(chats[i].messages);
           });
@@ -251,7 +251,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   List<Chat> filteredChats = [];
   final StreamController<List<Chat>> _filteredChatsController =
-      StreamController<List<Chat>>.broadcast();
+  StreamController<List<Chat>>.broadcast();
 
   Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
 
@@ -421,8 +421,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<void> getAnotherUserPosts(
       {required String? token,
-      required String userName,
-      required String id}) async {
+        required String userName,
+        required String id}) async {
     DioHelper.getData(
       url: "/users/$userName/$id/post",
       token: token,

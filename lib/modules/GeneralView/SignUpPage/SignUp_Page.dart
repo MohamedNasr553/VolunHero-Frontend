@@ -24,15 +24,15 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final formKey = GlobalKey<FormState>();
-  var firstNameController = TextEditingController();
-  var lastNameController = TextEditingController();
-  var phoneController = TextEditingController();
-  var addressController = TextEditingController();
-  var userNameController = TextEditingController();
-  var emailAddressController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmPasswordController = TextEditingController();
-  var specification = '';
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final addressController = TextEditingController();
+  final userNameController = TextEditingController();
+  final emailAddressController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final specification = '';
   final _picker = ImagePicker();
   File? _profilePic;
   List<File>? _attachments = [];
