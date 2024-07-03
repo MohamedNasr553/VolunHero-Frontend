@@ -19,6 +19,7 @@ class AnotherUser {
   final List<dynamic> following;
   final List<dynamic> followers;
   final String updatedAt;
+  late bool isFollowed = false;
 
   AnotherUser({
     required this.id,
