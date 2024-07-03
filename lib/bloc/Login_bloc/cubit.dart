@@ -385,23 +385,24 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
 
-  bool inFollowing({required String? followId}) {
+  void inFollowing({required String? followId}) {
     for (int i = 0; i < loggedInUser!.following.length; i++) {
       if (loggedInUser!.following[i]["userId"] == followId) {
-        return true;
+        anotherUser!.isFollowed =  true;
       }
     }
-    return false;
+    anotherUser!.isFollowed =  false;
   }
 
   Future<void> handleFollow(
       {required String? token, required String? followId}) async {
     try {
       emit(FollowLoadingState());
-
-      if (inFollowing(followId: followId) == false) {
+      if (anotherUser!.isFollowed == false) {
+        anotherUser!.isFollowed = true;
         emit(FollowSuccessState());
       } else {
+        anotherUser!.isFollowed = false;
         emit(UnFollowSuccessState());
       }
     } catch (error) {
