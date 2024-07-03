@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,8 +21,6 @@ class DetailedChats extends StatefulWidget {
 
 class _DetailedChatsState extends State<DetailedChats> {
   Chat? chat;
-
-  TextEditingController _textController = TextEditingController();
 
   @override
   void initState() {
@@ -51,21 +46,19 @@ class _DetailedChatsState extends State<DetailedChats> {
         },
         builder: (context, state) {
           return Scaffold(
-          backgroundColor: HexColor("027E81"),
+          backgroundColor: HexColor("039FA2"),
           body: Column(
             children: [
               Container(
                 height: screenHeight / 6,
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: screenHeight / 15,
-                    ),
+                    SizedBox(height: screenHeight / 15),
                     Row(
                       children: [
                         IconButton(
                           onPressed: () {
-                            //  navigateToPage(context, ChatsPage());
+                            // navigateToPage(context, ChatsPage());
                             UserLoginCubit.get(context)
                                 .getLoggedInChats(
                                 token: UserLoginCubit.get(context)
@@ -95,7 +88,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                         // Chat name
                         Container(
                           width: screenWidth / 2,
-                          child:  Text(
+                          child: Text(
                             (UserLoginCubit.get(context).selectedChat!.members[1].userId.id !=
                                 UserLoginCubit.get(context).loggedInUser!.id)?UserLoginCubit.get(context).selectedChat!.members[1].userId.userName:
                             UserLoginCubit.get(context).selectedChat!.members[0].userId.userName,
@@ -107,13 +100,13 @@ class _DetailedChatsState extends State<DetailedChats> {
                             ),
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
-                          visualDensity: VisualDensity.compact, // Reduce padding
+                          visualDensity: VisualDensity.compact,
                           onPressed: () {
                             UserLoginCubit.get(context).refreshChatPage(UserLoginCubit.get(context).selectedChat!.id);
                           },
-                          icon:Icon(Icons.refresh),
+                          icon:const Icon(Icons.refresh),
                           iconSize: 35,
                           color: Colors.white,
                         ),
@@ -126,7 +119,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                 child: Container(
                   decoration: BoxDecoration(
                     color: HexColor("F3F3F3"),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(45.0),
                       // Larger radius for top left corner
                       topRight: Radius.zero,
@@ -155,7 +148,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                       itemCount:  UserLoginCubit.get(context).selectedChat!.messages.length,
                       duration: const Duration(milliseconds: 1),
                     ):
-                      Center(
+                      const Center(
                         child:  CircularProgressIndicator(color: defaultColor,),
                       )
                   )
@@ -169,7 +162,6 @@ class _DetailedChatsState extends State<DetailedChats> {
   }
 
   Widget buildMessageItem(index, context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     DateTime? createdAt = UserLoginCubit.get(context).selectedChat!.messages[index].createdAt;
     String? durationText;
@@ -208,7 +200,7 @@ class _DetailedChatsState extends State<DetailedChats> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${durationText}",
+                      durationText,
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.grey[700],
@@ -216,8 +208,8 @@ class _DetailedChatsState extends State<DetailedChats> {
                     ),
                      // Add a little space between the texts
                     Text(
-                      "${UserLoginCubit.get(context).selectedChat!.messages[index].text}",
-                      style: TextStyle(fontSize: 14), // Adjust font size as needed
+                      UserLoginCubit.get(context).selectedChat!.messages[index].text,
+                      style: const TextStyle(fontSize: 14), // Adjust font size as needed
                     ),
                   ],
                 ),
@@ -251,12 +243,12 @@ class _DetailedChatsState extends State<DetailedChats> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      "${UserLoginCubit.get(context).selectedChat!.messages[index].text}",
-                      style: TextStyle(fontSize: 14), // Adjust font size as needed
+                      UserLoginCubit.get(context).selectedChat!.messages[index].text,
+                      style: const TextStyle(fontSize: 14), // Adjust font size as needed
                     ),
-                    SizedBox(height: 4), // Add a little space between the texts
+                    const SizedBox(height: 4), // Add a little space between the texts
                     Text(
-                      "${durationText}",
+                      durationText,
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.grey[700],
@@ -341,20 +333,13 @@ class _DetailedChatsState extends State<DetailedChats> {
                 visualDensity: VisualDensity.compact, // Reduce padding
                 onPressed: ()async {
              //     _handleSubmitted(_textController.text,UserLoginCubit.get(context).selectedChat!.id,UserLoginCubit.get(context).loggedInUser!.id,context);
-                  print("ddddd\n");
-                  print(chatMessage.text);
                   String text = chatMessage.text.toString();
                   String chatId = UserLoginCubit.get(context).selectedChat!.id;
                   String senderId = UserLoginCubit.get(context).loggedInUser!.id;
-                  print(text);
-                  print('\n');
-                  print(chatId);
-                  print('\n');
-                  print(senderId);
 
                   if (text.trimLeft().trimRight().isNotEmpty) {
 
-                    var x = await UserLoginCubit.get(context).sendMessage(
+                    await UserLoginCubit.get(context).sendMessage(
                         chatId: chatId,
                         senderId: senderId,
                         text: text,

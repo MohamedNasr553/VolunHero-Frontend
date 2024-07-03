@@ -29,7 +29,7 @@ class Questions extends StatelessWidget {
           ),
           color: HexColor("858888"),
           onPressed: () {
-            // navigateToPage(context, const VolunHeroUserLayout());
+            navigateToPage(context, const GetSupport());
           },
         ),
         title: StrokeText(
@@ -47,7 +47,7 @@ class Questions extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) => buildContactItem(index, context),
+              itemBuilder: (context, index) => buildSupportCallItem(index, context),
               separatorBuilder: (context, index) => Padding(
                 padding: const EdgeInsetsDirectional.only(start: 10.0),
                 child: Container(
@@ -64,13 +64,14 @@ class Questions extends StatelessWidget {
     );
   }
 
-  Widget buildContactItem(index, context) {
+  Widget buildSupportCallItem(index, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth / 30, vertical: screenHeight / 100),
       child: Container(
+        height: screenHeight / 11,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.white,
@@ -79,19 +80,22 @@ class Questions extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               blurRadius: 10.0,
               spreadRadius: -5.0,
-              offset: const Offset(15.0, 5.0), // Right and bottom shadow
+              offset: const Offset(10.0, 5.0),
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(2.0),
+          padding: EdgeInsetsDirectional.only(
+            start: screenWidth / 70,
+            end: screenWidth / 50,
+          ),
           child: Row(
             children: [
               Stack(
                 alignment: AlignmentDirectional.bottomEnd,
                 children: [
                   CircleAvatar(
-                    radius: 40.0,
+                    radius: 35.0,
                     backgroundImage: AssetImage(contacts[index]['image']),
                   ),
                   Padding(
@@ -106,24 +110,24 @@ class Questions extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
-                width: screenWidth / 20,
-              ),
+              SizedBox(width: screenWidth / 20),
               Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    contacts[index]['name'],
-                    style: const TextStyle(
-                        fontFamily: "Roboto",
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 50,
+                    ),
+                    child: Text(
+                      contacts[index]['name'],
+                      style: const TextStyle(
+                          fontFamily: "Roboto",
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  SizedBox(
-                    height: screenHeight / 300,
-                  ),
+                  SizedBox(height: screenHeight / 300),
                   Text(
                     contacts[index]['role'],
                     style: const TextStyle(fontWeight: FontWeight.w100),
@@ -133,13 +137,21 @@ class Questions extends StatelessWidget {
               const Spacer(),
               IconButton(
                 onPressed: () {
-                  showToast(text: "Calling...", state: ToastStates.SUCCESS);
+                  // Phone Here Waiting for Backend...
+                  launchPhoneDialer('1234567890');
                 },
-                icon: SvgPicture.asset(
-                  'assets/images/Phone_fill.svg',
+                icon: SvgPicture.asset('assets/images/Phone_fill.svg'),
+                color: HexColor("039FA2"),
+              ),
+              IconButton(
+                onPressed: () {
+                  navigateToURL(url: "https://app.zoom.us/wc");
+                },
+                icon: const Icon(
+                  Icons.videocam,
                 ),
                 color: HexColor("039FA2"),
-              )
+              ),
             ],
           ),
         ),

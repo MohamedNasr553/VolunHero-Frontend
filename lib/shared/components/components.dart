@@ -608,3 +608,16 @@ Widget buildSettingsItem(IconData? icon, String title, BuildContext context, Wid
     ),
   );
 }
+
+Future<void> launchPhoneDialer(String phoneNumber) async {
+  final Uri launchUri = Uri(
+    scheme: 'tel',
+    path: phoneNumber,
+  );
+  if (await canLaunch(launchUri.toString())) {
+    await launch(launchUri.toString());
+  } else {
+    throw 'Could not launch $phoneNumber';
+  }
+}
+
