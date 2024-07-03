@@ -1,17 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/SearchPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
-import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -134,7 +131,7 @@ class _SearchPostsPageState extends State<SearchPostsPage> {
                     ),
                     child: InkWell(
                       onTap: () => navigateAndFinish(
-                          context, const VolunHeroUserLayout()),
+                          context, const VolunHeroLayout()),
                       child: const Text(
                         'Cancel',
                         style: TextStyle(

@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
-import 'package:flutter_code/models/OtherUserFollowings.dart';
-import 'package:flutter_code/models/getMyFollowing.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
-import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/models/getMyFollowers.dart';
+import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
+import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class OtherUserFollowings extends StatelessWidget {
-  const OtherUserFollowings({super.key});
+class OtherUserFollowers extends StatelessWidget {
+  const OtherUserFollowers({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +43,8 @@ class OtherUserFollowings extends StatelessWidget {
               body: Column(
                 children: [
                   separator(),
-                  (state is! GetMyFollowingLoadingState)
-                      ? buildOtherUserFollowingList(context)
+                  (state is! GetMyFollowersLoadingState)
+                      ? buildOtherUserFollowersList(context)
                       : const Center(
                     child: LinearProgressIndicator(color: defaultColor),
                   ),
@@ -58,11 +57,11 @@ class OtherUserFollowings extends StatelessWidget {
     );
   }
 
-  Widget buildOtherUserFollowingList(context) {
+  Widget buildOtherUserFollowersList(context) {
     var userLoginCubit = UserLoginCubit.get(context);
 
-    if (userLoginCubit.otherUserProfileFollowings != null) {
-      if (userLoginCubit.otherUserProfileFollowings!.otherUserFollowingsList!.isNotEmpty) {
+    if (userLoginCubit.otherUserProfileFollowers != null) {
+      if (userLoginCubit.otherUserProfileFollowers!.followersList.isNotEmpty) {
         return Expanded(
           child: Column(
             children: [
@@ -70,10 +69,10 @@ class OtherUserFollowings extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  if (userLoginCubit.otherUserProfileFollowings != null) {
-                    if (index < userLoginCubit.otherUserProfileFollowings!.otherUserFollowingsList!.length) {
-                      return buildOtherUserFollowings(
-                        userLoginCubit.otherUserProfileFollowings!.otherUserFollowingsList![index],
+                  if (userLoginCubit.otherUserProfileFollowers != null) {
+                    if (index < userLoginCubit.otherUserProfileFollowers!.followersList.length) {
+                      return buildOtherUserFollowers(
+                        userLoginCubit.otherUserProfileFollowers!.followersList[index],
                         context,
                       );
                     }
@@ -86,7 +85,7 @@ class OtherUserFollowings extends StatelessWidget {
                   ),
                   child: separator(),
                 ),
-                itemCount: userLoginCubit.userProfileFollowings?.followingsList.length ?? 0,
+                itemCount: userLoginCubit.otherUserProfileFollowers?.followersList.length ?? 0,
               ),
               Padding(
                 padding: EdgeInsetsDirectional.only(
@@ -102,7 +101,7 @@ class OtherUserFollowings extends StatelessWidget {
     return const SizedBox();
   }
 
-  Widget buildOtherUserFollowings(OtherUserFollowingsModel? followings, BuildContext context) {
+  Widget buildOtherUserFollowers(Follower? followers, BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -118,7 +117,7 @@ class OtherUserFollowings extends StatelessWidget {
           SizedBox(width: screenWidth / 50),
           InkWell(
             onTap: (){
-              if (followings.userId.id ==
+              if (followers.userId.id ==
                   UserLoginCubit.get(context).loggedInUser!.id) {
                 navigateToPage(context, const ProfilePage());
               } else {
@@ -127,7 +126,7 @@ class OtherUserFollowings extends StatelessWidget {
                     token: UserLoginCubit.get(context)
                         .loginModel!
                         .refresh_token,
-                    id: followings.userId.id)
+                    id: followers.userId.id)
                     .then((value) {
                   UserLoginCubit.get(context).anotherUser =
                       HomeLayoutCubit.get(context).anotherUser;
@@ -137,15 +136,15 @@ class OtherUserFollowings extends StatelessWidget {
             },
             child: CircleAvatar(
               radius: 27.0,
-              backgroundImage: followings!.userId.profilePic != null
-                  ? NetworkImage(followings.userId.profilePic!.secureUrl) as ImageProvider
+              backgroundImage: followers!.userId.profilePic != null
+                  ? NetworkImage(followers.userId.profilePic!.secureUrl) as ImageProvider
                   : const AssetImage("assets/images/nullProfile.png"),
             ),
           ),
           SizedBox(width: screenWidth / 30),
           InkWell(
             onTap: () {
-              if (followings.userId.id ==
+              if (followers.userId.id ==
                   UserLoginCubit.get(context).loggedInUser!.id) {
                 navigateToPage(context, const ProfilePage());
               } else {
@@ -154,7 +153,7 @@ class OtherUserFollowings extends StatelessWidget {
                     token: UserLoginCubit.get(context)
                         .loginModel!
                         .refresh_token,
-                    id: followings.userId.id)
+                    id: followers.userId.id)
                     .then((value) {
                   UserLoginCubit.get(context).anotherUser =
                       HomeLayoutCubit.get(context).anotherUser;
@@ -164,7 +163,7 @@ class OtherUserFollowings extends StatelessWidget {
               }
             },
             child: Text(
-              followings.userId.userName,
+              followers.userId.userName,
               style: const TextStyle(
                 color: Colors.black87,
                 fontSize: 13.0,

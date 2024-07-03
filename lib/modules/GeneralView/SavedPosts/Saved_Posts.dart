@@ -4,17 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
-import 'package:flutter_code/modules/UserView/AnotherUser/anotherUser_page.dart';
-import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
+import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
+import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -61,7 +61,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
                       color: HexColor("858888"),
                       onPressed: () {
-                        navigateAndFinish(context, const VolunHeroUserLayout());
+                        navigateAndFinish(context, const VolunHeroLayout());
                       },
                     ),
                     title: StrokeText(

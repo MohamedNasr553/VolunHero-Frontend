@@ -5,9 +5,8 @@ import 'package:flutter_code/bloc/CreatePost_bloc/cubit.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/states.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
-import 'package:flutter_code/models/LoggedInUserModel.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -56,7 +55,7 @@ class _CreatePostState extends State<CreatePost> {
                           onPressed: () {
                             HomeLayoutCubit.get(context).changeBottomNavBar(0);
                             navigateAndFinish(
-                                context, const VolunHeroUserLayout());
+                                context, const VolunHeroLayout());
                           },
                           icon: SvgPicture.asset(
                             'assets/images/closePost.svg',
@@ -113,7 +112,7 @@ class _CreatePostState extends State<CreatePost> {
                                   HomeLayoutCubit.get(context)
                                       .changeBottomNavBar(0);
                                   navigateAndFinish(
-                                      context, const VolunHeroUserLayout());
+                                      context, const VolunHeroLayout());
                                 } else if (state is! CreatePostErrorState) {
                                   showToast(
                                     text: "Something went wrong",

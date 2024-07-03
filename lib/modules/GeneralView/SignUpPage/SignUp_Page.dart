@@ -15,14 +15,14 @@ import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stroke_text/stroke_text.dart';
 
-class UserSignupPage extends StatefulWidget {
-  const UserSignupPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<UserSignupPage> createState() => _UserSignupPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _UserSignupPageState extends State<UserSignupPage> {
+class _SignupPageState extends State<SignupPage> {
   final formKey = GlobalKey<FormState>();
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
@@ -91,11 +91,11 @@ class _UserSignupPageState extends State<UserSignupPage> {
         print('Response body: $responseString');
 
         if (response.statusCode == 201) {
-          print('User created successfully');
+          print('Account Created Successfully');
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: defaultColor,
             content: Text(
-              'User created successfully',
+              'Account Created Successfully',
               style: TextStyle(
                 fontSize: 12.0,
               ),
@@ -104,7 +104,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
         } else {
           final responseData = jsonDecode(responseString);
           final signUpModel = SignupModel.fromJson(responseData);
-          print('Failed to create user');
+          print('Failed to created account');
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.red,
             content: Text(
@@ -510,7 +510,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                               children: [
                                 RadioListTile<String>(
                                   title: const Text(
-                                    'General',
+                                    'General User',
                                     style: TextStyle(
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.w500,
@@ -531,7 +531,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 ),
                                 RadioListTile<String>(
                                   title: const Text(
-                                    'Medical',
+                                    'Medical User',
                                     style: TextStyle(
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.w500,
@@ -552,7 +552,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                 ),
                                 RadioListTile<String>(
                                   title: const Text(
-                                    'Educational',
+                                    'Educational User',
                                     style: TextStyle(
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.w500,
@@ -564,6 +564,27 @@ class _UserSignupPageState extends State<UserSignupPage> {
                                   visualDensity:
                                       const VisualDensity(vertical: -4),
                                   value: 'Educational',
+                                  groupValue: selectedItem,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedItem = value!;
+                                    });
+                                  },
+                                ),
+                                RadioListTile<String>(
+                                  title: const Text(
+                                    'Organization',
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  activeColor: defaultColor,
+                                  visualDensity:
+                                  const VisualDensity(vertical: -4),
+                                  value: 'Organization',
                                   groupValue: selectedItem,
                                   onChanged: (String? value) {
                                     setState(() {

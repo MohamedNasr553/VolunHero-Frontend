@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/termsOfServices.dart';
 import 'package:flutter_code/modules/GeneralView/accountInformation/accountInformationScreen.dart';
@@ -20,7 +20,7 @@ class SettingsPage extends StatelessWidget {
         leading: IconButton(
           icon: SvgPicture.asset("assets/images/arrowLeft.svg"),
           onPressed: () {
-            navigateAndFinish(context, const VolunHeroUserLayout());
+            navigateAndFinish(context, const VolunHeroLayout());
           },
         ),
       ),

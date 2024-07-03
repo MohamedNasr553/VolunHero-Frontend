@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedChat/detailed_chat.dart';
 import 'package:flutter_code/modules/GeneralView/SearchChat/search_chat.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -117,7 +117,7 @@ class _ChatsPageState extends State<ChatsPage> {
                         IconButton(
                           onPressed: () {
                             navigateAndFinish(
-                                context, const VolunHeroUserLayout());
+                                context, const VolunHeroLayout());
                           },
                           icon: const Icon(
                             Icons.close,

@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/states.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -133,7 +133,7 @@ class _SearchChatPageState extends State<SearchChatPage> {
                       end: screenWidth / 20,
                     ),
                     child: InkWell(
-                      onTap: () => navigateAndFinish(context, const VolunHeroUserLayout()),
+                      onTap: () => navigateAndFinish(context, const VolunHeroLayout()),
                       child: const Text(
                         'Cancel',
                         style: TextStyle(

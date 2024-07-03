@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/OrganizationLayout_bloc/cubit.dart';
-import 'package:flutter_code/bloc/OrganizationLayout_bloc/states.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 
-class VolunHeroOrganizationLayout extends StatelessWidget {
-  const VolunHeroOrganizationLayout({super.key});
+class VolunHeroLayout extends StatelessWidget {
+  const VolunHeroLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OrganizationLayoutCubit, OrganizationLayoutStates>(
+
+    return BlocConsumer<HomeLayoutCubit, LayoutStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var organizationHomeLayoutBloc = BlocProvider.of<OrganizationLayoutCubit>(context);
 
         return Scaffold(
-          body: organizationHomeLayoutBloc.layoutScreens[organizationHomeLayoutBloc.currentIndex],
+          body:  HomeLayoutCubit.get(context).layoutScreens[ HomeLayoutCubit.get(context).currentIndex],
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
@@ -28,12 +28,12 @@ class VolunHeroOrganizationLayout extends StatelessWidget {
               fontSize: 8.0,
               fontWeight: FontWeight.bold,
             ),
-            currentIndex: organizationHomeLayoutBloc.currentIndex,
             selectedItemColor: defaultColor,
             unselectedItemColor: Colors.black54,
-            items: organizationHomeLayoutBloc.bottomItems,
+            currentIndex:  HomeLayoutCubit.get(context).currentIndex,
+            items:  HomeLayoutCubit.get(context).bottomItems,
             onTap: (index) {
-              organizationHomeLayoutBloc.orgChangeBottomNavBar(index);
+              HomeLayoutCubit.get(context).changeBottomNavBar(index);
             },
           ),
         );

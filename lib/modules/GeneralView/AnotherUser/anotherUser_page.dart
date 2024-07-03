@@ -4,22 +4,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/bloc/UserLayout_bloc/cubit.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
-import 'package:flutter_code/modules/GeneralView/otherUserFollowersPage/OtherUserFollowers.dart';
-import 'package:flutter_code/modules/GeneralView/otherUserFollowingsPage/otherUserFollowings.dart';
+import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
+import 'package:flutter_code/modules/GeneralView/OthersFollowersPage/OtherFollowers.dart';
+import 'package:flutter_code/modules/GeneralView/OthersFollowingsPage/OtherFollowings.dart';
+import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../bloc/savedPosts_bloc/cubit.dart';
-import '../../../models/LoggedInUserModel.dart';
-import '../../GeneralView/DetailedPost/Detailed_Post.dart';
-import '../UserProfilePage/Profile_Page.dart';
+
 
 class AnotherUserProfile extends StatefulWidget {
   const AnotherUserProfile({super.key});
@@ -73,7 +74,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                 'assets/images/arrow_left_white.svg',
               ),
               onPressed: () {
-                navigateAndFinish(context, const VolunHeroUserLayout());
+                navigateAndFinish(context, const VolunHeroLayout());
               },
             ),
           ),

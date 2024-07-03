@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
-import 'package:flutter_code/modules/UserView/UserProfilePage/Profile_Page.dart';
+import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,12 +11,12 @@ import '../../../bloc/Login_bloc/cubit.dart';
 class UserEditProfile extends StatelessWidget {
   UserEditProfile({super.key});
 
-  var formKey = GlobalKey<FormState>();
-  var firstNameController = TextEditingController();
-  var lastNameController = TextEditingController();
-  var userNameController = TextEditingController();
-  var phoneController = TextEditingController();
-  var addressController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final userNameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

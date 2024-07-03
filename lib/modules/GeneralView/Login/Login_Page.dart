@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/layout/VolunHeroUserLayout/layout.dart';
+import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/ForgetPassword/ForgetPassword_Page.dart';
-import 'package:flutter_code/modules/GeneralView/OnBoarding2/OnBoarding2_Page.dart';
+import 'package:flutter_code/modules/GeneralView/SignUpPage/SignUp_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,9 +14,9 @@ import '../../../bloc/Login_bloc/states.dart';
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  var formKey = GlobalKey<FormState>();
-  var emailAddressController = TextEditingController();
-  var passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final emailAddressController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class LoginPage extends StatelessWidget {
             //     .loggedInUser != null) {
             //
             // }
-            navigateAndFinish(context, const VolunHeroUserLayout());
+            navigateAndFinish(context, const VolunHeroLayout());
           }
         },
         builder: (context, state) {
@@ -286,7 +286,7 @@ class LoginPage extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         navigateAndFinish(
-                                            context, const OnBoarding2());
+                                            context, const SignupPage());
                                       },
                                       child: const Text(
                                         "Sign Up",

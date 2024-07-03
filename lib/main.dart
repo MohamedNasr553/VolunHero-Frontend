@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
-import 'package:flutter_code/modules/UserView/UserSignUp/User_SignUp_Page.dart';
+import 'package:flutter_code/modules/GeneralView/OnBoarding/OnBoarding_Page.dart';
 import 'package:flutter_code/shared/bloc_observer.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 import 'package:flutter_code/src/app_root.dart';
@@ -28,8 +27,8 @@ void main() async {
   //   widget = const OnBoarding();
   // }
 
-  runApp(AppRoot(
+  runApp(const AppRoot(
     // onBoarding: onBoarding,
-    startWidget: UserSignupPage(),
+    startWidget: OnBoarding(),
   ));
 }
