@@ -21,3 +21,9 @@ const CREATE_POST = "/post";
 const GET_OWNER_POSTS = "/post/ownerPosts";
 
 const SAVED_POSTS = "/savedPosts";
+
+const GENERAL_USERS = "/specification/general";
+
+const MEDICAL_USERS = "/specification/medical";
+
+const EDUCATIONAL_USERS = "/specification/educational";

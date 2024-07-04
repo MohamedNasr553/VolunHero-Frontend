@@ -372,7 +372,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           ? Text(
                               modifiedPost.content,
                               maxLines:
-                                  (modifiedPost.attachments) != null ? 6 : 10,
+                                  (modifiedPost.attachments) != null ? 5 : 10,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: "Robot",

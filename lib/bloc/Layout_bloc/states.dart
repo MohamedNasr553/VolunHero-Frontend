@@ -3,9 +3,9 @@ abstract class LayoutStates {}
 /// Home Page Initialization
 class LayoutInitialState extends LayoutStates {}
 
-class ChangeBottomNavBarState extends LayoutStates {}
+class ChangeOrganizationBottomNavBarState extends LayoutStates {}
 
-class HomeChangeBottomNavBarState extends LayoutStates {}
+class ChangeUserBottomNavBarState extends LayoutStates {}
 
 class ToggleRoadBlocksState extends LayoutStates {}
 

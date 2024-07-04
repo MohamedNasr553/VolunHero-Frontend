@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_code/models/CreatePostModel.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/cubit.dart';
 import 'package:flutter_code/bloc/CreatePost_bloc/states.dart';
@@ -12,6 +15,7 @@ import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter/services.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreatePost extends StatefulWidget {
@@ -24,22 +28,87 @@ class CreatePost extends StatefulWidget {
 class _CreatePostState extends State<CreatePost> {
   var postContentController = TextEditingController();
   File? postAttachment;
+  final _picker = ImagePicker();
+  List<File>? _attachments = [];
 
   @override
   void initState() {
     super.initState();
   }
 
+  Future<void> createPost() async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://volunhero.onrender.com/api/post'),
+    );
+
+    final token = UserLoginCubit.get(context).loginModel!.refresh_token ?? "";
+    request.headers['Authorization'] = 'Volunhero__$token';
+
+    request.fields['content'] = postContentController.text;
+
+    if (_attachments != null && _attachments!.isNotEmpty) {
+      for (var attachment in _attachments!) {
+        print('Attachment: ${attachment.path}');
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'attachments',
+            attachment.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+    } else {
+      print('No attachments to upload.');
+    }
+
+    try {
+      final response = await request.send();
+
+      final responseString = await response.stream.bytesToString();
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseString');
+
+      if (response.statusCode == 201) {
+        print('Post Created Successfully');
+        navigateToPage(context, const VolunHeroLayout());
+        (UserLoginCubit.get(context).loggedInUser!.role == "Organization")
+            ? HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 0)
+            : HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 0);
+      } else {
+        final responseData = jsonDecode(responseString);
+        final createPostModel = CreatePostsResponse.fromJson(responseData);
+        print('Failed to create post');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            createPostModel.message ?? 'Unexpected error',
+            style: const TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ));
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> _pickAttachments() async {
+    final pickedFiles = await _picker.pickMultiImage();
+    setState(() {
+      _attachments = pickedFiles.map((file) => File(file.path)).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final keyboardSize = MediaQuery.of(context).viewInsets.bottom;
-
     return BlocConsumer<CreatePostCubit, CreatePostStates>(
       listener: (context, state) {},
       builder: (context, state) {
         var screenHeight = MediaQuery.of(context).size.height;
         var screenWidth = MediaQuery.of(context).size.width;
-
         return BlocConsumer<UserLoginCubit, UserLoginStates>(
             listener: (context, states) {},
             builder: (context, states) {
@@ -53,11 +122,13 @@ class _CreatePostState extends State<CreatePost> {
                         backgroundColor: HexColor("027E81"),
                         leading: IconButton(
                           onPressed: () {
-                            UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
-                            HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 0):
-                            HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 0);
-                            navigateAndFinish(
-                                context, const VolunHeroLayout());
+                            UserLoginCubit.get(context).loggedInUser?.role ==
+                                    "Organization"
+                                ? HomeLayoutCubit.get(context)
+                                    .changeOrganizationBottomNavBar(context, 0)
+                                : HomeLayoutCubit.get(context)
+                                    .changeUserBottomNavBar(context, 0);
+                            navigateAndFinish(context, const VolunHeroLayout());
                           },
                           icon: SvgPicture.asset(
                             'assets/images/closePost.svg',
@@ -78,7 +149,7 @@ class _CreatePostState extends State<CreatePost> {
                             padding: EdgeInsets.all(screenWidth / 50),
                             child: ElevatedButton(
                               onPressed: () async {
-                                if (state is! CreatePostLoadingState) {
+                                // if (state is! CreatePostLoadingState) {
                                   List<Map<String, dynamic>>
                                       attachmentsMapList = [];
                                   if (postAttachment != null) {
@@ -96,14 +167,15 @@ class _CreatePostState extends State<CreatePost> {
                                     );
                                     return;
                                   }
-                                  CreatePostCubit.get(context).createPost(
-                                    content: postContentController.text,
-                                    attachments: attachmentsMapList,
-                                    token: UserLoginCubit.get(context)
-                                            .loginModel!
-                                            .refresh_token ??
-                                        "",
-                                  );
+                                  // CreatePostCubit.get(context).createPost(
+                                  //   content: postContentController.text,
+                                  //   attachments: attachmentsMapList,
+                                  //   token: UserLoginCubit.get(context)
+                                  //           .loginModel!
+                                  //           .refresh_token ??
+                                  //       "",
+                                  // );
+                                  createPost();
                                   HomeLayoutCubit.get(context).getAllPosts(
                                       token: UserLoginCubit.get(context)
                                               .loginModel!
@@ -111,25 +183,29 @@ class _CreatePostState extends State<CreatePost> {
                                           "");
 
                                   // Change Bottom Nav Bar to Home Screen
-                                  UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
-                                  HomeLayoutCubit.get(context)
-                                      .changeOrganizationBottomNavBar(context, 0):
-                                  HomeLayoutCubit.get(context)
-                                      .changeUserBottomNavBar(context, 0);
+                                  UserLoginCubit.get(context)
+                                              .loggedInUser
+                                              ?.role ==
+                                          "Organization"
+                                      ? HomeLayoutCubit.get(context)
+                                          .changeOrganizationBottomNavBar(
+                                              context, 0)
+                                      : HomeLayoutCubit.get(context)
+                                          .changeUserBottomNavBar(context, 0);
                                   navigateAndFinish(
                                       context, const VolunHeroLayout());
-                                } else if (state is! CreatePostErrorState) {
-                                  showToast(
-                                    text: "Something went wrong",
-                                    state: ToastStates.ERROR,
-                                  );
-                                } else {
-                                  const Center(
-                                    child: LinearProgressIndicator(
-                                      color: defaultColor,
-                                    ),
-                                  );
-                                }
+                                // } else if (state is! CreatePostErrorState) {
+                                //   showToast(
+                                //     text: "Something went wrong",
+                                //     state: ToastStates.ERROR,
+                                //   );
+                                // } else {
+                                //   const Center(
+                                //     child: LinearProgressIndicator(
+                                //       color: defaultColor,
+                                //     ),
+                                //   );
+                                // }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -160,36 +236,20 @@ class _CreatePostState extends State<CreatePost> {
                                 /// Name and Post Content
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(left: screenWidth / 55),
+                                      EdgeInsets.only(left: screenWidth / 40),
                                   child: Column(
                                     children: [
-                                      SizedBox(height: screenHeight / 40),
+                                      SizedBox(height: screenHeight / 25),
                                       // User Profile and Username
                                       Row(
                                         children: [
                                           CircleAvatar(
                                             radius: 20.0,
-                                            backgroundImage: (() {
-                                              final modifiedPost =
-                                                  HomeLayoutCubit.get(context)
-                                                      .modifiedPost;
-                                              if (modifiedPost != null) {
-                                                final createdBy =
-                                                    modifiedPost.createdBy;
-                                                if (createdBy != null &&
-                                                    createdBy.profilePic !=
-                                                        null) {
-                                                  return NetworkImage(createdBy
-                                                          .profilePic!
-                                                          .secure_url)
-                                                      as ImageProvider;
-                                                }
-                                              }
-                                              return const AssetImage(
-                                                  "assets/images/nullProfile.png");
-                                            })(),
+                                            backgroundImage: (UserLoginCubit.get(context).loggedInUser?.profilePic?.secure_url != null)
+                                                ? NetworkImage(UserLoginCubit.get(context).loggedInUser!.profilePic!.secure_url) as ImageProvider
+                                                : const AssetImage("assets/images/nullProfile.png"),
                                           ),
-                                          SizedBox(width: screenWidth / 30),
+                                          SizedBox(width: screenWidth / 60),
                                           Row(
                                             children: [
                                               Text(
@@ -222,7 +282,9 @@ class _CreatePostState extends State<CreatePost> {
                                       // Post Content
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: screenWidth / 18),
+                                          left: screenWidth / 18,
+                                          right: screenWidth / 18,
+                                        ),
                                         child: TextFormField(
                                           controller: postContentController,
                                           decoration: const InputDecoration(
@@ -343,8 +405,9 @@ class _CreatePostState extends State<CreatePost> {
                                                           color: HexColor(
                                                               "027E81"),
                                                         ),
-                                                        const SizedBox(
-                                                            width: 7),
+                                                        SizedBox(
+                                                            width: screenWidth /
+                                                                60),
                                                         const Text(
                                                           "Photo/video",
                                                           style: TextStyle(
@@ -359,6 +422,7 @@ class _CreatePostState extends State<CreatePost> {
                                                     ),
                                                     onTap: () {
                                                       _uploadPhoto();
+                                                      _pickAttachments();
                                                     },
                                                   ),
                                                   SizedBox(
@@ -376,8 +440,9 @@ class _CreatePostState extends State<CreatePost> {
                                                           color: HexColor(
                                                               "027E81"),
                                                         ),
-                                                        const SizedBox(
-                                                            width: 7),
+                                                        SizedBox(
+                                                            width: screenWidth /
+                                                                60),
                                                         const Text(
                                                           "Feeling/activity",
                                                           style: TextStyle(

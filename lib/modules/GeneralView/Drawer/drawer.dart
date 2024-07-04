@@ -73,17 +73,18 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     currentAccountPicture: CircleAvatar(
+                      backgroundColor: Colors.white,
                       child: ClipOval(
-                          child: (HomeLayoutCubit.get(context)
-                                      .modifiedPost
-                                      ?.createdBy
-                                      .profilePic ==
+                          child: (UserLoginCubit.get(context)
+                              .loggedInUser
+                              ?.profilePic
+                              ?.secure_url ==
                                   null)
                               ? Image.asset(
                                   'assets/images/nullProfile.png',
                                   width: 90,
                                   height: 90,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 )
                               : Image(
                                   width: 90,

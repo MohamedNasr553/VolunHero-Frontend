@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
+import 'package:flutter_code/models/HomePagePostsModel.dart';
+import 'package:flutter_code/models/getUsersSupportCalls.dart';
+import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
+import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -170,9 +176,7 @@ Widget updateProfileTextFormField({
       ),
     );
 
-Widget separator()
-=>
-    Container(
+Widget separator() => Container(
       height: 0.5,
       color: Colors.grey.shade400,
     );
@@ -430,8 +434,7 @@ Widget donationFormUI({
                         text: "Form Created Successfully",
                         state: ToastStates.SUCCESS,
                       );
-                      navigateAndFinish(
-                          context, const VolunHeroLayout());
+                      navigateAndFinish(context, const VolunHeroLayout());
                     }
                   },
                   text: 'Submit',
@@ -552,7 +555,8 @@ Widget postSubComponent(String assetIcon, String action,
   );
 }
 
-Widget buildSettingsItem(IconData? icon, String title, BuildContext context, Widget screen){
+Widget buildSettingsItem(
+    IconData? icon, String title, BuildContext context, Widget screen) {
   var screenHeight = MediaQuery.of(context).size.height;
   var screenWidth = MediaQuery.of(context).size.width;
 
@@ -609,6 +613,168 @@ Widget buildSettingsItem(IconData? icon, String title, BuildContext context, Wid
   );
 }
 
+Widget buildSupportCallItem(
+    SupportCallsUserDetails? supportCallsUserDetails, index, context) {
+  var screenHeight = MediaQuery.of(context).size.height;
+  var screenWidth = MediaQuery.of(context).size.width;
+
+  return Padding(
+    padding: EdgeInsets.symmetric(
+        horizontal: screenWidth / 30, vertical: screenHeight / 100),
+    child: Container(
+      height: screenHeight / 11,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 10.0,
+            spreadRadius: -5.0,
+            offset: const Offset(10.0, 5.0),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          start: screenWidth / 70,
+          end: screenWidth / 50,
+        ),
+        child: Row(
+          children: [
+            Stack(
+              alignment: AlignmentDirectional.bottomEnd,
+              children: [
+                InkWell(
+                  onTap: () {
+                  //   HomeLayoutCubit.get(context)
+                  //       .getAnotherUserData(
+                  //           token: UserLoginCubit.get(context)
+                  //               .loginModel!
+                  //               .refresh_token,
+                  //           id: supportCallsUserDetails!.id)
+                  //       .then((value) {
+                  //     UserLoginCubit.get(context)
+                  //         .getAnotherUserPosts(
+                  //             token: UserLoginCubit.get(context)
+                  //                 .loginModel!
+                  //                 .refresh_token,
+                  //             id: supportCallsUserDetails.id,
+                  //             userName: supportCallsUserDetails.userName)
+                  //         .then((value) {
+                  //       UserLoginCubit.get(context).anotherUser =
+                  //           HomeLayoutCubit.get(context).anotherUser;
+                  //       navigateToPage(context, const AnotherUserProfile());
+                  //     });
+                  //   });
+                  },
+                  child: CircleAvatar(
+                    radius: 28.0,
+                    backgroundImage:
+                        (supportCallsUserDetails?.profilePic?.secureUrl != null)
+                            ? NetworkImage(supportCallsUserDetails!
+                                .profilePic!.secureUrl) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    bottom: screenHeight / 300,
+                    end: screenWidth / 150,
+                  ),
+                  child: const CircleAvatar(
+                    radius: 6.0,
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: screenWidth / 20),
+            InkWell(
+              onTap: () {
+                // HomeLayoutCubit.get(context)
+                //     .getAnotherUserData(
+                //         token: UserLoginCubit.get(context)
+                //             .loginModel!
+                //             .refresh_token,
+                //         id: supportCallsUserDetails.id)
+                //     .then((value) {
+                //   UserLoginCubit.get(context)
+                //       .getAnotherUserPosts(
+                //           token: UserLoginCubit.get(context)
+                //               .loginModel!
+                //               .refresh_token,
+                //           id: supportCallsUserDetails.id,
+                //           userName: supportCallsUserDetails.userName)
+                //       .then((value) {
+                //     UserLoginCubit.get(context).anotherUser =
+                //         HomeLayoutCubit.get(context).anotherUser;
+                //     navigateToPage(context, const AnotherUserProfile());
+                //   });
+                // });
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 50,
+                    ),
+                    child: Text(
+                      supportCallsUserDetails!.userName,
+                      style: const TextStyle(
+                          fontFamily: "Roboto",
+                          color: Colors.black,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight / 300),
+                  Row(
+                    children: [
+                      Text(
+                        supportCallsUserDetails.role,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11.0,
+                            color: Colors.grey),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            const Spacer(),
+            (supportCallsUserDetails.id ==
+                    UserLoginCubit.get(context).loggedInUser!.id)
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      // Phone Here Waiting for Backend...
+                      launchPhoneDialer(supportCallsUserDetails.phone);
+                    },
+                    icon: SvgPicture.asset('assets/images/Phone_fill.svg'),
+                    color: HexColor("039FA2"),
+                  ),
+            (supportCallsUserDetails.id ==
+                    UserLoginCubit.get(context).loggedInUser!.id)
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      navigateToURL(url: "https://app.zoom.us/wc");
+                    },
+                    icon: const Icon(
+                      Icons.videocam,
+                    ),
+                    color: HexColor("039FA2"),
+                  ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 Future<void> launchPhoneDialer(String phoneNumber) async {
   final Uri launchUri = Uri(
     scheme: 'tel',
@@ -620,4 +786,3 @@ Future<void> launchPhoneDialer(String phoneNumber) async {
     throw 'Could not launch $phoneNumber';
   }
 }
-

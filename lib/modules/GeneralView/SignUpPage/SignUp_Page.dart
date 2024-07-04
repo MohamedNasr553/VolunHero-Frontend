@@ -100,6 +100,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
           ));
+          navigateToPage(context, LoginPage());
         } else {
           final responseData = jsonDecode(responseString);
           final signUpModel = SignupModel.fromJson(responseData);
@@ -146,7 +147,7 @@ class _SignupPageState extends State<SignupPage> {
           body: SingleChildScrollView(
             child: SizedBox(
               width: double.infinity,
-              height: screenHeight / 0.45,
+              height: screenHeight / 0.42,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -159,8 +160,8 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   Positioned(
-                    top: 60,
-                    left: 0,
+                    top: screenHeight / 15,
+                    left: screenWidth / 50,
                     child: IconButton(
                       icon: const Icon(Icons.arrow_back),
                       color: Colors.white,
@@ -175,7 +176,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
                         start: screenWidth / 20,
-                        top: screenHeight / 2.8,
+                        top: screenHeight / 2.6,
                         end: screenWidth / 20,
                       ),
                       child: Form(
@@ -541,7 +542,28 @@ class _SignupPageState extends State<SignupPage> {
                                   activeColor: defaultColor,
                                   visualDensity:
                                   const VisualDensity(vertical: -4),
-                                  value: 'Medical',
+                                  value: 'Organization',
+                                  groupValue: selectedRole,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                ),
+                                RadioListTile<String>(
+                                  title: const Text(
+                                    'Admin',
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  activeColor: defaultColor,
+                                  visualDensity:
+                                  const VisualDensity(vertical: -4),
+                                  value: 'Admin',
                                   groupValue: selectedRole,
                                   onChanged: (String? value) {
                                     setState(() {
@@ -568,7 +590,7 @@ class _SignupPageState extends State<SignupPage> {
                               children: [
                                 RadioListTile<String>(
                                   title: const Text(
-                                    'General User',
+                                    'General User / Organization',
                                     style: TextStyle(
                                       fontSize: 13.0,
                                       fontWeight: FontWeight.w500,
@@ -756,7 +778,7 @@ class _SignupPageState extends State<SignupPage> {
                   Padding(
                     padding: EdgeInsetsDirectional.only(
                       start: 15.0,
-                      bottom: screenHeight / 0.651,
+                      bottom: screenHeight / 0.55,
                     ),
                     child: const Row(
                       children: [

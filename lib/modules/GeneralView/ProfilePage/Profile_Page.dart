@@ -136,12 +136,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                 children: [
                                   CircleAvatar(
                                     radius: 45.0,
-                                    backgroundImage: HomeLayoutCubit.get(
+                                    backgroundImage: (UserLoginCubit.get(
                                                     context)
-                                                .modifiedPost
-                                                ?.createdBy
-                                                .profilePic !=
-                                            null
+                                                .loggedInUser
+                                                ?.profilePic
+                                                ?.secure_url !=
+                                            null)
                                         ? NetworkImage(
                                             UserLoginCubit.get(context)
                                                 .loggedInUser!
@@ -189,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             .loggedInUser!
                                             .firstName,
                                         style: TextStyle(
-                                          fontSize: 18.0,
+                                          fontSize: 17.0,
                                           color:
                                               Colors.black38.withOpacity(0.7),
                                           fontWeight: FontWeight.w800,
@@ -202,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             .loggedInUser!
                                             .lastName,
                                         style: TextStyle(
-                                          fontSize: 18.0,
+                                          fontSize: 17.0,
                                           color:
                                               Colors.black38.withOpacity(0.7),
                                           fontWeight: FontWeight.w800,
@@ -210,7 +210,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                       ),
                                       SizedBox(width: screenWidth / 60),
-                                      (UserLoginCubit.get(context)
+                                      (UserLoginCubit.get(
+                                                          context)
                                                       .loggedInUser!
                                                       .specification ==
                                                   'Medical' ||
@@ -218,23 +219,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       .loggedInUser!
                                                       .specification ==
                                                   'Educational' ||
-                                          UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .role == "Organization")
+                                              UserLoginCubit.get(context)
+                                                      .loggedInUser!
+                                                      .role ==
+                                                  "Organization")
                                           ? const Icon(Icons.verified,
                                               color: Colors.blue)
                                           : Container(),
                                     ],
                                   ),
                                   const SizedBox(height: 1.0),
-                                  Text(
-                                    UserLoginCubit.get(context)
-                                        .loggedInUser!
-                                        .email,
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.black.withOpacity(0.5),
-                                      fontWeight: FontWeight.w700,
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.only(
+                                      start: screenWidth / 90,
+                                    ),
+                                    child: Text(
+                                      UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .email,
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.black.withOpacity(0.5),
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -255,8 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   color: Colors.grey.withOpacity(0.5),
                                   blurRadius: 10.0,
                                   spreadRadius: -5.0,
-                                  offset: const Offset(
-                                      10.0, 10.0),
+                                  offset: const Offset(10.0, 10.0),
                                 ),
                               ],
                             ),
@@ -323,7 +329,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                             .refresh_token ??
                                                         "",
                                               );
-                                              navigateToPage(context, const FollowersPage());
+                                              navigateToPage(context,
+                                                  const FollowersPage());
                                             },
                                             child: Column(
                                               children: [
@@ -355,12 +362,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                               UserLoginCubit.get(context)
                                                   .getMyFollowings(
                                                 token:
-                                                UserLoginCubit.get(context)
-                                                    .loginModel!
-                                                    .refresh_token ??
-                                                    "",
+                                                    UserLoginCubit.get(context)
+                                                            .loginModel!
+                                                            .refresh_token ??
+                                                        "",
                                               );
-                                              navigateToPage(context, const FollowingsPage());
+                                              navigateToPage(context,
+                                                  const FollowingsPage());
                                             },
                                             child: Column(
                                               children: [
@@ -469,58 +477,66 @@ class _ProfilePageState extends State<ProfilePage> {
                                         padding: EdgeInsetsDirectional.only(
                                           start: screenWidth / 180,
                                         ),
-                                        child: SvgPicture.asset('assets/images/Specification.svg'),
+                                        child: SvgPicture.asset(
+                                            'assets/images/Specification.svg'),
                                       ),
                                       SizedBox(width: screenWidth / 30),
                                       SizedBox(
                                         width: screenWidth / 1.5,
-                                        child: (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "Role: ",
-                                              style: TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.black
-                                                    .withOpacity(0.7),
-                                                fontWeight: FontWeight.bold,
+                                        child: (UserLoginCubit.get(context)
+                                                    .loggedInUser
+                                                    ?.role ==
+                                                "Organization")
+                                            ? Row(
+                                                children: [
+                                                  Text(
+                                                    "Role: ",
+                                                    style: TextStyle(
+                                                      fontSize: 12.0,
+                                                      color: Colors.black
+                                                          .withOpacity(0.7),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    UserLoginCubit.get(context)
+                                                        .loggedInUser!
+                                                        .role,
+                                                    style: const TextStyle(
+                                                      fontSize: 12.0,
+                                                      color: defaultColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : Row(
+                                                children: [
+                                                  Text(
+                                                    "Specification: ",
+                                                    style: TextStyle(
+                                                      fontSize: 12.0,
+                                                      color: Colors.black
+                                                          .withOpacity(0.7),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    UserLoginCubit.get(context)
+                                                        .loggedInUser!
+                                                        .specification,
+                                                    style: const TextStyle(
+                                                      fontSize: 12.0,
+                                                      color: defaultColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            Text(
-                                              UserLoginCubit.get(context)
-                                                  .loggedInUser!
-                                                  .role,
-                                              style: const TextStyle(
-                                                fontSize: 12.0,
-                                                color: defaultColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ):
-                                          Row(
-                                          children: [
-                                            Text(
-                                              "Specification: ",
-                                              style: TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.black
-                                                    .withOpacity(0.7),
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              UserLoginCubit.get(context)
-                                                  .loggedInUser!
-                                                  .specification,
-                                              style: const TextStyle(
-                                                fontSize: 12.0,
-                                                color: defaultColor,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -531,13 +547,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                       SizedBox(width: screenWidth / 30),
                                       SizedBox(
                                         width: screenWidth / 1.5,
-                                        child: (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
-                                        Text(
-                                          "Location: ${UserLoginCubit.get(context).loggedInUser!.address}",
-                                        ):
-                                          Text(
-                                          "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
-                                        ),
+                                        child: (UserLoginCubit.get(context)
+                                                    .loggedInUser
+                                                    ?.role ==
+                                                "Organization")
+                                            ? Text(
+                                                "Location: ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                              )
+                                            : Text(
+                                                "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                              ),
                                       )
                                     ],
                                   ),
@@ -574,11 +593,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Create post
                         GestureDetector(
                           onTap: () {
-                            UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
-                            HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 2):
-                            HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 2);
-                            navigateAndFinish(
-                                context, const VolunHeroLayout());
+                            UserLoginCubit.get(context).loggedInUser?.role ==
+                                    "Organization"
+                                ? HomeLayoutCubit.get(context)
+                                    .changeOrganizationBottomNavBar(context, 2)
+                                : HomeLayoutCubit.get(context)
+                                    .changeUserBottomNavBar(context, 2);
+                            navigateAndFinish(context, const VolunHeroLayout());
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -904,7 +925,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             postDetails.createdBy.userName,
                             style: const TextStyle(
                               fontFamily: "Roboto",
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
@@ -932,8 +953,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () => _showProfilePageBottomSheet(
-                          postDetails, loggedInUser),
+                      onPressed: () {
+                        (postDetails.sharedFrom == null)
+                            ? _showProfilePageBottomSheet(
+                                postDetails, loggedInUser)
+                            : _showSharedPostProfilePageBottomSheet(
+                                postDetails, loggedInUser);
+                      },
                       icon: SvgPicture.asset(
                         'assets/images/postSettings.svg',
                       ),
@@ -1384,6 +1410,221 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       }
                       navigateToPage(context, const EditPost());
+                    },
+                  ),
+
+                  /// Copy Post URl
+                  ListTile(
+                    leading: const Icon(
+                      Icons.copy,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Copy link',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Copy post URL.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to Copy post link
+                      Navigator.pop(context);
+                      _copyUrl(
+                        "https://volunhero.onrender.com/${postDetails!.id}",
+                        context,
+                      );
+                    },
+                  ),
+
+                  /// Delete Post / Remove Share
+                  ListTile(
+                    leading: const Icon(
+                      Icons.delete_forever,
+                      size: 25,
+                    ),
+                    title: (postDetails!.sharedFrom == null)
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Delete Post',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight / 130),
+                              const Text(
+                                'Remove this post from your profile.',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Remove Share',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight / 130),
+                              const Text(
+                                'Remove this post from your profile.',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                    onTap: () {
+                      if (postDetails.sharedFrom == null) {
+                        // Delete Post
+                        HomeLayoutCubit.get(context).deletePost(
+                          token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                              "",
+                          postId: postDetails.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Post Deleted',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      } else {
+                        // Delete Share
+                        HomeLayoutCubit.get(context).removeShare(
+                          token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                              "",
+                          postId: postDetails.id,
+                        );
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          backgroundColor: defaultColor,
+                          content: Text(
+                            'Removed',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ));
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSharedPostProfilePageBottomSheet(
+      Posts? postDetails, LoggedInUser? loggedInUser) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenHeight = MediaQuery.of(context).size.height;
+        var screenWidth = MediaQuery.of(context).size.width;
+
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 4,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  /// Save Post
+                  ListTile(
+                    leading: const Icon(
+                      Icons.save,
+                      size: 25,
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Save Post',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 130),
+                        const Text(
+                          'Add this to your saved items.',
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Logic to save the post
+                      SavedPostsCubit.get(context).savePost(
+                        token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token ??
+                            "",
+                        postId: postDetails!.id,
+                      );
+                      Navigator.pop(context);
                     },
                   ),
 

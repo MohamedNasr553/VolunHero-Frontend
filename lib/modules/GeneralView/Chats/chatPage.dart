@@ -185,26 +185,39 @@ class _ChatsPageState extends State<ChatsPage> {
                                         itemCount: chats.length,
                                       )
                                     : (Center(
-                                        child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "No Chats Yet ",
-                                            style: TextStyle(
-                                                color: Colors.grey[800],
-                                                fontSize: 32),
-                                          ),
-                                          Text(
-                                            "Connect with people to volunteer",
-                                            style: TextStyle(
-                                                color: Colors.grey[400],
-                                                fontSize: 18),
-                                          ),
-                                        ],
-                                      )))
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.chat_outlined,
+                                    size: 50,
+                                    color: Colors.black54,
+                                  ),
+                                  SizedBox(height: screenHeight / 100),
+                                  const Text(
+                                    "No chats yet",
+                                    style: TextStyle(
+                                      fontSize: 23.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Roboto",
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight / 200),
+                                  const Text(
+                                    "Connect "
+                                        "with people to "
+                                        "volunteer.",
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Roboto",
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ))
                                 : const Center(
                                     child: CircularProgressIndicator(
                                     color: defaultColor,

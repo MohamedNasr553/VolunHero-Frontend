@@ -28,6 +28,7 @@ class DetailedPost extends StatefulWidget {
 }
 
 class _DetailedPostState extends State<DetailedPost> {
+  var commentController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
 
@@ -96,7 +97,6 @@ class _DetailedPostState extends State<DetailedPost> {
       LoggedInUser loggedInUser, Comment? commentModel, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var commentController = TextEditingController();
 
     // Handling Post Duration
     DateTime? createdAt = specificPost!.createdAt;
@@ -214,7 +214,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                   specificPost.createdBy.userName,
                                   style: const TextStyle(
                                     fontFamily: "Roboto",
-                                    fontSize: 14,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.black,
                                   ),
@@ -228,7 +228,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                     durationText,
                                     style: TextStyle(
                                       color: HexColor("B8B9BA"),
-                                      fontSize: 10,
+                                      fontSize: 9,
                                     ),
                                   ),
                                   SizedBox(width: screenWidth / 70),
@@ -239,7 +239,6 @@ class _DetailedPostState extends State<DetailedPost> {
                             ],
                           ),
                           const Spacer(),
-
                           /// Post Settings
                           IconButton(
                             onPressed: () {
@@ -397,9 +396,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                 ),
                               ),
                             ),
-
                             const Spacer(),
-
                             /// Post Comments Count
                             if (specificPost.commentsCount == 1)
                               Padding(
@@ -467,7 +464,6 @@ class _DetailedPostState extends State<DetailedPost> {
                                     ),
                                   ),
                                 ),
-
                             /// Post Share Count
                             if (specificPost.shareCount == 1)
                               Padding(

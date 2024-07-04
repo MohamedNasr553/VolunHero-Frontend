@@ -56,7 +56,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         token: UserLoginCubit.get(context).loginModel!.refresh_token);
 
     /// Is followed by logged in user
-    UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id ) ;
+    if (UserLoginCubit.get(context).anotherUser != null) {
+      UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id);
+    }
   }
 
   @override
@@ -274,7 +276,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 followId: UserLoginCubit.get(context).anotherUser!.id
                             );
                           },
-                          child: (UserLoginCubit.get(context).anotherUser!.isFollowed == false)
+                          child: (UserLoginCubit.get(context).anotherUser?.isFollowed == false)
                               ? Container(
                             decoration: BoxDecoration(
                                 color: defaultColor,

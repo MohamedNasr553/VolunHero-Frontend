@@ -91,17 +91,9 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 30,
-                        backgroundColor: Colors.transparent,
-                        child: ClipOval(
-                          child: (HomeLayoutCubit.get(context)
-                                      .modifiedPost
-                                      ?.createdBy
-                                      .profilePic ==
-                                  null)
-                              ? Image.asset('assets/images/nullProfile.png')
-                              : Image.asset(
-                                  'assets/images/${HomeLayoutCubit.get(context).modifiedPost?.createdBy.profilePic ?? 'defaultProfile.png'}'),
-                        ),
+                        backgroundImage: (UserLoginCubit.get(context).loggedInUser?.profilePic?.secure_url != null)
+                            ? NetworkImage(UserLoginCubit.get(context).loggedInUser!.profilePic!.secure_url) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
                   );
@@ -422,7 +414,7 @@ class _HomePageState extends State<HomePage> {
                             postDetails.createdBy.userName,
                             style: const TextStyle(
                               fontFamily: "Roboto",
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
@@ -436,7 +428,7 @@ class _HomePageState extends State<HomePage> {
                               durationText,
                               style: TextStyle(
                                 color: HexColor("B8B9BA"),
-                                fontSize: 10.0,
+                                fontSize: 9.0,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -480,7 +472,7 @@ class _HomePageState extends State<HomePage> {
                           ? Text(
                               postDetails.content,
                               maxLines:
-                                  (postDetails.attachments) != null ? 6 : 10,
+                                  (postDetails.attachments) != null ? 5 : 10,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: "Robot",

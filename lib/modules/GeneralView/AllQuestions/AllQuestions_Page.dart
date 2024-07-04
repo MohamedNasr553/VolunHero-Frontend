@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/states.dart';
+import 'package:flutter_code/bloc/SupportCalls_bloc/cubit.dart';
+import 'package:flutter_code/bloc/SupportCalls_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -7,155 +14,106 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class Questions extends StatelessWidget {
-  Questions({super.key});
-
-  List<Map<String, dynamic>> contacts = [];
+  const Questions({super.key});
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 1; i <= 10; i++) {
-      contacts.add({
-        'image': 'assets/images/logo.png', // Dummy image filename
-        'name': 'User $i Name', // Dummy description
-        'role': (i % 2 == 0) ? 'Teacher' : "Doctor" // Calculate time ago
-      });
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/images/arrowLeft.svg',
-          ),
-          color: HexColor("858888"),
-          onPressed: () {
-            navigateToPage(context, const GetSupport());
-          },
-        ),
-        title: StrokeText(
-          text: "General",
-          strokeColor: Colors.white,
-          textStyle: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              fontFamily: "Roboto",
-              color: HexColor("296E6F")),
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) => buildSupportCallItem(index, context),
-              separatorBuilder: (context, index) => Padding(
-                padding: const EdgeInsetsDirectional.only(start: 10.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 0.1,
-                  color: Colors.white,
-                ),
-              ),
-              itemCount: contacts.length,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildSupportCallItem(index, context) {
     var screenHeight = MediaQuery.of(context).size.height;
-    var screenWidth = MediaQuery.of(context).size.width;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth / 30, vertical: screenHeight / 100),
-      child: Container(
-        height: screenHeight / 11,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 10.0,
-              spreadRadius: -5.0,
-              offset: const Offset(10.0, 5.0),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsetsDirectional.only(
-            start: screenWidth / 70,
-            end: screenWidth / 50,
-          ),
-          child: Row(
-            children: [
-              Stack(
-                alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  CircleAvatar(
-                    radius: 35.0,
-                    backgroundImage: AssetImage(contacts[index]['image']),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      bottom: screenHeight / 100,
-                      end: screenWidth / 80,
+    return BlocConsumer<UserLoginCubit, UserLoginStates>(
+      listener: (context, builder){},
+      builder: (context, state) {
+        return BlocConsumer<HomeLayoutCubit, LayoutStates>(
+          listener: (context, state) {},
+          builder: (context, state){
+            return BlocConsumer<SupportCallsCubit, SupportCallsStates>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                var userModel = SupportCallsCubit.get(context);
+
+                return Scaffold(
+                  appBar: AppBar(
+                    leading: IconButton(
+                      icon: SvgPicture.asset('assets/images/arrowLeft.svg'),
+                      color: HexColor("858888"),
+                      onPressed: () {
+                        navigateToPage(context, const VolunHeroLayout());
+                        (UserLoginCubit.get(context).loggedInUser!.role == "Organization") ?
+                            HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 1) :
+                        HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 1);
+                      },
                     ),
-                    child: const CircleAvatar(
-                      radius: 5.0,
-                      backgroundColor: Colors.green,
+                    title: StrokeText(
+                      text: "General",
+                      strokeColor: Colors.white,
+                      textStyle: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Roboto",
+                        color: HexColor("296E6F"),
+                      ),
                     ),
                   ),
-                ],
-              ),
-              SizedBox(width: screenWidth / 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 50,
+                  body: userModel.generalSupportCallsUserModel != null &&
+                      userModel.generalSupportCallsUserModel!.users.isNotEmpty
+                      ? ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return buildSupportCallItem(
+                        userModel.generalSupportCallsUserModel!.users[index],
+                        index,
+                        context,
+                      );
+                    },
+                    separatorBuilder: (context, index) => Padding(
+                      padding: const EdgeInsetsDirectional.only(start: 10.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 0.1,
+                        color: Colors.white,
+                      ),
                     ),
-                    child: Text(
-                      contacts[index]['name'],
-                      style: const TextStyle(
-                          fontFamily: "Roboto",
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight / 300),
-                  Text(
-                    contacts[index]['role'],
-                    style: const TextStyle(fontWeight: FontWeight.w100),
+                    itemCount: userModel.generalSupportCallsUserModel!.users.length,
                   )
-                ],
-              ),
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                  // Phone Here Waiting for Backend...
-                  launchPhoneDialer('1234567890');
-                },
-                icon: SvgPicture.asset('assets/images/Phone_fill.svg'),
-                color: HexColor("039FA2"),
-              ),
-              IconButton(
-                onPressed: () {
-                  navigateToURL(url: "https://app.zoom.us/wc");
-                },
-                icon: const Icon(
-                  Icons.videocam,
-                ),
-                color: HexColor("039FA2"),
-              ),
-            ],
-          ),
-        ),
-      ),
+                      : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.face_retouching_off_sharp,
+                          size: 50,
+                          color: Colors.black54,
+                        ),
+                        SizedBox(height: screenHeight / 50),
+                        const Text(
+                          "No users or organizations available right now",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Roboto",
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 200),
+                        const Text(
+                          "Online users and organizations"
+                              " will show up here.",
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Roboto",
+                            color: Colors.black38,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

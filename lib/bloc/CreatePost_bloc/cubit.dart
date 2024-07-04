@@ -33,7 +33,7 @@ class CreatePostCubit extends Cubit<CreatePostStates> {
         requestData['attachments'] = attachments;
       }
 
-      var createPostData = await DioHelper.postData(
+      await DioHelper.postData(
         url: CREATE_POST,
         data: requestData,
         token: token,

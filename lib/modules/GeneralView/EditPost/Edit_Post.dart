@@ -25,21 +25,10 @@ class EditPost extends StatefulWidget {
 
 class _DetailedPostState extends State<EditPost> {
   final CarouselController carouselController = CarouselController();
+  var postContentController = TextEditingController();
   int _currentImageIndex = 0;
-  late TextEditingController postContentController;
   File? postAttachment;
-
-  @override
-  void initState() {
-    super.initState();
-    postContentController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    postContentController.dispose();
-    super.dispose();
-  }
+  List<File>? _attachments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +38,16 @@ class _DetailedPostState extends State<EditPost> {
           return BlocConsumer<HomeLayoutCubit, LayoutStates>(
             listener: (context, states) {},
             builder: (context, states) {
-              if (HomeLayoutCubit.get(context).editPostDetails?.content == null) {
-                postContentController.text =
-                HomeLayoutCubit.get(context).getPostById!.post!.content!;
+              if (HomeLayoutCubit.get(context).editPostDetails?.content == null || HomeLayoutCubit.get(context).editPostDetails?.attachments == null) {
+                postContentController.text = HomeLayoutCubit.get(context).getPostById?.post?.content ?? " ";
+                if (HomeLayoutCubit.get(context).getPostById?.post?.attachments != null) {
+                  _attachments!.addAll(HomeLayoutCubit.get(context).getPostById!.post!.attachments!.map((attachment) => File(attachment.secure_url)).toList());
+                }
               } else {
-                postContentController.text =
-                    HomeLayoutCubit.get(context).editPostDetails!.content;
+                postContentController.text = HomeLayoutCubit.get(context).editPostDetails!.content;
+                if (HomeLayoutCubit.get(context).editPostDetails!.attachments != null) {
+                  _attachments!.addAll(HomeLayoutCubit.get(context).editPostDetails!.attachments!.map((attachment) => File(attachment.secure_url)).toList());
+                }
               }
               return Scaffold(
                 appBar: AppBar(
@@ -139,7 +132,6 @@ class _DetailedPostState extends State<EditPost> {
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                       SizedBox(width: screenWidth / 50),
-
                       /// Username, Profile Pic and Duration
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +199,6 @@ class _DetailedPostState extends State<EditPost> {
                         ],
                       ),
                       const Spacer(),
-
                       /// Post Settings
                       IconButton(
                         onPressed: () {
@@ -250,7 +241,7 @@ class _DetailedPostState extends State<EditPost> {
                             fontSize: 13.0,
                             fontWeight: FontWeight.w400,
                           ),
-                          maxLines: (postAttachment == null) ? 1 : 8,
+                          maxLines: (postAttachment == null) ? 5 : 8,
                         ),
                         SizedBox(height: screenHeight / 100),
 
@@ -554,33 +545,6 @@ class _DetailedPostState extends State<EditPost> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget postSubComponent(String assetIcon, String action,
-      {GestureTapCallback? onTap,
-      Color color = const Color(0xFF575757),
-      FontWeight fontWeight = FontWeight.w300}) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            assetIcon,
-            color: color,
-          ),
-          const SizedBox(width: 1),
-          Text(
-            action,
-            style: TextStyle(
-              fontSize: 12,
-              fontFamily: "Roboto",
-              color: color,
-              fontWeight: fontWeight,
-            ),
-          )
-        ],
-      ),
     );
   }
 

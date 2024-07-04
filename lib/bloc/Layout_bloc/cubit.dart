@@ -188,13 +188,13 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   void changeUserBottomNavBar(BuildContext context, int index) {
     currentIndex = index;
     initializeUserBottomItems(context);
-    emit(ChangeBottomNavBarState());
+    emit(ChangeUserBottomNavBarState());
   }
 
   void changeOrganizationBottomNavBar(BuildContext context, int index) {
     currentIndex = index;
     initializeOrganizationBottomItems(context);
-    emit(ChangeBottomNavBarState());
+    emit(ChangeOrganizationBottomNavBarState());
   }
 
   var layoutUserScreens = [
@@ -282,12 +282,13 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     try {
       emit(AddCommentLoadingState());
 
-      // Make the HTTP POST request
+      Map<String, dynamic> requestData = {
+        'content': content,
+      };
+
       await DioHelper.postData(
         url: "/post/$postId/comment",
-        data: {
-          'content': content,
-        },
+        data: requestData,
         token: token,
       );
 

@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Settings_bloc/cubit.dart';
 import 'package:flutter_code/bloc/SignUp_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+import 'package:flutter_code/bloc/SupportCalls_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/shared/styles/themes.dart';
 
@@ -45,7 +46,21 @@ class AppRoot extends StatelessWidget {
                 token: UserLoginCubit.get(context).loginModel!.refresh_token ??
                     ""),
         ),
-        BlocProvider(create: (BuildContext context) => SettingsCubit()),
+        BlocProvider(
+          create: (BuildContext context) => SettingsCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => SupportCallsCubit()
+            ..getAllEducationalUsers(
+                token:
+                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
+            ..getAllMedicalUsers(
+                token:
+                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
+            ..getAllGeneralUsers(
+                token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                    ""),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
