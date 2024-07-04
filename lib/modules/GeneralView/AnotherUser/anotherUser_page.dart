@@ -203,7 +203,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   HomeLayoutCubit.get(context)
                                       .anotherUser
                                       ?.specification ==
-                                      'Educational')
+                                      'Educational' ||
+                                  HomeLayoutCubit.get(context)
+                                      .anotherUser
+                                      ?.role ==
+                                      'Organization')
                                   ? const Icon(Icons.verified,
                                   color: Colors.blue)
                                   : Container(),
@@ -382,7 +386,6 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     ],
                   ),
                 ),
-
                 /// Posts, Following and Followers Count
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -587,7 +590,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               SizedBox(width: screenWidth / 30),
                               SizedBox(
                                   width: screenWidth / 1.5,
-                                  child: Row(
+                                  child: (HomeLayoutCubit.get(context).anotherUser?.role == "User") ?
+                                  Row(
                                     children: [
                                       Text(
                                         "Specification: ",
@@ -609,7 +613,31 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         ),
                                       ),
                                     ],
-                                  ))
+                                  ):
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Role: ",
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Colors.black.withOpacity(0.7),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          UserLoginCubit.get(context)
+                                              .anotherUser
+                                              ?.role ??
+                                              " ",
+                                          style: const TextStyle(
+                                            fontSize: 12.0,
+                                            color: defaultColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                              )
                             ],
                           ),
                           SizedBox(height: screenHeight / 60),
@@ -794,6 +822,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         email: UserLoginCubit.get(context).loggedInUser!.email,
                         phone: UserLoginCubit.get(context).loggedInUser!.phone,
                         role: UserLoginCubit.get(context).loggedInUser!.role,
+                        status: UserLoginCubit.get(context).loggedInUser!.status,
                         images:
                         UserLoginCubit.get(context).loggedInUser!.images,
                         address:

@@ -143,9 +143,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 .profilePic !=
                                             null
                                         ? NetworkImage(
-                                            HomeLayoutCubit.get(context)
-                                                .modifiedPost!
-                                                .createdBy
+                                            UserLoginCubit.get(context)
+                                                .loggedInUser!
                                                 .profilePic!
                                                 .secure_url) as ImageProvider
                                         : const AssetImage(
@@ -218,15 +217,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                               UserLoginCubit.get(context)
                                                       .loggedInUser!
                                                       .specification ==
-                                                  'Educational')
+                                                  'Educational' ||
+                                          UserLoginCubit.get(context)
+                                          .loggedInUser!
+                                          .role == "Organization")
                                           ? const Icon(Icons.verified,
                                               color: Colors.blue)
                                           : Container(),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 1.0,
-                                  ),
+                                  const SizedBox(height: 1.0),
                                   Text(
                                     UserLoginCubit.get(context)
                                         .loggedInUser!
@@ -256,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   blurRadius: 10.0,
                                   spreadRadius: -5.0,
                                   offset: const Offset(
-                                      10.0, 10.0), // Right and bottom shadow
+                                      10.0, 10.0),
                                 ),
                               ],
                             ),
@@ -469,38 +469,59 @@ class _ProfilePageState extends State<ProfilePage> {
                                         padding: EdgeInsetsDirectional.only(
                                           start: screenWidth / 180,
                                         ),
-                                        child: SvgPicture.asset(
-                                          'assets/images/Specification.svg',
+                                        child: SvgPicture.asset('assets/images/Specification.svg'),
+                                      ),
+                                      SizedBox(width: screenWidth / 30),
+                                      SizedBox(
+                                        width: screenWidth / 1.5,
+                                        child: (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Role: ",
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.black
+                                                    .withOpacity(0.7),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              UserLoginCubit.get(context)
+                                                  .loggedInUser!
+                                                  .role,
+                                              style: const TextStyle(
+                                                fontSize: 12.0,
+                                                color: defaultColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ):
+                                          Row(
+                                          children: [
+                                            Text(
+                                              "Specification: ",
+                                              style: TextStyle(
+                                                fontSize: 12.0,
+                                                color: Colors.black
+                                                    .withOpacity(0.7),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              UserLoginCubit.get(context)
+                                                  .loggedInUser!
+                                                  .specification,
+                                              style: const TextStyle(
+                                                fontSize: 12.0,
+                                                color: defaultColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      SizedBox(
-                                        width: screenWidth / 30,
-                                      ),
-                                      SizedBox(
-                                          width: screenWidth / 1.5,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "Specification: ",
-                                                style: TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                UserLoginCubit.get(context)
-                                                    .loggedInUser!
-                                                    .specification,
-                                                style: const TextStyle(
-                                                  fontSize: 12.0,
-                                                  color: defaultColor,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ))
                                     ],
                                   ),
                                   SizedBox(height: screenHeight / 60),
@@ -510,7 +531,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       SizedBox(width: screenWidth / 30),
                                       SizedBox(
                                         width: screenWidth / 1.5,
-                                        child: Text(
+                                        child: (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
+                                        Text(
+                                          "Location: ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                        ):
+                                          Text(
                                           "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
                                         ),
                                       )
@@ -549,7 +574,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         // Create post
                         GestureDetector(
                           onTap: () {
-                            HomeLayoutCubit.get(context).changeBottomNavBar(2);
+                            UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
+                            HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 2):
+                            HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 2);
                             navigateAndFinish(
                                 context, const VolunHeroLayout());
                           },

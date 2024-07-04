@@ -7,6 +7,7 @@ import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/SavedPosts/Saved_Posts.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
+import 'package:flutter_code/modules/OrganizationView/AllDonationFormPage/AllForms.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -126,7 +127,35 @@ class UserSidePage extends StatelessWidget {
                       navigateAndFinish(context, const ProfilePage());
                     },
                   ),
+                  (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
                   ListTile(
+                    leading: Container(
+                      alignment: Alignment.centerLeft,
+                      width: screenWidth / 14,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                        icon: SvgPicture.asset(
+                          'assets/images/File_dock.svg',
+                          width: 30.0,
+                          height: 30.0,
+                        ),
+                      ),
+                    ),
+                    title: const Text(
+                      'Donation Forms',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Roboto',
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      navigateToPage(context, const AllDonationForms());
+                    },
+                  ):
+                    ListTile(
                     leading: Container(
                       alignment: Alignment.centerLeft,
                       width: screenWidth / 14,
@@ -190,7 +219,9 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      cubit.changeBottomNavBar(1);
+                      UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
+                      cubit.changeOrganizationBottomNavBar(context, 1):
+                      cubit.changeUserBottomNavBar(context, 1);
                       navigateAndFinish(context, const VolunHeroLayout());
                     },
                   ),
@@ -214,7 +245,7 @@ class UserSidePage extends StatelessWidget {
                   ),
                   ListTile(
                     contentPadding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 7,
+                      top: screenHeight / 5,
                       start: screenWidth / 23,
                     ),
                     leading: const Icon(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/models/AddCommentModel.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_code/models/likesOnSpecificPost.dart';
 import 'package:flutter_code/modules/GeneralView/CreatePost/CreatePost_Page.dart';
 import 'package:flutter_code/modules/GeneralView/GetSupport/Support_Page.dart';
 import 'package:flutter_code/modules/GeneralView/HomePage/Home_Page.dart';
+import 'package:flutter_code/modules/OrganizationView/AddDonationForm/AddDonationForm.dart';
 import 'package:flutter_code/modules/UserView/RoadBlocks/camera_view.dart';
 import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
 import 'package:flutter_code/shared/network/endpoints.dart';
@@ -39,7 +41,79 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     return b;
   }
 
-  void initializeBottomItems() {
+  void initializeUserBottomItems(BuildContext context) {
+    bottomItems = [
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+          0,
+          SvgPicture.asset(
+            "assets/images/Home_fill_colored.svg",
+            width: 25.0,
+            height: 25.0,
+          ),
+          SvgPicture.asset(
+            "assets/images/Home_fill.svg",
+            width: 25.0,
+            height: 25.0,
+          ),
+        ),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+            1,
+            SvgPicture.asset(
+              "assets/images/Phone_fill.svg",
+              width: 25.0,
+              height: 25.0,
+            ),
+            SvgPicture.asset(
+              "assets/images/supportIcon.svg",
+              width: 25.0,
+              height: 25.0,
+            )),
+        label: 'Support',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(
+          Icons.add_box_rounded,
+        ),
+        label: 'Post',
+      ),
+      BottomNavigationBarItem(
+        icon: changeBottomIcon(
+            3,
+            SvgPicture.asset(
+              "assets/images/Bell_fill_colored.svg",
+              width: 25.0,
+              height: 25.0,
+            ),
+            SvgPicture.asset(
+              "assets/images/Bell_fill.svg",
+              width: 25.0,
+              height: 25.0,
+            )),
+        label: 'Notifications',
+      ),
+      BottomNavigationBarItem(
+      icon: changeBottomIcon(
+          4,
+          SvgPicture.asset(
+            "assets/images/View_alt_fill_activated.svg",
+            width: 25.0,
+            height: 25.0,
+          ),
+          SvgPicture.asset(
+            "assets/images/View_alt_fill.svg",
+            width: 25.0,
+            height: 25.0,
+          )),
+      label: 'RoadBlocks',
+    ),
+    ];
+  }
+
+  void initializeOrganizationBottomItems(BuildContext context) {
     bottomItems = [
       BottomNavigationBarItem(
         icon: changeBottomIcon(
@@ -97,33 +171,47 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
         icon: changeBottomIcon(
             4,
             SvgPicture.asset(
-              "assets/images/View_alt_fill_activated.svg",
-              width: 25.0,
-              height: 25.0,
+              "assets/images/AddDonationFormActivated.svg",
+              width: 18.0,
+              height: 18.0,
             ),
             SvgPicture.asset(
-              "assets/images/View_alt_fill.svg",
+              "assets/images/AddDonationFormLogo.svg",
               width: 25.0,
               height: 25.0,
             )),
-        label: 'RoadBlocks',
+        label: 'Donation Form',
       ),
     ];
   }
 
-  var layoutScreens = [
+  void changeUserBottomNavBar(BuildContext context, int index) {
+    currentIndex = index;
+    initializeUserBottomItems(context);
+    emit(ChangeBottomNavBarState());
+  }
+
+  void changeOrganizationBottomNavBar(BuildContext context, int index) {
+    currentIndex = index;
+    initializeOrganizationBottomItems(context);
+    emit(ChangeBottomNavBarState());
+  }
+
+  var layoutUserScreens = [
     const HomePage(),
     const GetSupport(),
     const CreatePost(),
     const NotificationPage(),
-    const CameraView()
+    const CameraView(),
   ];
 
-  void changeBottomNavBar(int index) {
-    currentIndex = index;
-    initializeBottomItems();
-    emit(ChangeBottomNavBarState());
-  }
+  var layoutOrganizationScreens = [
+    const HomePage(),
+    const GetSupport(),
+    const CreatePost(),
+    const NotificationPage(),
+    const AddDonationForm(),
+  ];
 
   /// ----------------------- Get All Posts API ------------------------
 
@@ -137,7 +225,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     ).then((value) {
       emit(HomePagePostsLoadingState());
       homePagePostsModel = HomePagePostsResponse.fromJson(value.data);
-
+      // changeBottomNavBar(context, currentIndex);
       emit(HomePagePostsSuccessState());
     }).catchError((error) {
       emit(HomePagePostsErrorState());
@@ -253,7 +341,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       getAnotherUserData(token: token, id: postId);
       getPostId(token: token, postId: postId);
     }).catchError((error) {
-      print(error.toString());
 
       emit(LikePostErrorState());
     });
@@ -401,7 +488,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       searchPostResponse = SearchPostResponse.fromJson(value.data);
       emit(SearchPostSuccessState());
     }).catchError((onError) {
-      print(onError.toString());
       emit(SearchPostErrorState());
     });
   }

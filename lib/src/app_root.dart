@@ -30,7 +30,8 @@ class AppRoot extends StatelessWidget {
         ),
         BlocProvider(
             create: (BuildContext context) => HomeLayoutCubit()
-              ..initializeBottomItems()
+              ..initializeUserBottomItems(context)
+              ..initializeOrganizationBottomItems(context)
               ..getAllPosts(
                   token:
                       UserLoginCubit.get(context).loginModel!.refresh_token ??
@@ -44,9 +45,7 @@ class AppRoot extends StatelessWidget {
                 token: UserLoginCubit.get(context).loginModel!.refresh_token ??
                     ""),
         ),
-        BlocProvider(
-          create: (BuildContext context) => SettingsCubit()
-        ),
+        BlocProvider(create: (BuildContext context) => SettingsCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

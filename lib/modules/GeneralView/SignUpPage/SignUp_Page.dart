@@ -37,6 +37,7 @@ class _SignupPageState extends State<SignupPage> {
   File? _profilePic;
   List<File>? _attachments = [];
   String classification = '';
+  String? selectedRole;
   String? selectedItem;
 
   Future<void> _signUp() async {
@@ -48,9 +49,6 @@ class _SignupPageState extends State<SignupPage> {
         Uri.parse('https://volunhero.onrender.com/api/auth/signUp'),
       );
 
-      // bool attachmentsRequired =
-      // (classification == "Medical" || classification == "Educational");
-
       request.fields['firstName'] = firstNameController.text;
       request.fields['lastName'] = lastNameController.text;
       request.fields['userName'] = userNameController.text;
@@ -59,6 +57,7 @@ class _SignupPageState extends State<SignupPage> {
       request.fields['cpassword'] = confirmPasswordController.text;
       request.fields['phone'] = phoneController.text;
       request.fields['address'] = addressController.text;
+      request.fields['role'] = selectedRole!;
       request.fields['specification'] = selectedItem!;
 
       if (_profilePic != null) {
@@ -147,7 +146,7 @@ class _SignupPageState extends State<SignupPage> {
           body: SingleChildScrollView(
             child: SizedBox(
               width: double.infinity,
-              height: screenHeight / 0.48,
+              height: screenHeight / 0.45,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -494,6 +493,66 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                             SizedBox(height: screenHeight / 50),
+                            /// Role
+                            const StrokeText(
+                              text: "Role",
+                              textStyle: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              strokeWidth: 1.0,
+                              strokeColor: Colors.black,
+                            ),
+                            SizedBox(height: screenHeight / 100),
+                            Column(
+                              children: [
+                                RadioListTile<String>(
+                                  title: const Text(
+                                    'User',
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  activeColor: defaultColor,
+                                  dense: true,
+                                  visualDensity:
+                                  const VisualDensity(vertical: -4),
+                                  value: 'User',
+                                  contentPadding: EdgeInsets.zero,
+                                  groupValue: selectedRole,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                ),
+                                RadioListTile<String>(
+                                  title: const Text(
+                                    'Organization',
+                                    style: TextStyle(
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  dense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  activeColor: defaultColor,
+                                  visualDensity:
+                                  const VisualDensity(vertical: -4),
+                                  value: 'Medical',
+                                  groupValue: selectedRole,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: screenHeight / 25),
+                            /// Specification
                             const StrokeText(
                               text: "Specification",
                               textStyle: TextStyle(
@@ -505,7 +564,6 @@ class _SignupPageState extends State<SignupPage> {
                               strokeColor: Colors.black,
                             ),
                             SizedBox(height: screenHeight / 100),
-                            /// Specification
                             Column(
                               children: [
                                 RadioListTile<String>(
@@ -571,30 +629,10 @@ class _SignupPageState extends State<SignupPage> {
                                     });
                                   },
                                 ),
-                                RadioListTile<String>(
-                                  title: const Text(
-                                    'Organization',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  activeColor: defaultColor,
-                                  visualDensity:
-                                  const VisualDensity(vertical: -4),
-                                  value: 'Organization',
-                                  groupValue: selectedItem,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedItem = value!;
-                                    });
-                                  },
-                                ),
                               ],
                             ),
                             SizedBox(height: screenHeight / 25),
+                            /// Profile Pic
                             const StrokeText(
                               text: "Profile Picture",
                               textStyle: TextStyle(
@@ -629,6 +667,7 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                             SizedBox(height: screenHeight / 25),
+                            /// Attachments
                             const StrokeText(
                               text: "Attachments",
                               textStyle: TextStyle(
@@ -668,6 +707,7 @@ class _SignupPageState extends State<SignupPage> {
                               function: () {
                                 _signUp();
                                 print("Selected Item: $selectedItem");
+                                print("Selected Role: $selectedRole");
                               },
                               text: 'Sign up',
                               isUpperCase: false,

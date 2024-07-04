@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
@@ -165,17 +166,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   Future<String> createChat({
     required String secondId,
   }) async {
-    Map<String, dynamic> requestData = {'secondId': secondId};
-
     try {
       emit(CreateChatLoadingState());
-      var response = await DioHelper.postData(
-          url: CREATE_CHAT,
-          data: requestData,
-          token: loginModel!.refresh_token)
-          .then((value) async {
-        emit(CreateChatSuccessState());
-      });
     } catch (error) {
       emit(CreateChatErrorState(error.toString()));
       return "Failed to create chat: $error";
@@ -185,10 +177,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<String> sendMessage(
       {required String chatId,
-        required String senderId,
-        required String text,
-        required String token,
-        required Chat? chat}) async {
+      required String senderId,
+      required String text,
+      required String token,
+      required Chat? chat}) async {
     Map<String, dynamic> requestData = {
       'chatId': chatId,
       'senderId': senderId,
@@ -197,8 +189,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
     try {
       emit(CreateMessageLoadingState());
-      var response = await DioHelper.postData(
-          url: CREATE_MSG, data: requestData, token: token)
+      await DioHelper.postData(url: CREATE_MSG, data: requestData, token: token)
           .then((value) async {
         emit(CreateMessageSuccessState());
       });
@@ -234,7 +225,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
             //    print("   ");
             //    print(value.data);
             MessageResponse messageResponse =
-            MessageResponse.fromJson(value.data);
+                MessageResponse.fromJson(value.data);
             chats[i].messages = messageResponse.messages;
             //   print(chats[i].messages);
           });
@@ -251,7 +242,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   List<Chat> filteredChats = [];
   final StreamController<List<Chat>> _filteredChatsController =
-  StreamController<List<Chat>>.broadcast();
+      StreamController<List<Chat>>.broadcast();
 
   Stream<List<Chat>> get filteredChatsStream => _filteredChatsController.stream;
 
@@ -388,10 +379,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   void inFollowing({required String? followId}) {
     for (int i = 0; i < loggedInUser!.following.length; i++) {
       if (loggedInUser!.following[i]["userId"] == followId) {
-        anotherUser!.isFollowed =  true;
+        anotherUser!.isFollowed = true;
       }
     }
-    anotherUser!.isFollowed =  false;
+    anotherUser!.isFollowed = false;
   }
 
   Future<void> handleFollow(
@@ -421,8 +412,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<void> getAnotherUserPosts(
       {required String? token,
-        required String userName,
-        required String id}) async {
+      required String userName,
+      required String id}) async {
     DioHelper.getData(
       url: "/users/$userName/$id/post",
       token: token,

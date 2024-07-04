@@ -33,6 +33,7 @@ class LoggedInUser {
   final String email;
   final String phone;
   final String role;
+  final String status;
   final ProfilePic? profilePic;
   final String? coverPic;
   final List<String> images;
@@ -57,6 +58,7 @@ class LoggedInUser {
     required this.email,
     required this.phone,
     required this.role,
+    required this.status,
     this.profilePic,
     this.coverPic,
     required this.images,
@@ -83,6 +85,7 @@ class LoggedInUser {
       email: json['email'],
       phone: json['phone'],
       role: json['role'],
+      status: json['status'],
       profilePic: json['profilePic'] != null
           ? ProfilePic.fromJson(json['profilePic'])
           : null,

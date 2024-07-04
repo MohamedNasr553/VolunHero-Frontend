@@ -53,7 +53,9 @@ class _CreatePostState extends State<CreatePost> {
                         backgroundColor: HexColor("027E81"),
                         leading: IconButton(
                           onPressed: () {
-                            HomeLayoutCubit.get(context).changeBottomNavBar(0);
+                            UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
+                            HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 0):
+                            HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 0);
                             navigateAndFinish(
                                 context, const VolunHeroLayout());
                           },
@@ -109,8 +111,11 @@ class _CreatePostState extends State<CreatePost> {
                                           "");
 
                                   // Change Bottom Nav Bar to Home Screen
+                                  UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
                                   HomeLayoutCubit.get(context)
-                                      .changeBottomNavBar(0);
+                                      .changeOrganizationBottomNavBar(context, 0):
+                                  HomeLayoutCubit.get(context)
+                                      .changeUserBottomNavBar(context, 0);
                                   navigateAndFinish(
                                       context, const VolunHeroLayout());
                                 } else if (state is! CreatePostErrorState) {
