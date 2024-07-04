@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/modules/GeneralView/updatePassword/updatePasswordPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -70,7 +72,9 @@ class AccountInformationPage extends StatelessWidget {
               ),
               SizedBox(height: screenHeight / 30),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  deleteAccountApproval(context);
+                },
                 child: Container(
                   width: screenWidth / 1.0,
                   decoration: BoxDecoration(
@@ -168,6 +172,152 @@ class AccountInformationPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void deleteAccountApproval(context){
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        var screenWidth = MediaQuery.of(context).size.width;
+        var screenHeight = MediaQuery.of(context).size.height;
+
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height: screenHeight / 5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(
+                  top: screenHeight / 30,
+                  start: screenWidth / 15,
+                  end: screenWidth / 15,
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Are you sure you want to delete the account "
+                          "permanently ?",
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black45,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        top: screenHeight / 30,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 0.5,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 15,
+                                  end: screenWidth / 15,
+                                  top: screenHeight / 100,
+                                  bottom: screenHeight / 100,
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: screenWidth / 10),
+                          GestureDetector(
+                            onTap: () {
+                              UserLoginCubit.get(context).deleteMe(
+                                token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  'Account Deleted',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ));
+                              navigateToPage(context, LoginPage());
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 0.5,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  start: screenWidth / 20,
+                                  end: screenWidth / 20,
+                                  top: screenHeight / 100,
+                                  bottom: screenHeight / 100,
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    "Delete Account",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: screenHeight / 200),
+              child: Container(
+                width: screenWidth / 10,
+                height: 2.0,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

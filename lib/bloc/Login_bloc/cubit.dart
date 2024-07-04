@@ -137,7 +137,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String chatID,
   }) async {
     try {
-      await DioHelper.deleteData(url: "/chat/${chatID}", token: token);
+      await DioHelper.deleteData(url: "/chat/$chatID", token: token);
       showToast(text: "Chat Deleted Successfully", state: ToastStates.SUCCESS);
 
       // Remove the chat from the local list
@@ -426,7 +426,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     });
   }
 
-  /// ---------------------------Notifications--------------------------
+  /// --------------------------- Notifications --------------------------
   NotificationsModel? notificationsModel;
 
   Future<void> markNotification(String? token, String id) async {
@@ -451,6 +451,23 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       emit(GetLoggedInUserNotificationSuccessState());
     }).catchError((error) {
       emit(GetLoggedInUserNotificationErrorState(error));
+    });
+  }
+
+  // --------------------------- Delete ME -----------------------------
+  void deleteMe({
+    required String token,
+  }) {
+    emit(DeleteMeLoadingState());
+
+    DioHelper.deleteData(
+      url: "/users/deleteMe",
+      token: token,
+    ).then((value) {
+      emit(DeleteMeSuccessState());
+
+    }).catchError((error) {
+      emit(DeleteMeErrorState(error.toString()));
     });
   }
 }

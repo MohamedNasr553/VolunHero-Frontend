@@ -49,7 +49,7 @@ class UserSidePage extends StatelessWidget {
                           UserLoginCubit.get(context).loggedInUser?.firstName ??
                               "First",
                           style: const TextStyle(
-                            fontSize: 18.0,
+                            fontSize: 16.0,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -58,7 +58,7 @@ class UserSidePage extends StatelessWidget {
                           UserLoginCubit.get(context).loggedInUser?.lastName ??
                               "Last",
                           style: const TextStyle(
-                            fontSize: 18.0,
+                            fontSize: 16.0,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
@@ -68,34 +68,41 @@ class UserSidePage extends StatelessWidget {
                       UserLoginCubit.get(context).loggedInUser?.email ??
                           "@username@gmail",
                       style: const TextStyle(
-                        fontSize: 11.0,
+                        fontSize: 10.0,
                         fontWeight: FontWeight.w300,
+                        color: Colors.white
                       ),
                     ),
                     currentAccountPicture: CircleAvatar(
                       backgroundColor: Colors.white,
-                      child: ClipOval(
-                          child: (UserLoginCubit.get(context)
-                              .loggedInUser
-                              ?.profilePic
-                              ?.secure_url ==
-                                  null)
-                              ? Image.asset(
-                                  'assets/images/nullProfile.png',
-                                  width: 90,
-                                  height: 90,
+                      child: (UserLoginCubit.get(context)
+                                  .loggedInUser
+                                  ?.profilePic
+                                  ?.secure_url ==
+                              null)
+                          ? Image.asset(
+                              'assets/images/nullProfile.png',
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.fill,
+                            )
+                          : CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Colors.white,
+                              child: ClipOval(
+                                child: Image(
+                                  height: 80,
+                                  width: 80,
                                   fit: BoxFit.fill,
-                                )
-                              : Image(
-                                  width: 90,
-                                  height: 90,
                                   image: NetworkImage(
                                       UserLoginCubit.get(context)
                                               .loggedInUser
                                               ?.profilePic
                                               ?.secure_url ??
                                           'default_image_url'),
-                                )),
+                                ),
+                              ),
+                            ),
                     ),
                     decoration: const BoxDecoration(
                       color: defaultColor,
@@ -128,60 +135,61 @@ class UserSidePage extends StatelessWidget {
                       navigateAndFinish(context, const ProfilePage());
                     },
                   ),
-                  (UserLoginCubit.get(context).loggedInUser?.role == "Organization") ?
-                  ListTile(
-                    leading: Container(
-                      alignment: Alignment.centerLeft,
-                      width: screenWidth / 14,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          'assets/images/File_dock.svg',
-                          width: 30.0,
-                          height: 30.0,
+                  (UserLoginCubit.get(context).loggedInUser?.role ==
+                          "Organization")
+                      ? ListTile(
+                          leading: Container(
+                            alignment: Alignment.centerLeft,
+                            width: screenWidth / 14,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/File_dock.svg',
+                                width: 30.0,
+                                height: 30.0,
+                              ),
+                            ),
+                          ),
+                          title: const Text(
+                            'Donation Forms',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Roboto',
+                              fontSize: 15.0,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            navigateToPage(context, const AllDonationForms());
+                          },
+                        )
+                      : ListTile(
+                          leading: Container(
+                            alignment: Alignment.centerLeft,
+                            width: screenWidth / 14,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/View_alt_fill.svg',
+                                width: 30.0,
+                                height: 30.0,
+                              ),
+                            ),
+                          ),
+                          title: const Text(
+                            'RoadBlocks',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Roboto',
+                              fontSize: 15.0,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                      ),
-                    ),
-                    title: const Text(
-                      'Donation Forms',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      navigateToPage(context, const AllDonationForms());
-                    },
-                  ):
-                    ListTile(
-                    leading: Container(
-                      alignment: Alignment.centerLeft,
-                      width: screenWidth / 14,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          'assets/images/View_alt_fill.svg',
-                          width: 30.0,
-                          height: 30.0,
-                        ),
-                      ),
-                    ),
-                    title: const Text(
-                      'RoadBlocks',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
                   ListTile(
                     leading: const Icon(
                       Icons.save,
@@ -220,9 +228,10 @@ class UserSidePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
-                      UserLoginCubit.get(context).loggedInUser?.role == "Organization" ?
-                      cubit.changeOrganizationBottomNavBar(context, 1):
-                      cubit.changeUserBottomNavBar(context, 1);
+                      UserLoginCubit.get(context).loggedInUser?.role ==
+                              "Organization"
+                          ? cubit.changeOrganizationBottomNavBar(context, 1)
+                          : cubit.changeUserBottomNavBar(context, 1);
                       navigateAndFinish(context, const VolunHeroLayout());
                     },
                   ),
