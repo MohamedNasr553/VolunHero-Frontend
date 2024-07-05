@@ -8,15 +8,43 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../bloc/Login_bloc/cubit.dart';
 
-class UserEditProfile extends StatelessWidget {
+class UserEditProfile extends StatefulWidget {
   UserEditProfile({super.key});
 
+  @override
+  State<UserEditProfile> createState() => _UserEditProfileState();
+}
+
+class _UserEditProfileState extends State<UserEditProfile> {
   final formKey = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
-  final userNameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
+  final userNameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = UserLoginCubit.get(context).loggedInUser;
+    if (user != null) {
+      firstNameController.text = user.firstName;
+      lastNameController.text = user.lastName;
+      phoneController.text = user.phone;
+      addressController.text = user.address;
+      userNameController.text = user.userName;
+    }
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    userNameController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +74,6 @@ class UserEditProfile extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        Map<String, dynamic> oldData = {
-          "firstName": UserLoginCubit.get(context).loggedInUser!.firstName,
-          "lastName": UserLoginCubit.get(context).loggedInUser!.lastName,
-          "userName": UserLoginCubit.get(context).loggedInUser!.userName,
-          "phone": UserLoginCubit.get(context).loggedInUser!.phone,
-          "address": UserLoginCubit.get(context).loggedInUser!.address,
-        };
-
-        print("Old data: $oldData");
-
         return Scaffold(
           body: SingleChildScrollView(
             child: Stack(
@@ -230,53 +248,22 @@ class UserEditProfile extends StatelessWidget {
                         defaultButton(
                           function: () {
                             if (formKey.currentState!.validate()) {
-                              oldData["firstName"] =
-                                  (firstNameController.text.trim() != "")
-                                      ? firstNameController.text
-                                      : UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .firstName;
-                              oldData["lastName"] =
-                                  (lastNameController.text.trim() != "")
-                                      ? lastNameController.text
-                                      : UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .lastName;
-                              oldData["userName"] =
-                                  (userNameController.text.trim() != "")
-                                      ? userNameController.text
-                                      : UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .userName;
-                              oldData["phone"] =
-                                  (phoneController.text.trim() != "")
-                                      ? phoneController.text
-                                      : UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .phone;
-                              oldData["address"] =
-                                  (addressController.text.trim() != "")
-                                      ? addressController.text
-                                      : UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .address;
-
                               UserLoginCubit.get(context)
                                   .updateLoggedInUserData(
-                                token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
-                                firstName: oldData["firstName"],
-                                lastName: oldData["lastName"],
-                                userName: oldData["userName"],
-                                phone: oldData["phone"],
-                                address: oldData["address"],
-                              )
-                                  .then((value) {
-                                navigateAndFinish(context, const ProfilePage());
-                                showToast(
-                                  text: "Profile Updated Successfully",
-                                  state: ToastStates.SUCCESS,
-                                );
-                              });
+                                token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                    "",
+                                firstName: firstNameController.text,
+                                lastName: lastNameController.text,
+                                phone: phoneController.text,
+                                address: addressController.text,
+                              );
+                              navigateAndFinish(context, const ProfilePage());
+                              showToast(
+                                text: "Profile Updated Successfully",
+                                state: ToastStates.SUCCESS,
+                              );
                             }
                           },
                           text: 'Save',

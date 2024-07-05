@@ -117,12 +117,26 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String token,
     required String firstName,
     required String lastName,
-    required String userName,
     required String phone,
     required String address,
   }) async {
     try {
       emit(UpdateLoggedInUserLoadingState());
+
+      Map<String, dynamic> requestData = {
+        'firstName': firstName,
+        'lastName': lastName,
+        'phone': phone,
+        'address': address,
+      };
+
+      var value = await DioHelper.patchData(
+        url: "/users/updateMe",
+        data: requestData,
+        token: token,
+      );
+
+      print("Request: ${value.toString()}");
 
       emit(UpdateLoggedInUserSuccessState());
     } catch (error) {
@@ -137,8 +151,14 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String chatID,
   }) async {
     try {
-      await DioHelper.deleteData(url: "/chat/$chatID", token: token);
-      showToast(text: "Chat Deleted Successfully", state: ToastStates.SUCCESS);
+      await DioHelper.deleteData(
+        url: "/chat/$chatID",
+        token: token,
+      );
+      showToast(
+        text: "Chat Deleted Successfully",
+        state: ToastStates.SUCCESS,
+      );
 
       // Remove the chat from the local list
       chats.removeWhere((chat) => chat.id == chatID);
@@ -465,7 +485,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       token: token,
     ).then((value) {
       emit(DeleteMeSuccessState());
-
     }).catchError((error) {
       emit(DeleteMeErrorState(error.toString()));
     });

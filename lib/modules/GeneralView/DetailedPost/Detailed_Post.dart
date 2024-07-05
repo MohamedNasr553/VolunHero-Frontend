@@ -28,9 +28,23 @@ class DetailedPost extends StatefulWidget {
 }
 
 class _DetailedPostState extends State<DetailedPost> {
-  var commentController = TextEditingController();
+  final commentController = TextEditingController();
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
+
+  void initState() {
+    super.initState();
+    final user = HomeLayoutCubit.get(context).addComment;
+    if (user != null) {
+      commentController.text = user.content!;
+    }
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -555,7 +569,7 @@ class _DetailedPostState extends State<DetailedPost> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight / 40),
+            SizedBox(height: screenHeight / 60),
             Container(
               height: 1,
               color: Colors.grey.shade300,
@@ -564,7 +578,7 @@ class _DetailedPostState extends State<DetailedPost> {
             Padding(
               padding: EdgeInsetsDirectional.only(
                 top: screenHeight / 80,
-                bottom: screenHeight / 40, // Adjust spacing from the bottom
+                bottom: screenHeight / 40,
               ),
               child: ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
@@ -599,57 +613,55 @@ class _DetailedPostState extends State<DetailedPost> {
         Positioned(
           left: 0,
           right: 0,
-          bottom: screenHeight / 80,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth / 40),
-            child: Container(
-              height: screenHeight / 19,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              padding: EdgeInsetsDirectional.only(
-                start: screenWidth / 30,
-                end: screenWidth / 30,
-              ),
-              child: Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  Padding(
-                    padding:
-                    EdgeInsetsDirectional.only(start: screenWidth / 60),
-                    child: TextField(
-                      controller: commentController,
-                      style: const TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        hintText: 'Write a comment...',
-                        hintStyle: TextStyle(fontSize: 12.0),
-                        border: InputBorder.none,
-                      ),
+          bottom: 0,
+          child: Container(
+            height: screenHeight / 15,
+            width: screenWidth,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            padding: EdgeInsetsDirectional.only(
+              start: screenWidth / 30,
+              end: screenWidth / 30,
+            ),
+            child: Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                Padding(
+                  padding:
+                  EdgeInsetsDirectional.only(start: screenWidth / 60),
+                  child: TextField(
+                    controller: commentController,
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      hintText: 'Write a comment...',
+                      hintStyle: TextStyle(fontSize: 12.0),
+                      border: InputBorder.none,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      HomeLayoutCubit.get(context).createComment(
-                        content: commentController.text,
-                        token: UserLoginCubit.get(context)
-                            .loginModel!
-                            .refresh_token ??
-                            "",
-                        postId: specificPost.id!,
-                      );
-                    },
-                    child: const Icon(
-                      Icons.send,
-                      size: 20,
-                      color: defaultColor,
-                    ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    HomeLayoutCubit.get(context).createComment(
+                      content: commentController.text,
+                      token: UserLoginCubit.get(context)
+                          .loginModel!
+                          .refresh_token ??
+                          "",
+                      postId: specificPost.id!,
+                    );
+                    navigateToPage(context, const DetailedPost());
+                  },
+                  child: const Icon(
+                    Icons.send,
+                    size: 20,
+                    color: defaultColor,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

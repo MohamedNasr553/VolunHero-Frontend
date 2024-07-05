@@ -25,10 +25,10 @@ class EditPost extends StatefulWidget {
 
 class _DetailedPostState extends State<EditPost> {
   final CarouselController carouselController = CarouselController();
-  var postContentController = TextEditingController();
+  final postContentController = TextEditingController();
   int _currentImageIndex = 0;
   File? postAttachment;
-  List<File>? _attachments = [];
+  final List<File>? _attachments = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _DetailedPostState extends State<EditPost> {
           return BlocConsumer<HomeLayoutCubit, LayoutStates>(
             listener: (context, states) {},
             builder: (context, states) {
-              if (HomeLayoutCubit.get(context).editPostDetails?.content == null || HomeLayoutCubit.get(context).editPostDetails?.attachments == null) {
+              if (HomeLayoutCubit.get(context).editPostDetails?.attachments == null) {
                 postContentController.text = HomeLayoutCubit.get(context).getPostById?.post?.content ?? " ";
                 if (HomeLayoutCubit.get(context).getPostById?.post?.attachments != null) {
                   _attachments!.addAll(HomeLayoutCubit.get(context).getPostById!.post!.attachments!.map((attachment) => File(attachment.secure_url)).toList());
