@@ -603,56 +603,48 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // if (modifiedPost.likesCount > 0 &&
-                        //     loggedInUser.id != modifiedPost.createdBy.id)
-                        //   postSubComponent(
-                        //     "assets/images/NewLikeColor.svg",
-                        //     " Like",
-                        //     color: HexColor("4267B2"),
-                        //     onTap: () {
-                        //       HomeLayoutCubit.get(context).likePost(
-                        //           postId: modifiedPost.id,
-                        //           token: UserLoginCubit.get(context)
-                        //                   .loginModel!
-                        //                   .refresh_token ??
-                        //               "", context: context);
-                        //     },
-                        //   )
-                        // else if (modifiedPost.likesCount > 0 &&
-                        //     loggedInUser.id == modifiedPost.createdBy.id)
-                        //   postSubComponent(
-                        //     "assets/images/NewLikeColor.svg",
-                        //     " Like",
-                        //     color: HexColor("4267B2"),
-                        //     onTap: () {
-                        //       HomeLayoutCubit.get(context).likePost(
-                        //           postId: modifiedPost.id,
-                        //           token: UserLoginCubit.get(context)
-                        //                   .loginModel!
-                        //                   .refresh_token ??
-                        //               "", context: context);
-                        //     },
-                        //   )
-                        // else
-                          postSubComponent(
-                            "assets/images/like.svg",
-                            "Like",
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: modifiedPost.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "", context: context);
-                            },
-                          ),
+                        (getDetailedSavedPost.isLikedByMe == true)
+                            ? postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          "  Like",
+                          color: HexColor("#2A57AA"),
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                              postId: getDetailedSavedPost.id!,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "",
+                              context: context,
+                            );
+                          },
+                        )
+                            : postSubComponent(
+                          "assets/images/like.svg",
+                          "Like",
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: getDetailedSavedPost.id!,
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                    "",
+                                context: context);
+                          },
+                        ),
                         const Spacer(),
                         postSubComponent(
-                            "assets/images/comment.svg", "Comment"),
+                          "assets/images/comment.svg",
+                          "Comment",
+                          context,
+                        ),
                         const Spacer(),
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
+                          context,
                           onTap: () {
                             shareSubComponent(modifiedPost, context);
                           },

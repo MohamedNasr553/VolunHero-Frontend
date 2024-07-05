@@ -37,6 +37,7 @@ class Posts {
   DateTime createdAt;
   DateTime updatedAt;
   int v;
+  bool isLikedByMe;
 
   Posts({
     required this.id,
@@ -55,6 +56,7 @@ class Posts {
     required this.createdAt,
     required this.updatedAt,
     required this.v,
+    required this.isLikedByMe,
   });
 
   factory Posts.fromJson(Map<String, dynamic> json) {
@@ -88,6 +90,7 @@ class Posts {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       v: json['__v'],
+      isLikedByMe: json['isLikedByMe'],
     );
   }
 }

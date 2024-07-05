@@ -47,13 +47,15 @@ class GetSavedPosts {
 class GetDetailedSavedPost {
   String? postId;
   String? id;
+  bool? isLikedByMe;
 
-  GetDetailedSavedPost({this.postId, this.id});
+  GetDetailedSavedPost({this.postId, this.id, this.isLikedByMe});
 
   factory GetDetailedSavedPost.fromJson(Map<String, dynamic> json) {
     return GetDetailedSavedPost(
       postId: json['postId'],
       id: json['_id'],
+      isLikedByMe: json['isLikedByMe'],
     );
   }
 }

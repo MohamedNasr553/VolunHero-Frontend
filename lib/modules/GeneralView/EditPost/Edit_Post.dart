@@ -439,16 +439,19 @@ class _DetailedPostState extends State<EditPost> {
                           postSubComponent(
                             "assets/images/like.svg",
                             "Like",
+                            context,
                           ),
                           const Spacer(),
                           postSubComponent(
                             "assets/images/comment.svg",
                             "Comment",
+                            context,
                           ),
                           const Spacer(),
                           postSubComponent(
                             "assets/images/share.svg",
                             "Share",
+                            context,
                           ),
                         ],
                       ),

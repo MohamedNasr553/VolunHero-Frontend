@@ -323,9 +323,6 @@ class _HomePageState extends State<HomePage> {
           }
 
           navigateToPage(context, const DetailedPost());
-          // (HomeLayoutCubit.get(context).getPostById is GetPostByIdSuccessState)
-          //     ? navigateToPage(context, const DetailedPost())
-          //     : const SizedBox();
         },
         child: Container(
           decoration: BoxDecoration(
@@ -647,7 +644,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-
                       /// Post Share Count
                       if (postDetails.shareCount == 1)
                         Padding(
@@ -706,85 +702,42 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Lw ana 3amel Like 3la post 3aleh likes
-                        // if (postDetails.likesCount > 0)
-                        //   for (int i = 0;
-                        //       i <
-                        //           (HomeLayoutCubit.get(context)
-                        //                   .userLikesModel
-                        //                   ?.users
-                        //                   .length ??
-                        //               0);
-                        //       ++i)
-                        //     if (HomeLayoutCubit.get(context)
-                        //             .userLikesModel!
-                        //             .users[i]
-                        //             .id ==
-                        //         UserLoginCubit.get(context).loggedInUser!.id)
-                        //       postSubComponent(
-                        //         "assets/images/NewLikeColor.svg",
-                        //         " Like",
-                        //         color: HexColor("4267B2"),
-                        //         onTap: () {
-                        //           HomeLayoutCubit.get(context).likePost(
-                        //               postId: postDetails.id,
-                        //               token: UserLoginCubit.get(context)
-                        //                       .loginModel!
-                        //                       .refresh_token ??
-                        //                   "",
-                        //               context: context);
-                        //         },
-                        //       )
-                        //       else
-                        //         postSubComponent(
-                        //           "assets/images/Like.svg",
-                        //           " Like",
-                        //           color: HexColor("4267B2"),
-                        //           onTap: () {
-                        //             HomeLayoutCubit.get(context).likePost(
-                        //               postId: postDetails.id,
-                        //               token: UserLoginCubit.get(context)
-                        //                   .loginModel!
-                        //                   .refresh_token ??
-                        //                   "",
-                        //               context: context);
-                        //           },
-                        //         )
-                        //
-                        //     // ------------------------------------------------
-                        //     else if (postDetails.likesCount == 0)
-                        //       postSubComponent(
-                        //         "assets/images/like.svg",
-                        //         " Like",
-                        //         color: HexColor("4267B2"),
-                        //         onTap: () {
-                        //           HomeLayoutCubit.get(context).likePost(
-                        //               postId: postDetails.id,
-                        //               token: UserLoginCubit.get(context)
-                        //                       .loginModel!
-                        //                       .refresh_token ??
-                        //                   "",
-                        //               context: context);
-                        //         },
-                        //       )
-                        //     else
-                        postSubComponent(
-                          "assets/images/like.svg",
-                          "Like",
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
-                                    "",
-                                context: context);
-                          },
-                        ),
+                        (postDetails.isLikedByMe == true)
+                            ? postSubComponent(
+                                "assets/images/NewLikeColor.svg",
+                                "  Like",
+                                color: HexColor("#2A57AA"),
+                                context,
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).likePost(
+                                      postId: postDetails.id,
+                                      token: UserLoginCubit.get(context)
+                                          .loginModel!
+                                          .refresh_token ??
+                                          "",
+                                      context: context,
+                                  );
+                                },
+                              )
+                            : postSubComponent(
+                              "assets/images/like.svg",
+                              "Like",
+                              context,
+                              onTap: () {
+                                HomeLayoutCubit.get(context).likePost(
+                                    postId: postDetails.id,
+                                    token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token ??
+                                        "",
+                                    context: context);
+                              },
+                            ),
                         const Spacer(),
                         postSubComponent(
                           "assets/images/comment.svg",
                           "Comment",
+                          context,
                           onTap: () {
                             final token = UserLoginCubit.get(context)
                                 .loginModel
@@ -809,6 +762,7 @@ class _HomePageState extends State<HomePage> {
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
+                          context,
                           onTap: () {
                             shareSubComponent(postDetails, context);
                           },

@@ -43,6 +43,7 @@ class ModifiedPost {
   DateTime updatedAt;
   bool liked;
   int v;
+  bool isLikedByMe;
 
   ModifiedPost({
     required this.id,
@@ -62,6 +63,7 @@ class ModifiedPost {
     required this.updatedAt,
     required this.liked,
     required this.v,
+    required this.isLikedByMe,
   });
 
   factory ModifiedPost.fromJson(Map<String, dynamic> json) {
@@ -96,6 +98,7 @@ class ModifiedPost {
       updatedAt: DateTime.parse(json['updatedAt']),
       liked: false,
       v: json['__v'],
+      isLikedByMe: json['isLikedByMe'],
     );
   }
 

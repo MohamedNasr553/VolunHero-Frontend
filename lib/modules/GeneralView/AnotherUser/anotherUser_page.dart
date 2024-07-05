@@ -807,7 +807,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     cubit.anotherUserPostsResponse!.posts[index].updatedAt,
                     liked: false,
                     attachments: attachments,
-                    v: cubit.anotherUserPostsResponse!.posts[index].v);
+                    v: cubit.anotherUserPostsResponse!.posts[index].v,
+                    isLikedByMe: false,
+                );
                 return buildPostItem(
                     modifiedPost,
                     LoggedInUser(
@@ -1369,56 +1371,42 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (postDetails.likesCount > 0 &&
-                            loggedInUser.id != postDetails.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          )
-                        else if (postDetails.likesCount > 0 &&
-                            loggedInUser.id == postDetails.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          )
-                        else
-                          postSubComponent(
-                            "assets/images/like.svg",
-                            "Like",
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          ),
+                        (postDetails.isLikedByMe == true)
+                            ? postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          "  Like",
+                          color: HexColor("#2A57AA"),
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "",
+                              context: context,
+                            );
+                          },
+                        )
+                            : postSubComponent(
+                          "assets/images/like.svg",
+                          "Like",
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                    "",
+                                context: context);
+                          },
+                        ),
                         const Spacer(),
                         postSubComponent(
                           "assets/images/comment.svg",
                           "Comment",
+                          context,
                           onTap: () {
                             final token = UserLoginCubit.get(context)
                                 .loginModel
@@ -1443,6 +1431,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
+                          context,
                           onTap: () {
                             shareSubComponent(postDetails, context);
                           },

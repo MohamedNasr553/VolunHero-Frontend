@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
-import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/getUsersSupportCalls.dart';
-import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
-import 'package:flutter_code/modules/GeneralView/ProfilePage/Profile_Page.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -528,7 +525,7 @@ Widget buildLoadingWidget(int itemCount, context) {
   );
 }
 
-Widget postSubComponent(String assetIcon, String action,
+Widget postSubComponent(String assetIcon, String action, context,
     {GestureTapCallback? onTap,
     Color color = const Color(0xFF575757),
     FontWeight fontWeight = FontWeight.w300}) {
@@ -538,7 +535,9 @@ Widget postSubComponent(String assetIcon, String action,
       children: [
         SvgPicture.asset(
           assetIcon,
-          color: color,
+          color: (HomeLayoutCubit.get(context).modifiedPost?.isLikedByMe == true)
+              ? Colors.blue
+              : color
         ),
         const SizedBox(width: 1),
         Text(

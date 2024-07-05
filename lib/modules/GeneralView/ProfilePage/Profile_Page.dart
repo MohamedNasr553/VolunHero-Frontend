@@ -194,65 +194,64 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Stack(
-                          children: [
-                            Container(
-                              height: screenHeight / 7.5,
-                              width: double.infinity,
-                              color: defaultColor,
+                        Stack(children: [
+                          Container(
+                            height: screenHeight / 7.5,
+                            width: double.infinity,
+                            color: defaultColor,
+                          ),
+                          // Profile Photo
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: screenWidth / 25,
+                              top: screenHeight / 13.5,
                             ),
-                            // Profile Photo
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 25,
-                                top: screenHeight / 13.5,
-                              ),
-                              child: Stack(
-                                alignment: AlignmentDirectional.bottomEnd,
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    radius: 45.0,
-                                    backgroundImage: (_profilePic != null)
-                                    ? FileImage(_profilePic!)
-                                    : (UserLoginCubit.get(context)
-                                        .loggedInUser
-                                        ?.profilePic
-                                        ?.secure_url !=
-                                        null)
-                                        ? NetworkImage(UserLoginCubit.get(context)
-                                        .loggedInUser!
-                                        .profilePic!
-                                        .secure_url) as ImageProvider
-                                        : const AssetImage(
-                                        "assets/images/nullProfile.png"),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await _pickProfilePic();
-                                      _uploadPhoto();
-                                      await uploadProfilePhoto();
-                                    },
-                                    child: Container(
-                                      width: 32,
-                                      height: 32,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        // color: Colors.grey.shade300,
-                                        color: defaultColor,
-                                      ),
-                                      child: const Icon(
-                                        Icons.camera_alt_outlined,
-                                        size: 21,
-                                        color: Colors.white,
-                                      ),
+                            child: Stack(
+                              alignment: AlignmentDirectional.bottomEnd,
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 45.0,
+                                  backgroundImage: (_profilePic != null)
+                                      ? FileImage(_profilePic!)
+                                      : (UserLoginCubit.get(context)
+                                                  .loggedInUser
+                                                  ?.profilePic
+                                                  ?.secure_url !=
+                                              null)
+                                          ? NetworkImage(
+                                              UserLoginCubit.get(context)
+                                                  .loggedInUser!
+                                                  .profilePic!
+                                                  .secure_url) as ImageProvider
+                                          : const AssetImage(
+                                              "assets/images/nullProfile.png"),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await _pickProfilePic();
+                                    _uploadPhoto();
+                                    await uploadProfilePhoto();
+                                  },
+                                  child: Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      // color: Colors.grey.shade300,
+                                      color: defaultColor,
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt_outlined,
+                                      size: 21,
+                                      color: Colors.white,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ]
-                        ),
+                          ),
+                        ]),
                         // Username & UserEmail
                         Padding(
                           padding: EdgeInsetsDirectional.only(
@@ -1300,54 +1299,40 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (postDetails.likesCount > 0 &&
-                            loggedInUser.id != postDetails.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          )
-                        else if (postDetails.likesCount > 0 &&
-                            loggedInUser.id == postDetails.createdBy.id)
-                          postSubComponent(
-                            "assets/images/NewLikeColor.svg",
-                            " Like",
-                            color: HexColor("4267B2"),
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          )
-                        else
-                          postSubComponent(
-                            "assets/images/like.svg",
-                            "Like",
-                            onTap: () {
-                              HomeLayoutCubit.get(context).likePost(
-                                  postId: postDetails.id,
-                                  token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                      "",
-                                  context: context);
-                            },
-                          ),
+                        (postDetails.isLikedByMe == true)
+                            ? postSubComponent(
+                          "assets/images/NewLikeColor.svg",
+                          "  Like",
+                          color: HexColor("#2A57AA"),
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                              postId: postDetails.id,
+                              token: UserLoginCubit.get(context)
+                                  .loginModel!
+                                  .refresh_token ??
+                                  "",
+                              context: context,
+                            );
+                          },
+                        )
+                            : postSubComponent(
+                          "assets/images/like.svg",
+                          "Like",
+                          context,
+                          onTap: () {
+                            HomeLayoutCubit.get(context).likePost(
+                                postId: postDetails.id,
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                    "",
+                                context: context);
+                          },
+                        ),
                         const Spacer(),
-                        postSubComponent("assets/images/comment.svg", "Comment",
+                        postSubComponent(
+                            "assets/images/comment.svg", "Comment", context,
                             onTap: () {
                           final token = UserLoginCubit.get(context)
                               .loginModel
@@ -1372,6 +1357,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         postSubComponent(
                           "assets/images/share.svg",
                           "Share",
+                          context,
                           onTap: () {
                             shareSubComponent(postDetails, context);
                           },

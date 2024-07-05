@@ -27,6 +27,7 @@ class SpecificPost {
   DateTime createdAt;
   DateTime updatedAt;
   int? iV;
+  bool? isLikedByMe;
 
   SpecificPost({
     required this.id,
@@ -45,6 +46,7 @@ class SpecificPost {
     required this.createdAt,
     required this.updatedAt,
     required this.iV,
+    required this.isLikedByMe,
   });
 
   factory SpecificPost.fromJson(Map<String, dynamic> json) {
@@ -88,6 +90,7 @@ class SpecificPost {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       iV: json['__v'],
+      isLikedByMe: json['isLikedByMe'],
     );
   }
 }
