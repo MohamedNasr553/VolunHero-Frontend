@@ -191,7 +191,7 @@ class _UserEditProfileState extends State<UserEditProfile> {
                               "*Read only",
                               style: TextStyle(
                                 color: Colors.red,
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w800,
                                 fontSize: 8.0,
                               ),
                             ),

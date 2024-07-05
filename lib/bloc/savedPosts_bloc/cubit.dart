@@ -21,15 +21,11 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   }) async {
     try {
       emit(SavedPostsLoadingState());
-      print("Mn elsaved function: $postId");
       await DioHelper.postData(
         url: "/savedPosts/$postId",
         data: {},
         token: token,
       ).then((value) {
-        print("ksldfjghl;skdfjgkl;dfsg");
-        print(value);
-        print("ksldfjghl;skdfjgkl;dfsg");
         getAllSavedPosts(token: token);
       });
 
@@ -55,7 +51,6 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
       );
 
       // API response
-      print("API Response: ${response.data.toString()}");
 
       // Parse the API response
       getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
@@ -64,12 +59,10 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
           getSavedPostsResponse!.savedPosts!.isNotEmpty) {
         getSavedPosts = getSavedPostsResponse!.savedPosts![0];
 
-        print("Parsed Saved Posts Count: ${getSavedPosts!.posts!.length}");
 
         emit(GetAllSavedPostsSuccessState());
       }
     } catch (error) {
-      print("Error fetching saved posts: $error");
 
       emit(GetAllSavedPostsErrorState());
     }

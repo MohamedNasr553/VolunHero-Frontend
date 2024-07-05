@@ -126,7 +126,7 @@ class AllDonationForms extends StatelessWidget {
                   ),
                   child: MaterialButton(
                     onPressed: () {
-                      navigateToPage(context, const UpdateDonationForm());
+                      // navigateToPage(context, const UpdateDonationForm());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -165,7 +165,7 @@ class AllDonationForms extends StatelessWidget {
                   ),
                   child: MaterialButton(
                     onPressed: () {
-                      navigateToPage(context, const UpdateDonationForm());
+                      // navigateToPage(context, const UpdateDonationForm());
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
