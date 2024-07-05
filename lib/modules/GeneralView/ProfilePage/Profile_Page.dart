@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +23,7 @@ import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -34,6 +37,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final CarouselController carouselController = CarouselController();
   int _currentImageIndex = 0;
 
+  final _picker = ImagePicker();
+  File? _profilePic;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +47,98 @@ class _ProfilePageState extends State<ProfilePage> {
         token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
     HomeLayoutCubit.get(context).getOwnerPosts(
         token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "");
+  }
+
+  Future<void> uploadProfilePhoto() async {
+    if (_profilePic == null) {
+      print('No profile picture selected');
+      return;
+    }
+
+    try {
+      final request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse('https://volunhero.onrender.com/api/users/updateProfilePic'),
+      );
+
+      final token = UserLoginCubit.get(context).loginModel!.refresh_token ?? "";
+      request.headers['Authorization'] = 'Volunhero__$token';
+
+      print('Profile Pic: ${_profilePic!.path}');
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'profilePic',
+          _profilePic!.path,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      );
+
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+      print('Response status: ${response.statusCode}');
+      print('Response body: $responseString');
+
+      if (response.statusCode == 200) {
+        setState(() {
+          // Update _profilePic with the new image file
+          _profilePic = null; // Clear _profilePic after successful upload
+        });
+
+        // Show success message and navigate if needed
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: defaultColor,
+          content: Text(
+            'Profile picture added',
+            style: TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ));
+        navigateToPage(context, const ProfilePage());
+      } else {
+        print('Failed to upload photo');
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Failed to upload photo',
+            style: TextStyle(
+              fontSize: 12.0,
+            ),
+          ),
+        ));
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Unexpected error',
+          style: TextStyle(
+            fontSize: 12.0,
+          ),
+        ),
+      ));
+    }
+  }
+
+  Future<void> _pickProfilePic() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _profilePic = File(pickedFile!.path);
+    });
+  }
+
+  void _uploadPhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _profilePic = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -96,34 +194,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // Profile and Cover photo
                         Stack(
                           children: [
-                            // Cover Photo
                             Container(
                               height: screenHeight / 7.5,
                               width: double.infinity,
                               color: defaultColor,
-                            ),
-                            // Upload Cover Photo Icon
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                start: screenWidth / 1.14,
-                                top: screenHeight / 12.5,
-                              ),
-                              child: IconButton(
-                                // Upload Cover Photo from mobile Gallery
-                                onPressed: _uploadPhoto,
-                                icon: CircleAvatar(
-                                  radius: 15.0,
-                                  backgroundColor: Colors.grey[400],
-                                  child: const Icon(
-                                    Icons.camera_alt_outlined,
-                                    size: 20.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
                             ),
                             // Profile Photo
                             Padding(
@@ -135,41 +211,47 @@ class _ProfilePageState extends State<ProfilePage> {
                                 alignment: AlignmentDirectional.bottomEnd,
                                 children: [
                                   CircleAvatar(
+                                    backgroundColor: Colors.transparent,
                                     radius: 45.0,
-                                    backgroundImage: (UserLoginCubit.get(
-                                                    context)
-                                                .loggedInUser
-                                                ?.profilePic
-                                                ?.secure_url !=
-                                            null)
-                                        ? NetworkImage(
-                                            UserLoginCubit.get(context)
-                                                .loggedInUser!
-                                                .profilePic!
-                                                .secure_url) as ImageProvider
+                                    backgroundImage: (_profilePic != null)
+                                    ? FileImage(_profilePic!)
+                                    : (UserLoginCubit.get(context)
+                                        .loggedInUser
+                                        ?.profilePic
+                                        ?.secure_url !=
+                                        null)
+                                        ? NetworkImage(UserLoginCubit.get(context)
+                                        .loggedInUser!
+                                        .profilePic!
+                                        .secure_url) as ImageProvider
                                         : const AssetImage(
-                                            "assets/images/nullProfile.png"),
+                                        "assets/images/nullProfile.png"),
                                   ),
                                   GestureDetector(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      await _pickProfilePic();
+                                      _uploadPhoto();
+                                      await uploadProfilePhoto();
+                                    },
                                     child: Container(
-                                      width: 25,
-                                      height: 25,
-                                      decoration: BoxDecoration(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Colors.grey.shade400,
+                                        // color: Colors.grey.shade300,
+                                        color: defaultColor,
                                       ),
                                       child: const Icon(
                                         Icons.camera_alt_outlined,
-                                        size: 18,
-                                        color: Colors.black,
+                                        size: 21,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
+                          ]
                         ),
                         // Username & UserEmail
                         Padding(
@@ -1826,6 +1908,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(width: screenWidth / 80),
             CircleAvatar(
+              backgroundColor: Colors.white,
               radius: 10.0,
               backgroundImage: postDetails!.sharedBy!.profilePic != null
                   ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
@@ -1993,18 +2076,6 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     );
-  }
-
-  Future<void> _uploadPhoto() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-    );
-
-    if (pickedFile != null) {
-      // For example:
-      // _handleImage(pickedFile);
-    }
   }
 
   void _copyUrl(String url, BuildContext context) {
