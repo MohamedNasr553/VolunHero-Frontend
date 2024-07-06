@@ -62,11 +62,16 @@ class _SignupPageState extends State<SignupPage> {
 
       if (_profilePic != null) {
         print('Profile Pic: ${_profilePic!.path}');
+        String fileName = _profilePic!.path.split('/').last;
+        String contentType = _profilePic!.path.toLowerCase().endsWith('.jpg')
+            ? 'image/jpeg'
+            : 'image/jpeg';
+
         request.files.add(
           await http.MultipartFile.fromPath(
             'profilePic',
             _profilePic!.path,
-            contentType: MediaType('image', 'jpeg'),
+            contentType: MediaType('image', 'jpeg'), // Specify content type here
           ),
         );
       }

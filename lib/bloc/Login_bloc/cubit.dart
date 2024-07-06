@@ -471,15 +471,35 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     required String userName,
     required String id,
   }) async {
-    DioHelper.getData(
-      url: "/users/$userName/$id/post",
-      token: token,
-    ).then((value) {
+    try {
       emit(GetAnotherUserPostsLoadingState());
-      anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(value.data);
-    }).catchError((error) {
-      emit(GetAnotherUserPostsErrorState(error));
-    });
+
+      print('Fetching posts for user: $userName with id: $id');
+      var response = await DioHelper.getData(
+        url: "/users/$userName/$id/post",
+        token: token,
+      );
+
+      print('Response status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        var jsonData = response.data;
+        print('Response data: $jsonData');
+
+        try {
+          anotherUserPostsResponse = AnotherUserPostsResponse.fromJson(jsonData);
+          emit(GetAnotherUserPostsSuccessState());
+        } catch (e) {
+          print('Error parsing response: $e');
+          emit(GetAnotherUserPostsErrorState('Error parsing response: $e'));
+        }
+      } else {
+        print('Failed to fetch posts: ${response.statusCode}');
+        emit(GetAnotherUserPostsErrorState('Failed to fetch posts: ${response.statusCode}'));
+      }
+    } catch (error) {
+      print('Failed to fetch posts: $error');
+      emit(GetAnotherUserPostsErrorState('Failed to fetch posts: $error'));
+    }
   }
 
   /// --------------------------- Notifications --------------------------

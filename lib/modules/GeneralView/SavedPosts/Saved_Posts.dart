@@ -97,7 +97,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
 
     // print("ListView Length: ${savedPostsCubit.getSavedPosts!.posts!.length}");
     // Checks if getDetailedSavedPost is NotEmpty
-    if (savedPostsCubit.getSavedPosts!.posts != null &&
+    if (savedPostsCubit.getSavedPosts?.posts != null &&
         savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
       return SingleChildScrollView(
         child: Column(
