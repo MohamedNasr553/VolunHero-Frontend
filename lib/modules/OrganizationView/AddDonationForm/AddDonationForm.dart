@@ -18,7 +18,7 @@ class AddDonationFormPage extends StatelessWidget {
     var formKey = GlobalKey<FormState>();
     var titleController = TextEditingController();
     var announceDateController = TextEditingController(
-      text: DateFormat('DD/MM/YYYY').format(DateTime.now()),
+      text: DateFormat('dd/MM/yyyy').format(DateTime.now()),
     );
     var endDateController = TextEditingController();
     var descriptionController = TextEditingController();

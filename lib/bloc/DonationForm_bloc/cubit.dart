@@ -68,6 +68,28 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
     });
   }
 
+  /// -------------------------- Get Specific Org Donation Form ------------------------
+  GetAllDonationFormsResponse? getOrgDonationFormsResponse;
+  DonationFormDetails? getOrgDonationFormsDetails;
+
+  void getOrgDonationForms({
+    required String token,
+    required String orgId,
+  }) async {
+    emit(GetOrgDonationFormLoadingState());
+
+    DioHelper.getData(
+      url: "/donationForm/org/$orgId",
+      token: token,
+    ).then((value) {
+      getOrgDonationFormsResponse =
+          GetAllDonationFormsResponse.fromJson(value.data);
+      emit(GetOrgDonationFormSuccessState());
+    }).catchError((error) {
+      emit(GetOrgDonationFormErrorState());
+    });
+  }
+
   /// ----------------------- Get Detailed Donation Form ----------------------
   DetailedDonationFormResponse? detailedDonationFormResponse;
   DetailedDonationFormDetails? detailedDonationFormDetails;

@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_code/bloc/DonationForm_bloc/cubit.dart';
+import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
+import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +28,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -39,6 +43,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final _picker = ImagePicker();
   File? _profilePic;
+
+  // bool showPosts = true;
+  String pressedState = 'About';
 
   @override
   void initState() {
@@ -177,184 +184,191 @@ class _ProfilePageState extends State<ProfilePage> {
                 }
               },
               builder: (context, state) {
-                return Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: defaultColor,
-                    leading: IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/images/arrow_left_white.svg',
+                return BlocConsumer<DonationFormCubit, DonationFormStates>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        backgroundColor: defaultColor,
+                        leading: IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/images/arrow_left_white.svg',
+                          ),
+                          onPressed: () {
+                            navigateAndFinish(context, const VolunHeroLayout());
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        navigateAndFinish(context, const VolunHeroLayout());
-                      },
-                    ),
-                  ),
-                  body: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Stack(children: [
-                          Container(
-                            height: screenHeight / 7.5,
-                            width: double.infinity,
-                            color: defaultColor,
-                          ),
-                          // Profile Photo
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(
-                              start: screenWidth / 25,
-                              top: screenHeight / 13.5,
-                            ),
-                            child: Stack(
-                              alignment: AlignmentDirectional.bottomEnd,
+                      body: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Stack(
                               children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  radius: 45.0,
-                                  backgroundImage: (_profilePic != null)
-                                      ? FileImage(_profilePic!)
-                                      : (UserLoginCubit.get(context)
-                                                  .loggedInUser
-                                                  ?.profilePic
-                                                  ?.secure_url !=
-                                              null)
-                                          ? NetworkImage(
-                                              UserLoginCubit.get(context)
-                                                  .loggedInUser!
-                                                  .profilePic!
-                                                  .secure_url) as ImageProvider
-                                          : const AssetImage(
-                                              "assets/images/nullProfile.png"),
+                                Container(
+                                  height: screenHeight / 7.5,
+                                  width: double.infinity,
+                                  color: defaultColor,
                                 ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    await _pickProfilePic();
-                                    _uploadPhoto();
-                                    await uploadProfilePhoto();
-                                  },
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      // color: Colors.grey.shade300,
-                                      color: defaultColor,
-                                    ),
-                                    child: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 21,
-                                      color: Colors.white,
-                                    ),
+                                // Profile Photo
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    start: screenWidth / 25,
+                                    top: screenHeight / 13.5,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ]),
-                        // Username & UserEmail
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: screenWidth / 30,
-                            top: screenHeight / 70,
-                          ),
-                          child: Row(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                                  child: Stack(
+                                    alignment: AlignmentDirectional.bottomEnd,
                                     children: [
-                                      Text(
-                                        UserLoginCubit.get(context)
-                                            .loggedInUser!
-                                            .firstName,
-                                        style: TextStyle(
-                                          fontSize: 17.0,
-                                          color:
-                                              Colors.black38.withOpacity(0.7),
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Poppins',
+                                      CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        radius: 45.0,
+                                        backgroundImage: (_profilePic != null)
+                                            ? FileImage(_profilePic!)
+                                            : (UserLoginCubit.get(context)
+                                                        .loggedInUser
+                                                        ?.profilePic
+                                                        ?.secure_url !=
+                                                    null)
+                                                ? NetworkImage(
+                                                        UserLoginCubit.get(
+                                                                context)
+                                                            .loggedInUser!
+                                                            .profilePic!
+                                                            .secure_url)
+                                                    as ImageProvider
+                                                : const AssetImage(
+                                                    "assets/images/nullProfile.png"),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          await _pickProfilePic();
+                                          _uploadPhoto();
+                                          await uploadProfilePhoto();
+                                        },
+                                        child: Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            // color: Colors.grey.shade300,
+                                            color: defaultColor,
+                                          ),
+                                          child: const Icon(
+                                            Icons.camera_alt_outlined,
+                                            size: 21,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                      SizedBox(width: screenWidth / 90),
-                                      Text(
-                                        UserLoginCubit.get(context)
-                                            .loggedInUser!
-                                            .lastName,
-                                        style: TextStyle(
-                                          fontSize: 17.0,
-                                          color:
-                                              Colors.black38.withOpacity(0.7),
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Poppins',
-                                        ),
-                                      ),
-                                      SizedBox(width: screenWidth / 60),
-                                      (UserLoginCubit.get(
-                                                          context)
-                                                      .loggedInUser!
-                                                      .specification ==
-                                                  'Medical' ||
-                                              UserLoginCubit.get(context)
-                                                      .loggedInUser!
-                                                      .specification ==
-                                                  'Educational' ||
-                                              UserLoginCubit.get(context)
-                                                      .loggedInUser!
-                                                      .role ==
-                                                  "Organization")
-                                          ? const Icon(Icons.verified,
-                                              color: Colors.blue)
-                                          : Container(),
                                     ],
                                   ),
-                                  const SizedBox(height: 1.0),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.only(
-                                      start: screenWidth / 90,
-                                    ),
-                                    child: Text(
-                                      UserLoginCubit.get(context)
-                                          .loggedInUser!
-                                          .email,
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.black.withOpacity(0.5),
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: screenHeight / 90),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 10.0,
-                                  spreadRadius: -5.0,
-                                  offset: const Offset(10.0, 10.0),
                                 ),
                               ],
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            // Username & UserEmail
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: screenWidth / 30,
+                                top: screenHeight / 70,
+                              ),
+                              child: Row(
                                 children: [
-                                  const Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      Row(
+                                        children: [
+                                          Text(
+                                            UserLoginCubit.get(context)
+                                                .loggedInUser!
+                                                .firstName,
+                                            style: TextStyle(
+                                              fontSize: 17.0,
+                                              color: Colors.black38
+                                                  .withOpacity(0.7),
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                          SizedBox(width: screenWidth / 90),
+                                          Text(
+                                            UserLoginCubit.get(context)
+                                                .loggedInUser!
+                                                .lastName,
+                                            style: TextStyle(
+                                              fontSize: 17.0,
+                                              color: Colors.black38
+                                                  .withOpacity(0.7),
+                                              fontWeight: FontWeight.w800,
+                                              fontFamily: 'Poppins',
+                                            ),
+                                          ),
+                                          SizedBox(width: screenWidth / 60),
+                                          (UserLoginCubit.get(context)
+                                                          .loggedInUser!
+                                                          .specification ==
+                                                      'Medical' ||
+                                                  UserLoginCubit.get(context)
+                                                          .loggedInUser!
+                                                          .specification ==
+                                                      'Educational' ||
+                                                  UserLoginCubit.get(context)
+                                                          .loggedInUser!
+                                                          .role ==
+                                                      "Organization")
+                                              ? const Icon(Icons.verified,
+                                                  color: Colors.blue)
+                                              : Container(),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 1.0),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.only(
+                                          start: screenWidth / 90,
+                                        ),
+                                        child: Text(
+                                          UserLoginCubit.get(context)
+                                              .loggedInUser!
+                                              .email,
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: screenHeight / 90),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      blurRadius: 10.0,
+                                      spreadRadius: -5.0,
+                                      offset: const Offset(10.0, 10.0),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
                                         "Account Info",
                                         style: TextStyle(
                                           color: Colors.black,
@@ -363,454 +377,851 @@ class _ProfilePageState extends State<ProfilePage> {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  SizedBox(height: screenHeight / 100),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                HomeLayoutCubit.get(context)
-                                                        .ownerPostsModel
-                                                        ?.newPosts
-                                                        .length
-                                                        .toString() ??
-                                                    "0",
-                                                style: TextStyle(
-                                                  fontSize: 16.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                      SizedBox(height: screenHeight / 100),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    HomeLayoutCubit.get(context)
+                                                            .ownerPostsModel
+                                                            ?.newPosts
+                                                            .length
+                                                            .toString() ??
+                                                        "0",
+                                                    style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: Colors.black
+                                                          .withOpacity(0.7),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Posts",
+                                                    style: TextStyle(
+                                                      fontSize: 14.0,
+                                                      color: Colors.black
+                                                          .withOpacity(0.7),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  UserLoginCubit.get(context)
+                                                      .getMyFollowers(
+                                                    token: UserLoginCubit.get(
+                                                                context)
+                                                            .loginModel!
+                                                            .refresh_token ??
+                                                        "",
+                                                  );
+                                                  navigateToPage(context,
+                                                      const FollowersPage());
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "${(UserLoginCubit.get(context).loggedInUser!.followers.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
+                                                      style: TextStyle(
+                                                        fontSize: 16.0,
+                                                        color: Colors.black
+                                                            .withOpacity(0.7),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Followers",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.black
+                                                            .withOpacity(0.7),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              Text(
-                                                "Posts",
+                                            ),
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  UserLoginCubit.get(context)
+                                                      .getMyFollowings(
+                                                    token: UserLoginCubit.get(
+                                                                context)
+                                                            .loginModel!
+                                                            .refresh_token ??
+                                                        "",
+                                                  );
+                                                  navigateToPage(context,
+                                                      const FollowingsPage());
+                                                },
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "${(UserLoginCubit.get(context).loggedInUser!.following.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
+                                                      style: TextStyle(
+                                                        fontSize: 16.0,
+                                                        color: Colors.black
+                                                            .withOpacity(0.7),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Following",
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                        color: Colors.black
+                                                            .withOpacity(0.7),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight / 60),
+                                      Container(
+                                        height: 0.7,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      SizedBox(height: screenHeight / 60),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.only(
+                                          start: screenWidth / 80,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  // showPosts = true;
+                                                  pressedState = 'About';
+                                                });
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    height: screenHeight / 40,
+                                                    width: screenWidth / 11.5,
+                                                    color: Colors.white,
+                                                    child: Text(
+                                                      "About",
+                                                      style: TextStyle(
+                                                        color: (pressedState ==
+                                                                'About')
+                                                            ? defaultColor
+                                                            : Colors.black54,
+                                                        fontFamily: "Poppins",
+                                                        fontSize: 11.5,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  (pressedState == 'About')
+                                                      ? Container(
+                                                          width: screenWidth /
+                                                              11.3,
+                                                          height: 2.7,
+                                                          color: defaultColor,
+                                                        )
+                                                      : const SizedBox()
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(width: screenWidth / 15),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  // showPosts = true;
+                                                  pressedState = 'Posts';
+                                                });
+                                              },
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    height: screenHeight / 40,
+                                                    width: screenWidth / 12,
+                                                    color: Colors.white,
+                                                    child: Text(
+                                                      "Posts",
+                                                      style: TextStyle(
+                                                        color: (pressedState ==
+                                                                'Posts')
+                                                            ? defaultColor
+                                                            : Colors.black54,
+                                                        fontFamily: "Poppins",
+                                                        fontSize: 11.5,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  (pressedState == 'Posts')
+                                                      ? Container(
+                                                          width: screenWidth /
+                                                              12.5,
+                                                          height: 2.7,
+                                                          color: defaultColor,
+                                                        )
+                                                      : const SizedBox()
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(width: screenWidth / 15),
+                                            (UserLoginCubit.get(context)
+                                                        .loggedInUser
+                                                        ?.role ==
+                                                    "Organization")
+                                                ? GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        // showPosts = true;
+                                                        pressedState =
+                                                            'Donation Forms';
+                                                      });
+                                                    },
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          height:
+                                                              screenHeight / 40,
+                                                          width:
+                                                              screenWidth / 4,
+                                                          color: Colors.white,
+                                                          child: Text(
+                                                            'Donation Forms',
+                                                            style: TextStyle(
+                                                              color: (pressedState ==
+                                                                      'Donation Forms')
+                                                                  ? defaultColor
+                                                                  : Colors
+                                                                      .black54,
+                                                              fontFamily:
+                                                                  "Poppins",
+                                                              fontSize: 11.5,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        (pressedState ==
+                                                                'Donation Forms')
+                                                            ? Container(
+                                                                width:
+                                                                    screenWidth /
+                                                                        4.3,
+                                                                height: 2.7,
+                                                                color:
+                                                                    defaultColor,
+                                                              )
+                                                            : const SizedBox()
+                                                      ],
+                                                    ),
+                                                  )
+                                                : const SizedBox()
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (pressedState == 'About')
+                              Column(
+                                children: [
+                                  // Personal Details
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(14.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            blurRadius: 10.0,
+                                            spreadRadius: -5.0,
+                                            offset: const Offset(10.0, 10.0),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Text(
+                                                  "Personal Details",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontFamily: "Poppins",
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                InkWell(
+                                                  onTap: () {
+                                                    navigateToPage(context,
+                                                        UserEditProfile());
+                                                  },
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              18),
+                                                      border: Border.all(
+                                                        color:
+                                                            HexColor("027E81"),
+                                                      ),
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8.0,
+                                                        right: 8.0,
+                                                        bottom: 4.0,
+                                                        top: 4.0,
+                                                      ),
+                                                      child: Text(
+                                                        "Edit Profile",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontFamily: "Poppins",
+                                                          fontSize: 14.0,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(height: screenHeight / 80),
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsetsDirectional
+                                                      .only(
+                                                    start: screenWidth / 180,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                      'assets/images/Specification.svg'),
+                                                ),
+                                                SizedBox(
+                                                    width: screenWidth / 30),
+                                                SizedBox(
+                                                  width: screenWidth / 1.5,
+                                                  child: (UserLoginCubit.get(
+                                                                  context)
+                                                              .loggedInUser
+                                                              ?.role ==
+                                                          "Organization")
+                                                      ? Row(
+                                                          children: [
+                                                            Text(
+                                                              "Role: ",
+                                                              style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.7),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              UserLoginCubit.get(
+                                                                      context)
+                                                                  .loggedInUser!
+                                                                  .role,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12.0,
+                                                                color:
+                                                                    defaultColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          children: [
+                                                            Text(
+                                                              "Specification: ",
+                                                              style: TextStyle(
+                                                                fontSize: 12.0,
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.7),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              UserLoginCubit.get(
+                                                                      context)
+                                                                  .loggedInUser!
+                                                                  .specification,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12.0,
+                                                                color:
+                                                                    defaultColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: screenHeight / 60),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                    Icons.location_on_outlined),
+                                                SizedBox(
+                                                    width: screenWidth / 30),
+                                                SizedBox(
+                                                  width: screenWidth / 1.5,
+                                                  child: (UserLoginCubit.get(
+                                                                  context)
+                                                              .loggedInUser
+                                                              ?.role ==
+                                                          "Organization")
+                                                      ? Text(
+                                                          "Location: ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                                        )
+                                                      : Text(
+                                                          "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
+                                                        ),
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: screenHeight / 70,
+                                            ),
+                                            const Text(
+                                              "Contact Info",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            SizedBox(height: screenHeight / 80),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.phone),
+                                                SizedBox(
+                                                    width: screenWidth / 30),
+                                                SizedBox(
+                                                  width: screenWidth / 1.5,
+                                                  child: Text(
+                                                    UserLoginCubit.get(context)
+                                                        .loggedInUser!
+                                                        .phone,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Create post
+                                  GestureDetector(
+                                    onTap: () {
+                                      UserLoginCubit.get(context)
+                                                  .loggedInUser
+                                                  ?.role ==
+                                              "Organization"
+                                          ? HomeLayoutCubit.get(context)
+                                              .changeOrganizationBottomNavBar(
+                                                  context, 2)
+                                          : HomeLayoutCubit.get(context)
+                                              .changeUserBottomNavBar(
+                                                  context, 2);
+                                      navigateAndFinish(
+                                          context, const VolunHeroLayout());
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(14.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              blurRadius: 10.0,
+                                              spreadRadius: -5.0,
+                                              offset: const Offset(10.0,
+                                                  10.0), // Right and bottom shadow
+                                            ),
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "Your Posts",
                                                 style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Colors.black
-                                                      .withOpacity(0.7),
-                                                  fontWeight: FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                              SizedBox(
+                                                  height: screenHeight / 100),
+                                              Container(
+                                                height: 1,
+                                                color: Colors.grey.shade300,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: screenWidth / 20),
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: screenWidth / 1.5,
+                                                      child: const Text(
+                                                        "What's on your mind ?",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const Spacer(),
+                                                    IconButton(
+                                                      onPressed: () {},
+                                                      icon: Image.asset(
+                                                        'assets/images/Img_box_duotone_line.png',
+                                                        width: 25.0,
+                                                        height: 25.0,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              UserLoginCubit.get(context)
-                                                  .getMyFollowers(
-                                                token:
-                                                    UserLoginCubit.get(context)
-                                                            .loginModel!
-                                                            .refresh_token ??
-                                                        "",
-                                              );
-                                              navigateToPage(context,
-                                                  const FollowersPage());
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  "${(UserLoginCubit.get(context).loggedInUser!.followers.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.followers.length : 0}",
-                                                  style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    color: Colors.black
-                                                        .withOpacity(0.7),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "Followers",
-                                                  style: TextStyle(
-                                                    fontSize: 14.0,
-                                                    color: Colors.black
-                                                        .withOpacity(0.7),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              UserLoginCubit.get(context)
-                                                  .getMyFollowings(
-                                                token:
-                                                    UserLoginCubit.get(context)
-                                                            .loginModel!
-                                                            .refresh_token ??
-                                                        "",
-                                              );
-                                              navigateToPage(context,
-                                                  const FollowingsPage());
-                                            },
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  "${(UserLoginCubit.get(context).loggedInUser!.following.isNotEmpty) ? UserLoginCubit.get(context).loggedInUser!.following.length : 0}",
-                                                  style: TextStyle(
-                                                    fontSize: 16.0,
-                                                    color: Colors.black
-                                                        .withOpacity(0.7),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "Following",
-                                                  style: TextStyle(
-                                                    fontSize: 14.0,
-                                                    color: Colors.black
-                                                        .withOpacity(0.7),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Personal Details
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  blurRadius: 10.0,
-                                  spreadRadius: -5.0,
-                                  offset: const Offset(
-                                      10.0, 10.0), // Right and bottom shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "Personal Details",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: "Poppins",
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
                                       ),
-                                      const Spacer(),
-                                      InkWell(
-                                        onTap: () {
-                                          navigateToPage(
-                                              context, UserEditProfile());
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(18),
-                                            border: Border.all(
-                                              color: HexColor("027E81"),
+                                    ),
+                                  ),
+                                  // Posts
+                                  if (HomeLayoutCubit.get(context)
+                                              .ownerPostsModel !=
+                                          null &&
+                                      HomeLayoutCubit.get(context)
+                                          .ownerPostsModel!
+                                          .newPosts
+                                          .isEmpty)
+                                    Padding(
+                                      padding: EdgeInsets.all(screenWidth / 60),
+                                      child: Container(
+                                        height: screenHeight / 10,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(14.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              blurRadius: 10.0,
+                                              spreadRadius: -5.0,
+                                              offset: const Offset(10.0, 10.0),
                                             ),
-                                          ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.only(
-                                              left: 8.0,
-                                              right: 8.0,
-                                              bottom: 4.0,
-                                              top: 4.0,
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Icon(
+                                              Icons.post_add,
+                                              size: 28,
+                                              color: Colors.black54,
                                             ),
-                                            child: Text(
-                                              "Edit Profile",
+                                            SizedBox(
+                                                height: screenHeight / 200),
+                                            const Text(
+                                              "No Posts Available",
                                               style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: "Poppins",
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.w600,
+                                                fontFamily: "Roboto",
+                                                color: Colors.black87,
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: screenHeight / 80),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.only(
-                                          start: screenWidth / 180,
-                                        ),
-                                        child: SvgPicture.asset(
-                                            'assets/images/Specification.svg'),
-                                      ),
-                                      SizedBox(width: screenWidth / 30),
-                                      SizedBox(
-                                        width: screenWidth / 1.5,
-                                        child: (UserLoginCubit.get(context)
-                                                    .loggedInUser
-                                                    ?.role ==
-                                                "Organization")
-                                            ? Row(
-                                                children: [
-                                                  Text(
-                                                    "Role: ",
-                                                    style: TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.black
-                                                          .withOpacity(0.7),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    UserLoginCubit.get(context)
-                                                        .loggedInUser!
-                                                        .role,
-                                                    style: const TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: defaultColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Row(
-                                                children: [
-                                                  Text(
-                                                    "Specification: ",
-                                                    style: TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: Colors.black
-                                                          .withOpacity(0.7),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    UserLoginCubit.get(context)
-                                                        .loggedInUser!
-                                                        .specification,
-                                                    style: const TextStyle(
-                                                      fontSize: 12.0,
-                                                      color: defaultColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: screenHeight / 60),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.location_on_outlined),
-                                      SizedBox(width: screenWidth / 30),
-                                      SizedBox(
-                                        width: screenWidth / 1.5,
-                                        child: (UserLoginCubit.get(context)
-                                                    .loggedInUser
-                                                    ?.role ==
-                                                "Organization")
-                                            ? Text(
-                                                "Location: ${UserLoginCubit.get(context).loggedInUser!.address}",
-                                              )
-                                            : Text(
-                                                "Lives in ${UserLoginCubit.get(context).loggedInUser!.address}",
-                                              ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: screenHeight / 70,
-                                  ),
-                                  const Text(
-                                    "Contact Info",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight / 80),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.phone),
-                                      SizedBox(width: screenWidth / 30),
-                                      SizedBox(
-                                        width: screenWidth / 1.5,
-                                        child: Text(
-                                          UserLoginCubit.get(context)
-                                              .loggedInUser!
-                                              .phone,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        // Create post
-                        GestureDetector(
-                          onTap: () {
-                            UserLoginCubit.get(context).loggedInUser?.role ==
-                                    "Organization"
-                                ? HomeLayoutCubit.get(context)
-                                    .changeOrganizationBottomNavBar(context, 2)
-                                : HomeLayoutCubit.get(context)
-                                    .changeUserBottomNavBar(context, 2);
-                            navigateAndFinish(context, const VolunHeroLayout());
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    blurRadius: 10.0,
-                                    spreadRadius: -5.0,
-                                    offset: const Offset(
-                                        10.0, 10.0), // Right and bottom shadow
-                                  ),
-                                ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Your Posts",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    SizedBox(height: screenHeight / 100),
-                                    Container(
-                                      height: 1,
-                                      color: Colors.grey.shade300,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: screenWidth / 20),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: screenWidth / 1.5,
-                                            child: const Text(
-                                              "What's on your mind ?",
+                                            SizedBox(
+                                                height: screenHeight / 300),
+                                            const Text(
+                                              "Your Posts "
+                                              "and attachments will "
+                                              "show up here.",
                                               style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 14.0,
+                                                fontSize: 10.0,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "Poppins",
+                                                color: Colors.black38,
                                               ),
                                             ),
-                                          ),
-                                          const Spacer(),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Image.asset(
-                                              'assets/images/Img_box_duotone_line.png',
-                                              width: 25.0,
-                                              height: 25.0,
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    buildPostsList(context)
+                                ],
+                              )
+                            else if (pressedState == 'Posts')
+                              // Create post
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      UserLoginCubit.get(context)
+                                                  .loggedInUser
+                                                  ?.role ==
+                                              "Organization"
+                                          ? HomeLayoutCubit.get(context)
+                                              .changeOrganizationBottomNavBar(
+                                                  context, 2)
+                                          : HomeLayoutCubit.get(context)
+                                              .changeUserBottomNavBar(
+                                                  context, 2);
+                                      navigateAndFinish(
+                                          context, const VolunHeroLayout());
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(14.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              blurRadius: 10.0,
+                                              spreadRadius: -5.0,
+                                              offset: const Offset(10.0,
+                                                  10.0), // Right and bottom shadow
                                             ),
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "Your Posts",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16),
+                                              ),
+                                              SizedBox(
+                                                  height: screenHeight / 100),
+                                              Container(
+                                                height: 1,
+                                                color: Colors.grey.shade300,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: screenWidth / 20),
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: screenWidth / 1.5,
+                                                      child: const Text(
+                                                        "What's on your mind ?",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: 14.0,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const Spacer(),
+                                                    IconButton(
+                                                      onPressed: () {},
+                                                      icon: Image.asset(
+                                                        'assets/images/Img_box_duotone_line.png',
+                                                        width: 25.0,
+                                                        height: 25.0,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  ],
+                                  ),
+                                  // Posts
+                                  if (HomeLayoutCubit.get(context)
+                                              .ownerPostsModel !=
+                                          null &&
+                                      HomeLayoutCubit.get(context)
+                                          .ownerPostsModel!
+                                          .newPosts
+                                          .isEmpty)
+                                    Padding(
+                                      padding: EdgeInsets.all(screenWidth / 60),
+                                      child: Container(
+                                        height: screenHeight / 10,
+                                        width: screenWidth,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(14.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              blurRadius: 10.0,
+                                              spreadRadius: -5.0,
+                                              offset: const Offset(10.0, 10.0),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Icon(
+                                              Icons.post_add,
+                                              size: 28,
+                                              color: Colors.black54,
+                                            ),
+                                            SizedBox(
+                                                height: screenHeight / 200),
+                                            const Text(
+                                              "No Posts Available",
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "Roboto",
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: screenHeight / 300),
+                                            const Text(
+                                              "Your Posts "
+                                              "and attachments will "
+                                              "show up here.",
+                                              style: TextStyle(
+                                                fontSize: 10.0,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "Poppins",
+                                                color: Colors.black38,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    buildPostsList(context)
+                                ],
+                              )
+                            else if (pressedState == 'Donation Forms')
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                  top: screenHeight / 60,
+                                  start: screenWidth / 40,
+                                  end: screenWidth / 40,
+                                ),
+                                child: ListView.separated(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) =>
+                                      donationFormItem(
+                                    DonationFormCubit.get(context)
+                                        .getOrgDonationFormsResponse
+                                        ?.donationForms[index],
+                                    context,
+                                  ),
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(height: screenHeight / 50),
+                                  itemCount: DonationFormCubit.get(context)
+                                          .getOrgDonationFormsResponse
+                                          ?.donationForms
+                                          .length ??
+                                      0,
                                 ),
                               ),
-                            ),
-                          ),
+                          ],
                         ),
-                        // Posts
-                        if (HomeLayoutCubit.get(context).ownerPostsModel !=
-                                null &&
-                            HomeLayoutCubit.get(context)
-                                .ownerPostsModel!
-                                .newPosts
-                                .isEmpty)
-                          Padding(
-                            padding: EdgeInsets.all(screenWidth / 60),
-                            child: Container(
-                              height: screenHeight / 10,
-                              width: screenWidth,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    blurRadius: 10.0,
-                                    spreadRadius: -5.0,
-                                    offset: const Offset(10.0, 10.0),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.post_add,
-                                    size: 28,
-                                    color: Colors.black54,
-                                  ),
-                                  SizedBox(height: screenHeight / 200),
-                                  const Text(
-                                    "No Posts Available",
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Roboto",
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight / 300),
-                                  const Text(
-                                    "Your Posts "
-                                    "and attachments will "
-                                    "show up here.",
-                                    style: TextStyle(
-                                      fontSize: 10.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Poppins",
-                                      color: Colors.black38,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        else
-                          buildPostsList(context)
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -843,7 +1254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   loginCubit.loggedInUserData!.doc, context);
             }
           }
-          return const SizedBox(); // Return an empty SizedBox if no post is available
+          return const SizedBox();
         },
         separatorBuilder: (context, index) => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1301,35 +1712,35 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         (postDetails.isLikedByMe == true)
                             ? postSubComponent(
-                          "assets/images/NewLikeColor.svg",
-                          "  Like",
-                          color: HexColor("#2A57AA"),
-                          context,
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                              postId: postDetails.id,
-                              token: UserLoginCubit.get(context)
-                                  .loginModel!
-                                  .refresh_token ??
-                                  "",
-                              context: context,
-                            );
-                          },
-                        )
+                                "assets/images/NewLikeColor.svg",
+                                "  Like",
+                                color: HexColor("#2A57AA"),
+                                context,
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).likePost(
+                                    postId: postDetails.id,
+                                    token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token ??
+                                        "",
+                                    context: context,
+                                  );
+                                },
+                              )
                             : postSubComponent(
-                          "assets/images/like.svg",
-                          "Like",
-                          context,
-                          onTap: () {
-                            HomeLayoutCubit.get(context).likePost(
-                                postId: postDetails.id,
-                                token: UserLoginCubit.get(context)
-                                    .loginModel!
-                                    .refresh_token ??
-                                    "",
-                                context: context);
-                          },
-                        ),
+                                "assets/images/like.svg",
+                                "Like",
+                                context,
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).likePost(
+                                      postId: postDetails.id,
+                                      token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token ??
+                                          "",
+                                      context: context);
+                                },
+                              ),
                         const Spacer(),
                         postSubComponent(
                             "assets/images/comment.svg", "Comment", context,
@@ -1369,6 +1780,117 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget donationFormItem(
+      DonationFormDetails? getOrgDonationFormsDetails, context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
+
+    return Container(
+      width: screenWidth / 2,
+      height: screenHeight / 5,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            blurRadius: 10.0,
+            spreadRadius: -5.0,
+            offset: const Offset(10.0, 10.0),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          bottom: screenHeight / 80,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.only(
+                start: screenWidth / 20,
+                top: screenHeight / 50,
+                end: screenWidth / 20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        getOrgDonationFormsDetails!.title,
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight / 200),
+                      Row(
+                        children: [
+                          const Text(
+                            'End Date:  ',
+                            style: TextStyle(
+                              fontSize: 9.0,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            DateFormat('dd-MM-yyyy')
+                                .format(getOrgDonationFormsDetails.endDate),
+                            style: const TextStyle(
+                              fontSize: 9.0,
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight / 50),
+                  Text(
+                    getOrgDonationFormsDetails.description,
+                    style: const TextStyle(
+                      fontSize: 11.0,
+                      color: Colors.black45,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: screenHeight / 40),
+                  Row(
+                    children: [
+                      const Text(
+                        "Donation Link: ",
+                        style: TextStyle(
+                          fontSize: 11.0,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        getOrgDonationFormsDetails.donationLink,
+                        style: const TextStyle(
+                          fontSize: 11.0,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

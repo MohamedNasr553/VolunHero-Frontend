@@ -54,7 +54,7 @@ class OnBoarding extends StatelessWidget {
                     const StrokeText(
                       text: "VolunHero",
                       textStyle: TextStyle(
-                        fontSize: 43.0,
+                        fontSize: 45.0,
                         fontWeight: FontWeight.w500,
                         color: Color.fromARGB(255, 0, 68, 114),
                       ),
