@@ -407,25 +407,24 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
   String? IdOfSelected;
-  bool inFollowing({required String? followId}) {
-    for (int i = 0; i < loggedInUser!.following.length; i++) {
-      print(followId);
-      print(loggedInUser!.following[i]["userId"]);
-      if (loggedInUser!.following[i]["userId"] == followId) {
-        print("mogod");
-       return true;
-      }
-    }
-   return false;
-  }
 
 
+
+
+
+
+   bool flag = false;
 
   Future<void> handleFollow(
       {required String? token, required String? followId}) async {
     try {
       emit(FollowLoadingState());
-      if (inFollowing(followId: followId) == false) {
+
+      print("XD");
+      print(flag);
+      if (flag == false) {
+          anotherUser!.followers.add({"userId": followId}); // Assuming followers is a list of objects with userId
+
         DioHelper.patchData(
           url: "/users/${followId}/makefollow",
           token: token,
@@ -433,10 +432,10 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
           print(value.data);
           // Add the user to the following list
           anotherUser!.isFollowed = true;
-          anotherUser!.followers.add({"userId": followId}); // Assuming followers is a list of objects with userId
           emit(FollowSuccessState());
         });
       } else {
+          anotherUser!.followers.removeWhere((user) => user["userId"] == followId);
         DioHelper.patchData(
           url: "/users/${followId}/makeunfollow",
           token: token,
@@ -444,14 +443,27 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
           print(value.data);
           // Remove the user from the following list
           anotherUser!.isFollowed = false;
-          anotherUser!.followers.removeWhere((user) => user["userId"] == followId);
           emit(UnFollowSuccessState());
         });
       }
+      flag = !flag;
     } catch (error) {
       emit(FollowErrorState());
     }
   }
+
+
+
+  bool inFollowing({required String? followId}) {
+    for (int i = 0; i < loggedInUser!.following.length; i++) {
+      if (loggedInUser!.following[i]["userId"] == followId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
 
 
 

@@ -185,8 +185,24 @@ class DeleteChatErrorState extends UserLoginStates {
 }
 class GetAnotherUsersFollowersNumberSuccessState extends UserLoginStates {}
 class GetAnotherUsersFollowersNumberLoadingState extends UserLoginStates {}
+class FollowState  extends UserLoginStates{
+  final bool isFollowing;
+  FollowState({required this.isFollowing});
+}
 
+class FollowUserEvent extends UserLoginStates {
+  final String? followId;
+  final String? token;
 
+  FollowUserEvent({required this.followId, required this.token});
+}
+
+class UnFollowUserEvent extends UserLoginStates {
+  final String? followId;
+  final String? token;
+
+  UnFollowUserEvent({required this.followId, required this.token});
+}
 // Delete Me
 class DeleteMeSuccessState extends UserLoginStates {}
 

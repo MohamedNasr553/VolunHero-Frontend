@@ -9,6 +9,7 @@ import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
+import 'package:flutter_code/models/sharePostModel.dart';
 import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/modules/GeneralView/DetailedPost/Detailed_Post.dart';
 import 'package:flutter_code/modules/GeneralView/OthersFollowersPage/OtherFollowers.dart';
@@ -56,6 +57,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     //       HomeLayoutCubit.get(context).anotherUser;
     // });
 
+    UserLoginCubit.get(context).flag = UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).IdOfSelected);
     /// Logged in user chats
     UserLoginCubit.get(context).getLoggedInChats(
         token: UserLoginCubit.get(context).loginModel!.refresh_token);
@@ -73,11 +75,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        int followersCount = HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0;
-        int followingCount = HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0;
-        bool isFollowing = context.select((UserLoginCubit cubit) =>
-            cubit.inFollowing(
-                followId: cubit.IdOfSelected)); // Example selector
+        HomeLayoutCubit.get(context).followersCount = HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0;
+        HomeLayoutCubit.get(context).followingCount = HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0;
+        // Example selector
         return Scaffold(
           appBar: AppBar(
             backgroundColor: defaultColor,
@@ -247,12 +247,20 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             //   });
                             // });
                             //UserLoginCubit.get(context).anotherUser!.isFollowed = !UserLoginCubit.get(context).anotherUser!.isFollowed;
+                            // if(UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).IdOfSelected)){
+                            //   HomeLayoutCubit.get(context).handleFollowersCount(false);
+                            //   HomeLayoutCubit.get(context).handleFollowButton(false);
+                            // }else{
+                            //   HomeLayoutCubit.get(context).handleFollowersCount(true);
+                            //   HomeLayoutCubit.get(context).handleFollowButton(true);
+                            // }
                             UserLoginCubit.get(context).handleFollow(
                                 token: UserLoginCubit.get(context).loginModel!.refresh_token,
                                 followId: UserLoginCubit.get(context).anotherUser!.id
                             );
+
                           },
-                          child: (isFollowing == false)
+                          child: (UserLoginCubit.get(context).flag == false)
                               ? Container(
                             decoration: BoxDecoration(
                                 color: defaultColor,
@@ -490,7 +498,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          "${followingCount?? 0}",
+                                          "${HomeLayoutCubit.get(context).followingCount?? 0}",
                                           style: TextStyle(
                                             fontSize: 16.0,
                                             color:

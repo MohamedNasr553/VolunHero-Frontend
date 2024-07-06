@@ -110,3 +110,14 @@ class GetAnotherUserDataLoadingState extends LayoutStates {}
 class GetAnotherUserDataErrorState extends LayoutStates {}
 
 class GetAnotherUserDataSuccessState extends LayoutStates {}
+
+
+
+// Increase ,Decrease Followers
+class IncreaseAnotherUserFollowersState extends LayoutStates {}
+class DecreaseAnotherUserFollowersState extends LayoutStates {}
+class FollowAnotherUserState extends LayoutStates {}
+class UnFollowAnotherUserState extends LayoutStates {}
+
+
+

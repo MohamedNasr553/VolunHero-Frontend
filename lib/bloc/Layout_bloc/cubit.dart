@@ -501,6 +501,29 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   /// --------------------------- Another User ------------------
 
   AnotherUser? anotherUser;
+  int followersCount = 0;
+  int followingCount = 0;
+
+  void handleFollowersCount(bool increase){
+    if(increase==true){
+      emit(IncreaseAnotherUserFollowersState());
+      followersCount+=1;
+    }else{
+      emit(DecreaseAnotherUserFollowersState());
+      followersCount-=1;
+    }
+  }
+
+
+  bool handleFollowButton(bool follow){
+    if(follow==true){
+      emit(FollowAnotherUserState());
+      return true;
+    }else{
+      emit(UnFollowAnotherUserState());
+      return false;
+    }
+  }
 
   Future<void> getAnotherUserDatabyHTTP({required String id,required String? token}) async {
     emit(GetAnotherUserDataLoadingState());
