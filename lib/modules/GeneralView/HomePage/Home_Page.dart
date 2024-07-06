@@ -93,8 +93,15 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 30,
-                        backgroundImage: (UserLoginCubit.get(context).loggedInUser?.profilePic?.secure_url != null)
-                            ? NetworkImage(UserLoginCubit.get(context).loggedInUser!.profilePic!.secure_url) as ImageProvider
+                        backgroundImage: (UserLoginCubit.get(context)
+                                    .loggedInUser
+                                    ?.profilePic
+                                    ?.secure_url !=
+                                null)
+                            ? NetworkImage(UserLoginCubit.get(context)
+                                .loggedInUser!
+                                .profilePic!
+                                .secure_url) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -363,7 +370,7 @@ class _HomePageState extends State<HomePage> {
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
-                         UserLoginCubit.get(context).anotherUser =  AnotherUser(
+                          UserLoginCubit.get(context).anotherUser = AnotherUser(
                             id: '',
                             firstName: '',
                             lastName: '',
@@ -383,18 +390,23 @@ class _HomePageState extends State<HomePage> {
                             followers: [],
                             updatedAt: '',
                           );
-                         UserLoginCubit.get(context).IdOfSelected = postDetails.createdBy.id;
-                         HomeLayoutCubit.get(context).getAnotherUserDatabyHTTP(
-                           id:   UserLoginCubit.get(context).IdOfSelected ?? "",
-                           token:  UserLoginCubit.get(context).loginModel!.refresh_token ,
-                         ).then((_){
-                           print(UserLoginCubit.get(context).IdOfSelected);
-                           UserLoginCubit.get(context).anotherUser =
-                               HomeLayoutCubit.get(context).anotherUser;
-                               UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).IdOfSelected);
-                         navigateToPage(context, const AnotherUserProfile());
-                         });
-                         print("3amel0 : ${UserLoginCubit.get(context).IdOfSelected}");
+                          UserLoginCubit.get(context).IdOfSelected =
+                              postDetails.createdBy.id;
+                          HomeLayoutCubit.get(context)
+                              .getAnotherUserDatabyHTTP(
+                            id: UserLoginCubit.get(context).IdOfSelected ?? "",
+                            token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token,
+                          )
+                              .then((_) {
+                            UserLoginCubit.get(context).anotherUser =
+                                HomeLayoutCubit.get(context).anotherUser;
+                            UserLoginCubit.get(context).inFollowing(
+                                followId:
+                                    UserLoginCubit.get(context).IdOfSelected);
+                            navigateToPage(context, const AnotherUserProfile());
+                          });
                         }
                       },
                       child: CircleAvatar(
@@ -412,23 +424,48 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         InkWell(
                           onTap: () {
-                            // if (postDetails.createdBy.id ==
-                            //     UserLoginCubit.get(context).loggedInUser!.id) {
-                            //   navigateToPage(context, const ProfilePage());
-                            // } else {
-                            //   HomeLayoutCubit.get(context)
-                            //       .getAnotherUserData(
-                            //           token: UserLoginCubit.get(context)
-                            //               .loginModel!
-                            //               .refresh_token,
-                            //           id: postDetails.createdBy.id)
-                            //       .then((value) {
-                            //     UserLoginCubit.get(context).anotherUser =
-                            //         HomeLayoutCubit.get(context).anotherUser;
-                            //     navigateToPage(
-                            //         context, const AnotherUserProfile());
-                            //   });
-                            // }
+                            if (postDetails.createdBy.id ==
+                                UserLoginCubit.get(context).loggedInUser!.id) {
+                              navigateToPage(context, const ProfilePage());
+                            } else {
+                              UserLoginCubit.get(context).anotherUser = AnotherUser(
+                                id: '',
+                                firstName: '',
+                                lastName: '',
+                                userName: '',
+                                slugUserName: '',
+                                email: '',
+                                phone: '',
+                                role: '',
+                                status: '',
+                                images: [],
+                                address: '',
+                                gender: '',
+                                locations: [],
+                                specification: '',
+                                attachments: [],
+                                following: [],
+                                followers: [],
+                                updatedAt: '',
+                              );
+                              UserLoginCubit.get(context).IdOfSelected =
+                                  postDetails.createdBy.id;
+                              HomeLayoutCubit.get(context)
+                                  .getAnotherUserDatabyHTTP(
+                                id: UserLoginCubit.get(context).IdOfSelected ?? "",
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                              )
+                                  .then((_) {
+                                UserLoginCubit.get(context).anotherUser =
+                                    HomeLayoutCubit.get(context).anotherUser;
+                                UserLoginCubit.get(context).inFollowing(
+                                    followId:
+                                    UserLoginCubit.get(context).IdOfSelected);
+                                navigateToPage(context, const AnotherUserProfile());
+                              });
+                            }
                           },
                           child: Text(
                             postDetails.createdBy.userName,
@@ -578,25 +615,25 @@ class _HomePageState extends State<HomePage> {
                       /// Post Likes Count
                       (postDetails.likesCount > 0)
                           ? IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          'assets/images/NewLikeColor.svg',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      )
+                              padding: EdgeInsets.zero,
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                'assets/images/NewLikeColor.svg',
+                                width: 22.0,
+                                height: 22.0,
+                              ),
+                            )
                           : Container(),
 
                       (postDetails.likesCount > 0)
                           ? Text(
-                        '${postDetails.likesCount}',
-                        style: TextStyle(
-                          fontFamily: "Roboto",
-                          fontSize: 12,
-                          color: HexColor("575757"),
-                        ),
-                      )
+                              '${postDetails.likesCount}',
+                              style: TextStyle(
+                                fontFamily: "Roboto",
+                                fontSize: 12,
+                                color: HexColor("575757"),
+                              ),
+                            )
                           : Container(),
                       const Spacer(),
 
@@ -667,6 +704,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
+
                       /// Post Share Count
                       if (postDetails.shareCount == 1)
                         Padding(
@@ -733,29 +771,29 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 onTap: () {
                                   HomeLayoutCubit.get(context).likePost(
-                                      postId: postDetails.id,
-                                      token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token ??
-                                          "",
-                                      context: context,
-                                  );
-                                },
-                              )
-                            : postSubComponent(
-                              "assets/images/like.svg",
-                              "Like",
-                              context,
-                              onTap: () {
-                                HomeLayoutCubit.get(context).likePost(
                                     postId: postDetails.id,
                                     token: UserLoginCubit.get(context)
                                             .loginModel!
                                             .refresh_token ??
                                         "",
-                                    context: context);
-                              },
-                            ),
+                                    context: context,
+                                  );
+                                },
+                              )
+                            : postSubComponent(
+                                "assets/images/like.svg",
+                                "Like",
+                                context,
+                                onTap: () {
+                                  HomeLayoutCubit.get(context).likePost(
+                                      postId: postDetails.id,
+                                      token: UserLoginCubit.get(context)
+                                              .loginModel!
+                                              .refresh_token ??
+                                          "",
+                                      context: context);
+                                },
+                              ),
                         const Spacer(),
                         postSubComponent(
                           "assets/images/comment.svg",

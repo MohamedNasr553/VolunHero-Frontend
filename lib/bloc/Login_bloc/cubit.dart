@@ -186,17 +186,15 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   Future<String> createChat({
     required String secondId,
   }) async {
-    Map<String, dynamic> requestData = {
-      'secondId': secondId
-    };
+    Map<String, dynamic> requestData = {'secondId': secondId};
 
     try {
       emit(CreateChatLoadingState());
       var response = await DioHelper.postData(
-          url: CREATE_CHAT,
-          data: requestData,
-          token: loginModel!.refresh_token
-      ).then((value) async {
+              url: CREATE_CHAT,
+              data: requestData,
+              token: loginModel!.refresh_token)
+          .then((value) async {
         print(value);
         emit(CreateChatSuccessState());
       });
@@ -408,12 +406,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   AnotherUser? anotherUser;
   String? IdOfSelected;
 
-
-
-
-
-
-   bool flag = false;
+  bool flag = false;
 
   Future<void> handleFollow(
       {required String? token, required String? followId}) async {
@@ -423,7 +416,9 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
       print("XD");
       print(flag);
       if (flag == false) {
-          anotherUser!.followers.add({"userId": followId}); // Assuming followers is a list of objects with userId
+        anotherUser!.followers.add({
+          "userId": followId
+        }); // Assuming followers is a list of objects with userId
 
         DioHelper.patchData(
           url: "/users/${followId}/makefollow",
@@ -435,7 +430,8 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
           emit(FollowSuccessState());
         });
       } else {
-          anotherUser!.followers.removeWhere((user) => user["userId"] == followId);
+        anotherUser!.followers
+            .removeWhere((user) => user["userId"] == followId);
         DioHelper.patchData(
           url: "/users/${followId}/makeunfollow",
           token: token,
@@ -452,8 +448,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
   }
 
-
-
   bool inFollowing({required String? followId}) {
     for (int i = 0; i < loggedInUser!.following.length; i++) {
       if (loggedInUser!.following[i]["userId"] == followId) {
@@ -462,10 +456,6 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
     }
     return false;
   }
-
-
-
-
 
   int getAnotherUserFollowers() {
     emit(GetAnotherUserFollowersState(anotherUser!.followers.length));
@@ -476,10 +466,11 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   AnotherUserPostsResponse? anotherUserPostsResponse;
   PostWrapper? postWrapper;
 
-  Future<void> getAnotherUserPosts(
-      {required String? token,
-      required String userName,
-      required String id}) async {
+  Future<void> getAnotherUserPosts({
+    required String? token,
+    required String userName,
+    required String id,
+  }) async {
     DioHelper.getData(
       url: "/users/$userName/$id/post",
       token: token,

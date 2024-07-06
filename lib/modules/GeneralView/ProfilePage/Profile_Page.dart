@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_code/bloc/DonationForm_bloc/cubit.dart';
 import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
 import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
+import 'package:flutter_code/models/get_org_donation_forms.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -600,6 +601,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     "Organization")
                                                 ? GestureDetector(
                                                     onTap: () {
+                                                      DonationFormCubit.get(
+                                                              context)
+                                                          .getOrgDonationForms(
+                                                        token: UserLoginCubit
+                                                                    .get(
+                                                                        context)
+                                                                .loginModel!
+                                                                .refresh_token ??
+                                                            "",
+                                                        orgId: UserLoginCubit.get(context).loggedInUser!.id,
+                                                      );
                                                       setState(() {
                                                         // showPosts = true;
                                                         pressedState =

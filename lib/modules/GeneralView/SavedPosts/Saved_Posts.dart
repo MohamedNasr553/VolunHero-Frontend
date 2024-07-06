@@ -9,6 +9,7 @@ import 'package:flutter_code/bloc/Layout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
+import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/HomePagePostsModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
 import 'package:flutter_code/models/getAllSavedPostsModel.dart';
@@ -261,26 +262,42 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
+                          UserLoginCubit.get(context).anotherUser = AnotherUser(
+                            id: '',
+                            firstName: '',
+                            lastName: '',
+                            userName: '',
+                            slugUserName: '',
+                            email: '',
+                            phone: '',
+                            role: '',
+                            status: '',
+                            images: [],
+                            address: '',
+                            gender: '',
+                            locations: [],
+                            specification: '',
+                            attachments: [],
+                            following: [],
+                            followers: [],
+                            updatedAt: '',
+                          );
+                          UserLoginCubit.get(context).IdOfSelected =
+                              modifiedPost.createdBy.id;
                           HomeLayoutCubit.get(context)
-                              .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: modifiedPost.createdBy.id)
-                              .then((value) {
-                            UserLoginCubit.get(context)
-                                .getAnotherUserPosts(
-                                    token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token,
-                                    id: modifiedPost.createdBy.id,
-                                    userName: modifiedPost.createdBy.userName)
-                                .then((value) {
-                              UserLoginCubit.get(context).anotherUser =
-                                  HomeLayoutCubit.get(context).anotherUser;
-                              navigateToPage(
-                                  context, const AnotherUserProfile());
-                            });
+                              .getAnotherUserDatabyHTTP(
+                            id: UserLoginCubit.get(context).IdOfSelected ?? "",
+                            token: UserLoginCubit.get(context)
+                                .loginModel!
+                                .refresh_token,
+                          )
+                              .then((_) {
+                            UserLoginCubit.get(context).anotherUser =
+                                HomeLayoutCubit.get(context).anotherUser;
+                            UserLoginCubit.get(context).inFollowing(
+                                followId:
+                                UserLoginCubit.get(context).IdOfSelected);
+                            navigateToPage(context, const AnotherUserProfile());
                           });
                         }
                       },
@@ -303,17 +320,42 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
                             } else {
+                              UserLoginCubit.get(context).anotherUser = AnotherUser(
+                                id: '',
+                                firstName: '',
+                                lastName: '',
+                                userName: '',
+                                slugUserName: '',
+                                email: '',
+                                phone: '',
+                                role: '',
+                                status: '',
+                                images: [],
+                                address: '',
+                                gender: '',
+                                locations: [],
+                                specification: '',
+                                attachments: [],
+                                following: [],
+                                followers: [],
+                                updatedAt: '',
+                              );
+                              UserLoginCubit.get(context).IdOfSelected =
+                                  modifiedPost.createdBy.id;
                               HomeLayoutCubit.get(context)
-                                  .getAnotherUserData(
-                                      token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token,
-                                      id: modifiedPost.createdBy.id)
-                                  .then((value) {
+                                  .getAnotherUserDatabyHTTP(
+                                id: UserLoginCubit.get(context).IdOfSelected ?? "",
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token,
+                              )
+                                  .then((_) {
                                 UserLoginCubit.get(context).anotherUser =
                                     HomeLayoutCubit.get(context).anotherUser;
-                                navigateToPage(
-                                    context, const AnotherUserProfile());
+                                UserLoginCubit.get(context).inFollowing(
+                                    followId:
+                                    UserLoginCubit.get(context).IdOfSelected);
+                                navigateToPage(context, const AnotherUserProfile());
                               });
                             }
                           },

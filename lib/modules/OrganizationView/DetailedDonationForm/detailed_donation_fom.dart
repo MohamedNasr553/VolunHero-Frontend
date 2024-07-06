@@ -103,7 +103,7 @@ class DetailedDonationFormPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        detailedDonationFormDetails!.title,
+                        detailedDonationFormDetails?.title??"",
                         style: const TextStyle(
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold,
@@ -121,8 +121,10 @@ class DetailedDonationFormPage extends StatelessWidget {
                             ),
                           ),
                           Text(
+                              (detailedDonationFormDetails != null) ?
                             DateFormat('dd-MM-yyyy')
-                                .format(detailedDonationFormDetails.endDate),
+                                .format(detailedDonationFormDetails.endDate) :
+                                  'No End Date',
                             style: const TextStyle(
                               fontSize: 9.0,
                               color: Colors.redAccent,
@@ -135,7 +137,7 @@ class DetailedDonationFormPage extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight / 50),
                   Text(
-                    detailedDonationFormDetails.description,
+                    detailedDonationFormDetails?.description??"",
                     style: const TextStyle(
                       fontSize: 11.0,
                       color: Colors.black45,
@@ -156,7 +158,7 @@ class DetailedDonationFormPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        detailedDonationFormDetails.donationLink,
+                        detailedDonationFormDetails?.donationLink??"",
                         style: const TextStyle(
                           fontSize: 11.0,
                           color: Colors.blue,
