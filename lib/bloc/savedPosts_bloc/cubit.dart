@@ -36,7 +36,6 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   }
 
   /// ----------------------- Get All Saved Posts API ------------------------
-
   GetSavedPostsResponse? getSavedPostsResponse;
   GetSavedPosts? getSavedPosts;
   GetDetailedSavedPost? getDetailedSavedPost;
@@ -50,15 +49,12 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
         token: token,
       );
 
-      // API response
-
       // Parse the API response
       getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
 
       if (getSavedPostsResponse != null &&
-          getSavedPostsResponse!.savedPosts!.isNotEmpty) {
-        getSavedPosts = getSavedPostsResponse!.savedPosts![0];
-
+          getSavedPostsResponse!.savedPosts!.posts!.isNotEmpty) {
+        getSavedPosts = getSavedPostsResponse!.savedPosts;
 
         emit(GetAllSavedPostsSuccessState());
       }

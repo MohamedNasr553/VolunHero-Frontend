@@ -175,6 +175,7 @@ class _DetailedPostState extends State<DetailedPost> {
                           /// Profile Pic
                           CircleAvatar(
                             radius: 20.0,
+                            backgroundColor: Colors.white,
                             backgroundImage:
                                 specificPost.createdBy.profilePic != null
                                     ? NetworkImage(specificPost
@@ -743,6 +744,7 @@ class _DetailedPostState extends State<DetailedPost> {
             /// Profile Pic
             CircleAvatar(
               radius: 20.0,
+              backgroundColor: Colors.white,
               backgroundImage: commentModel.createdBy.profilePic != null
                   ? NetworkImage(commentModel.createdBy.profilePic!.secure_url)
                       as ImageProvider

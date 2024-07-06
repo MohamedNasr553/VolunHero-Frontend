@@ -1,15 +1,13 @@
 class GetSavedPostsResponse {
   String? message;
-  List<GetSavedPosts>? savedPosts;
+  GetSavedPosts? savedPosts;
 
   GetSavedPostsResponse({this.message, this.savedPosts});
 
   factory GetSavedPostsResponse.fromJson(Map<String, dynamic> json) {
     return GetSavedPostsResponse(
       message: json['message'],
-      savedPosts: (json['savedPosts'] as List?)
-          ?.map((i) => GetSavedPosts.fromJson(i))
-          .toList(),
+      savedPosts: json['posts'] != null ? GetSavedPosts.fromJson(json['posts']['savedPosts']) : null,
     );
   }
 }
@@ -24,11 +22,11 @@ class GetSavedPosts {
 
   GetSavedPosts(
       {this.id,
-      this.userId,
-      this.posts,
-      this.createdAt,
-      this.updatedAt,
-      this.v});
+        this.userId,
+        this.posts,
+        this.createdAt,
+        this.updatedAt,
+        this.v});
 
   factory GetSavedPosts.fromJson(Map<String, dynamic> json) {
     return GetSavedPosts(

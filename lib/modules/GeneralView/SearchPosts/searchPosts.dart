@@ -320,6 +320,7 @@ class _SearchPostsPageState extends State<SearchPostsPage> {
                     /// Profile Pic
                     CircleAvatar(
                       radius: 20.0,
+                      backgroundColor: Colors.white,
                       backgroundImage: searchPostDetails.createdBy.profilePic !=
                               null
                           ? NetworkImage(searchPostDetails
@@ -635,6 +636,7 @@ class _SearchPostsPageState extends State<SearchPostsPage> {
             SizedBox(width: screenWidth / 80),
             CircleAvatar(
               radius: 10.0,
+              backgroundColor: Colors.white,
               backgroundImage: searchPostDetails!.sharedBy!.profilePic != null
                   ? NetworkImage(
                           searchPostDetails.sharedBy!.profilePic!.secureUrl)

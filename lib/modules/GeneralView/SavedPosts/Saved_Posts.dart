@@ -303,6 +303,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
+                        backgroundColor: Colors.white,
                         backgroundImage: modifiedPost.createdBy.profilePic !=
                                 null
                             ? NetworkImage(modifiedPost.createdBy.profilePic!
