@@ -16,6 +16,13 @@ class GetAllDonationFormSuccessState extends DonationFormStates{}
 
 class GetAllDonationFormErrorState extends DonationFormStates{}
 
+/// Get Detailed Donation Forms
+class GetDetailedDonationFormLoadingState extends DonationFormStates{}
+
+class GetDetailedDonationFormSuccessState extends DonationFormStates{}
+
+class GetDetailedDonationFormErrorState extends DonationFormStates{}
+
 /// Get Specific Organization Donation Forms
 class GetOrgDonationFormLoadingState extends DonationFormStates{}
 

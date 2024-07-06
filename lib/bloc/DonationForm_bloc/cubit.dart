@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
 import 'package:flutter_code/models/AddDonationFormModel.dart';
 import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
+import 'package:flutter_code/models/GetDetailedDonationFormModel.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
 class DonationFormCubit extends Cubit<DonationFormStates> {
@@ -10,7 +11,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
 
   static DonationFormCubit get(context) => BlocProvider.of(context);
 
-  // ----------------------- Add Donation Form -------------------------------
+  /// ----------------------- Add Donation Form -------------------------------
   AddDonationFormModel? addDonationFormModel;
   AddDonationForm? addDonationForm;
 
@@ -46,7 +47,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
     }
   }
 
-  // -------------------------- Get All Donation Form ------------------------
+  /// -------------------------- Get All Donation Form ------------------------
   GetAllDonationFormsResponse? getAllDonationFormsResponse;
   DonationFormDetails? donationFormDetails;
 
@@ -66,7 +67,30 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
       emit(GetAllDonationFormErrorState());
     });
   }
-  /// ----------------------- Delete Donation Form  -----------------------
+
+  /// ----------------------- Get Detailed Donation Form ----------------------
+  DetailedDonationFormResponse? detailedDonationFormResponse;
+  DetailedDonationFormDetails? detailedDonationFormDetails;
+
+  void getDetailedDonationForms({
+    required String token,
+    required String fromId,
+  }) async {
+    emit(GetDetailedDonationFormLoadingState());
+
+    DioHelper.getData(
+      url: "/donationForm/$fromId",
+      token: token,
+    ).then((value) {
+      detailedDonationFormResponse =
+          DetailedDonationFormResponse.fromJson(value.data);
+      emit(GetDetailedDonationFormSuccessState());
+    }).catchError((error) {
+      emit(GetDetailedDonationFormErrorState());
+    });
+  }
+
+  /// -------------------------- Delete Donation Form  ------------------------
   void deleteDonationForm({
     required String token,
     required String formId,
@@ -81,7 +105,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
 
       getAllDonationForms(token: token);
       // getOwnerPosts(token: token);
-      // getPostId(token: token, postId: postId);
+      getDetailedDonationForms(token: token, fromId: formId);
     }).catchError((error) {
       emit(DeleteDonationFormErrorState());
     });
