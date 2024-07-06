@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_code/shared/styles/colors.dart';
 class VolunHeroLayout extends StatelessWidget {
   const VolunHeroLayout({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeLayoutCubit, LayoutStates>(
@@ -18,6 +20,7 @@ class VolunHeroLayout extends StatelessWidget {
         return BlocConsumer<UserLoginCubit, UserLoginStates>(
           listener: (context, state) {},
           builder: (context, state) {
+
             return Scaffold(
               body: (UserLoginCubit.get(context).loggedInUser?.role ==
                       "Organization")
