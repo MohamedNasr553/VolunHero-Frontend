@@ -550,27 +550,6 @@ class _SignupPageState extends State<SignupPage> {
                                     });
                                   },
                                 ),
-                                RadioListTile<String>(
-                                  title: const Text(
-                                    'Admin',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  dense: true,
-                                  contentPadding: EdgeInsets.zero,
-                                  activeColor: defaultColor,
-                                  visualDensity:
-                                  const VisualDensity(vertical: -4),
-                                  value: 'Admin',
-                                  groupValue: selectedRole,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedRole = value!;
-                                    });
-                                  },
-                                ),
                               ],
                             ),
                             SizedBox(height: screenHeight / 25),

@@ -64,6 +64,9 @@ class AppRoot extends StatelessWidget {
         ),
         BlocProvider(
           create: (BuildContext context) => DonationFormCubit()
+            ..getAllDonationForms(
+                token: UserLoginCubit.get(context).loginModel!.refresh_token ??
+                    ""),
         ),
       ],
       child: MaterialApp(

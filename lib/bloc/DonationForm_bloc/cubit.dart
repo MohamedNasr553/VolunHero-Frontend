@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
 import 'package:flutter_code/models/AddDonationFormModel.dart';
+import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
 class DonationFormCubit extends Cubit<DonationFormStates> {
@@ -32,7 +33,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
 
       print('Request Data: $requestData');
 
-      var request = await DioHelper.postData(
+      await DioHelper.postData(
         url: "/donationForm/",
         data: requestData,
         token: token,
@@ -43,5 +44,46 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
       print(error.toString());
       emit(AddDonationFormErrorState());
     }
+  }
+
+  // -------------------------- Get All Donation Form ------------------------
+  GetAllDonationFormsResponse? getAllDonationFormsResponse;
+  DonationFormDetails? donationFormDetails;
+
+  void getAllDonationForms({
+    required String token,
+  }) async {
+    emit(GetAllDonationFormLoadingState());
+
+    DioHelper.getData(
+      url: "/donationForm/",
+      token: token,
+    ).then((value) {
+      getAllDonationFormsResponse =
+          GetAllDonationFormsResponse.fromJson(value.data);
+      emit(GetAllDonationFormSuccessState());
+    }).catchError((error) {
+      emit(GetAllDonationFormErrorState());
+    });
+  }
+  /// ----------------------- Delete Donation Form  -----------------------
+  void deleteDonationForm({
+    required String token,
+    required String formId,
+  }) {
+    emit(DeleteDonationFormLoadingState());
+
+    DioHelper.deleteData(
+      url: "/donationForm/$formId",
+      token: token,
+    ).then((value) {
+      emit(DeleteDonationFormSuccessState());
+
+      getAllDonationForms(token: token);
+      // getOwnerPosts(token: token);
+      // getPostId(token: token, postId: postId);
+    }).catchError((error) {
+      emit(DeleteDonationFormErrorState());
+    });
   }
 }

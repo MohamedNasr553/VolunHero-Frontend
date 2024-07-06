@@ -8,6 +8,7 @@ import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 class AddDonationFormPage extends StatelessWidget {
   const AddDonationFormPage({super.key});
@@ -16,7 +17,9 @@ class AddDonationFormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
     var titleController = TextEditingController();
-    var announceDateController = TextEditingController();
+    var announceDateController = TextEditingController(
+      text: DateFormat('DD/MM/YYYY').format(DateTime.now()),
+    );
     var endDateController = TextEditingController();
     var descriptionController = TextEditingController();
     var linkController = TextEditingController();
@@ -191,32 +194,40 @@ class AddDonationFormPage extends StatelessWidget {
                               width: 1,
                             ),
                           ),
-                          child: TextFormField(
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(
+                              start: screenWidth / 50,
+                              end: screenWidth / 50
                             ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: screenHeight / 70,
-                                horizontal: screenWidth / 25,
-                              ),
-                              hintText: 'Description',
-                              hintStyle: TextStyle(
+                            child: TextFormField(
+                              maxLines: null,
+                              minLines: 1,
+                              style: const TextStyle(
                                 fontSize: 11,
-                                color: Colors.grey.shade500,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
                               ),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  vertical: screenHeight / 70,
+                                  horizontal: screenWidth / 25,
+                                ),
+                                hintText: 'Description',
+                                hintStyle: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Description must be entered';
+                                }
+                                return null;
+                              },
+                              controller: descriptionController,
+                              keyboardType: TextInputType.text,
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Description must be entered';
-                              }
-                              return null;
-                            },
-                            controller: descriptionController,
-                            keyboardType: TextInputType.text,
                           ),
                         ),
                         SizedBox(height: screenHeight / 50),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/DonationForm_bloc/cubit.dart';
+import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Layout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
@@ -17,8 +19,26 @@ import '../../../bloc/Login_bloc/cubit.dart';
 import '../../../bloc/Login_bloc/states.dart';
 import '../../GeneralView/Login/Login_Page.dart';
 
-class UserSidePage extends StatelessWidget {
+class UserSidePage extends StatefulWidget {
   const UserSidePage({Key? key}) : super(key: key);
+
+  @override
+  State<UserSidePage> createState() => _UserSidePageState();
+}
+
+class _UserSidePageState extends State<UserSidePage> {
+  @override
+  void initState() {
+    super.initState();
+    if (UserLoginCubit.get(context).loginModel!.refresh_token != null &&
+        UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty){
+      if(UserLoginCubit.get(context).loggedInUser!.role == "Organization"){
+        DonationFormCubit.get(context).getAllDonationForms(
+          token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,272 +53,283 @@ class UserSidePage extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         var cubit = HomeLayoutCubit.get(context);
-
         return BlocConsumer<UserLoginCubit, UserLoginStates>(
           listener: (context, state) {},
           builder: (context, state) {
-            return Drawer(
-              backgroundColor: Colors.white,
-              child: SmoothListView(
-                duration: const Duration(milliseconds: 200),
-                children: [
-                  UserAccountsDrawerHeader(
-                    accountName: Row(
-                      children: [
-                        Text(
-                          UserLoginCubit.get(context).loggedInUser?.firstName ??
-                              "First",
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w900,
-                          ),
+            return BlocConsumer<DonationFormCubit, DonationFormStates>(
+              listener: (context, state){},
+              builder: (context, state){
+                return Drawer(
+                  backgroundColor: Colors.white,
+                  child: SmoothListView(
+                    duration: const Duration(milliseconds: 200),
+                    children: [
+                      UserAccountsDrawerHeader(
+                        accountName: Row(
+                          children: [
+                            Text(
+                              UserLoginCubit.get(context).loggedInUser?.firstName ??
+                                  "First",
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            SizedBox(width: screenWidth / 150),
+                            Text(
+                              UserLoginCubit.get(context).loggedInUser?.lastName ??
+                                  "Last",
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: screenWidth / 150),
-                        Text(
-                          UserLoginCubit.get(context).loggedInUser?.lastName ??
-                              "Last",
+                        accountEmail: Text(
+                          UserLoginCubit.get(context).loggedInUser?.email ??
+                              "@username@gmail",
                           style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w900,
-                          ),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white),
                         ),
-                      ],
-                    ),
-                    accountEmail: Text(
-                      UserLoginCubit.get(context).loggedInUser?.email ??
-                          "@username@gmail",
-                      style: const TextStyle(
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white
-                      ),
-                    ),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: (UserLoginCubit.get(context)
-                                  .loggedInUser
-                                  ?.profilePic
-                                  ?.secure_url ==
+                        currentAccountPicture: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: (UserLoginCubit.get(context)
+                              .loggedInUser
+                              ?.profilePic
+                              ?.secure_url ==
                               null)
-                          ? Image.asset(
-                              'assets/images/nullProfile.png',
-                              width: 90,
-                              height: 90,
-                              fit: BoxFit.fill,
-                            )
-                          : CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.white,
-                              child: ClipOval(
-                                child: Image(
-                                  height: 80,
-                                  width: 80,
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      UserLoginCubit.get(context)
-                                              .loggedInUser
-                                              ?.profilePic
-                                              ?.secure_url ??
-                                          'default_image_url'),
-                                ),
+                              ? Image.asset(
+                            'assets/images/nullProfile.png',
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.fill,
+                          )
+                              : CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            child: ClipOval(
+                              child: Image(
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.fill,
+                                image: NetworkImage(
+                                    UserLoginCubit.get(context)
+                                        .loggedInUser
+                                        ?.profilePic
+                                        ?.secure_url ??
+                                        'default_image_url'),
                               ),
                             ),
-                    ),
-                    decoration: const BoxDecoration(
-                      color: defaultColor,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Container(
-                      alignment: Alignment.centerLeft,
-                      width: screenWidth / 14,
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: SvgPicture.asset(
-                          "assets/images/User_circle.svg",
-                          width: 30.0,
-                          height: 30.0,
+                          ),
+                        ),
+                        decoration: const BoxDecoration(
+                          color: defaultColor,
                         ),
                       ),
-                    ),
-                    title: const Text(
-                      'Profile',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                      ListTile(
+                        leading: Container(
+                          alignment: Alignment.centerLeft,
+                          width: screenWidth / 14,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              "assets/images/User_circle.svg",
+                              width: 30.0,
+                              height: 30.0,
+                            ),
+                          ),
+                        ),
+                        title: const Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          // navigateAndFinish(context, const AnotherUserProfile());
+                          navigateAndFinish(context, const ProfilePage());
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      // navigateAndFinish(context, const AnotherUserProfile());
-                      navigateAndFinish(context, const ProfilePage());
-                    },
-                  ),
-                  (UserLoginCubit.get(context).loggedInUser?.role ==
+                      (UserLoginCubit.get(context).loggedInUser?.role ==
                           "Organization")
-                      ? ListTile(
-                          leading: Container(
-                            alignment: Alignment.centerLeft,
-                            width: screenWidth / 14,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/File_dock.svg',
-                                width: 30.0,
-                                height: 30.0,
-                              ),
+                          ? ListTile(
+                        leading: Container(
+                          alignment: Alignment.centerLeft,
+                          width: screenWidth / 14,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              DonationFormCubit.get(context)
+                                  .getAllDonationForms(
+                                token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                    "",
+                              );
+                            },
+                            icon: SvgPicture.asset(
+                              'assets/images/File_dock.svg',
+                              width: 30.0,
+                              height: 30.0,
                             ),
                           ),
-                          title: const Text(
-                            'Donation Forms',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Roboto',
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            navigateToPage(context, const AllDonationForms());
-                          },
-                        )
-                      : ListTile(
-                          leading: Container(
-                            alignment: Alignment.centerLeft,
-                            width: screenWidth / 14,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/images/View_alt_fill.svg',
-                                width: 30.0,
-                                height: 30.0,
-                              ),
-                            ),
-                          ),
-                          title: const Text(
-                            'RoadBlocks',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Roboto',
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
                         ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.save,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Saved Posts',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                        title: const Text(
+                          'Donation Forms',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          navigateToPage(context, const AllDonationForms());
+                        },
+                      )
+                          : ListTile(
+                        leading: Container(
+                          alignment: Alignment.centerLeft,
+                          width: screenWidth / 14,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: SvgPicture.asset(
+                              'assets/images/View_alt_fill.svg',
+                              width: 30.0,
+                              height: 30.0,
+                            ),
+                          ),
+                        ),
+                        title: const Text(
+                          'RoadBlocks',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      SavedPostsCubit.get(context).getAllSavedPosts(
-                        token: UserLoginCubit.get(context)
+                      ListTile(
+                        leading: const Icon(
+                          Icons.save,
+                          size: 30.0,
+                        ),
+                        title: const Text(
+                          'Saved Posts',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          SavedPostsCubit.get(context).getAllSavedPosts(
+                            token: UserLoginCubit.get(context)
                                 .loginModel!
                                 .refresh_token ??
-                            "",
-                      );
-                      navigateAndFinish(context, const SavedPosts());
-                    },
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.phone,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Video Call',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                                "",
+                          );
+                          navigateAndFinish(context, const SavedPosts());
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      UserLoginCubit.get(context).loggedInUser?.role ==
+                      const Divider(),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.phone,
+                          size: 30.0,
+                        ),
+                        title: const Text(
+                          'Video Call',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          UserLoginCubit.get(context).loggedInUser?.role ==
                               "Organization"
-                          ? cubit.changeOrganizationBottomNavBar(context, 1)
-                          : cubit.changeUserBottomNavBar(context, 1);
-                      navigateAndFinish(context, const VolunHeroLayout());
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.settings_outlined,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Settings',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                              ? cubit.changeOrganizationBottomNavBar(context, 1)
+                              : cubit.changeUserBottomNavBar(context, 1);
+                          navigateAndFinish(context, const VolunHeroLayout());
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      navigateToPage(context, const SettingsPage());
-                      // Close the drawer
-                    },
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsetsDirectional.only(
-                      top: screenHeight / 5,
-                      start: screenWidth / 23,
-                    ),
-                    leading: const Icon(
-                      Icons.add_circle_outline_sharp,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Add Account',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                      ListTile(
+                        leading: const Icon(
+                          Icons.settings_outlined,
+                          size: 30.0,
+                        ),
+                        title: const Text(
+                          'Settings',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          navigateToPage(context, const SettingsPage());
+                          // Close the drawer
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context); // Close the drawer
-                    },
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsetsDirectional.only(
-                      start: screenWidth / 23,
-                    ),
-                    leading: const Icon(
-                      Icons.exit_to_app_outlined,
-                      size: 30.0,
-                    ),
-                    title: const Text(
-                      'Log out',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Roboto',
-                        fontSize: 15.0,
+                      ListTile(
+                        contentPadding: EdgeInsetsDirectional.only(
+                          top: screenHeight / 5,
+                          start: screenWidth / 23,
+                        ),
+                        leading: const Icon(
+                          Icons.add_circle_outline_sharp,
+                          size: 30.0,
+                        ),
+                        title: const Text(
+                          'Add Account',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context); // Close the drawer
+                        },
                       ),
-                    ),
-                    onTap: () {
-                      // Remove token
-                      navigateToPage(context, LoginPage());
+                      ListTile(
+                        contentPadding: EdgeInsetsDirectional.only(
+                          start: screenWidth / 23,
+                        ),
+                        leading: const Icon(
+                          Icons.exit_to_app_outlined,
+                          size: 30.0,
+                        ),
+                        title: const Text(
+                          'Log out',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Roboto',
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        onTap: () {
+                          // Remove token
+                          navigateToPage(context, LoginPage());
 
-                      ///signOut(context);
-                    },
+                          ///signOut(context);
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         );
