@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 30,
+                        backgroundColor: Colors.white,
                         backgroundImage: (UserLoginCubit.get(context)
                                     .loggedInUser
                                     ?.profilePic
@@ -411,6 +412,7 @@ class _HomePageState extends State<HomePage> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
+                        backgroundColor: Colors.white,
                         backgroundImage: postDetails.createdBy.profilePic !=
                                 null
                             ? NetworkImage(postDetails.createdBy.profilePic!
@@ -1034,6 +1036,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(width: screenWidth / 80),
             CircleAvatar(
               radius: 10.0,
+              backgroundColor: Colors.white,
               backgroundImage: postDetails!.sharedBy!.profilePic != null
                   ? NetworkImage(postDetails.sharedBy!.profilePic!.secure_url)
                       as ImageProvider
