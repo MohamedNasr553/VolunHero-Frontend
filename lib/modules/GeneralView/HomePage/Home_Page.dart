@@ -20,6 +20,8 @@ import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../../../models/AnotherUserModel.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -361,17 +363,38 @@ class _HomePageState extends State<HomePage> {
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
-                          HomeLayoutCubit.get(context)
-                              .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: postDetails.createdBy.id)
-                              .then((value) {
-                            UserLoginCubit.get(context).anotherUser =
-                                HomeLayoutCubit.get(context).anotherUser;
-                            navigateToPage(context, const AnotherUserProfile());
-                          });
+                         UserLoginCubit.get(context).anotherUser =  AnotherUser(
+                            id: '',
+                            firstName: '',
+                            lastName: '',
+                            userName: '',
+                            slugUserName: '',
+                            email: '',
+                            phone: '',
+                            role: '',
+                            status: '',
+                            images: [],
+                            address: '',
+                            gender: '',
+                            locations: [],
+                            specification: '',
+                            attachments: [],
+                            following: [],
+                            followers: [],
+                            updatedAt: '',
+                          );
+                         UserLoginCubit.get(context).IdOfSelected = postDetails.createdBy.id;
+                         HomeLayoutCubit.get(context).getAnotherUserDatabyHTTP(
+                           id:   UserLoginCubit.get(context).IdOfSelected ?? "",
+                           token:  UserLoginCubit.get(context).loginModel!.refresh_token ,
+                         ).then((_){
+                           print(UserLoginCubit.get(context).IdOfSelected);
+                           UserLoginCubit.get(context).anotherUser =
+                               HomeLayoutCubit.get(context).anotherUser;
+                               UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).IdOfSelected);
+                         navigateToPage(context, const AnotherUserProfile());
+                         });
+                         print("3amel0 : ${UserLoginCubit.get(context).IdOfSelected}");
                         }
                       },
                       child: CircleAvatar(
@@ -389,23 +412,23 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         InkWell(
                           onTap: () {
-                            if (postDetails.createdBy.id ==
-                                UserLoginCubit.get(context).loggedInUser!.id) {
-                              navigateToPage(context, const ProfilePage());
-                            } else {
-                              HomeLayoutCubit.get(context)
-                                  .getAnotherUserData(
-                                      token: UserLoginCubit.get(context)
-                                          .loginModel!
-                                          .refresh_token,
-                                      id: postDetails.createdBy.id)
-                                  .then((value) {
-                                UserLoginCubit.get(context).anotherUser =
-                                    HomeLayoutCubit.get(context).anotherUser;
-                                navigateToPage(
-                                    context, const AnotherUserProfile());
-                              });
-                            }
+                            // if (postDetails.createdBy.id ==
+                            //     UserLoginCubit.get(context).loggedInUser!.id) {
+                            //   navigateToPage(context, const ProfilePage());
+                            // } else {
+                            //   HomeLayoutCubit.get(context)
+                            //       .getAnotherUserData(
+                            //           token: UserLoginCubit.get(context)
+                            //               .loginModel!
+                            //               .refresh_token,
+                            //           id: postDetails.createdBy.id)
+                            //       .then((value) {
+                            //     UserLoginCubit.get(context).anotherUser =
+                            //         HomeLayoutCubit.get(context).anotherUser;
+                            //     navigateToPage(
+                            //         context, const AnotherUserProfile());
+                            //   });
+                            // }
                           },
                           child: Text(
                             postDetails.createdBy.userName,
@@ -937,23 +960,23 @@ class _HomePageState extends State<HomePage> {
             UserLoginCubit.get(context).loggedInUser!.id) {
           navigateToPage(context, const ProfilePage());
         } else {
-          HomeLayoutCubit.get(context)
-              .getAnotherUserData(
-                  token: UserLoginCubit.get(context).loginModel!.refresh_token,
-                  id: postDetails.sharedBy!.id)
-              .then((value) {
-            UserLoginCubit.get(context)
-                .getAnotherUserPosts(
-                    token:
-                        UserLoginCubit.get(context).loginModel!.refresh_token,
-                    id: postDetails.sharedBy!.id,
-                    userName: postDetails.sharedBy!.userName)
-                .then((value) {
-              UserLoginCubit.get(context).anotherUser =
-                  HomeLayoutCubit.get(context).anotherUser;
-              navigateToPage(context, const AnotherUserProfile());
-            });
-          });
+          // HomeLayoutCubit.get(context)
+          //     .getAnotherUserData(
+          //         token: UserLoginCubit.get(context).loginModel!.refresh_token,
+          //         id: postDetails.sharedBy!.id)
+          //     .then((value) {
+          //   UserLoginCubit.get(context)
+          //       .getAnotherUserPosts(
+          //           token:
+          //               UserLoginCubit.get(context).loginModel!.refresh_token,
+          //           id: postDetails.sharedBy!.id,
+          //           userName: postDetails.sharedBy!.userName)
+          //       .then((value) {
+          //     UserLoginCubit.get(context).anotherUser =
+          //         HomeLayoutCubit.get(context).anotherUser;
+          //     navigateToPage(context, const AnotherUserProfile());
+          //   });
+          // });
         }
       },
       child: Padding(

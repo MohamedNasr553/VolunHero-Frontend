@@ -35,30 +35,34 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
   void initState() {
     super.initState();
 
-    /// Another User Data
-    HomeLayoutCubit.get(context).getAnotherUserData(
-        token: UserLoginCubit.get(context).loginModel!.refresh_token,
-        id: HomeLayoutCubit.get(context).anotherUser?.id ?? "");
-
-    /// Another User Posts
-    UserLoginCubit.get(context)
-        .getAnotherUserPosts(
-        token: UserLoginCubit.get(context).loginModel!.refresh_token,
-        id: HomeLayoutCubit.get(context).anotherUser?.id ?? " ",
-        userName: HomeLayoutCubit.get(context).anotherUser?.userName ?? " ")
-        .then((value) {
+    //Another User Data
+    HomeLayoutCubit.get(context).getAnotherUserDatabyHTTP(
+      id:   UserLoginCubit.get(context).IdOfSelected ?? "",
+      token:  UserLoginCubit.get(context).loginModel!.refresh_token ,
+  ).then((_){
+          print(UserLoginCubit.get(context).IdOfSelected);
       UserLoginCubit.get(context).anotherUser =
           HomeLayoutCubit.get(context).anotherUser;
     });
+
+    // /// Another User Posts
+    // UserLoginCubit.get(context)
+    //     .getAnotherUserPosts(
+    //     token: UserLoginCubit.get(context).loginModel!.refresh_token,
+    //     id: HomeLayoutCubit.get(context).anotherUser?.id ?? " ",
+    //     userName: HomeLayoutCubit.get(context).anotherUser?.userName ?? " ")
+    //     .then((value) {
+    //   UserLoginCubit.get(context).anotherUser =
+    //       HomeLayoutCubit.get(context).anotherUser;
+    // });
 
     /// Logged in user chats
     UserLoginCubit.get(context).getLoggedInChats(
         token: UserLoginCubit.get(context).loginModel!.refresh_token);
 
-    /// Is followed by logged in user
-    if (UserLoginCubit.get(context).anotherUser != null) {
-      UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).anotherUser!.id);
-    }
+
+    UserLoginCubit.get(context).inFollowing(followId: UserLoginCubit.get(context).IdOfSelected);
+
   }
 
   @override
@@ -69,6 +73,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     return BlocConsumer<UserLoginCubit, UserLoginStates>(
       listener: (context, state) {},
       builder: (context, state) {
+        int followersCount = HomeLayoutCubit.get(context).anotherUser?.followers.length ?? 0;
+        int followingCount = HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0;
+        bool isFollowing = context.select((UserLoginCubit cubit) =>
+            cubit.inFollowing(
+                followId: cubit.IdOfSelected)); // Example selector
         return Scaffold(
           appBar: AppBar(
             backgroundColor: defaultColor,
@@ -95,25 +104,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                       color: defaultColor,
                     ),
                     // Upload Cover Photo Icon
-                    Padding(
-                      padding: EdgeInsetsDirectional.only(
-                        start: screenWidth / 1.14,
-                        top: screenHeight / 12.5,
-                      ),
-                      child: IconButton(
-                        // Upload Cover Photo from mobile Gallery
-                        onPressed: _uploadPhoto,
-                        icon: CircleAvatar(
-                          radius: 15.0,
-                          backgroundColor: Colors.grey[400],
-                          child: const Icon(
-                            Icons.camera_alt_outlined,
-                            size: 20.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
+
                     // Profile Photo
                     Padding(
                       padding: EdgeInsetsDirectional.only(
@@ -138,22 +129,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 : const AssetImage(
                                 "assets/images/nullProfile.png"),
                           ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              width: 25,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey.shade400,
-                              ),
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                size: 18,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
+
                         ],
                       ),
                     ),
@@ -276,7 +252,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 followId: UserLoginCubit.get(context).anotherUser!.id
                             );
                           },
-                          child: (UserLoginCubit.get(context).anotherUser?.isFollowed == false)
+                          child: (isFollowing == false)
                               ? Container(
                             decoration: BoxDecoration(
                                 color: defaultColor,
@@ -284,7 +260,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: Center(
-                                child: (state is! FollowLoadingState)
+                                child: (true)
                                     ? (const Text(
                                   "Follow",
                                   style: TextStyle(
@@ -312,7 +288,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                             child: Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: Center(
-                                child: (state is! FollowLoadingState)
+                                child: (true)
                                     ? (const Text(
                                   "Following",
                                   style: TextStyle(
@@ -431,7 +407,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "${UserLoginCubit.get(context).anotherUserPostsResponse?.posts.length ?? " "}",
+                                        "${UserLoginCubit.get(context).anotherUserPostsResponse?.posts.length ?? "0"}",
                                         style: TextStyle(
                                           fontSize: 16.0,
                                           color: Colors.black.withOpacity(0.7),
@@ -514,7 +490,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          "${HomeLayoutCubit.get(context).anotherUser?.following.length ?? 0}",
+                                          "${followingCount?? 0}",
                                           style: TextStyle(
                                             fontSize: 16.0,
                                             color:
@@ -1060,18 +1036,18 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
                             } else {
-                              HomeLayoutCubit.get(context)
-                                  .getAnotherUserData(
-                                  token: UserLoginCubit.get(context)
-                                      .loginModel!
-                                      .refresh_token,
-                                  id: postDetails.createdBy.id)
-                                  .then((value) {
-                                UserLoginCubit.get(context).anotherUser =
-                                    HomeLayoutCubit.get(context).anotherUser;
-                                navigateToPage(
-                                    context, const AnotherUserProfile());
-                              });
+                              // HomeLayoutCubit.get(context)
+                              //     .getAnotherUserData(
+                              //     token: UserLoginCubit.get(context)
+                              //         .loginModel!
+                              //         .refresh_token,
+                              //     id: postDetails.createdBy.id)
+                              //     .then((value) {
+                              //   UserLoginCubit.get(context).anotherUser =
+                              //       HomeLayoutCubit.get(context).anotherUser;
+                              //   navigateToPage(
+                              //       context, const AnotherUserProfile());
+                              // });
                             }
                           },
                           child: Text(
@@ -1606,23 +1582,23 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
             UserLoginCubit.get(context).loggedInUser!.id) {
           navigateToPage(context, const ProfilePage());
         } else {
-          HomeLayoutCubit.get(context)
-              .getAnotherUserData(
-              token: UserLoginCubit.get(context).loginModel!.refresh_token,
-              id: postDetails.sharedBy!.id)
-              .then((value) {
-            UserLoginCubit.get(context)
-                .getAnotherUserPosts(
-                token:
-                UserLoginCubit.get(context).loginModel!.refresh_token,
-                id: postDetails.sharedBy!.id,
-                userName: postDetails.sharedBy!.userName)
-                .then((value) {
-              UserLoginCubit.get(context).anotherUser =
-                  HomeLayoutCubit.get(context).anotherUser;
-              navigateToPage(context, const AnotherUserProfile());
-            });
-          });
+          // HomeLayoutCubit.get(context)
+          //     .getAnotherUserData(
+          //     token: UserLoginCubit.get(context).loginModel!.refresh_token,
+          //     id: postDetails.sharedBy!.id)
+          //     .then((value) {
+          //   UserLoginCubit.get(context)
+          //       .getAnotherUserPosts(
+          //       token:
+          //       UserLoginCubit.get(context).loginModel!.refresh_token,
+          //       id: postDetails.sharedBy!.id,
+          //       userName: postDetails.sharedBy!.userName)
+          //       .then((value) {
+          //     UserLoginCubit.get(context).anotherUser =
+          //         HomeLayoutCubit.get(context).anotherUser;
+          //     navigateToPage(context, const AnotherUserProfile());
+          //   });
+          // });
         }
       },
       child: Padding(

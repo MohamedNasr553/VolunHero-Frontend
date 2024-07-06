@@ -183,6 +183,9 @@ class DeleteChatErrorState extends UserLoginStates {
 
   DeleteChatErrorState(this.error);
 }
+class GetAnotherUsersFollowersNumberSuccessState extends UserLoginStates {}
+class GetAnotherUsersFollowersNumberLoadingState extends UserLoginStates {}
+
 
 // Delete Me
 class DeleteMeSuccessState extends UserLoginStates {}
