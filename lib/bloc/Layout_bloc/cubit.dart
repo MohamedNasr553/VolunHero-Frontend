@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Layout_bloc/states.dart';
 import 'package:flutter_code/bloc/savedPosts_bloc/cubit.dart';
+import 'package:flutter_code/main.dart';
 import 'package:flutter_code/models/AddCommentModel.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/EditPostModel.dart';
@@ -202,12 +204,14 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     emit(ChangeOrganizationBottomNavBarState());
   }
 
+
+
   var layoutUserScreens = [
     const HomePage(),
     const GetSupport(),
     const CreatePost(),
     const NotificationPage(),
-    const CameraView(),
+     TakePictureScreen(),
   ];
 
   var layoutOrganizationScreens = [
