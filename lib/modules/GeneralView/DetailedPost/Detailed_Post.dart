@@ -501,7 +501,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                 padding: EdgeInsetsDirectional.only(
                                   start: screenWidth / 50,
                                   end: screenWidth / 23,
-                                  bottom: screenHeight / 50,
+                                  bottom: screenHeight / 300,
                                 ),
                                 child: Text(
                                   '${specificPost.shareCount} share',
@@ -519,7 +519,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                 padding: EdgeInsetsDirectional.only(
                                   start: screenWidth / 50,
                                   end: screenWidth / 23,
-                                  bottom: screenHeight / 50,
+                                  bottom: screenHeight / 300,
                                 ),
                                 child: Text(
                                   '${specificPost.shareCount} Shares',
@@ -1236,7 +1236,7 @@ class _DetailedPostState extends State<DetailedPost> {
                             .showSnackBar(const SnackBar(
                           backgroundColor: defaultColor,
                           content: Text(
-                            'Post already saved',
+                            'Post Shared',
                             style: TextStyle(
                               fontSize: 12.0,
                             ),

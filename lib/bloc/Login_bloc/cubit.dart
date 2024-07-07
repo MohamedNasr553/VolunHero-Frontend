@@ -588,16 +588,18 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   Future<void> getLoggedInUserNotifications(String? token) async {
     emit(GetLoggedInUserNotificationLoadingState());
-    DioHelper.getData(
-      url: "/notifications",
-      token: token,
-    ).then((value) {
-      notificationsModel = NotificationsModel.fromJson(value.data);
+    try {
+      final response = await DioHelper.getData(url: "/notifications", token: token);
+      print("Raw response data: ${response.data}");
+      notificationsModel = NotificationsModel.fromJson(response.data);
+      print("Parsed Notification Details: ${notificationsModel}");
       emit(GetLoggedInUserNotificationSuccessState());
-    }).catchError((error) {
-      emit(GetLoggedInUserNotificationErrorState(error));
-    });
+    } catch (error) {
+      print("Error: $error");
+      emit(GetLoggedInUserNotificationErrorState(error.toString()));
+    }
   }
+
 
   // --------------------------- Delete ME -----------------------------
   void deleteMe({

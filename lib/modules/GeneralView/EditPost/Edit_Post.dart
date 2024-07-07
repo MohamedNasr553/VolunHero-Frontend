@@ -208,7 +208,6 @@ class _DetailedPostState extends State<EditPost> {
                           'assets/images/postSettings.svg',
                         ),
                       ),
-
                       /// Hide Post
                       IconButton(
                         onPressed: () {},
@@ -309,7 +308,6 @@ class _DetailedPostState extends State<EditPost> {
                       ],
                     ),
                   ),
-
                   /// Likes and Comments Count
                   Padding(
                     padding: EdgeInsetsDirectional.only(
@@ -412,7 +410,6 @@ class _DetailedPostState extends State<EditPost> {
                       ],
                     ),
                   ),
-
                   /// Separator Line
                   Padding(
                     padding: EdgeInsetsDirectional.only(
@@ -424,7 +421,6 @@ class _DetailedPostState extends State<EditPost> {
                       color: Colors.grey[300],
                     ),
                   ),
-
                   /// Like, comment, share
                   Center(
                     child: Padding(

@@ -221,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     alignment: AlignmentDirectional.bottomEnd,
                                     children: [
                                       CircleAvatar(
-                                        backgroundColor: Colors.transparent,
+                                        backgroundColor: Colors.white,
                                         radius: 45.0,
                                         backgroundImage: (_profilePic != null)
                                             ? FileImage(_profilePic!)
@@ -1201,33 +1201,106 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ],
                               )
                             else if (pressedState == 'Donation Forms')
-                              Padding(
-                                padding: EdgeInsetsDirectional.only(
-                                  top: screenHeight / 60,
-                                  start: screenWidth / 40,
-                                  end: screenWidth / 40,
+                                Column(
+                                  children: [
+                                    if (DonationFormCubit.get(context)
+                                        .getOrgDonationFormsResponse !=
+                                        null &&
+                                        DonationFormCubit.get(context)
+                                            .getOrgDonationFormsResponse!
+                                            .donationForms
+                                            .isEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.all(screenWidth / 60),
+                                        child: (state is GetOrgDonationFormSuccessState)
+                                            ? Container(
+                                          height: screenHeight / 10,
+                                          width: screenWidth,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.circular(14.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.5),
+                                                blurRadius: 10.0,
+                                                spreadRadius: -5.0,
+                                                offset: const Offset(10.0, 10.0),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.newspaper_sharp,
+                                                size: 28,
+                                                color: Colors.black54,
+                                              ),
+                                              SizedBox(height: screenHeight / 200),
+                                              const Text(
+                                                "No Donation Forms available",
+                                                style: TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "Roboto",
+                                                  color: Colors.black87,
+                                                ),
+                                              ),
+                                              SizedBox(height: screenHeight / 300),
+                                              const Text(
+                                                "Donation Forms "
+                                                    "will "
+                                                    "show up here.",
+                                                style: TextStyle(
+                                                  fontSize: 10.0,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: "Poppins",
+                                                  color: Colors.black38,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                            : const Center(
+                                          child: CircularProgressIndicator(
+                                            color: defaultColor,
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.only(
+                                          top: screenHeight / 60,
+                                          start: screenWidth / 40,
+                                          end: screenWidth / 40,
+                                        ),
+                                        child: ListView.separated(
+                                          reverse: true,
+                                          shrinkWrap: true,
+                                          physics: const BouncingScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (context, index) =>
+                                              donationFormItem(
+                                                DonationFormCubit.get(context)
+                                                    .getOrgDonationFormsResponse
+                                                    ?.donationForms[index],
+                                                context,
+                                              ),
+                                          separatorBuilder: (context, index) =>
+                                              SizedBox(height: screenHeight / 50),
+                                          itemCount: DonationFormCubit.get(context)
+                                              .getOrgDonationFormsResponse
+                                              ?.donationForms
+                                              .length ??
+                                              0,
+                                        ),
+                                      ),
+                                  ],
                                 ),
-                                child: ListView.separated(
-                                  reverse: true,
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder: (context, index) =>
-                                      donationFormItem(
-                                    DonationFormCubit.get(context)
-                                        .getOrgDonationFormsResponse
-                                        ?.donationForms[index],
-                                    context,
-                                  ),
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(height: screenHeight / 50),
-                                  itemCount: DonationFormCubit.get(context)
-                                          .getOrgDonationFormsResponse
-                                          ?.donationForms
-                                          .length ??
-                                      0,
-                                ),
-                              ),
                           ],
                         ),
                       ),
@@ -1393,6 +1466,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                       child: CircleAvatar(
                         radius: 20.0,
+                        backgroundColor: Colors.white,
                         backgroundImage: (postDetails.createdBy.profilePic !=
                                 null)
                             ? NetworkImage(postDetails.createdBy.profilePic!
@@ -1796,14 +1870,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget donationFormItem(
-      DonationFormDetails? getOrgDonationFormsDetails, context) {
+  Widget donationFormItem(DonationFormDetails? getOrgDonationFormsDetails, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: screenWidth / 2,
-      height: screenHeight / 5,
+      height: screenHeight / 4,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14.0),
@@ -1818,85 +1890,80 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.only(
-          bottom: screenHeight / 80,
+          start: screenWidth / 20,
+          top: screenHeight / 50,
+          end: screenWidth / 20,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsetsDirectional.only(
-                start: screenWidth / 20,
-                top: screenHeight / 50,
-                end: screenWidth / 20,
+            Text(
+              getOrgDonationFormsDetails!.title,
+              style: const TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+            SizedBox(height: screenHeight / 200),
+            Row(
+              children: [
+                const Text(
+                  'End Date:  ',
+                  style: TextStyle(
+                    fontSize: 9.0,
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  DateFormat('dd-MM-yyyy').format(getOrgDonationFormsDetails.endDate),
+                  style: const TextStyle(
+                    fontSize: 9.0,
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: screenHeight / 50),
+            Expanded(
+              child: Text(
+                getOrgDonationFormsDetails.description,
+                style: const TextStyle(
+                  fontSize: 11.0,
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(height: screenHeight / 40),
+            SizedBox(
+              height: screenHeight / 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        getOrgDonationFormsDetails!.title,
-                        style: const TextStyle(
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight / 200),
-                      Row(
-                        children: [
-                          const Text(
-                            'End Date:  ',
-                            style: TextStyle(
-                              fontSize: 9.0,
-                              color: Colors.redAccent,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('dd-MM-yyyy')
-                                .format(getOrgDonationFormsDetails.endDate),
-                            style: const TextStyle(
-                              fontSize: 9.0,
-                              color: Colors.redAccent,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight / 50),
-                  Text(
-                    getOrgDonationFormsDetails.description,
-                    style: const TextStyle(
+                  const Text(
+                    "Donation Link: ",
+                    style: TextStyle(
                       fontSize: 11.0,
-                      color: Colors.black45,
+                      color: Colors.black54,
                       fontWeight: FontWeight.w600,
                     ),
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: screenHeight / 40),
-                  Row(
-                    children: [
-                      const Text(
-                        "Donation Link: ",
-                        style: TextStyle(
-                          fontSize: 11.0,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w600,
-                        ),
+                  SizedBox(height: screenHeight / 150),
+                  Expanded(
+                    child: Text(
+                      getOrgDonationFormsDetails.donationLink,
+                      style: const TextStyle(
+                        fontSize: 11.0,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Text(
-                        getOrgDonationFormsDetails.donationLink,
-                        style: const TextStyle(
-                          fontSize: 11.0,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+                      maxLines: 2, // Adjust as needed
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),

@@ -76,7 +76,8 @@ class _CreatePostState extends State<CreatePost> {
         print('Post Created Successfully');
         navigateToPage(context, const VolunHeroLayout());
         (UserLoginCubit.get(context).loggedInUser!.role == "Organization")
-            ? HomeLayoutCubit.get(context).changeOrganizationBottomNavBar(context, 0)
+            ? HomeLayoutCubit.get(context)
+                .changeOrganizationBottomNavBar(context, 0)
             : HomeLayoutCubit.get(context).changeUserBottomNavBar(context, 0);
       } else {
         final responseData = jsonDecode(responseString);
@@ -141,11 +142,11 @@ class _CreatePostState extends State<CreatePost> {
                         leading: IconButton(
                           onPressed: () {
                             UserLoginCubit.get(context).loggedInUser?.role ==
-                                "Organization"
+                                    "Organization"
                                 ? HomeLayoutCubit.get(context)
-                                .changeOrganizationBottomNavBar(context, 0)
+                                    .changeOrganizationBottomNavBar(context, 0)
                                 : HomeLayoutCubit.get(context)
-                                .changeUserBottomNavBar(context, 0);
+                                    .changeUserBottomNavBar(context, 0);
                             navigateAndFinish(context, const VolunHeroLayout());
                           },
                           icon: SvgPicture.asset(
@@ -168,8 +169,8 @@ class _CreatePostState extends State<CreatePost> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 // if (state is! CreatePostLoadingState) {
-                                List<Map<String, dynamic>>
-                                attachmentsMapList = [];
+                                List<Map<String, dynamic>> attachmentsMapList =
+                                    [];
                                 if (postAttachment != null) {
                                   // Display the attachment
                                   Image.file(postAttachment!);
@@ -196,20 +197,20 @@ class _CreatePostState extends State<CreatePost> {
                                 createPost();
                                 HomeLayoutCubit.get(context).getAllPosts(
                                     token: UserLoginCubit.get(context)
-                                        .loginModel!
-                                        .refresh_token ??
+                                            .loginModel!
+                                            .refresh_token ??
                                         "");
 
                                 // Change Bottom Nav Bar to Home Screen
                                 UserLoginCubit.get(context)
-                                    .loggedInUser
-                                    ?.role ==
-                                    "Organization"
+                                            .loggedInUser
+                                            ?.role ==
+                                        "Organization"
                                     ? HomeLayoutCubit.get(context)
-                                    .changeOrganizationBottomNavBar(
-                                    context, 0)
+                                        .changeOrganizationBottomNavBar(
+                                            context, 0)
                                     : HomeLayoutCubit.get(context)
-                                    .changeUserBottomNavBar(context, 0);
+                                        .changeUserBottomNavBar(context, 0);
                                 navigateAndFinish(
                                     context, const VolunHeroLayout());
                                 // } else if (state is! CreatePostErrorState) {
@@ -231,7 +232,7 @@ class _CreatePostState extends State<CreatePost> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 fixedSize:
-                                Size(screenWidth / 5, screenHeight / 90),
+                                    Size(screenWidth / 5, screenHeight / 90),
                               ),
                               child: Text(
                                 'Post',
@@ -254,7 +255,7 @@ class _CreatePostState extends State<CreatePost> {
                                 /// Name and Post Content
                                 Padding(
                                   padding:
-                                  EdgeInsets.only(left: screenWidth / 40),
+                                      EdgeInsets.only(left: screenWidth / 40),
                                   child: Column(
                                     children: [
                                       SizedBox(height: screenHeight / 25),
@@ -263,9 +264,21 @@ class _CreatePostState extends State<CreatePost> {
                                         children: [
                                           CircleAvatar(
                                             radius: 20.0,
-                                            backgroundImage: (UserLoginCubit.get(context).loggedInUser?.profilePic?.secure_url != null)
-                                                ? NetworkImage(UserLoginCubit.get(context).loggedInUser!.profilePic!.secure_url) as ImageProvider
-                                                : const AssetImage("assets/images/nullProfile.png"),
+                                            backgroundImage: (UserLoginCubit
+                                                            .get(context)
+                                                        .loggedInUser
+                                                        ?.profilePic
+                                                        ?.secure_url !=
+                                                    null)
+                                                ? NetworkImage(
+                                                        UserLoginCubit.get(
+                                                                context)
+                                                            .loggedInUser!
+                                                            .profilePic!
+                                                            .secure_url)
+                                                    as ImageProvider
+                                                : const AssetImage(
+                                                    "assets/images/nullProfile.png"),
                                           ),
                                           SizedBox(width: screenWidth / 60),
                                           Row(
@@ -320,7 +333,7 @@ class _CreatePostState extends State<CreatePost> {
                                             fontFamily: 'Poppins',
                                           ),
                                           maxLines:
-                                          (postAttachment != null) ? 3 : 8,
+                                              (postAttachment != null) ? 3 : 8,
                                         ),
                                       ),
                                       // Display the attachment if available
@@ -329,12 +342,12 @@ class _CreatePostState extends State<CreatePost> {
                                           children: [
                                             Padding(
                                               padding:
-                                              EdgeInsetsDirectional.only(
+                                                  EdgeInsetsDirectional.only(
                                                 start: screenWidth / 30,
                                                 end: screenWidth / 30,
                                               ),
                                               child:
-                                              Image.file(postAttachment!),
+                                                  Image.file(postAttachment!),
                                             ),
                                             Positioned(
                                               top: screenWidth / 40,
@@ -349,6 +362,8 @@ class _CreatePostState extends State<CreatePost> {
                                                   color: Colors.white,
                                                   onPressed: () {
                                                     setState(() {
+                                                      _attachments?.remove(
+                                                          postAttachment);
                                                       postAttachment = null;
                                                     });
                                                   },
@@ -362,130 +377,130 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                                 (postAttachment != null)
                                     ? SizedBox(
-                                    height: (keyboardSize == 0.0)
-                                        ? (screenHeight / 4.9)
-                                        : (screenHeight -
-                                        keyboardSize -
-                                        60 -
-                                        600))
+                                        height: (keyboardSize == 0.0)
+                                            ? (screenHeight / 4.9)
+                                            : (screenHeight -
+                                                keyboardSize -
+                                                60 -
+                                                600))
                                     : SizedBox(
-                                    height: (keyboardSize == 0.0)
-                                        ? (screenHeight / 3.63)
-                                        : (screenHeight -
-                                        keyboardSize -
-                                        60 -
-                                        600)),
+                                        height: (keyboardSize == 0.0)
+                                            ? (screenHeight / 3.63)
+                                            : (screenHeight -
+                                                keyboardSize -
+                                                60 -
+                                                600)),
                                 (keyboardSize == 0.0)
                                     ? Container(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFD9D9D9),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(56.0),
-                                      topRight: Radius.circular(56.0),
-                                    ),
-                                  ),
-                                  height: screenHeight / 4,
-                                  width: screenWidth,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                        EdgeInsetsDirectional.only(
-                                          top: screenHeight / 100,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFFD9D9D9),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(56.0),
+                                            topRight: Radius.circular(56.0),
+                                          ),
                                         ),
-                                        child: Container(
-                                          height: screenHeight / 250,
-                                          width: screenWidth / 7,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  10.0)),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.all(
-                                            screenWidth / 14),
+                                        height: screenHeight / 4,
+                                        width: screenWidth,
                                         child: Column(
                                           children: [
-                                            SizedBox(
-                                                height:
-                                                screenHeight / 60),
-                                            // Photo / Video
-                                            InkWell(
-                                              child: Row(
-                                                children: [
-                                                  ImageIcon(
-                                                    const AssetImage(
-                                                      'assets/images/Img_box_duotone_line.png',
-                                                    ),
-                                                    size: 30,
-                                                    color: HexColor(
-                                                        "027E81"),
-                                                  ),
-                                                  SizedBox(
-                                                      width: screenWidth /
-                                                          60),
-                                                  const Text(
-                                                    "Photo/video",
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                      FontWeight.w500,
-                                                      fontFamily:
-                                                      "Roboto",
-                                                    ),
-                                                  ),
-                                                ],
+                                            Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                top: screenHeight / 100,
                                               ),
-                                              onTap: () {
-                                                _uploadPhoto();
-                                                _pickAttachments();
-                                              },
+                                              child: Container(
+                                                height: screenHeight / 250,
+                                                width: screenWidth / 7,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0)),
+                                              ),
                                             ),
-                                            SizedBox(
-                                                height:
-                                                screenHeight / 25),
-                                            // Emojis Keyboard
-                                            InkWell(
-                                              child: Row(
+                                            Padding(
+                                              padding: EdgeInsets.all(
+                                                  screenWidth / 14),
+                                              child: Column(
                                                 children: [
-                                                  ImageIcon(
-                                                    const AssetImage(
-                                                      'assets/images/happy.png',
+                                                  SizedBox(
+                                                      height:
+                                                          screenHeight / 60),
+                                                  // Photo / Video
+                                                  InkWell(
+                                                    child: Row(
+                                                      children: [
+                                                        ImageIcon(
+                                                          const AssetImage(
+                                                            'assets/images/Img_box_duotone_line.png',
+                                                          ),
+                                                          size: 30,
+                                                          color: HexColor(
+                                                              "027E81"),
+                                                        ),
+                                                        SizedBox(
+                                                            width: screenWidth /
+                                                                60),
+                                                        const Text(
+                                                          "Photo/video",
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Roboto",
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    size: 30,
-                                                    color: HexColor(
-                                                        "027E81"),
+                                                    onTap: () {
+                                                      _uploadPhoto();
+                                                      _pickAttachments();
+                                                    },
                                                   ),
                                                   SizedBox(
-                                                      width: screenWidth /
-                                                          60),
-                                                  const Text(
-                                                    "Feeling/activity",
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                      FontWeight.w500,
-                                                      fontFamily:
-                                                      "Roboto",
+                                                      height:
+                                                          screenHeight / 25),
+                                                  // Emojis Keyboard
+                                                  InkWell(
+                                                    child: Row(
+                                                      children: [
+                                                        ImageIcon(
+                                                          const AssetImage(
+                                                            'assets/images/happy.png',
+                                                          ),
+                                                          size: 30,
+                                                          color: HexColor(
+                                                              "027E81"),
+                                                        ),
+                                                        SizedBox(
+                                                            width: screenWidth /
+                                                                60),
+                                                        const Text(
+                                                          "Feeling/activity",
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontFamily:
+                                                                "Roboto",
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
+                                                    onTap: () {
+                                                      // Open the keyboard with emoji support
+                                                      SystemChannels.textInput
+                                                          .invokeMethod(
+                                                              'TextInput.show');
+                                                    },
                                                   ),
                                                 ],
                                               ),
-                                              onTap: () {
-                                                // Open the keyboard with emoji support
-                                                SystemChannels.textInput
-                                                    .invokeMethod(
-                                                    'TextInput.show');
-                                              },
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
+                                      )
                                     : Container(),
                               ],
                             ),

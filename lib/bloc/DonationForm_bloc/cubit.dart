@@ -3,6 +3,7 @@ import 'package:flutter_code/bloc/DonationForm_bloc/states.dart';
 import 'package:flutter_code/models/AddDonationFormModel.dart';
 import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
 import 'package:flutter_code/models/GetDetailedDonationFormModel.dart';
+import 'package:flutter_code/models/updateDonationFormModel.dart';
 import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 
 class DonationFormCubit extends Cubit<DonationFormStates> {
@@ -99,16 +100,20 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
   }) async {
     emit(GetDetailedDonationFormLoadingState());
 
-    DioHelper.getData(
-      url: "/donationForm/$fromId",
-      token: token,
-    ).then((value) {
+    try {
+      var response = await DioHelper.getData(
+        url: "/donationForm/$fromId",
+        token: token,
+      );
+
       detailedDonationFormResponse =
-          DetailedDonationFormResponse.fromJson(value.data);
+          DetailedDonationFormResponse.fromJson(response.data);
+
       emit(GetDetailedDonationFormSuccessState());
-    }).catchError((error) {
+    } catch (error) {
+      print("Error fetching detailed donation form: $error");
       emit(GetDetailedDonationFormErrorState());
-    });
+    }
   }
 
   /// -------------------------- Delete Donation Form  ------------------------
@@ -125,10 +130,45 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
       emit(DeleteDonationFormSuccessState());
 
       getAllDonationForms(token: token);
-      // getOwnerPosts(token: token);
       getDetailedDonationForms(token: token, fromId: formId);
     }).catchError((error) {
       emit(DeleteDonationFormErrorState());
     });
+  }
+
+  /// ----------------------- Update Donation Form -------------------------------
+  UpdateDonationFormDetails? updateDonationFormDetails;
+
+  void updateDonationFormMethod({
+    required String title,
+    required DateTime? endDate,
+    required String description,
+    required String donationLink,
+    required String token,
+    required String formId,
+  }) async {
+    try {
+      emit(UpdateDonationFormLoadingState());
+
+      Map<String, dynamic> requestData = {
+        'title': title,
+        'endDate': endDate?.toIso8601String(),
+        'description': description,
+        'donationLink': donationLink,
+      };
+
+      print('Request Data: $requestData');
+
+      await DioHelper.patchData(
+        url: "/donationForm/$formId",
+        data: requestData,
+        token: token,
+      );
+
+      getAllDonationForms(token: token);
+      emit(UpdateDonationFormSuccessState());
+    } catch (error) {
+      emit(UpdateDonationFormErrorState());
+    }
   }
 }

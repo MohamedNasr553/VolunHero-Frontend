@@ -7,6 +7,7 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/GetAllDonationFormsModel.dart';
 import 'package:flutter_code/modules/OrganizationView/DetailedDonationForm/detailed_donation_fom.dart';
+import 'package:flutter_code/modules/OrganizationView/UpdateDonationForm/updateForm.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
@@ -100,7 +101,7 @@ class AllDonationForms extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         DonationFormCubit.get(context).getDetailedDonationForms(
           token: UserLoginCubit.get(context).loginModel!.refresh_token ?? "",
           fromId: donationFormDetails.id,
@@ -205,7 +206,15 @@ class AllDonationForms extends StatelessWidget {
                       child: MaterialButton(
                         height: screenHeight / 50,
                         onPressed: () {
-                          // navigateToPage(context, const UpdateDonationForm());
+                          DonationFormCubit.get(context)
+                              .getDetailedDonationForms(
+                            token: UserLoginCubit.get(context)
+                                    .loginModel!
+                                    .refresh_token ??
+                                "",
+                            fromId: donationFormDetails.id,
+                          );
+                          navigateToPage(context, const UpdateDonationForm());
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -230,7 +239,7 @@ class AllDonationForms extends StatelessWidget {
                     ),
                     SizedBox(width: screenWidth / 8),
                     Container(
-                      width: screenWidth / 3.5,
+                      width: screenWidth / 3.2,
                       height: screenHeight / 20,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50.0),
@@ -299,7 +308,7 @@ class AllDonationForms extends StatelessWidget {
                     ),
                     child: const Text(
                       "Are you sure you want to delete "
-                          "this form permanently ?",
+                      "this form permanently ?",
                       style: TextStyle(
                         fontSize: 17.0,
                         color: Colors.black45,

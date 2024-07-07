@@ -23,12 +23,11 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (UserLoginCubit.get(context).loginModel!.refresh_token != null &&
         UserLoginCubit.get(context).loginModel!.refresh_token!.isNotEmpty) {
       UserLoginCubit.get(context).getLoggedInUserNotifications(
-          UserLoginCubit.get(context).loginModel!.refresh_token);
+          UserLoginCubit.get(context).loginModel?.refresh_token ?? "");
     }
   }
 
@@ -161,6 +160,17 @@ class _NotificationPageState extends State<NotificationPage> {
     if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d .';
     }
+
+    String? profilePicUrl = UserLoginCubit.get(context)
+        .notificationsModel!
+        .notifications[index]
+        .sender
+        .profilePic
+        .secureUrl;
+
+    // Debugging: print the profile picture URL
+    print('Profile Pic URL: $profilePicUrl');
+
     return InkWell(
       onTap: () {
         UserLoginCubit.get(context).markNotification(
@@ -209,7 +219,7 @@ class _NotificationPageState extends State<NotificationPage> {
           vertical: screenHeight / 120,
         ),
         child: Container(
-          height: screenHeight / 12,
+          height: screenHeight / 11,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             color: (UserLoginCubit.get(context)
@@ -224,15 +234,14 @@ class _NotificationPageState extends State<NotificationPage> {
                 color: Colors.grey.withOpacity(0.1),
                 blurRadius: 10.0,
                 spreadRadius: -5.0,
-                offset: const Offset(15.0, 5.0), // Right and bottom shadow
+                offset: const Offset(15.0, 5.0),
               ),
             ],
           ),
           child: Padding(
             padding: EdgeInsetsDirectional.only(
-              start: screenWidth / 30,
-              end: screenWidth / 20,
-              // top: screenHeight / 200,
+              start: screenWidth / 40,
+              end: screenWidth / 50,
             ),
             child: Row(
               children: [
@@ -241,57 +250,81 @@ class _NotificationPageState extends State<NotificationPage> {
                         .notifications[index]
                         .type ==
                     "like")
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/images/NewLikeColor.svg',
-                      width: 23.0,
-                      height: 23.0,
-                    ),
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 32.0,
+                        backgroundColor: Colors.white,
+                        backgroundImage: profilePicUrl != null
+                            ? NetworkImage(profilePicUrl) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: SvgPicture.asset(
+                          'assets/images/NewLikeColor.svg',
+                          width: 22.0,
+                          height: 22.0,
+                        ),
+                      ),
+                    ],
                   ),
                 if (UserLoginCubit.get(context)
                         .notificationsModel!
                         .notifications[index]
                         .type ==
                     "comment")
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/images/comment.svg',
-                      width: 29.0,
-                      height: 29.0,
-                    ),
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 32.0,
+                        backgroundColor: Colors.white,
+                        backgroundImage: profilePicUrl != null
+                            ? NetworkImage(profilePicUrl) as ImageProvider
+                            : const AssetImage("assets/images/nullProfile.png"),
+                      ),
+                      const Icon(
+                        Icons.comment,
+                        color: Colors.black87,
+                      ),
+                    ],
                   ),
-                SizedBox(width: screenWidth / 50),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: screenHeight / 60),
-                    Text(
-                      UserLoginCubit.get(context)
-                          .notificationsModel!
-                          .notifications[index]
-                          .content,
-                      maxLines: 2,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "Poppins",
+                SizedBox(width: screenWidth / 18),
+                Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    top: screenHeight / 150,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: screenHeight / 60),
+                      Text(
+                        UserLoginCubit.get(context)
+                            .notificationsModel!
+                            .notifications[index]
+                            .content,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Poppins",
+                        ),
                       ),
-                    ),
-                    SizedBox(height: screenHeight / 200),
-                    Text(
-                      durationText,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 9.0,
-                        fontWeight: FontWeight.w500,
+                      SizedBox(height: screenHeight / 200),
+                      Text(
+                        durationText,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 9.0,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

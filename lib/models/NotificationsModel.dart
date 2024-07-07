@@ -22,6 +22,7 @@ class NotificationsModel {
       'notifications': notifications.map((notification) => notification.toJson()).toList(),
     };
   }
+
   @override
   String toString() {
     return 'NotificationsModel(message: $message, notifications: $notifications)';
@@ -32,7 +33,7 @@ class NotificationsModel {
 class NotificationModelDetails {
   String id;
   String user;
-  String sender;
+  Sender sender;
   String type;
   String content;
   bool read;
@@ -58,7 +59,7 @@ class NotificationModelDetails {
     return NotificationModelDetails(
       id: json['_id'],
       user: json['user'],
-      sender: json['sender'],
+      sender: Sender.fromJson(json['sender']),
       type: json['type'],
       content: json['content'],
       read: json['read'],
@@ -73,7 +74,7 @@ class NotificationModelDetails {
     return {
       '_id': id,
       'user': user,
-      'sender': sender,
+      'sender': sender.toJson(),
       'type': type,
       'content': content,
       'read': read,
@@ -83,7 +84,63 @@ class NotificationModelDetails {
       '__v': version,
     };
   }
+
+  @override
+  String toString() {
+    return 'NotificationModelDetails(id: $id, user: $user, sender: $sender, type: $type, content: $content, read: $read, relatedEntity: $relatedEntity, entityModel: $entityModel, createdAt: $createdAt, version: $version)';
+  }
 }
 
+// Sender Model
+class Sender {
+  String id;
+  ProfilePic profilePic;
 
+  Sender({required this.id, required this.profilePic});
 
+  factory Sender.fromJson(Map<String, dynamic> json) {
+    return Sender(
+      id: json['_id'],
+      profilePic: ProfilePic.fromJson(json['profilePic']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'profilePic': profilePic.toJson(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Sender(id: $id, profilePic: $profilePic)';
+  }
+}
+
+// ProfilePic Model
+class ProfilePic {
+  String secureUrl;
+  String publicId;
+
+  ProfilePic({required this.secureUrl, required this.publicId});
+
+  factory ProfilePic.fromJson(Map<String, dynamic> json) {
+    return ProfilePic(
+      secureUrl: json['secure_url'],
+      publicId: json['public_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'secure_url': secureUrl,
+      'public_id': publicId,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'ProfilePic(secureUrl: $secureUrl, publicId: $publicId)';
+  }
+}

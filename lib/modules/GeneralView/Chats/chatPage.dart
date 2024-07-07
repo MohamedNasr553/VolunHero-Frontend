@@ -416,6 +416,7 @@ class _ChatsPageState extends State<ChatsPage> {
                           chats = UserLoginCubit.get(context).chats;
                         });
                       });
+                      Navigator.pop(context);
                     },
                   ),
                 ],

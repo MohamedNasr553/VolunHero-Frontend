@@ -512,7 +512,6 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 50,
-                            bottom: screenHeight / 50,
                           ),
                           child: Text(
                             '${postObj.commentsCount} Comment',
@@ -562,7 +561,6 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 50,
-                            bottom: screenHeight / 50,
                           ),
                           child: Text(
                             '${postObj.commentsCount} Comments',
@@ -580,7 +578,6 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 23,
-                            bottom: screenHeight / 50,
                           ),
                           child: Text(
                             '${postObj.shareCount} share',
@@ -598,7 +595,6 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 23,
-                            bottom: screenHeight / 50,
                           ),
                           child: Text(
                             '${postObj.shareCount} Shares',
