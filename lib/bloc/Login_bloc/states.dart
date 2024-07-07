@@ -213,3 +213,10 @@ class DeleteMeErrorState extends UserLoginStates {
 
   DeleteMeErrorState(this.error);
 }
+
+//////
+class GetAnotherUserDataLoadingState extends UserLoginStates{}
+class GetAnotherUserDataSuccessState extends UserLoginStates{}
+class GetAnotherUserDataErrorState extends UserLoginStates{}
+class LoggedInUserNotFollowingAnotherUser extends UserLoginStates{}
+class LoggedInUserFollowingAnotherUser extends UserLoginStates{}

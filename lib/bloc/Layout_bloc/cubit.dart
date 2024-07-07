@@ -564,8 +564,6 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     }
   }
 
-
-
   Future<void> getAnotherUserData({
     required String? token,
     required String? id,

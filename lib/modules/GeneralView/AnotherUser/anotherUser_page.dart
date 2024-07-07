@@ -40,11 +40,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     super.initState();
 
     //Another User Data
-    HomeLayoutCubit.get(context)
+    UserLoginCubit.get(context)
         .getAnotherUserDatabyHTTP(
       id: UserLoginCubit
           .get(context)
-          .IdOfSelected ?? "",
+          .idOfSelected ?? "",
       token: UserLoginCubit
           .get(context)
           .loginModel!
@@ -53,13 +53,13 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         .then((_) {
       print(UserLoginCubit
           .get(context)
-          .IdOfSelected);
-      UserLoginCubit
-          .get(context)
-          .anotherUser =
-          HomeLayoutCubit
-              .get(context)
-              .anotherUser;
+          .idOfSelected);
+      // UserLoginCubit
+      //     .get(context)
+      //     .anotherUser =
+      //     HomeLayoutCubit
+      //         .get(context)
+      //         .anotherUser;
     });
 
     UserLoginCubit.get(context).getAnotherUserPosts(
@@ -98,7 +98,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         .flag = UserLoginCubit.get(context)
         .inFollowing(followId: UserLoginCubit
         .get(context)
-        .IdOfSelected);
+        .idOfSelected);
 
     /// Logged in user chats
     UserLoginCubit.get(context).getLoggedInChats(
@@ -110,7 +110,8 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
     UserLoginCubit.get(context)
         .inFollowing(followId: UserLoginCubit
         .get(context)
-        .IdOfSelected);
+        .idOfSelected);
+    UserLoginCubit.get(context).isLoggedInUserFollowingAnotherUser();
   }
 
   @override
@@ -130,7 +131,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
         HomeLayoutCubit
             .get(context)
             .followersCount =
-            HomeLayoutCubit
+            UserLoginCubit
                 .get(context)
                 .anotherUser
                 ?.followers
@@ -216,7 +217,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               Row(
                                 children: [
                                   Text(
-                                    HomeLayoutCubit
+                                    UserLoginCubit
                                         .get(context)
                                         .anotherUser
                                         ?.firstName ??
@@ -230,7 +231,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                   ),
                                   SizedBox(width: screenWidth / 90),
                                   Text(
-                                    HomeLayoutCubit
+                                    UserLoginCubit
                                         .get(context)
                                         .anotherUser
                                         ?.lastName ??
@@ -243,17 +244,17 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                     ),
                                   ),
                                   SizedBox(width: screenWidth / 60),
-                                  (HomeLayoutCubit
+                                  (UserLoginCubit
                                       .get(context)
                                       .anotherUser
                                       ?.specification ==
                                       'Medical' ||
-                                      HomeLayoutCubit
+                                      UserLoginCubit
                                           .get(context)
                                           .anotherUser
                                           ?.specification ==
                                           'Educational' ||
-                                      HomeLayoutCubit
+                                      UserLoginCubit
                                           .get(context)
                                           .anotherUser
                                           ?.role ==
@@ -301,11 +302,29 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                     followId: UserLoginCubit
                                         .get(context)
                                         .anotherUser!
-                                        .id);
+                                        .id).then((onValue){
+                                  //Another User Data
+                                //   UserLoginCubit.get(context)
+                                //       .getAnotherUserDatabyHTTP(
+                                //     id: UserLoginCubit
+                                //         .get(context)
+                                //         .idOfSelected ?? "",
+                                //     token: UserLoginCubit
+                                //         .get(context)
+                                //         .loginModel!
+                                //         .refresh_token,
+                                //   )
+                                //       .then((_) {
+                                //     print(UserLoginCubit
+                                //         .get(context)
+                                //         .idOfSelected);
+                                //
+                                //   });
+                                 });
                               },
                               child: (UserLoginCubit
                                   .get(context)
-                                  .flag == false)
+                                  .isLoggedInUserFollowingAnotherUser() == false)
                                   ? Container(
                                 decoration: BoxDecoration(
                                     color: defaultColor,
@@ -361,7 +380,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                               onTap: () async {
                                 UserLoginCubit.get(context)
                                     .createChat(
-                                  secondId: HomeLayoutCubit
+                                  secondId: UserLoginCubit
                                       .get(context)
                                       .anotherUser!
                                       .id,
@@ -485,11 +504,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                                 .loginModel!
                                                 .refresh_token,
                                             slugUsername:
-                                            HomeLayoutCubit
+                                            UserLoginCubit
                                                 .get(context)
                                                 .anotherUser!
                                                 .slugUserName,
-                                            id: HomeLayoutCubit
+                                            id: UserLoginCubit
                                                 .get(context)
                                                 .anotherUser!
                                                 .id,
@@ -500,7 +519,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         child: Column(
                                           children: [
                                             Text(
-                                              "${HomeLayoutCubit
+                                              "${UserLoginCubit
                                                   .get(context)
                                                   .anotherUser
                                                   ?.followers
@@ -535,11 +554,11 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                                 .loginModel!
                                                 .refresh_token,
                                             slugUsername:
-                                            HomeLayoutCubit
+                                            UserLoginCubit
                                                 .get(context)
                                                 .anotherUser!
                                                 .slugUserName,
-                                            id: HomeLayoutCubit
+                                            id: UserLoginCubit
                                                 .get(context)
                                                 .anotherUser!
                                                 .id,
@@ -550,9 +569,9 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         child: Column(
                                           children: [
                                             Text(
-                                              "${HomeLayoutCubit
+                                              "${UserLoginCubit
                                                   .get(context)
-                                                  .followingCount}",
+                                                  .anotherUser!.following.length}",
                                               style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black
@@ -826,7 +845,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         SizedBox(width: screenWidth / 30),
                                         SizedBox(
                                             width: screenWidth / 1.5,
-                                            child: (HomeLayoutCubit
+                                            child: (UserLoginCubit
                                                 .get(context)
                                                 .anotherUser
                                                 ?.role ==
@@ -897,7 +916,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         SizedBox(
                                           width: screenWidth / 1.5,
                                           child: Text(
-                                            "Lives in ${HomeLayoutCubit
+                                            "Lives in ${UserLoginCubit
                                                 .get(context)
                                                 .anotherUser
                                                 ?.address ?? " "}",
@@ -2196,30 +2215,30 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
 
     return GestureDetector(
       onTap: () {
-        if (postWrapper!.sharedBy!.id ==
+        if (postWrapper.sharedBy!.id ==
             UserLoginCubit
                 .get(context)
                 .loggedInUser!
                 .id) {
           navigateToPage(context, const ProfilePage());
         } else {
-          // HomeLayoutCubit.get(context)
-          //     .getAnotherUserData(
-          //     token: UserLoginCubit.get(context).loginModel!.refresh_token,
-          //     id: postDetails.sharedBy!.id)
-          //     .then((value) {
-          //   UserLoginCubit.get(context)
-          //       .getAnotherUserPosts(
-          //       token:
-          //       UserLoginCubit.get(context).loginModel!.refresh_token,
-          //       id: postDetails.sharedBy!.id,
-          //       userName: postDetails.sharedBy!.userName)
-          //       .then((value) {
-          //     UserLoginCubit.get(context).anotherUser =
-          //         HomeLayoutCubit.get(context).anotherUser;
-          //     navigateToPage(context, const AnotherUserProfile());
-          //   });
-          // });
+          HomeLayoutCubit.get(context)
+              .getAnotherUserData(
+              token: UserLoginCubit.get(context).loginModel!.refresh_token,
+              id: postWrapper.sharedBy!.id)
+              .then((value) {
+            UserLoginCubit.get(context)
+                .getAnotherUserPosts(
+                token:
+                UserLoginCubit.get(context).loginModel!.refresh_token,
+                id: postWrapper.sharedBy!.id,
+                userName: postWrapper.sharedBy!.userName)
+                .then((value) {
+              UserLoginCubit.get(context).anotherUser =
+                  HomeLayoutCubit.get(context).anotherUser;
+              navigateToPage(context, const AnotherUserProfile());
+            });
+          });
         }
       },
       child: Padding(

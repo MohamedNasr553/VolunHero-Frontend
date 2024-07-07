@@ -1,5 +1,5 @@
 class AnotherUser {
-  late String id;
+  late final String id;
   final String firstName;
   final String lastName;
   late final String userName;
@@ -21,10 +21,10 @@ class AnotherUser {
   final List<dynamic> locations;
   final String specification;
   final List<Attachment> attachments;
-  final List<dynamic> following;
-  final List<dynamic> followers;
+  final List<Following> following;
+  final List<Followers> followers;
   final String updatedAt;
-  late bool isFollowed ;
+  late bool isFollowed;
 
   AnotherUser({
     required this.id,
@@ -78,8 +78,8 @@ class AnotherUser {
       locations: List<dynamic>.from(json['locations']),
       specification: json['specification'],
       attachments: (json['attachments'] as List).map((item) => Attachment.fromJson(item)).toList(),
-      following: List<dynamic>.from(json['following']),
-      followers: List<dynamic>.from(json['followers']),
+      following: (json['following'] as List).map((item) => Following.fromJson(item)).toList(),
+      followers: (json['followers'] as List).map((item) => Followers.fromJson(item)).toList(),
       updatedAt: json['updatedAt'],
     );
   }
@@ -137,6 +137,40 @@ class Attachment {
     return Attachment(
       secureUrl: json['secure_url'],
       publicId: json['public_id'],
+    );
+  }
+}
+
+class Following {
+  final String userId;
+  final String id;
+
+  Following({
+    required this.userId,
+    required this.id,
+  });
+
+  factory Following.fromJson(Map<String, dynamic> json) {
+    return Following(
+      userId: json['userId'],
+      id: json['_id'],
+    );
+  }
+}
+
+class Followers {
+  final String userId;
+  final String id;
+
+  Followers({
+    required this.userId,
+    required this.id,
+  });
+
+  factory Followers.fromJson(Map<String, dynamic> json) {
+    return Followers(
+      userId: json['userId'],
+      id: json['_id'],
     );
   }
 }

@@ -216,11 +216,11 @@ class _DetailedPostState extends State<DetailedPost> {
                                       followers: [],
                                       updatedAt: '',
                                     );
-                                    UserLoginCubit.get(context).IdOfSelected =
+                                    UserLoginCubit.get(context).idOfSelected =
                                         specificPost.createdBy.id;
                                     HomeLayoutCubit.get(context)
                                         .getAnotherUserDatabyHTTP(
-                                      id: UserLoginCubit.get(context).IdOfSelected ?? "",
+                                      id: UserLoginCubit.get(context).idOfSelected ?? "",
                                       token: UserLoginCubit.get(context)
                                           .loginModel!
                                           .refresh_token,
@@ -230,7 +230,7 @@ class _DetailedPostState extends State<DetailedPost> {
                                           HomeLayoutCubit.get(context).anotherUser;
                                       UserLoginCubit.get(context).inFollowing(
                                           followId:
-                                          UserLoginCubit.get(context).IdOfSelected);
+                                          UserLoginCubit.get(context).idOfSelected);
                                       navigateToPage(context, const AnotherUserProfile());
                                     });
                                   }

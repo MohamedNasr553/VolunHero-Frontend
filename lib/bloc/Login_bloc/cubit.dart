@@ -1,5 +1,7 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
@@ -404,10 +406,80 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   // -------------------------- make follow using endpoints -----------------
   AnotherUser? anotherUser;
-  String? IdOfSelected;
-
+  String? idOfSelected;
   bool flag = false;
+  Future<void> getAnotherUserDatabyHTTP({required String id,required String? token}) async {
+    emit(GetAnotherUserDataLoadingState());
 
+    const String baseUrl = 'https://volunhero.onrender.com/api';
+
+    try {
+      final uri = Uri.parse('$baseUrl/users/$id');
+
+      final response = await http.get(
+        uri,
+        headers: {
+          if (token != null) 'authorization': 'Volunhero__$token',
+        },
+      );
+      print(response.body);
+      print("mn HTTP");
+
+      final jsonResponse = json.decode(response.body);
+      if (jsonResponse['message'] == 'success') {
+        final userData = jsonResponse['data']['doc'];
+        anotherUser = AnotherUser.fromJson(userData);
+        print(anotherUser.toString());
+      } else {
+        print('Error: ${jsonResponse['message']}');
+      }
+      if (response.statusCode == 200) {
+        emit(GetAnotherUserDataSuccessState());
+      } else {
+        emit(GetAnotherUserDataErrorState());
+      }
+    } catch (error) {
+      emit(GetAnotherUserDataErrorState());
+    }
+  }
+
+  Future<void> getAnotherUserData({
+    required String? token,
+    required String? id,
+  }) async {
+    try {
+      emit(GetAnotherUserDataLoadingState());
+      DioHelper.getData(
+        url: "/users/$id",
+        token: token,
+      ).then((value) {
+        //anotherUser = AnotherUser.fromJson(value.data);
+        emit(GetAnotherUserDataSuccessState());
+      }).catchError((error) {
+
+        emit(GetAnotherUserDataErrorState());
+      });
+    } on DioError catch (dioError) {
+      // Handle Dio-specific errors
+      print('Dio error: ${dioError.message}');
+      emit(GetAnotherUserDataErrorState());
+    } catch (error) {
+      // Handle any other errors
+      print('Unexpected error: $error');
+      emit(GetAnotherUserDataErrorState());
+    }
+  }
+
+  bool isLoggedInUserFollowingAnotherUser(){
+    for (int i=0;i<(anotherUser?.followers.length ?? 0);i++){
+      if(anotherUser!.followers[i].userId == loggedInUser!.id){
+      //  emit(LoggedInUserFollowingAnotherUser());
+        return true;
+      }
+    }
+    //emit(LoggedInUserNotFollowingAnotherUser());
+    return false;
+  }
   Future<void> handleFollow(
       {required String? token, required String? followId}) async {
     try {
@@ -415,30 +487,26 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
       print("XD");
       print(flag);
-      if (flag == false) {
-        anotherUser!.followers.add({
-          "userId": followId
-        }); // Assuming followers is a list of objects with userId
-
+      if (isLoggedInUserFollowingAnotherUser() == false) {
         DioHelper.patchData(
           url: "/users/${followId}/makefollow",
           token: token,
         ).then((value) {
           print(value.data);
+          isLoggedInUserFollowingAnotherUser();
           // Add the user to the following list
-          anotherUser!.isFollowed = true;
+        //  anotherUser!.isFollowed = true;
           emit(FollowSuccessState());
         });
       } else {
-        anotherUser!.followers
-            .removeWhere((user) => user["userId"] == followId);
         DioHelper.patchData(
           url: "/users/${followId}/makeunfollow",
           token: token,
         ).then((value) {
           print(value.data);
+          isLoggedInUserFollowingAnotherUser();
           // Remove the user from the following list
-          anotherUser!.isFollowed = false;
+          //anotherUser!.isFollowed = false;
           emit(UnFollowSuccessState());
         });
       }
