@@ -101,9 +101,7 @@ class _ChatsPageState extends State<ChatsPage> {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(
-                height: screenHeight / 2,
-              ),
+              SizedBox(height: screenHeight / 2),
               Column(
                 children: [
                   Padding(
@@ -265,10 +263,12 @@ class _ChatsPageState extends State<ChatsPage> {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 25,
-                backgroundImage: AssetImage(
-                  "${chats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}",
-                ),
+                radius: 25.0,
+                backgroundColor: Colors.white,
+                backgroundImage: chats[index].members[1].userId.profilePic?.secureUrl !=
+                    null
+                    ? NetworkImage(chats[index].members[1].userId.profilePic!.secureUrl) as ImageProvider
+                    : const AssetImage("assets/images/nullProfile.png"),
               ),
               SizedBox(width: screenWidth / 30),
               Expanded(

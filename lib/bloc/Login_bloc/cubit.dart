@@ -504,6 +504,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
 
   /// --------------------------- Notifications --------------------------
   NotificationsModel? notificationsModel;
+  NotificationModelDetails? notificationModelDetails;
 
   Future<void> markNotification(String? token, String id) async {
     emit(MarkNotificationLoadingState());

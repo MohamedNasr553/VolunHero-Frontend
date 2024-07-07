@@ -621,7 +621,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                         children: [
                                           Container(
                                             height: screenHeight / 40,
-                                            width: screenWidth / 11.5,
+                                            width: screenWidth / 9,
                                             color: Colors.white,
                                             child: Text(
                                               "About",
@@ -637,7 +637,7 @@ class _AnotherUserProfileState extends State<AnotherUserProfile> {
                                           ),
                                           (pressedState == 'About')
                                               ? Container(
-                                            width: screenWidth / 11.3,
+                                            width: screenWidth / 10,
                                             height: 2.7,
                                             color: defaultColor,
                                           )

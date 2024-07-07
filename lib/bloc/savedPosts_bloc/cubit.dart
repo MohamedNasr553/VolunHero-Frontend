@@ -39,8 +39,8 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
 
   GetSavedPostsResponse? getSavedPostsResponse;
   GetSavedPosts? getSavedPosts;
-  GetDetailedSavedPost? getDetailedSavedPost;
-  List<GetDetailedSavedPost>? savedPosts;
+  List<PostWrapper>? postWrapper;
+  PostObj? postObj;
 
   Future<void> getAllSavedPosts({required String token}) async {
     emit(GetAllSavedPostsLoadingState());
@@ -61,14 +61,11 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
 
       // Parse the API response
       getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
+      getSavedPosts = getSavedPostsResponse!.savedPosts;
+      postWrapper = getSavedPosts!.posts;
 
-      if (getSavedPostsResponse != null && getSavedPostsResponse!.savedPosts != null) {
-        savedPosts = getSavedPostsResponse!.savedPosts!.posts;
+      emit(GetAllSavedPostsSuccessState());
 
-        emit(GetAllSavedPostsSuccessState());
-      } else {
-        emit(GetAllSavedPostsErrorState());
-      }
     } catch (error, stackTrace) {
       print('Error fetching saved posts: $error');
       print('Stack trace: $stackTrace');

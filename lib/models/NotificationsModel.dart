@@ -3,15 +3,15 @@ import 'dart:convert';
 // Notifications Model
 class NotificationsModel {
   String message;
-  List<NotificationModel> notifications;
+  List<NotificationModelDetails> notifications;
 
   NotificationsModel({required this.message, required this.notifications});
 
   factory NotificationsModel.fromJson(Map<String, dynamic> json) {
     return NotificationsModel(
       message: json['message'],
-      notifications: List<NotificationModel>.from(
-        json['notifications'].map((notification) => NotificationModel.fromJson(notification)),
+      notifications: List<NotificationModelDetails>.from(
+        json['notifications'].map((notification) => NotificationModelDetails.fromJson(notification)),
       ),
     );
   }
@@ -29,7 +29,7 @@ class NotificationsModel {
 }
 
 // Notification Model
-class NotificationModel {
+class NotificationModelDetails {
   String id;
   String user;
   String sender;
@@ -41,7 +41,7 @@ class NotificationModel {
   DateTime createdAt;
   int version;
 
-  NotificationModel({
+  NotificationModelDetails({
     required this.id,
     required this.user,
     required this.sender,
@@ -54,8 +54,8 @@ class NotificationModel {
     required this.version,
   });
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) {
-    return NotificationModel(
+  factory NotificationModelDetails.fromJson(Map<String, dynamic> json) {
+    return NotificationModelDetails(
       id: json['_id'],
       user: json['user'],
       sender: json['sender'],

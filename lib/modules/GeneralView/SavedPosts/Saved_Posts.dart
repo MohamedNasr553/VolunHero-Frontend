@@ -95,9 +95,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
     final loginCubit = UserLoginCubit.get(context);
     final savedPostsCubit = SavedPostsCubit.get(context);
 
-    // print("ListView Length: ${savedPostsCubit.getSavedPosts!.posts!.length}");
     // Checks if getDetailedSavedPost is NotEmpty
-    if (savedPostsCubit.getSavedPosts!.posts != null &&
+    if (savedPostsCubit.getSavedPosts?.posts != null &&
         savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
       return SingleChildScrollView(
         child: Column(
@@ -107,22 +106,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                List<ModifiedPost> postsList =  homeCubit.homePagePostsModel!.modifiedPosts;
-                ModifiedPost? modifiedPost;
-                for(int i=0;i<postsList.length;i++){
-                  if(postsList[i].id == savedPostsCubit.getSavedPosts!.posts![index].postId){
-                    print("********************");
-                    print(postsList[i]);
-                    print("********************");
-                    print(savedPostsCubit.getSavedPosts!.posts![index]);
-                    modifiedPost = postsList[i];
-                  }
-                }
                 return buildSavedPostItem(
-                  modifiedPost,
-                  // SavedPostsCubit.get(context).getSavedPosts,
-                  savedPostsCubit.getSavedPosts!.posts![index],
-                  // savedPostsCubit.getDetailedSavedPost,
+                  savedPostsCubit.getSavedPosts!.posts![index].postObj,
                   loginCubit.loggedInUserData!.doc,
                   context,
                 );
@@ -182,12 +167,11 @@ class _UserSavedPostsState extends State<SavedPosts> {
   }
 
   Widget buildSavedPostItem(
-    ModifiedPost? modifiedPost,
-    GetDetailedSavedPost? getDetailedSavedPost,
-    LoggedInUser loggedInUser,
-    context,
+      PostObj? postObj,
+      LoggedInUser loggedInUser,
+      context,
   ) {
-    if (modifiedPost == null || getDetailedSavedPost == null) {
+    if (postObj == null) {
       return const SizedBox();
     }
     // print("Post id el gy le save: ${modifiedPost.id}");
@@ -195,12 +179,12 @@ class _UserSavedPostsState extends State<SavedPosts> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     // Handling Post Duration
-    DateTime? createdAt = modifiedPost.createdAt;
+    DateTime? createdAt = postObj.createdAt;
     String? durationText;
 
     DateTime? createdTime = createdAt;
     DateTime timeNow = DateTime.now();
-    Duration difference = timeNow.difference(createdTime);
+    Duration difference = timeNow.difference(createdTime!);
 
     if (difference.inMinutes > 59) {
       durationText = '${difference.inHours}h .';
@@ -223,12 +207,12 @@ class _UserSavedPostsState extends State<SavedPosts> {
           if (token != null) {
             HomeLayoutCubit.get(context).getPostId(
               token: token,
-              postId: getDetailedSavedPost.postId!,
+              postId: postObj.id!,
             );
-            if (modifiedPost.commentsCount > 0) {
+            if (postObj.commentsCount! > 0) {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
-                postId: getDetailedSavedPost.postId!,
+                postId: postObj.id!,
               );
             }
           }
@@ -262,7 +246,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (modifiedPost.createdBy.id ==
+                        if (postObj.createdBy!.id ==
                             UserLoginCubit.get(context).loggedInUser!.id) {
                           navigateToPage(context, const ProfilePage());
                         } else {
@@ -287,7 +271,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             updatedAt: '',
                           );
                           UserLoginCubit.get(context).IdOfSelected =
-                              modifiedPost.createdBy.id;
+                              postObj.createdBy!.id;
                           HomeLayoutCubit.get(context)
                               .getAnotherUserDatabyHTTP(
                             id: UserLoginCubit.get(context).IdOfSelected ?? "",
@@ -308,10 +292,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       child: CircleAvatar(
                         radius: 20.0,
                         backgroundColor: Colors.white,
-                        backgroundImage: modifiedPost.createdBy.profilePic !=
-                                null
-                            ? NetworkImage(modifiedPost.createdBy.profilePic!
-                                .secure_url) as ImageProvider
+                        backgroundImage: (postObj.createdBy!.profilePic?.secureUrl != null)
+                            ? NetworkImage(postObj.createdBy!.profilePic!.secureUrl!) as ImageProvider
                             : const AssetImage("assets/images/nullProfile.png"),
                       ),
                     ),
@@ -321,7 +303,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       children: [
                         InkWell(
                           onTap: () {
-                            if (modifiedPost.createdBy.id ==
+                            if (postObj.createdBy!.id ==
                                 UserLoginCubit.get(context).loggedInUser!.id) {
                               navigateToPage(context, const ProfilePage());
                             } else {
@@ -346,7 +328,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                 updatedAt: '',
                               );
                               UserLoginCubit.get(context).IdOfSelected =
-                                  modifiedPost.createdBy.id;
+                                  postObj.createdBy!.id;
                               HomeLayoutCubit.get(context)
                                   .getAnotherUserDatabyHTTP(
                                 id: UserLoginCubit.get(context).IdOfSelected ?? "",
@@ -365,7 +347,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             }
                           },
                           child: Text(
-                            modifiedPost.createdBy.userName,
+                            postObj.createdBy!.userName!,
                             style: const TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 14,
@@ -395,7 +377,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     const Spacer(),
                     IconButton(
                       onPressed: () => _showProfilePageBottomSheet(
-                          getDetailedSavedPost, loggedInUser),
+                          postObj, loggedInUser),
                       icon: SvgPicture.asset('assets/images/postSettings.svg'),
                     ),
                     IconButton(
@@ -415,11 +397,11 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Post Content
-                      modifiedPost.content != null
+                      postObj.content != null
                           ? Text(
-                              modifiedPost.content,
+                        postObj.content!,
                               maxLines:
-                                  (modifiedPost.attachments) != null ? 5 : 10,
+                                  (postObj.attachments) != null ? 5 : 10,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontFamily: "Robot",
@@ -431,15 +413,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       SizedBox(height: screenHeight / 100),
 
                       /// Post Attachments
-                      if (modifiedPost.attachments != null &&
-                          modifiedPost.attachments!.isNotEmpty)
+                      if (postObj.attachments != null &&
+                          postObj.attachments!.isNotEmpty)
                         // check if there's more than one
-                        if (modifiedPost.attachments!.length > 1)
+                        if (postObj.attachments!.length > 1)
                           CarouselSlider(
                             carouselController: carouselController,
-                            items: modifiedPost.attachments!.map((attachment) {
+                            items: postObj.attachments!.map((attachment) {
                               return Image(
-                                image: NetworkImage(attachment.secure_url),
+                                image: NetworkImage(attachment.secureUrl!),
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                               );
@@ -460,13 +442,13 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         else
                           Image(
                             image: NetworkImage(
-                                modifiedPost.attachments![0].secure_url),
+                                postObj.attachments![0].secureUrl!),
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: (modifiedPost.attachments ?? [])
+                        children: (postObj.attachments ?? [])
                             .asMap()
                             .entries
                             .map((entry) {
@@ -501,7 +483,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                   child: Row(
                     children: [
                       /// Post Likes Count
-                      (modifiedPost.likesCount) > 0
+                      (postObj.likesCount)! > 0
                           ? IconButton(
                               padding: EdgeInsets.zero,
                               onPressed: () {},
@@ -512,9 +494,9 @@ class _UserSavedPostsState extends State<SavedPosts> {
                               ),
                             )
                           : Container(),
-                      (modifiedPost.likesCount > 0)
+                      (postObj.likesCount! > 0)
                           ? Text(
-                              '${modifiedPost.likesCount}',
+                              '${postObj.likesCount}',
                               style: TextStyle(
                                 fontFamily: "Roboto",
                                 fontSize: 12,
@@ -525,7 +507,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       const Spacer(),
 
                       /// Post Comments Count
-                      if (modifiedPost.commentsCount == 1)
+                      if (postObj.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
@@ -533,7 +515,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             bottom: screenHeight / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.commentsCount} Comment',
+                            '${postObj.commentsCount} Comment',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -541,15 +523,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (modifiedPost.likesCount > 0 &&
-                          modifiedPost.commentsCount == 1)
+                      else if (postObj.likesCount! > 0 &&
+                          postObj.commentsCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.commentsCount} Comment',
+                            '${postObj.commentsCount} Comment',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -557,15 +539,15 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (modifiedPost.likesCount > 0 &&
-                          modifiedPost.commentsCount > 1)
+                      else if (postObj.likesCount! > 0 &&
+                            postObj.commentsCount! > 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
                             end: screenWidth / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.commentsCount} Comments',
+                            '${postObj.commentsCount} Comments',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -573,7 +555,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (modifiedPost.commentsCount == 0)
+                      else if (postObj.commentsCount == 0)
                         Container()
                       else
                         Padding(
@@ -583,7 +565,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             bottom: screenHeight / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.commentsCount} Comments',
+                            '${postObj.commentsCount} Comments',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -593,7 +575,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                         ),
 
                       /// Post Share Count
-                      if (modifiedPost.shareCount == 1)
+                      if (postObj.shareCount == 1)
                         Padding(
                           padding: EdgeInsetsDirectional.only(
                             start: screenWidth / 50,
@@ -601,7 +583,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             bottom: screenHeight / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.shareCount} share',
+                            '${postObj.shareCount} share',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -609,7 +591,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             ),
                           ),
                         )
-                      else if (modifiedPost.shareCount == 0)
+                      else if (postObj.shareCount == 0)
                         Container()
                       else
                         Padding(
@@ -619,7 +601,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                             bottom: screenHeight / 50,
                           ),
                           child: Text(
-                            '${modifiedPost.shareCount} Shares',
+                            '${postObj.shareCount} Shares',
                             style: TextStyle(
                               fontFamily: "Roboto",
                               fontSize: 12,
@@ -650,7 +632,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        (getDetailedSavedPost.isLikedByMe == true)
+                        (postObj.isLikedByMe == true)
                             ? postSubComponent(
                           "assets/images/NewLikeColor.svg",
                           "  Like",
@@ -658,7 +640,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           context,
                           onTap: () {
                             HomeLayoutCubit.get(context).likePost(
-                              postId: getDetailedSavedPost.id!,
+                              postId: postObj.id!,
                               token: UserLoginCubit.get(context)
                                   .loginModel!
                                   .refresh_token ??
@@ -673,7 +655,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           context,
                           onTap: () {
                             HomeLayoutCubit.get(context).likePost(
-                                postId: getDetailedSavedPost.id!,
+                                postId: postObj.id!,
                                 token: UserLoginCubit.get(context)
                                     .loginModel!
                                     .refresh_token ??
@@ -693,7 +675,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                           "Share",
                           context,
                           onTap: () {
-                            shareSubComponent(modifiedPost, context);
+                            shareSubComponent(postObj, context);
                           },
                         ),
                       ],
@@ -709,7 +691,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
   }
 
   void _showProfilePageBottomSheet(
-      GetDetailedSavedPost? getDetailedSavedPost, LoggedInUser loggedInUser) {
+      PostObj? postObj, LoggedInUser loggedInUser) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -765,7 +747,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                 .loginModel!
                                 .refresh_token ??
                             "",
-                        postId: getDetailedSavedPost!.postId!,
+                        postId: postObj!.id!,
                       );
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -812,7 +794,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                       // Logic to Copy post link
                       Navigator.pop(context);
                       _copyUrl(
-                        "https://volunhero.onrender.com/${getDetailedSavedPost!.id}",
+                        "https://volunhero.onrender.com/${postObj!.id}",
                         context,
                       );
                     },
@@ -834,7 +816,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
     );
   }
 
-  void shareSubComponent(ModifiedPost? postDetails, context) {
+  void shareSubComponent(PostObj? postObj, context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -863,7 +845,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
                                   .loginModel!
                                   .refresh_token ??
                               "",
-                          postId: postDetails!.id,
+                          postId: postObj!.id!,
                         );
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context)

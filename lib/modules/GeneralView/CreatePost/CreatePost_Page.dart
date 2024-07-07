@@ -49,6 +49,10 @@ class _CreatePostState extends State<CreatePost> {
     if (_attachments != null && _attachments!.isNotEmpty) {
       for (var attachment in _attachments!) {
         print('Attachment: ${attachment.path}');
+        String fileName = attachment.path.split('/').last;
+        String contentType = attachment.path.toLowerCase().endsWith('.jpg')
+            ? 'image/jpeg'
+            : 'image/jpeg';
         request.files.add(
           await http.MultipartFile.fromPath(
             'attachments',
@@ -90,6 +94,21 @@ class _CreatePostState extends State<CreatePost> {
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  void _uploadPhoto() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _attachments ??= [];
+        _attachments!.add(File(pickedFile.path));
+        postAttachment = File(pickedFile.path);
+      });
     }
   }
 
@@ -478,18 +497,5 @@ class _CreatePostState extends State<CreatePost> {
             });
       },
     );
-  }
-
-  void _uploadPhoto() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-
-    if (pickedFile != null) {
-      setState(() {
-        postAttachment = File(pickedFile.path);
-      });
-    }
   }
 }

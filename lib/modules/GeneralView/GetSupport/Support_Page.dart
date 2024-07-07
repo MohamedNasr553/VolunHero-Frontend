@@ -156,8 +156,8 @@ class GetSupport extends StatelessWidget {
                                                   context, const Questions());
                                             },
                                             child: Container(
-                                              height: 30,
-                                              width: 66,
+                                              height: screenHeight / 30,
+                                              width: screenWidth/ 6.1,
                                               decoration: BoxDecoration(
                                                   color: HexColor("00B5B9"),
                                                   borderRadius:
@@ -280,8 +280,8 @@ class GetSupport extends StatelessWidget {
                                                   context, const MedicalHelp());
                                             },
                                             child: Container(
-                                              height: 30,
-                                              width: 66,
+                                              height: screenHeight / 30,
+                                              width: screenWidth/ 6.1,
                                               decoration: BoxDecoration(
                                                   color: HexColor("00B5B9"),
                                                   borderRadius:
@@ -403,8 +403,8 @@ class GetSupport extends StatelessWidget {
                                                   context, const Education());
                                             },
                                             child: Container(
-                                              height: 30,
-                                              width: 66,
+                                              height: screenHeight / 30,
+                                              width: screenWidth/ 6.1,
                                               decoration: BoxDecoration(
                                                   color: HexColor("00B5B9"),
                                                   borderRadius:
