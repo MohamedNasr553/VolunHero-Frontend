@@ -11,7 +11,6 @@ import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/shared/components/components.dart';
-import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:flutter/services.dart';
@@ -123,11 +122,11 @@ class _CreatePostState extends State<CreatePost> {
                         leading: IconButton(
                           onPressed: () {
                             UserLoginCubit.get(context).loggedInUser?.role ==
-                                    "Organization"
+                                "Organization"
                                 ? HomeLayoutCubit.get(context)
-                                    .changeOrganizationBottomNavBar(context, 0)
+                                .changeOrganizationBottomNavBar(context, 0)
                                 : HomeLayoutCubit.get(context)
-                                    .changeUserBottomNavBar(context, 0);
+                                .changeUserBottomNavBar(context, 0);
                             navigateAndFinish(context, const VolunHeroLayout());
                           },
                           icon: SvgPicture.asset(
@@ -150,50 +149,50 @@ class _CreatePostState extends State<CreatePost> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 // if (state is! CreatePostLoadingState) {
-                                  List<Map<String, dynamic>>
-                                      attachmentsMapList = [];
-                                  if (postAttachment != null) {
-                                    // Display the attachment
-                                    Image.file(postAttachment!);
-                                    attachmentsMapList.add({
-                                      'secure_url': postAttachment!.path,
-                                      'public_id': 'unique_id',
-                                    });
-                                  }
-                                  if (postContentController.text.isEmpty) {
-                                    showToast(
-                                      text: "Please enter your post content",
-                                      state: ToastStates.ERROR,
-                                    );
-                                    return;
-                                  }
-                                  // CreatePostCubit.get(context).createPost(
-                                  //   content: postContentController.text,
-                                  //   attachments: attachmentsMapList,
-                                  //   token: UserLoginCubit.get(context)
-                                  //           .loginModel!
-                                  //           .refresh_token ??
-                                  //       "",
-                                  // );
-                                  createPost();
-                                  HomeLayoutCubit.get(context).getAllPosts(
-                                      token: UserLoginCubit.get(context)
-                                              .loginModel!
-                                              .refresh_token ??
-                                          "");
+                                List<Map<String, dynamic>>
+                                attachmentsMapList = [];
+                                if (postAttachment != null) {
+                                  // Display the attachment
+                                  Image.file(postAttachment!);
+                                  attachmentsMapList.add({
+                                    'secure_url': postAttachment!.path,
+                                    'public_id': 'unique_id',
+                                  });
+                                }
+                                if (postContentController.text.isEmpty) {
+                                  showToast(
+                                    text: "Please enter your post content",
+                                    state: ToastStates.ERROR,
+                                  );
+                                  return;
+                                }
+                                // CreatePostCubit.get(context).createPost(
+                                //   content: postContentController.text,
+                                //   attachments: attachmentsMapList,
+                                //   token: UserLoginCubit.get(context)
+                                //           .loginModel!
+                                //           .refresh_token ??
+                                //       "",
+                                // );
+                                createPost();
+                                HomeLayoutCubit.get(context).getAllPosts(
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token ??
+                                        "");
 
-                                  // Change Bottom Nav Bar to Home Screen
-                                  UserLoginCubit.get(context)
-                                              .loggedInUser
-                                              ?.role ==
-                                          "Organization"
-                                      ? HomeLayoutCubit.get(context)
-                                          .changeOrganizationBottomNavBar(
-                                              context, 0)
-                                      : HomeLayoutCubit.get(context)
-                                          .changeUserBottomNavBar(context, 0);
-                                  navigateAndFinish(
-                                      context, const VolunHeroLayout());
+                                // Change Bottom Nav Bar to Home Screen
+                                UserLoginCubit.get(context)
+                                    .loggedInUser
+                                    ?.role ==
+                                    "Organization"
+                                    ? HomeLayoutCubit.get(context)
+                                    .changeOrganizationBottomNavBar(
+                                    context, 0)
+                                    : HomeLayoutCubit.get(context)
+                                    .changeUserBottomNavBar(context, 0);
+                                navigateAndFinish(
+                                    context, const VolunHeroLayout());
                                 // } else if (state is! CreatePostErrorState) {
                                 //   showToast(
                                 //     text: "Something went wrong",
@@ -213,7 +212,7 @@ class _CreatePostState extends State<CreatePost> {
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 fixedSize:
-                                    Size(screenWidth / 5, screenHeight / 90),
+                                Size(screenWidth / 5, screenHeight / 90),
                               ),
                               child: Text(
                                 'Post',
@@ -236,7 +235,7 @@ class _CreatePostState extends State<CreatePost> {
                                 /// Name and Post Content
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(left: screenWidth / 40),
+                                  EdgeInsets.only(left: screenWidth / 40),
                                   child: Column(
                                     children: [
                                       SizedBox(height: screenHeight / 25),
@@ -302,7 +301,7 @@ class _CreatePostState extends State<CreatePost> {
                                             fontFamily: 'Poppins',
                                           ),
                                           maxLines:
-                                              (postAttachment != null) ? 3 : 8,
+                                          (postAttachment != null) ? 3 : 8,
                                         ),
                                       ),
                                       // Display the attachment if available
@@ -311,12 +310,12 @@ class _CreatePostState extends State<CreatePost> {
                                           children: [
                                             Padding(
                                               padding:
-                                                  EdgeInsetsDirectional.only(
+                                              EdgeInsetsDirectional.only(
                                                 start: screenWidth / 30,
                                                 end: screenWidth / 30,
                                               ),
                                               child:
-                                                  Image.file(postAttachment!),
+                                              Image.file(postAttachment!),
                                             ),
                                             Positioned(
                                               top: screenWidth / 40,
@@ -344,130 +343,130 @@ class _CreatePostState extends State<CreatePost> {
                                 ),
                                 (postAttachment != null)
                                     ? SizedBox(
-                                        height: (keyboardSize == 0.0)
-                                            ? (screenHeight / 4.9)
-                                            : (screenHeight -
-                                                keyboardSize -
-                                                60 -
-                                                600))
+                                    height: (keyboardSize == 0.0)
+                                        ? (screenHeight / 4.9)
+                                        : (screenHeight -
+                                        keyboardSize -
+                                        60 -
+                                        600))
                                     : SizedBox(
-                                        height: (keyboardSize == 0.0)
-                                            ? (screenHeight / 3.63)
-                                            : (screenHeight -
-                                                keyboardSize -
-                                                60 -
-                                                600)),
+                                    height: (keyboardSize == 0.0)
+                                        ? (screenHeight / 3.63)
+                                        : (screenHeight -
+                                        keyboardSize -
+                                        60 -
+                                        600)),
                                 (keyboardSize == 0.0)
                                     ? Container(
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFD9D9D9),
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(56.0),
-                                            topRight: Radius.circular(56.0),
-                                          ),
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFD9D9D9),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(56.0),
+                                      topRight: Radius.circular(56.0),
+                                    ),
+                                  ),
+                                  height: screenHeight / 4,
+                                  width: screenWidth,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                        EdgeInsetsDirectional.only(
+                                          top: screenHeight / 100,
                                         ),
-                                        height: screenHeight / 4,
-                                        width: screenWidth,
+                                        child: Container(
+                                          height: screenHeight / 250,
+                                          width: screenWidth / 7,
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10.0)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(
+                                            screenWidth / 14),
                                         child: Column(
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  EdgeInsetsDirectional.only(
-                                                top: screenHeight / 100,
-                                              ),
-                                              child: Container(
-                                                height: screenHeight / 250,
-                                                width: screenWidth / 7,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.grey,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0)),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.all(
-                                                  screenWidth / 14),
-                                              child: Column(
+                                            SizedBox(
+                                                height:
+                                                screenHeight / 60),
+                                            // Photo / Video
+                                            InkWell(
+                                              child: Row(
                                                 children: [
-                                                  SizedBox(
-                                                      height:
-                                                          screenHeight / 60),
-                                                  // Photo / Video
-                                                  InkWell(
-                                                    child: Row(
-                                                      children: [
-                                                        ImageIcon(
-                                                          const AssetImage(
-                                                            'assets/images/Img_box_duotone_line.png',
-                                                          ),
-                                                          size: 30,
-                                                          color: HexColor(
-                                                              "027E81"),
-                                                        ),
-                                                        SizedBox(
-                                                            width: screenWidth /
-                                                                60),
-                                                        const Text(
-                                                          "Photo/video",
-                                                          style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Roboto",
-                                                          ),
-                                                        ),
-                                                      ],
+                                                  ImageIcon(
+                                                    const AssetImage(
+                                                      'assets/images/Img_box_duotone_line.png',
                                                     ),
-                                                    onTap: () {
-                                                      _uploadPhoto();
-                                                      _pickAttachments();
-                                                    },
+                                                    size: 30,
+                                                    color: HexColor(
+                                                        "027E81"),
                                                   ),
                                                   SizedBox(
-                                                      height:
-                                                          screenHeight / 25),
-                                                  // Emojis Keyboard
-                                                  InkWell(
-                                                    child: Row(
-                                                      children: [
-                                                        ImageIcon(
-                                                          const AssetImage(
-                                                            'assets/images/happy.png',
-                                                          ),
-                                                          size: 30,
-                                                          color: HexColor(
-                                                              "027E81"),
-                                                        ),
-                                                        SizedBox(
-                                                            width: screenWidth /
-                                                                60),
-                                                        const Text(
-                                                          "Feeling/activity",
-                                                          style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontFamily:
-                                                                "Roboto",
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      width: screenWidth /
+                                                          60),
+                                                  const Text(
+                                                    "Photo/video",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      fontFamily:
+                                                      "Roboto",
                                                     ),
-                                                    onTap: () {
-                                                      // Open the keyboard with emoji support
-                                                      SystemChannels.textInput
-                                                          .invokeMethod(
-                                                              'TextInput.show');
-                                                    },
                                                   ),
                                                 ],
                                               ),
+                                              onTap: () {
+                                                _uploadPhoto();
+                                                _pickAttachments();
+                                              },
+                                            ),
+                                            SizedBox(
+                                                height:
+                                                screenHeight / 25),
+                                            // Emojis Keyboard
+                                            InkWell(
+                                              child: Row(
+                                                children: [
+                                                  ImageIcon(
+                                                    const AssetImage(
+                                                      'assets/images/happy.png',
+                                                    ),
+                                                    size: 30,
+                                                    color: HexColor(
+                                                        "027E81"),
+                                                  ),
+                                                  SizedBox(
+                                                      width: screenWidth /
+                                                          60),
+                                                  const Text(
+                                                    "Feeling/activity",
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      fontFamily:
+                                                      "Roboto",
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              onTap: () {
+                                                // Open the keyboard with emoji support
+                                                SystemChannels.textInput
+                                                    .invokeMethod(
+                                                    'TextInput.show');
+                                              },
                                             ),
                                           ],
                                         ),
-                                      )
+                                      ),
+                                    ],
+                                  ),
+                                )
                                     : Container(),
                               ],
                             ),

@@ -97,7 +97,7 @@ class _UserSavedPostsState extends State<SavedPosts> {
 
     // print("ListView Length: ${savedPostsCubit.getSavedPosts!.posts!.length}");
     // Checks if getDetailedSavedPost is NotEmpty
-    if (savedPostsCubit.getSavedPosts?.posts != null &&
+    if (savedPostsCubit.getSavedPosts!.posts != null &&
         savedPostsCubit.getSavedPosts!.posts!.isNotEmpty) {
       return SingleChildScrollView(
         child: Column(
@@ -107,18 +107,22 @@ class _UserSavedPostsState extends State<SavedPosts> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                List<ModifiedPost> postsList =
-                    homeCubit.homePagePostsModel!.modifiedPosts;
+                List<ModifiedPost> postsList =  homeCubit.homePagePostsModel!.modifiedPosts;
                 ModifiedPost? modifiedPost;
-                for (int i = 0; i < postsList.length; i++) {
-                  if (postsList[i].id ==
-                      savedPostsCubit.getSavedPosts!.posts![index].postId) {
+                for(int i=0;i<postsList.length;i++){
+                  if(postsList[i].id == savedPostsCubit.getSavedPosts!.posts![index].postId){
+                    print("********************");
+                    print(postsList[i]);
+                    print("********************");
+                    print(savedPostsCubit.getSavedPosts!.posts![index]);
                     modifiedPost = postsList[i];
                   }
                 }
                 return buildSavedPostItem(
                   modifiedPost,
+                  // SavedPostsCubit.get(context).getSavedPosts,
                   savedPostsCubit.getSavedPosts!.posts![index],
+                  // savedPostsCubit.getDetailedSavedPost,
                   loginCubit.loggedInUserData!.doc,
                   context,
                 );
@@ -162,8 +166,8 @@ class _UserSavedPostsState extends State<SavedPosts> {
             SizedBox(height: screenHeight / 150),
             const Text(
               "Don't let the good ones fly away! "
-              "Save Posts to easily find them again"
-              " in the future.",
+                  "Save Posts to easily find them again"
+                  " in the future.",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 11.0,

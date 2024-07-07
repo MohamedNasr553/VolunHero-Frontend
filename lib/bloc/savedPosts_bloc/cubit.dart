@@ -36,9 +36,11 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
   }
 
   /// ----------------------- Get All Saved Posts API ------------------------
+
   GetSavedPostsResponse? getSavedPostsResponse;
   GetSavedPosts? getSavedPosts;
   GetDetailedSavedPost? getDetailedSavedPost;
+  List<GetDetailedSavedPost>? savedPosts;
 
   Future<void> getAllSavedPosts({required String token}) async {
     emit(GetAllSavedPostsLoadingState());
@@ -49,20 +51,31 @@ class SavedPostsCubit extends Cubit<SavedPostsStates> {
         token: token,
       );
 
+      print(response.data);
+
+      // Check if response data is null
+      if (response.data == null) {
+        emit(GetAllSavedPostsErrorState());
+        return;
+      }
+
       // Parse the API response
       getSavedPostsResponse = GetSavedPostsResponse.fromJson(response.data);
 
-      if (getSavedPostsResponse != null &&
-          getSavedPostsResponse!.savedPosts!.posts!.isNotEmpty) {
-        getSavedPosts = getSavedPostsResponse!.savedPosts;
+      if (getSavedPostsResponse != null && getSavedPostsResponse!.savedPosts != null) {
+        savedPosts = getSavedPostsResponse!.savedPosts!.posts;
 
         emit(GetAllSavedPostsSuccessState());
+      } else {
+        emit(GetAllSavedPostsErrorState());
       }
-    } catch (error) {
-
+    } catch (error, stackTrace) {
+      print('Error fetching saved posts: $error');
+      print('Stack trace: $stackTrace');
       emit(GetAllSavedPostsErrorState());
     }
   }
+
 
   /// ----------------------- Remove Saved Post API ------------------------
   void removeSavedPost({
