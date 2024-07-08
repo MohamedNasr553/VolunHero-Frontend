@@ -105,11 +105,11 @@ class OwnerPostsSuccessState extends LayoutStates {}
 class OwnerPostsErrorState extends LayoutStates {}
 
 /// Another User States
-class GetAnotherUserDataLoadingState extends LayoutStates {}
+class GetAnotherUserDataFromLayoutLoadingState extends LayoutStates {}
 
-class GetAnotherUserDataErrorState extends LayoutStates {}
+class GetAnotherUserDataFromLayoutErrorState extends LayoutStates {}
 
-class GetAnotherUserDataSuccessState extends LayoutStates {}
+class GetAnotherUserDataFromLayoutSuccessState extends LayoutStates {}
 
 
 
@@ -118,6 +118,3 @@ class IncreaseAnotherUserFollowersState extends LayoutStates {}
 class DecreaseAnotherUserFollowersState extends LayoutStates {}
 class FollowAnotherUserState extends LayoutStates {}
 class UnFollowAnotherUserState extends LayoutStates {}
-
-
-

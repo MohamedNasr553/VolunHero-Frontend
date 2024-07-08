@@ -55,6 +55,16 @@ class FollowSuccessState extends UserLoginStates {}
 
 class UnFollowSuccessState extends UserLoginStates {}
 
+
+
+
+
+/// Delete Message States
+class DeleteMessageErrorState extends UserLoginStates {}
+class DeleteMessageSuccessState extends UserLoginStates {}
+class DeleteMessageLoadingState extends UserLoginStates {}
+
+
 class InFollowersState extends UserLoginStates {}
 
 class NotInFollowersState extends UserLoginStates {}

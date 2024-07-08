@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
+import 'package:flutter_code/bloc/Login_bloc/states.dart';
+import 'package:flutter_code/models/ChatsModel.dart';
+import 'package:flutter_code/modules/GeneralView/Chats/chatPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,10 +11,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_list_view/smooth_list_view.dart';
 
-import '../../../bloc/Login_bloc/cubit.dart';
-import '../../../bloc/Login_bloc/states.dart';
-import '../../../models/ChatsModel.dart';
-import '../Chats/chatPage.dart';
+
 
 class DetailedChats extends StatefulWidget {
   DetailedChats({super.key});
@@ -21,6 +22,23 @@ class DetailedChats extends StatefulWidget {
 
 class _DetailedChatsState extends State<DetailedChats> {
   Chat? chat;
+  Map<int, bool> _selectedMessages = {};
+  bool _showIcon = false;
+
+  void _onTap(int index) {
+    setState(() {
+      _selectedMessages[index] = false;
+      _showIcon = false;
+    });
+  }
+
+  void _onLongPress(int index) {
+    setState(() {
+      _selectedMessages[index] = true;
+      UserLoginCubit.get(context).messageToDelete = UserLoginCubit.get(context).selectedChat!.messages[index].id;
+      _showIcon = true;
+    });
+  }
 
   @override
   void initState() {
@@ -101,6 +119,24 @@ class _DetailedChatsState extends State<DetailedChats> {
                           ),
                         ),
                         const Spacer(),
+                        if (_showIcon)
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.delete_rounded),
+                              color: Colors.white,
+                              iconSize: 30,
+                              onPressed: () {
+                                UserLoginCubit.get(context).deleteMessageByHTTP(
+                                    token: UserLoginCubit.get(context)
+                                        .loginModel!
+                                        .refresh_token,
+                                    messageID: UserLoginCubit.get(context).messageToDelete,
+                                );
+                              },
+                            ),
+                          ),
                         IconButton(
                           visualDensity: VisualDensity.compact,
                           onPressed: () {
@@ -161,11 +197,11 @@ class _DetailedChatsState extends State<DetailedChats> {
 
   }
 
-  Widget buildMessageItem(index, context) {
+  Widget buildMessageItem(int index, BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     DateTime? createdAt = UserLoginCubit.get(context).selectedChat!.messages[index].createdAt;
     String? durationText;
-    DateTime createdTime = createdAt;
+    DateTime createdTime = createdAt!;
     DateTime timeNow = DateTime.now();
     Duration difference = timeNow.difference(createdTime);
 
@@ -176,17 +212,17 @@ class _DetailedChatsState extends State<DetailedChats> {
     } else {
       durationText = '${difference.inMinutes.remainder(60)}m ';
     }
-    // In Days
     if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d ';
     }
-    return ( UserLoginCubit.get(context).selectedChat!.messages[index].senderId != UserLoginCubit.get(context).loggedInUser!.id)
-        ?Row(
+
+    bool isSelected = _selectedMessages[index] ?? false;
+
+    return (UserLoginCubit.get(context).selectedChat!.messages[index].isDeleted== false )? (UserLoginCubit.get(context).selectedChat!.messages[index].senderId != UserLoginCubit.get(context).loggedInUser!.id)
+        ? Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(
-          width: screenWidth / 35,
-        ),
+        SizedBox(width: screenWidth / 35),
         Flexible(
           child: Container(
             decoration: BoxDecoration(
@@ -201,15 +237,11 @@ class _DetailedChatsState extends State<DetailedChats> {
                   children: [
                     Text(
                       durationText,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(fontSize: 10, color: Colors.grey[700]),
                     ),
-                     // Add a little space between the texts
                     Text(
                       UserLoginCubit.get(context).selectedChat!.messages[index].text,
-                      style: const TextStyle(fontSize: 14), // Adjust font size as needed
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ),
@@ -217,57 +249,51 @@ class _DetailedChatsState extends State<DetailedChats> {
             ),
           ),
         ),
-        SizedBox(
-          width: screenWidth / 35,
-        ),
+        SizedBox(width: screenWidth / 35),
       ],
     )
-
-
-        :  Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        SizedBox(
-          width: screenWidth / 35,
-        ),
-        Flexible(
-          child: Container(
-            decoration: BoxDecoration(
-              color: HexColor("51bbbd"),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IntrinsicWidth(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      UserLoginCubit.get(context).selectedChat!.messages[index].text,
-                      style: const TextStyle(fontSize: 14), // Adjust font size as needed
-                    ),
-                    const SizedBox(height: 4), // Add a little space between the texts
-                    Text(
-                      durationText,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[700],
+        : InkWell(
+      onTap: () => _onTap(index),
+      onLongPress: () => _onLongPress(index),
+      child: Stack(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(width: screenWidth / 35),
+              Flexible(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: !isSelected ? Color(0xFF51bbbd) : (Colors.grey[400]),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IntrinsicWidth(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            UserLoginCubit.get(context).selectedChat!.messages[index].text,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            durationText,
+                            style: TextStyle(fontSize: 10, color: Colors.grey[700]),
+                          ),
+                        ],
                       ),
                     ),
-
-                  ],
+                  ),
                 ),
               ),
-            ),
+              SizedBox(width: screenWidth / 35),
+            ],
           ),
-        ),
-        SizedBox(
-          width: screenWidth / 35,
-        ),
-      ],
-    )
-    ;
-
+        ],
+      ),
+    ):Container(child: null,);
   }
 
   Widget _buildInputField() {

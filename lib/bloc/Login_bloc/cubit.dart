@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter_code/models/AnotherUserPostsModel.dart';
+import 'package:flutter_code/models/ChatsModel.dart';
+import 'package:flutter_code/shared/network/endpoints.dart';
+import 'package:flutter_code/shared/network/remote/dio_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
+
 import 'package:flutter_code/bloc/Login_bloc/states.dart';
 import 'package:flutter_code/models/AnotherUserModel.dart';
 import 'package:flutter_code/models/LoggedInUserModel.dart';
@@ -15,10 +19,8 @@ import 'package:flutter_code/models/getMyFollowers.dart';
 import 'package:flutter_code/models/getMyFollowing.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
-import '../../models/AnotherUserPostsModel.dart';
-import '../../models/ChatsModel.dart';
-import '../../shared/network/endpoints.dart';
-import '../../shared/network/remote/dio_helper.dart';
+
+import '../Layout_bloc/states.dart';
 
 class UserLoginCubit extends Cubit<UserLoginStates> {
   UserLoginCubit() : super(UserLoginInitialState());
@@ -147,6 +149,70 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   }
 
   // --------------------------------- Chats ----------------------------------
+  String? messageToDelete;
+  Future<void> deleteMessageByHTTP({
+    required String? token,
+    required String? messageID,
+  }) async {
+    try {
+      print("Message to delete: $messageID");
+
+      final url = Uri.parse("https://volunhero.onrender.com/api/message/$messageID");
+
+      // Prepare headers
+      final headers = {
+        'authorization': 'Volunhero__$token',
+      };
+
+      // Make DELETE request
+      final response = await http.delete(
+        url,
+        headers: headers,
+      );
+
+      // Check response status code
+      if (response.statusCode == 200) {
+        showToast(
+          text: "Message Deleted Successfully",
+          state: ToastStates.SUCCESS,
+        );
+        emit(DeleteMessageSuccessState());
+      } else {
+        // Handle non-successful response
+        emit(DeleteMessageErrorState());
+        print("Failed to delete message. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Handle other errors
+      print("Error deleting message: $e");
+      emit(DeleteMessageErrorState());
+    }
+  }
+  Future<void> deleteMessage({
+    required String? token,
+    required String? messageID,
+  }) async {
+    try {
+      print("message to delete");
+      print(messageID);
+      emit(DeleteMessageLoadingState());
+      var response = await DioHelper.deleteData(
+        url: "/message/${messageID}",
+        token: token,
+      ).then((_){
+        showToast(
+          text: "Message Deleted Successfully",
+          state: ToastStates.SUCCESS,
+        );
+        emit(DeleteMessageSuccessState());
+      });
+
+
+    } catch (onError) {
+      emit(DeleteMessageErrorState());
+    }
+  }
+
 
   Future<void> deleteChat({
     required String? token,
@@ -250,18 +316,20 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
         //  print(value.data);
         chatResponse = ChatResponse.fromJson(value.data);
         chats = chatResponse!.chats;
+        print(chatResponse);
         for (int i = 0; i < chats.length; i++) {
           DioHelper.getData(url: GET_CHAT_MSGS + chats[i].id, token: token)
               .then((value) {
-            //     print(i);
-            //    print("   ");
-            //    print(value.data);
+                print(i);
+               print("   ");
+               print(value.data);
             MessageResponse messageResponse =
                 MessageResponse.fromJson(value.data);
             chats[i].messages = messageResponse.messages;
-            //   print(chats[i].messages);
+              print(chats[i].messages);
           });
         }
+
         emit(GetLoggedInUserChatsSuccessState());
       }).catchError((error) {
         emit(GetLoggedInUserChatsErrorState(error.toString()));
@@ -408,6 +476,7 @@ class UserLoginCubit extends Cubit<UserLoginStates> {
   AnotherUser? anotherUser;
   String? idOfSelected;
   bool flag = false;
+
   Future<void> getAnotherUserDatabyHTTP({required String id,required String? token}) async {
     emit(GetAnotherUserDataLoadingState());
 

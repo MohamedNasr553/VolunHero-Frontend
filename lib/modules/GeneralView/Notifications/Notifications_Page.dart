@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_code/bloc/Layout_bloc/cubit.dart';
 import 'package:flutter_code/bloc/Layout_bloc/states.dart';
+import 'package:flutter_code/models/AnotherUserModel.dart';
+import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/settingsPage.dart';
 import 'package:flutter_code/shared/components/components.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
@@ -133,18 +135,15 @@ class _NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  Widget buildNotificationItem(index, context) {
+  Widget buildNotificationItem(int index, BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    // Handling Post Duration
-    DateTime? createdAt = UserLoginCubit.get(context)
-        .notificationsModel!
-        .notifications[index]
-        .createdAt;
+    DateTime? createdAt =
+        UserLoginCubit.get(context).notificationsModel!.notifications[index].createdAt;
     String? durationText;
 
-    DateTime createdTime = createdAt;
+    DateTime createdTime = createdAt!;
     DateTime timeNow = DateTime.now();
     Duration difference = timeNow.difference(createdTime);
 
@@ -156,20 +155,12 @@ class _NotificationPageState extends State<NotificationPage> {
       durationText = '${difference.inMinutes.remainder(60)}m .';
     }
 
-    // In Days
     if (difference.inHours >= 24) {
       durationText = '${difference.inDays}d .';
     }
 
-    String? profilePicUrl = UserLoginCubit.get(context)
-        .notificationsModel!
-        .notifications[index]
-        .sender
-        .profilePic
-        .secureUrl;
-
-    // Debugging: print the profile picture URL
-    print('Profile Pic URL: $profilePicUrl');
+    String? profilePicUrl =
+        UserLoginCubit.get(context).notificationsModel!.notifications[index].sender.profilePic.secureUrl;
 
     return InkWell(
       onTap: () {
@@ -180,14 +171,14 @@ class _NotificationPageState extends State<NotificationPage> {
                 .notifications[index]
                 .id);
         if (UserLoginCubit.get(context)
-                    .notificationsModel!
-                    .notifications[index]
-                    .type ==
-                "like" ||
+            .notificationsModel!
+            .notifications[index]
+            .type ==
+            "like" ||
             UserLoginCubit.get(context)
-                    .notificationsModel!
-                    .notifications[index]
-                    .type ==
+                .notificationsModel!
+                .notifications[index]
+                .type ==
                 "comment") {
           final token = UserLoginCubit.get(context).loginModel?.refresh_token;
           final postId = UserLoginCubit.get(context)
@@ -200,9 +191,9 @@ class _NotificationPageState extends State<NotificationPage> {
               postId: postId,
             );
             if (UserLoginCubit.get(context)
-                    .notificationsModel!
-                    .notifications[index]
-                    .type ==
+                .notificationsModel!
+                .notifications[index]
+                .type ==
                 "comment") {
               HomeLayoutCubit.get(context).getCommentById(
                 token: token,
@@ -211,6 +202,47 @@ class _NotificationPageState extends State<NotificationPage> {
             }
           }
           navigateToPage(context, const DetailedPost());
+        }
+        else{
+          UserLoginCubit.get(context).anotherUser = AnotherUser(
+            id: '',
+            firstName: '',
+            lastName: '',
+            userName: '',
+            slugUserName: '',
+            email: '',
+            phone: '',
+            role: '',
+            status: '',
+            images: [],
+            address: '',
+            gender: '',
+            locations: [],
+            specification: '',
+            attachments: [],
+            following: [],
+            followers: [],
+            updatedAt: '',
+          );
+          UserLoginCubit.get(context).idOfSelected =
+          UserLoginCubit.get(context)
+              .notificationsModel!
+              .notifications[index].relatedEntity ;
+          UserLoginCubit.get(context)
+              .getAnotherUserData(
+            id: UserLoginCubit.get(context).idOfSelected ?? "",
+            token: UserLoginCubit.get(context)
+                .loginModel!
+                .refresh_token,
+          )
+              .then((_) {
+            // UserLoginCubit.get(context).anotherUser =
+            //     HomeLayoutCubit.get(context).anotherUser;
+            UserLoginCubit.get(context).inFollowing(
+                followId:
+                UserLoginCubit.get(context).idOfSelected);
+            navigateToPage(context, const AnotherUserProfile());
+          });
         }
       },
       child: Padding(
@@ -222,11 +254,7 @@ class _NotificationPageState extends State<NotificationPage> {
           height: screenHeight / 11,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: (UserLoginCubit.get(context)
-                        .notificationsModel!
-                        .notifications[index]
-                        .read ==
-                    true)
+            color: (UserLoginCubit.get(context).notificationsModel!.notifications[index].read == true)
                 ? Colors.white
                 : HexColor("0BA3A6").withOpacity(0.2),
             boxShadow: [
@@ -245,85 +273,44 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             child: Row(
               children: [
-                if (UserLoginCubit.get(context)
-                        .notificationsModel!
-                        .notifications[index]
-                        .type ==
-                    "like")
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 32.0,
-                        backgroundColor: Colors.white,
-                        backgroundImage: profilePicUrl != null
-                            ? NetworkImage(profilePicUrl) as ImageProvider
-                            : const AssetImage("assets/images/nullProfile.png"),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: SvgPicture.asset(
-                          'assets/images/NewLikeColor.svg',
-                          width: 22.0,
-                          height: 22.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                if (UserLoginCubit.get(context)
-                        .notificationsModel!
-                        .notifications[index]
-                        .type ==
-                    "comment")
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 32.0,
-                        backgroundColor: Colors.white,
-                        backgroundImage: profilePicUrl != null
-                            ? NetworkImage(profilePicUrl) as ImageProvider
-                            : const AssetImage("assets/images/nullProfile.png"),
-                      ),
-                      const Icon(
-                        Icons.comment,
-                        color: Colors.black87,
-                      ),
-                    ],
-                  ),
+                if (UserLoginCubit.get(context).notificationsModel!.notifications[index].type == "like")
+                  _buildNotificationAvatar(profilePicUrl, 'assets/images/NewLikeColor.svg'),
+                if (UserLoginCubit.get(context).notificationsModel!.notifications[index].type == "comment")
+                  _buildNotificationAvatar(profilePicUrl, Icons.comment),
+                if (UserLoginCubit.get(context).notificationsModel!.notifications[index].type == "friend_request")
+                  _buildNotificationAvatar(profilePicUrl, Icons.person),
                 SizedBox(width: screenWidth / 18),
-                Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    top: screenHeight / 150,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: screenHeight / 60),
-                      Text(
-                        UserLoginCubit.get(context)
-                            .notificationsModel!
-                            .notifications[index]
-                            .content,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "Poppins",
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      top: screenHeight / 150,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: screenHeight / 60),
+                        Text(
+                          UserLoginCubit.get(context).notificationsModel!.notifications[index].content,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Poppins",
+                          ),
                         ),
-                      ),
-                      SizedBox(height: screenHeight / 200),
-                      Text(
-                        durationText,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 9.0,
-                          fontWeight: FontWeight.w500,
+                        SizedBox(height: screenHeight / 200),
+                        Text(
+                          durationText!,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 9.0,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -333,4 +320,35 @@ class _NotificationPageState extends State<NotificationPage> {
       ),
     );
   }
+
+  Widget _buildNotificationAvatar(String? profilePicUrl, dynamic icon) {
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        CircleAvatar(
+          radius: 32.0,
+          backgroundColor: Colors.white,
+          backgroundImage: profilePicUrl != null
+              ? NetworkImage(profilePicUrl) as ImageProvider
+              : const AssetImage("assets/images/nullProfile.png"),
+        ),
+        // Adjusted handling for different icon types
+        if (icon is String)
+          GestureDetector(
+            onTap: () {},
+            child: SvgPicture.asset(
+              icon,
+              width: 22.0,
+              height: 22.0,
+            ),
+          ),
+        if (icon is IconData)
+          Icon(
+            icon,
+            color: Colors.black87,
+          ),
+      ],
+    );
+  }
+
 }

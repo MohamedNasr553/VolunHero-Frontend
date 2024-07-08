@@ -530,7 +530,7 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
   }
 
   Future<void> getAnotherUserDatabyHTTP({required String id,required String? token}) async {
-    emit(GetAnotherUserDataLoadingState());
+    emit(GetAnotherUserDataFromLayoutLoadingState());
 
     const String baseUrl = 'https://volunhero.onrender.com/api';
 
@@ -555,12 +555,12 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
         print('Error: ${jsonResponse['message']}');
       }
       if (response.statusCode == 200) {
-        emit(GetAnotherUserDataSuccessState());
+        emit(GetAnotherUserDataFromLayoutSuccessState());
       } else {
-        emit(GetAnotherUserDataErrorState());
+        emit(GetAnotherUserDataFromLayoutErrorState());
       }
     } catch (error) {
-      emit(GetAnotherUserDataErrorState());
+      emit(GetAnotherUserDataFromLayoutErrorState());
     }
   }
 
@@ -569,25 +569,25 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
     required String? id,
   }) async {
     try {
-      emit(GetAnotherUserDataLoadingState());
+      emit(GetAnotherUserDataFromLayoutLoadingState());
       DioHelper.getData(
         url: "/users/$id",
         token: token,
       ).then((value) {
         //anotherUser = AnotherUser.fromJson(value.data);
-        emit(GetAnotherUserDataSuccessState());
+        emit(GetAnotherUserDataFromLayoutSuccessState());
       }).catchError((error) {
 
-        emit(GetAnotherUserDataErrorState());
+        emit(GetAnotherUserDataFromLayoutErrorState());
       });
     } on DioError catch (dioError) {
       // Handle Dio-specific errors
       print('Dio error: ${dioError.message}');
-      emit(GetAnotherUserDataErrorState());
+      emit(GetAnotherUserDataFromLayoutErrorState());
     } catch (error) {
       // Handle any other errors
       print('Unexpected error: $error');
-      emit(GetAnotherUserDataErrorState());
+      emit(GetAnotherUserDataFromLayoutErrorState());
     }
   }
 }
