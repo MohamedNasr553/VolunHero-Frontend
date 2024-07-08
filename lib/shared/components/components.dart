@@ -196,10 +196,10 @@ void navigateToAnotherApp(String primaryUrl, String fallbackUrl) async {
     final Uri primaryUri = Uri.parse(primaryUrl);
     final Uri fallbackUri = Uri.parse(fallbackUrl);
 
-    if (await canLaunchUrl(primaryUri)) {
-      await launchUrl(primaryUri, mode: LaunchMode.externalApplication);
-    } else if (await canLaunchUrl(fallbackUri)) {
-      await launchUrl(fallbackUri, mode: LaunchMode.externalApplication);
+    if (await canLaunch(primaryUri.toString())) {
+      await launch(primaryUri.toString(), forceSafariVC: false, forceWebView: false);
+    } else if (await canLaunch(fallbackUri.toString())) {
+      await launch(fallbackUri.toString(), forceSafariVC: false, forceWebView: false);
     } else {
       throw 'Could not launch $primaryUrl or $fallbackUrl';
     }

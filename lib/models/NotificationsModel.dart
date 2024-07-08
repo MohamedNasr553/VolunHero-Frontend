@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 // Notifications Model
 class NotificationsModel {
   String message;
@@ -33,7 +31,7 @@ class NotificationsModel {
 class NotificationModelDetails {
   String id;
   String user;
-  Sender sender;
+  Sender? sender; // Make sender nullable
   String type;
   String content;
   bool read;
@@ -59,7 +57,7 @@ class NotificationModelDetails {
     return NotificationModelDetails(
       id: json['_id'],
       user: json['user'],
-      sender: Sender.fromJson(json['sender']),
+      sender: json['sender'] != null ? Sender.fromJson(json['sender']) : null,
       type: json['type'],
       content: json['content'],
       read: json['read'],
@@ -74,7 +72,7 @@ class NotificationModelDetails {
     return {
       '_id': id,
       'user': user,
-      'sender': sender.toJson(),
+      'sender': sender?.toJson(), // Handle null sender gracefully
       'type': type,
       'content': content,
       'read': read,

@@ -160,7 +160,7 @@ class _NotificationPageState extends State<NotificationPage> {
     }
 
     String? profilePicUrl =
-        UserLoginCubit.get(context).notificationsModel!.notifications[index].sender.profilePic.secureUrl;
+        UserLoginCubit.get(context).notificationsModel!.notifications[index].sender?.profilePic.secureUrl ?? " ";
 
     return InkWell(
       onTap: () {

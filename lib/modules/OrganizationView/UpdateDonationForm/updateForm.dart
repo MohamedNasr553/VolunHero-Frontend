@@ -109,7 +109,10 @@ class _UpdateDonationFormState extends State<UpdateDonationForm> {
                   ),
                 ),
               ));
-              navigateAndFinish(context, const VolunHeroLayout());
+              DonationFormCubit.get(context).getAllDonationForms(
+                  token:
+                      UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          "");
             }
           },
           builder: (context, state) {
@@ -273,7 +276,7 @@ class _UpdateDonationFormState extends State<UpdateDonationForm> {
                           'Donation Link',
                           style: TextStyle(
                             fontSize: 11.0,
-                            color: Colors.black,
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
