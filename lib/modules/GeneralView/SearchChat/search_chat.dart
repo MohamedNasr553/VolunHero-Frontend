@@ -262,10 +262,19 @@ class _SearchChatPageState extends State<SearchChatPage> {
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage(
-                      "${UserLoginCubit.get(context).filteredChats[index].members[1].userId.profilePic ?? "assets/images/nullProfile.png"}"),
-                ),
+                  radius: 25.0,
+                  backgroundColor: Colors.white,
+                  backgroundImage:
+                  (UserLoginCubit.get(context).loggedInUser!.profilePic?.secure_url!=UserLoginCubit.get(context).filteredChats[index].members[1].userId.profilePic?.secureUrl)?
+                  UserLoginCubit.get(context).filteredChats[index].members[1].userId != null
+                      ? NetworkImage(UserLoginCubit.get(context).filteredChats[index].members[1].userId
+                      .profilePic!
+                      .secureUrl) as ImageProvider
+                      : const AssetImage("assets/images/nullProfile.png"): UserLoginCubit.get(context).filteredChats[index].members[0].userId.profilePic?.secureUrl != null
+                      ? NetworkImage(UserLoginCubit.get(context).filteredChats[index].members[0].userId
+                      .profilePic!
+                      .secureUrl) as ImageProvider
+                      : const AssetImage("assets/images/nullProfile.png"),              ),
                 SizedBox(
                   width: 10,
                 ),

@@ -515,37 +515,34 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   pressedState = 'About';
                                                 });
                                               },
-                                              child: Column(
+                                              child:  Column(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                                 children: [
                                                   Container(
                                                     height: screenHeight / 40,
-                                                    width: screenWidth / 11.5,
+                                                    width: screenWidth / 9,
                                                     color: Colors.white,
                                                     child: Text(
                                                       "About",
                                                       style: TextStyle(
-                                                        color: (pressedState ==
-                                                                'About')
+                                                        color: (pressedState == 'About')
                                                             ? defaultColor
                                                             : Colors.black54,
                                                         fontFamily: "Poppins",
                                                         fontSize: 11.5,
-                                                        fontWeight:
-                                                            FontWeight.w600,
+                                                        fontWeight: FontWeight.w600,
                                                       ),
                                                     ),
                                                   ),
                                                   (pressedState == 'About')
                                                       ? Container(
-                                                          width: screenWidth /
-                                                              11.3,
-                                                          height: 2.7,
-                                                          color: defaultColor,
-                                                        )
+                                                    width: screenWidth / 10,
+                                                    height: 2.7,
+                                                    color: defaultColor,
+                                                  )
                                                       : const SizedBox()
                                                 ],
                                               ),

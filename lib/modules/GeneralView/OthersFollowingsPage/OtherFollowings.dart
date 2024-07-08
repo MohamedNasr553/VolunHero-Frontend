@@ -32,7 +32,7 @@ class OtherUserFollowings extends StatelessWidget {
                   onPressed: () => navigateToPage(context, const AnotherUserProfile()),
                 ),
                 title: Text(
-                  HomeLayoutCubit.get(context).anotherUser!.userName,
+                  UserLoginCubit.get(context).anotherUser!.userName,
                   style: const TextStyle(
                     color: Colors.black87,
                     fontSize: 20.0,
@@ -121,15 +121,14 @@ class OtherUserFollowings extends StatelessWidget {
                   UserLoginCubit.get(context).loggedInUser!.id) {
                 navigateToPage(context, const ProfilePage());
               } else {
-                HomeLayoutCubit.get(context)
+                UserLoginCubit.get(context)
                     .getAnotherUserData(
                     token: UserLoginCubit.get(context)
                         .loginModel!
                         .refresh_token,
                     id: followings.userId.id)
                     .then((value) {
-                  UserLoginCubit.get(context).anotherUser =
-                      HomeLayoutCubit.get(context).anotherUser;
+
                   navigateToPage(context, const AnotherUserProfile());
                 });
               }
@@ -148,15 +147,14 @@ class OtherUserFollowings extends StatelessWidget {
                   UserLoginCubit.get(context).loggedInUser!.id) {
                 navigateToPage(context, const ProfilePage());
               } else {
-                HomeLayoutCubit.get(context)
+                UserLoginCubit.get(context)
                     .getAnotherUserData(
                     token: UserLoginCubit.get(context)
                         .loginModel!
                         .refresh_token,
                     id: followings.userId.id)
                     .then((value) {
-                  UserLoginCubit.get(context).anotherUser =
-                      HomeLayoutCubit.get(context).anotherUser;
+
                   navigateToPage(
                       context, const AnotherUserProfile());
                 });

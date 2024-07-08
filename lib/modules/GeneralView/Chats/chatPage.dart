@@ -242,6 +242,14 @@ class _ChatsPageState extends State<ChatsPage> {
     Color hexColor = HexColor("0BA3A6");
     Color transparentColor = hexColor.withOpacity(0.5);
 
+    Message? messageToShow ;
+    for(int i=chats[index].messages.length-1;i>=0 ;i--){
+       if(chats[index].messages[i].isDeleted==false){
+         messageToShow = chats[index].messages[i];
+         break;
+       }
+    }
+
     return InkWell(
       onLongPress: () {
         _showChatBottomSheet(chats[index].id, context);
@@ -268,14 +276,20 @@ class _ChatsPageState extends State<ChatsPage> {
                 radius: 25.0,
                 backgroundColor: Colors.white,
                 backgroundImage:
-                    chats[index].members[1].userId.profilePic?.secureUrl != null
-                        ? NetworkImage(chats[index]
-                            .members[1]
-                            .userId
-                            .profilePic!
-                            .secureUrl) as ImageProvider
-                        : const AssetImage("assets/images/nullProfile.png"),
-              ),
+                (UserLoginCubit.get(context).loggedInUser!.profilePic?.secure_url!=chats[index].members[1].userId.profilePic?.secureUrl)?
+                chats[index].members[1].userId.profilePic?.secureUrl != null
+                    ? NetworkImage(chats[index]
+                    .members[1]
+                    .userId
+                    .profilePic!
+                    .secureUrl) as ImageProvider
+                    : const AssetImage("assets/images/nullProfile.png"): chats[index].members[0].userId.profilePic?.secureUrl != null
+                    ? NetworkImage(chats[index]
+                    .members[0]
+                    .userId
+                    .profilePic!
+                    .secureUrl) as ImageProvider
+                    : const AssetImage("assets/images/nullProfile.png"),              ),
               SizedBox(width: screenWidth / 30),
               Expanded(
                 child: Column(
@@ -304,10 +318,8 @@ class _ChatsPageState extends State<ChatsPage> {
                             end: screenWidth / 35,
                           ),
                           child: Text(
-                            (chats[index].messages.isNotEmpty)
-                                ? getFormatedTime(chats[index]
-                                        .messages[
-                                            chats[index].messages.length - 1]
+                            (messageToShow!=null)
+                                ? getFormatedTime(messageToShow
                                         .createdAt)
                                     .toString()
                                 : "",
@@ -331,10 +343,9 @@ class _ChatsPageState extends State<ChatsPage> {
                         end: screenWidth / 12,
                       ),
                       child: Text(
-                        (chats[index].messages.isEmpty)
+                        (messageToShow==null)
                             ? "Tap to message"
-                            : chats[index]
-                                .messages[chats[index].messages.length - 1]
+                            : messageToShow
                                 .text,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
