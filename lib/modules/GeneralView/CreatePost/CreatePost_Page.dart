@@ -362,8 +362,15 @@ class _CreatePostState extends State<CreatePost> {
                                                   color: Colors.white,
                                                   onPressed: () {
                                                     setState(() {
-                                                      _attachments?.remove(
-                                                          postAttachment);
+                                                      // _attachments?.remove(
+                                                      //     postAttachment);
+                                                      // postAttachment = null;
+                                                      for(int i = 0 ; i < _attachments!.length ; i++){
+                                                          if(_attachments![i].path==postAttachment!.path){
+                                                            _attachments!.remove(_attachments![i]);
+                                                            break;
+                                                          }
+                                                      }
                                                       postAttachment = null;
                                                     });
                                                   },
