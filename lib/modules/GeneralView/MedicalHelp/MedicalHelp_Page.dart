@@ -58,9 +58,9 @@ class MedicalHelp extends StatelessWidget {
                       ),
                     ),
                   ),
-                  body: userModel
-                              .medicalSupportCallsUserModel!.users.isNotEmpty &&
-                          userModel.medicalSupportCallsUserModel != null
+                  body: userModel.medicalSupportCallsUserModel != null && userModel
+                              .medicalSupportCallsUserModel!.users.isNotEmpty
+
                       ? ListView.separated(
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {

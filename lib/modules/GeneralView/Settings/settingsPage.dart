@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/modules/GeneralView/Login/Login_Page.dart';
+import 'package:flutter_code/modules/GeneralView/Notifications/Notifications_Page.dart';
 import 'package:flutter_code/modules/GeneralView/Settings/termsOfServices.dart';
 import 'package:flutter_code/modules/GeneralView/accountInformation/accountInformationScreen.dart';
 import 'package:flutter_code/shared/components/components.dart';
@@ -83,7 +84,7 @@ class SettingsPage extends StatelessWidget {
                 Icons.notifications,
                 "Notifications",
                 context,
-                const SettingsPage(),
+                const NotificationPage(),
               ),
               SizedBox(height: screenHeight / 25),
               const Text(

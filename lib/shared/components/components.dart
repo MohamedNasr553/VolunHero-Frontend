@@ -5,6 +5,7 @@ import 'package:flutter_code/bloc/Login_bloc/cubit.dart';
 import 'package:flutter_code/layout/VolunHeroLayout/layout.dart';
 import 'package:flutter_code/models/AddDonationFormModel.dart';
 import 'package:flutter_code/models/getUsersSupportCalls.dart';
+import 'package:flutter_code/modules/GeneralView/AnotherUser/anotherUser_page.dart';
 import 'package:flutter_code/shared/styles/colors.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -190,13 +191,20 @@ void navigateToPage(context, widget) => Navigator.push(
       ),
     );
 
-void navigateToURL({
-  required String url,
-}) async {
-  if (await canLaunch(url)) {
-    await launch(url, forceSafariVC: false, forceWebView: false);
-  } else {
-    throw 'Could not launch $url';
+void navigateToAnotherApp(String primaryUrl, String fallbackUrl) async {
+  try {
+    final Uri primaryUri = Uri.parse(primaryUrl);
+    final Uri fallbackUri = Uri.parse(fallbackUrl);
+
+    if (await canLaunchUrl(primaryUri)) {
+      await launchUrl(primaryUri, mode: LaunchMode.externalApplication);
+    } else if (await canLaunchUrl(fallbackUri)) {
+      await launchUrl(fallbackUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $primaryUrl or $fallbackUrl';
+    }
+  } catch (e) {
+    print('Error launching URL: $e');
   }
 }
 
@@ -437,29 +445,30 @@ Widget buildSupportCallItem(
               children: [
                 InkWell(
                   onTap: () {
-                  //   HomeLayoutCubit.get(context)
-                  //       .getAnotherUserData(
-                  //           token: UserLoginCubit.get(context)
-                  //               .loginModel!
-                  //               .refresh_token,
-                  //           id: supportCallsUserDetails!.id)
-                  //       .then((value) {
-                  //     UserLoginCubit.get(context)
-                  //         .getAnotherUserPosts(
-                  //             token: UserLoginCubit.get(context)
-                  //                 .loginModel!
-                  //                 .refresh_token,
-                  //             id: supportCallsUserDetails.id,
-                  //             userName: supportCallsUserDetails.userName)
-                  //         .then((value) {
-                  //       UserLoginCubit.get(context).anotherUser =
-                  //           HomeLayoutCubit.get(context).anotherUser;
-                  //       navigateToPage(context, const AnotherUserProfile());
-                  //     });
-                  //   });
+                    // HomeLayoutCubit.get(context)
+                    //     .getAnotherUserData(
+                    //         token: UserLoginCubit.get(context)
+                    //             .loginModel!
+                    //             .refresh_token,
+                    //         id: supportCallsUserDetails!.id)
+                    //     .then((value) {
+                    //   UserLoginCubit.get(context)
+                    //       .getAnotherUserPosts(
+                    //           token: UserLoginCubit.get(context)
+                    //               .loginModel!
+                    //               .refresh_token,
+                    //           id: supportCallsUserDetails.id,
+                    //           userName: supportCallsUserDetails.userName)
+                    //       .then((value) {
+                    //     UserLoginCubit.get(context).anotherUser =
+                    //         HomeLayoutCubit.get(context).anotherUser;
+                    //     navigateToPage(context, const AnotherUserProfile());
+                    //   });
+                    // });
                   },
                   child: CircleAvatar(
                     radius: 28.0,
+                    backgroundColor: Colors.white,
                     backgroundImage:
                         (supportCallsUserDetails?.profilePic?.secureUrl != null)
                             ? NetworkImage(supportCallsUserDetails!
@@ -551,7 +560,7 @@ Widget buildSupportCallItem(
                 ? const SizedBox()
                 : IconButton(
                     onPressed: () {
-                      navigateToURL(url: "https://app.zoom.us/wc");
+                      navigateToAnotherApp("zoomus://zoom.us/signin", "zoommtg://zoom.us/signin");
                     },
                     icon: const Icon(
                       Icons.videocam,

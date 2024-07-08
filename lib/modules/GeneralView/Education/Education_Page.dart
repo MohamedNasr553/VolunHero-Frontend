@@ -58,6 +58,7 @@ class Education extends StatelessWidget {
                     ),
                   ),
                   body: userModel
+                      .educationalSupportCallsUserModel != null && userModel
                           .educationalSupportCallsUserModel!.users.isNotEmpty
                       ? ListView.separated(
                           physics: const BouncingScrollPhysics(),

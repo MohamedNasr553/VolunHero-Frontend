@@ -7,7 +7,8 @@ class UserLikesModel {
   factory UserLikesModel.fromJson(Map<String, dynamic> json) {
     return UserLikesModel(
       message: json['message'],
-      users: List<LikedUser>.from(json['users'].map((x) => LikedUser.fromJson(x))),
+      users:
+          List<LikedUser>.from(json['users'].map((x) => LikedUser.fromJson(x))),
     );
   }
 }
@@ -24,7 +25,7 @@ class LikedUser {
   ProfilePic? profilePic;
   dynamic coverPic;
   List<dynamic> images;
-  String dob;
+  String? dob;
   String address;
   String gender;
   String? overview;
@@ -51,7 +52,7 @@ class LikedUser {
     this.profilePic,
     this.coverPic,
     required this.images,
-    required this.dob,
+    this.dob,
     required this.address,
     required this.gender,
     this.overview,
@@ -77,7 +78,9 @@ class LikedUser {
       email: json['email'],
       phone: json['phone'],
       role: json['role'],
-      profilePic: json['profilePic'] != null ? ProfilePic.fromJson(json['profilePic']) : null,
+      profilePic: json['profilePic'] != null
+          ? ProfilePic.fromJson(json['profilePic'])
+          : null,
       coverPic: json['coverPic'],
       images: List<dynamic>.from(json['images']),
       dob: json['DOB'],
@@ -90,8 +93,10 @@ class LikedUser {
       locations: List<dynamic>.from(json['locations']),
       specification: json['specification'],
       attachments: List<dynamic>.from(json['attachments']),
-      following: List<Following>.from(json['following'].map((x) => Following.fromJson(x))),
-      followers: List<Following>.from(json['followers'].map((x) => Following.fromJson(x))),
+      following: List<Following>.from(
+          json['following'].map((x) => Following.fromJson(x))),
+      followers: List<Following>.from(
+          json['followers'].map((x) => Following.fromJson(x))),
       updatedAt: json['updatedAt'],
       version: json['__v'],
     );

@@ -373,9 +373,11 @@ class HomeLayoutCubit extends Cubit<LayoutStates> {
       userLikesModel = UserLikesModel.fromJson(value.data);
       emit(GetLikesOnPostSuccessState());
     }).catchError((error) {
+      print("Error: $error");
       emit(GetLikesOnPostErrorState());
     });
   }
+
 
   /// ----------------------- Delete Post API ------------------------
 

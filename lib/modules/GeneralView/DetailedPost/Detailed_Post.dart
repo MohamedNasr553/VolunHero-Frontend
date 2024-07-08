@@ -867,26 +867,6 @@ class _DetailedPostState extends State<DetailedPost> {
                 ),
               ),
               SizedBox(width: screenWidth / 13),
-              // Like
-              InkWell(
-                onTap: () {
-                  HomeLayoutCubit.get(context).likePost(
-                      postId: specificPost.id!,
-                      token: UserLoginCubit.get(context)
-                              .loginModel!
-                              .refresh_token ??
-                          "",
-                      context: context);
-                },
-                child: const Text(
-                  "Like",
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.black,
-                    fontFamily: "Roboto",
-                  ),
-                ),
-              ),
             ],
           ),
         ),

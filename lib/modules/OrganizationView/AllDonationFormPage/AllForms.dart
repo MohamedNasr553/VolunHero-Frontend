@@ -72,7 +72,9 @@ class _AllDonationFormsState extends State<AllDonationForms> {
                   ),
                 ),
               ),
-              body: Padding(
+              body: (DonationFormCubit.get(context).getAllDonationFormsResponse != null
+              && DonationFormCubit.get(context).getAllDonationFormsResponse!.donationForms.isNotEmpty) ?
+              Padding(
                 padding: EdgeInsetsDirectional.only(
                   top: screenHeight / 30,
                   start: screenWidth / 30,
@@ -96,6 +98,39 @@ class _AllDonationFormsState extends State<AllDonationForms> {
                           ?.donationForms
                           .length ??
                       0,
+                ),
+              ):
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.newspaper_rounded,
+                      size: 50,
+                      color: Colors.black54,
+                    ),
+                    SizedBox(height: screenHeight / 50),
+                    const Text(
+                      "No donation forms created.",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Roboto",
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 200),
+                    const Text(
+                      "Donation Forms created"
+                          " will show up here.",
+                      style: TextStyle(
+                        fontSize: 11.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Roboto",
+                        color: Colors.black38,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
