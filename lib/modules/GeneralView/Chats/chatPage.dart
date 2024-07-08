@@ -114,8 +114,7 @@ class _ChatsPageState extends State<ChatsPage> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            navigateAndFinish(
-                                context, const VolunHeroLayout());
+                            navigateAndFinish(context, const VolunHeroLayout());
                           },
                           icon: const Icon(
                             Icons.close,
@@ -183,39 +182,42 @@ class _ChatsPageState extends State<ChatsPage> {
                                         itemCount: chats.length,
                                       )
                                     : (Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.chat_outlined,
-                                    size: 50,
-                                    color: Colors.black54,
-                                  ),
-                                  SizedBox(height: screenHeight / 100),
-                                  const Text(
-                                    "No chats yet",
-                                    style: TextStyle(
-                                      fontSize: 23.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Roboto",
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight / 200),
-                                  const Text(
-                                    "Connect "
-                                        "with people to "
-                                        "volunteer.",
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: "Roboto",
-                                      color: Colors.black38,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ))
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(
+                                              Icons.chat_outlined,
+                                              size: 50,
+                                              color: Colors.black54,
+                                            ),
+                                            SizedBox(
+                                                height: screenHeight / 100),
+                                            const Text(
+                                              "No chats yet",
+                                              style: TextStyle(
+                                                fontSize: 23.0,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "Roboto",
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                                height: screenHeight / 200),
+                                            const Text(
+                                              "Connect "
+                                              "with people to "
+                                              "volunteer.",
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.w600,
+                                                fontFamily: "Roboto",
+                                                color: Colors.black38,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ))
                                 : const Center(
                                     child: CircularProgressIndicator(
                                     color: defaultColor,
@@ -265,10 +267,14 @@ class _ChatsPageState extends State<ChatsPage> {
               CircleAvatar(
                 radius: 25.0,
                 backgroundColor: Colors.white,
-                backgroundImage: chats[index].members[1].userId.profilePic?.secureUrl !=
-                    null
-                    ? NetworkImage(chats[index].members[1].userId.profilePic!.secureUrl) as ImageProvider
-                    : const AssetImage("assets/images/nullProfile.png"),
+                backgroundImage:
+                    chats[index].members[1].userId.profilePic?.secureUrl != null
+                        ? NetworkImage(chats[index]
+                            .members[1]
+                            .userId
+                            .profilePic!
+                            .secureUrl) as ImageProvider
+                        : const AssetImage("assets/images/nullProfile.png"),
               ),
               SizedBox(width: screenWidth / 30),
               Expanded(

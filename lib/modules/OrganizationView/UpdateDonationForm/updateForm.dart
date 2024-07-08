@@ -32,18 +32,23 @@ class _UpdateDonationFormState extends State<UpdateDonationForm> {
   @override
   void initState() {
     super.initState();
-    final donationDetails = DonationFormCubit.get(context).detailedDonationFormDetails;
 
     if (DonationFormCubit.get(context).selectedDonationForm != null) {
-      titleController.text = DonationFormCubit.get(context).selectedDonationForm!.title;
+      titleController.text =
+          DonationFormCubit.get(context).selectedDonationForm!.title;
 
-      announceDateController.text = DateFormat('dd/MM/yyyy').format(DonationFormCubit.get(context).selectedDonationForm!.announceDate);
-      endDateController.text = DateFormat('dd/MM/yyyy').format(DonationFormCubit.get(context).selectedDonationForm!.endDate);
+      announceDateController.text = DateFormat('dd/MM/yyyy').format(
+          DonationFormCubit.get(context).selectedDonationForm!.announceDate);
+      endDateController.text = DateFormat('dd/MM/yyyy')
+          .format(DonationFormCubit.get(context).selectedDonationForm!.endDate);
 
-      descriptionController.text = DonationFormCubit.get(context).selectedDonationForm!.description;
-      linkController.text = DonationFormCubit.get(context).selectedDonationForm!.donationLink;
+      descriptionController.text =
+          DonationFormCubit.get(context).selectedDonationForm!.description;
+      linkController.text =
+          DonationFormCubit.get(context).selectedDonationForm!.donationLink;
     } else {
-      announceDateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+      announceDateController.text =
+          DateFormat('dd/MM/yyyy').format(DateTime.now());
     }
   }
 
@@ -300,10 +305,16 @@ class _UpdateDonationFormState extends State<UpdateDonationForm> {
                                         .refresh_token ??
                                     "",
                                 formId: DonationFormCubit.get(context)
-                                    .updateDonationFormDetails?.id ??
+                                        .updateDonationFormDetails
+                                        ?.id ??
                                     "",
-                              ).then((_){
-                                DonationFormCubit.get(context).getAllDonationForms(token:  UserLoginCubit.get(context).loginModel!.refresh_token);
+                              )
+                                  .then((_) {
+                                DonationFormCubit.get(context)
+                                    .getAllDonationForms(
+                                        token: UserLoginCubit.get(context)
+                                            .loginModel!
+                                            .refresh_token);
                               });
                               navigateToPage(context, const AllDonationForms());
                             }

@@ -36,8 +36,8 @@ class AppRoot extends StatelessWidget {
               ..initializeOrganizationBottomItems(context)
               ..getAllPosts(
                   token:
-                  UserLoginCubit.get(context).loginModel!.refresh_token ??
-                      "")),
+                      UserLoginCubit.get(context).loginModel!.refresh_token ??
+                          "")),
         BlocProvider(
           create: (BuildContext context) => CreatePostCubit(),
         ),
@@ -54,10 +54,10 @@ class AppRoot extends StatelessWidget {
           create: (BuildContext context) => SupportCallsCubit()
             ..getAllEducationalUsers(
                 token:
-                UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
+                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
             ..getAllMedicalUsers(
                 token:
-                UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
+                    UserLoginCubit.get(context).loginModel!.refresh_token ?? "")
             ..getAllGeneralUsers(
                 token: UserLoginCubit.get(context).loginModel!.refresh_token ??
                     ""),

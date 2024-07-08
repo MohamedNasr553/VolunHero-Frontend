@@ -51,7 +51,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
   GetAllDonationFormsResponse? getAllDonationFormsResponse;
   DonationFormDetails? getDonationFormDetails;
 
-  void getAllDonationForms({
+  Future<void> getAllDonationForms({
     required String? token,
   }) async {
     emit(GetAllDonationFormLoadingState());
@@ -150,8 +150,6 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
     required String formId,
   }) async {
     try {
-      print(title);
-      print(description);
       emit(UpdateDonationFormLoadingState());
 
       Map<String, dynamic> requestData = {
@@ -163,16 +161,25 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
 
       print('Request Data: $requestData');
 
-      await DioHelper.patchData(
+      final response = await DioHelper.patchData(
         url: "/donationForm/$formId",
         data: requestData,
         token: token,
       );
 
-      getAllDonationForms(token: token);
-      emit(UpdateDonationFormSuccessState());
+      print('API Response: ${response.data}');
+
+      if (response.statusCode == 200) {
+        await getAllDonationForms(token: token);
+        emit(UpdateDonationFormSuccessState());
+      } else {
+        print('Error: ${response.statusCode} - ${response.statusMessage}');
+        emit(UpdateDonationFormErrorState());
+      }
     } catch (error) {
+      print('Error: $error');
       emit(UpdateDonationFormErrorState());
     }
   }
+
 }

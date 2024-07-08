@@ -24,11 +24,10 @@ class AllDonationForms extends StatefulWidget {
 class _AllDonationFormsState extends State<AllDonationForms> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    DonationFormCubit.get(context).getAllDonationForms(token:  UserLoginCubit.get(context).loginModel!.refresh_token);
+    DonationFormCubit.get(context).getAllDonationForms(
+        token: UserLoginCubit.get(context).loginModel!.refresh_token);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +218,8 @@ class _AllDonationFormsState extends State<AllDonationForms> {
                       child: MaterialButton(
                         height: screenHeight / 50,
                         onPressed: () {
-                          DonationFormCubit.get(context).selectedDonationForm =  donationFormDetails;
+                          DonationFormCubit.get(context).selectedDonationForm =
+                              donationFormDetails;
                           DonationFormCubit.get(context)
                               .getDetailedDonationForms(
                             token: UserLoginCubit.get(context)
