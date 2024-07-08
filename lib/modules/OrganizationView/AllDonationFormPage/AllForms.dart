@@ -14,8 +14,21 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
-class AllDonationForms extends StatelessWidget {
+class AllDonationForms extends StatefulWidget {
   const AllDonationForms({super.key});
+
+  @override
+  State<AllDonationForms> createState() => _AllDonationFormsState();
+}
+
+class _AllDonationFormsState extends State<AllDonationForms> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DonationFormCubit.get(context).getAllDonationForms(token:  UserLoginCubit.get(context).loginModel!.refresh_token);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +219,7 @@ class AllDonationForms extends StatelessWidget {
                       child: MaterialButton(
                         height: screenHeight / 50,
                         onPressed: () {
+                          DonationFormCubit.get(context).selectedDonationForm =  donationFormDetails;
                           DonationFormCubit.get(context)
                               .getDetailedDonationForms(
                             token: UserLoginCubit.get(context)

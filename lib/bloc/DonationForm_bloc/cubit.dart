@@ -52,7 +52,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
   DonationFormDetails? getDonationFormDetails;
 
   void getAllDonationForms({
-    required String token,
+    required String? token,
   }) async {
     emit(GetAllDonationFormLoadingState());
 
@@ -62,6 +62,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
     ).then((value) {
       getAllDonationFormsResponse =
           GetAllDonationFormsResponse.fromJson(value.data);
+      print(value.data);
       emit(GetAllDonationFormSuccessState());
     }).catchError((error) {
       emit(GetAllDonationFormErrorState());
@@ -71,6 +72,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
   /// -------------------------- Get Specific Org Donation Form ------------------------
   GetAllDonationFormsResponse? getOrgDonationFormsResponse;
   DonationFormDetails? getOrgDonationFormsDetails;
+  DonationFormDetails? selectedDonationForm;
 
   void getOrgDonationForms({
     required String token,
@@ -139,7 +141,7 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
   /// ----------------------- Update Donation Form -------------------------------
   UpdateDonationFormDetails? updateDonationFormDetails;
 
-  void updateDonationFormMethod({
+  Future<void> updateDonationFormMethod({
     required String title,
     required DateTime? endDate,
     required String description,
@@ -148,6 +150,8 @@ class DonationFormCubit extends Cubit<DonationFormStates> {
     required String formId,
   }) async {
     try {
+      print(title);
+      print(description);
       emit(UpdateDonationFormLoadingState());
 
       Map<String, dynamic> requestData = {

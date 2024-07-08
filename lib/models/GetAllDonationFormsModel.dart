@@ -27,14 +27,14 @@ class GetAllDonationFormsResponse {
 }
 
 class DonationFormDetails {
-  final String id;
-  final String title;
-  final DateTime endDate;
-  final String description;
-  final String donationLink;
-  final String createdBy;
-  final DateTime announceDate;
-  final int v;
+  late final String id;
+  late final String title;
+  late final DateTime endDate;
+  late final String description;
+  late final String donationLink;
+  late final String createdBy;
+  late final DateTime announceDate;
+  late final int v;
 
   DonationFormDetails({
     required this.id,
@@ -46,7 +46,29 @@ class DonationFormDetails {
     required this.announceDate,
     required this.v,
   });
+  DonationFormDetails.empty()
+      : id = '',
+        title = '',
+        endDate = DateTime.now(),
+        description = '',
+        donationLink = '',
+        createdBy = '',
+        announceDate = DateTime.now(),
+        v = 0;
 
+  // Factory method example
+  factory DonationFormDetails.emptyForm() {
+    return DonationFormDetails(
+      id: '',
+      title: '',
+      endDate: DateTime.now(),
+      description: '',
+      donationLink: '',
+      createdBy: '',
+      announceDate: DateTime.now(),
+      v: 0,
+    );
+  }
   factory DonationFormDetails.fromJson(Map<String, dynamic> json) {
     return DonationFormDetails(
       id: json['_id'],
