@@ -1,10 +1,9 @@
 # VolunHero-Frontend
 
-<h4 align = "left">
- VolunHero is a revolutionary social media app connecting volunteers and those in need. <br>
- It stands out for its innovative features, including a roadblock detection system for the visually 
+<h6 align = "left">
+ VolunHero is a revolutionary social media app connecting volunteers and those in need. It stands out for its innovative features, including a roadblock detection system for the visually 
  impaired and seamless video calls. 
-</h4>
+</h6>
 
 <h2 align = "left">
  VolunHero App Final UI Design
