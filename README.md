@@ -13,7 +13,7 @@
  Splash Screen
 </h4>
 
-<img src="https://github.com/user-attachments/assets/1abba399-ac26-46b8-b25f-d86f09a7bf22" width="400" height="360"/>
+<img src="https://github.com/user-attachments/assets/1abba399-ac26-46b8-b25f-d86f09a7bf22" width="400" height="380"/>
 
 <h4 align = "left">
  Other Screens
