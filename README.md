@@ -15,7 +15,7 @@
 
 <!--![Welcome Page](https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087)-->
 
-<img src="https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087" width="150" height="280"/>
+<img src="https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087" width="150" height="300"/>
 
 
 <h4 align = "left">
