@@ -9,15 +9,18 @@
  VolunHero App Final UI Design
 </h2>
 
-<h5 align = "left">
- Splash Screen:
-</h5>
+<h4 align = "left">
+ Splash Screen
+</h4>
 
-![Welcome Page](https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087)
+<!--![Welcome Page](https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087)-->
 
-<h5 align = "left">
- Other Screens:
-</h5>
+<img src="https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087" width="100" height="100"/>
+
+
+<h4 align = "left">
+ Other Screens
+</h4>
 
 <h6 align="left">
   <i>
