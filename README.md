@@ -15,7 +15,7 @@
 
 <!--![Welcome Page](https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087)-->
 
-![Welcome Page](https://github.com/user-attachments/assets/97231dca-b057-4d34-84dc-d8268fb2cd72)<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+![Welcome Page](https://github.com/user-attachments/assets/97231dca-b057-4d34-84dc-d8268fb2cd72)<svg width="160" height="320" viewBox="0 0 160 320" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g clip-path="url(#clip0_644_1068)">
 <rect width="160" height="320" fill="white"/>
 <g filter="url(#filter0_d_644_1068)">
