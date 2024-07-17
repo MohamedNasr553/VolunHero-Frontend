@@ -9,6 +9,16 @@
  VolunHero App Final UI Design
 </h2>
 
+<h5 align = "left">
+ Splash Screen:
+</h5>
+
+![Welcome Page](https://github.com/user-attachments/assets/11ff672e-4a1f-4a1f-ae47-23d1418e6087)
+
+<h5 align = "left">
+ Other Screens:
+</h5>
+
 <h6 align="left">
   <i>
     https://www.figma.com/design/w8qhJtytLDywCsgjWfjxFL/Trial?node-id=0-1&t=R0jxCY4vmp11YbXm-0
